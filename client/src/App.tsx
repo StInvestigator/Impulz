@@ -12,7 +12,10 @@ function App() {
         <Navbar/>
         <Box display={"flex"}>
             <Sidebar/>
-            <Box component="main" sx={{ padding: "88px 24px 24px 24px" }}>
+            <Box component="main" sx={{
+                marginLeft: `320px`,
+                padding: "88px 24px 24px 24px",
+            }}>
                 <AppRouter/>
             </Box>
         </Box>

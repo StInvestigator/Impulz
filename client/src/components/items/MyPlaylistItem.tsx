@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import {ListItem, ListItemButton,Box,Typography, ListItemIcon, ListItemText} from "@mui/material";
 import pushPinImage from "../../images/pushPin.png"
 
-type PlaylistProps = {
+interface PlaylistProps {
     image: string,
     name: string,
     countTracks: number;

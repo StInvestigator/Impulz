@@ -23,7 +23,7 @@ const Navbar = () => {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <img src={frame} alt="Impulz"/>
+                    <Box component="img" src={frame} alt="Impulz"/>
                     <Box component="form" sx={{width: "450px", display: "flex", position: "relative"}}>
                         <OutlinedInput placeholder="Пошук треків, альбомів, виконавців" sx={{width: "450px", backgroundColor: "#D9D9D9", borderRadius: "10px"}}/>
                         <IconButton sx={{width: "53px", height: "30px", backgroundColor: "white", borderRadius: "10px", position: "absolute", right: "0"}}>

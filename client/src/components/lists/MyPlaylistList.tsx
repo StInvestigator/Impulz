@@ -3,16 +3,16 @@ import {List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/m
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import playlistImage from "../../images/playlistImage.png"
-import PlaylistItem from "../items/PlaylistItem";
+import MyPlaylistItem from "../items/MyPlaylistItem";
 
-const PlaylistList = () => {
+const MyPlaylistList = () => {
     return (
         <List>
             {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                <PlaylistItem image={playlistImage} name={text} countTracks={10}/>
+                <MyPlaylistItem key={index} image={playlistImage} name={text} countTracks={10}/>
             ))}
         </List>
     );
 };
 
-export default PlaylistList;
+export default MyPlaylistList;

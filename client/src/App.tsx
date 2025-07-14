@@ -10,11 +10,14 @@ function App() {
   return (
     <BrowserRouter>
         <Navbar/>
-        <Box display={"flex"}>
+        <Box component="main" display={"flex"}>
             <Sidebar/>
-            <Box component="main" sx={{
+            <Box component="article" sx={{
+                width: "100%",
                 marginLeft: `320px`,
-                padding: "88px 24px 24px 24px",
+                marginTop: "48px",
+                padding: "48px 20px",
+                overflowX: 'hidden', // предотвращает скролл
             }}>
                 <AppRouter/>
             </Box>

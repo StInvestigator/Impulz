@@ -8,7 +8,7 @@ type PlaylistProps = {
     countTracks: number;
 }
 
-const PlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
+const MyPlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
     return (
         <ListItem disablePadding>
             <ListItemButton sx={{
@@ -18,14 +18,22 @@ const PlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
                 }
             }}>
                 <ListItemIcon sx={{paddingRight: "12px"}}>
-                    <img src={image}/>
+                    <Box component="img" src={image}/>
                 </ListItemIcon>
                 <ListItemText
                     primary={name}
                     secondary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                            <img src={pushPinImage}/>
-                            <Typography variant="body2" color="text.secondary" ml={0.5}>
+                        <Box
+                            component="span"
+                            sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}
+                        >
+                            <Box component="img" src={pushPinImage} />
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                ml={0.5}
+                                component="span"
+                            >
                                 Плейліст {countTracks} пісень
                             </Typography>
                         </Box>
@@ -36,4 +44,4 @@ const PlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
     );
 };
 
-export default PlaylistItem;
+export default MyPlaylistItem;

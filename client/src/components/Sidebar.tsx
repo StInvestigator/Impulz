@@ -18,7 +18,7 @@ import libraryImg from "../images/library.png"
 import downloadImg from "../images/download.png"
 import subscriptionImg from "../images/subscription.png"
 import createPlaylistImg from "../images/createPlaylist.png"
-import PlaylistList from "./lists/PlaylistList";
+import MyPlaylistList from "./lists/MyPlaylistList";
 
 const buttons = [
     {
@@ -42,6 +42,7 @@ const buttons = [
 const Sidebar = () => {
     return (
         <Box
+            component="aside"
             sx={{
                 width: "320px",
                 height: "calc(100vh - 48px)",
@@ -62,7 +63,7 @@ const Sidebar = () => {
                                 }
                             }}>
                                 <ListItemIcon>
-                                    <img src={icon}/>
+                                    <Box component="img" src={icon}/>
                                 </ListItemIcon>
                                 <ListItemText primary={name} />
                             </ListItemButton>
@@ -79,10 +80,10 @@ const Sidebar = () => {
                     fontWeight: 400,
                     color: "black"
                 }}>
-                    <img src={createPlaylistImg} style={{paddingRight: "10px"}}/>
+                    <Box component="img" src={createPlaylistImg} style={{paddingRight: "10px"}}/>
                     Створити плейлист
                 </Button>
-                <PlaylistList/>
+                <MyPlaylistList/>
             </Box>
         </Box>
     );

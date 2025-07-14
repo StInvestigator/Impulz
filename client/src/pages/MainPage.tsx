@@ -1,36 +1,57 @@
 import React from 'react';
-import {Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
+import mainImage from "../images/mainImage.png"
+import ListCarousel from "../components/ListCarousel";
+import TrackCarouselList from "../components/carousel_list/TrackCarouselList";
+import TrackItem from "../components/items/TrackItem";
+import GenreList from "../components/lists/GenreList";
+import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
+import BestPlaylistCarouselList from "../components/carousel_list/BestPlaylistCarouselList";
+
+const tracks = [
+    'Трек 1', 'Трек 2', 'Трек 3',
+    'Трек 4', 'Трек 5', 'Трек 6',
+    'Трек 7', 'Трек 8','Трек 1', 'Трек 2', 'Трек 3',
+    'Трек 4', 'Трек 5', 'Трек 6',
+    'Трек 7', 'Трек 8'
+];
+
+const authors = [
+    'Автор 1', 'Автор 2', 'Автор 3',
+    'Автор 4', 'Автор 5', 'Автор 6',
+    'Автор 7', 'Автор 8','Автор 1', 'Автор 2', 'Автор 3',
+    'Автор 4', 'Автор 5', 'Автор 6',
+    'Автор 7', 'Автор 8'
+];
+
+const playlist = [
+    'Плейлист 1', 'Плейлист 2', 'Плейлист 3',
+    'Плейлист 4', 'Плейлист 5', 'Плейлист 6',
+    'Плейлист 7', 'Плейлист 8','Плейлист 1', 'Плейлист 2', 'Плейлист 3',
+    'Плейлист 4', 'Плейлист 5', 'Плейлист 6',
+    'Плейлист 7', 'Плейлист 8'
+];
 
 const MainPage = () => {
     return (
         <>
-            <Typography sx={{ marginBottom: 2 }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                sapien faucibus et molestie ac.
-            </Typography>
-            <Typography sx={{ marginBottom: 2 }}>
-                Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-                eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-                neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-                tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-                sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-                tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-                gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-                tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-                eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-                posuere sollicitudin aliquam ultrices sagittis orci a.
-            </Typography>
+            <Box component={"img"} src={mainImage} width={"100%"}/>
+            <Box component={"section"} display={"flex"} gap={3} mt={6} sx={{
+                width: '100%',
+            }}>
+                <TrackCarouselList tracks={tracks} itemWidth={200}/>
+                <GenreList/>
+            </Box>
+            <Box component={"section"} mt={6} sx={{
+                width: '100%',
+            }}>
+                <AuthorCarouselList authors={authors} itemWidth={134}/>
+            </Box>
+            <Box component={"section"} mt={6} sx={{
+                width: '100%',
+            }}>
+                <BestPlaylistCarouselList playlists={playlist} itemWidth={134}/>
+            </Box>
         </>
     );
 };

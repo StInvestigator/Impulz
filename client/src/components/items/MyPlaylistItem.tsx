@@ -12,12 +12,13 @@ const MyPlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
     return (
         <ListItem disablePadding>
             <ListItemButton sx={{
+                gap: 1,
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
                     backgroundColor: '#C7C7D3',
                 }
             }}>
-                <ListItemIcon sx={{paddingRight: "12px"}}>
+                <ListItemIcon>
                     <Box component="img" src={image}/>
                 </ListItemIcon>
                 <ListItemText

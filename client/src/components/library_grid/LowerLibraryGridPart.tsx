@@ -52,7 +52,7 @@ const Block = styled(Box)<BlockProps>(({ theme, image, align }) => ({
 }));
 
 
-const InfoGrid: React.FC = () => (
+const LowerLibraryGridPart: React.FC = () => (
     <Grid container spacing={3}>
         {elements.map((elem) => (
             <Grid
@@ -73,4 +73,4 @@ const InfoGrid: React.FC = () => (
     </Grid>
 );
 
-export default InfoGrid;
+export default LowerLibraryGridPart;

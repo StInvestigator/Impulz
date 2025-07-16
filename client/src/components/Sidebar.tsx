@@ -20,26 +20,36 @@ import subscriptionImg from "../images/subscription.png"
 import createPlaylistImg from "../images/createPlaylist.png"
 import MyPlaylistList from "./lists/MyPlaylistList";
 
+import { useNavigate } from 'react-router-dom';
+
 const buttons = [
     {
         name: "Головна",
         icon: mainImg,
+        path: "/"
     },
     {
         name: "Бібліотека",
         icon: libraryImg,
+        path: "/library"
     },
     {
         name: "Завантажити",
         icon: downloadImg,
+        path: "/downloads"
     },
     {
         name: "Підписка",
         icon: subscriptionImg,
+        path: "/subscriptions"
     }
 ]
 
+
 const Sidebar = () => {
+    
+    const navigate = useNavigate();
+
     return (
         <Box
             component="aside"
@@ -54,9 +64,10 @@ const Sidebar = () => {
         >
             <Box sx={{paddingLeft: "24px"}}>
                 <List>
-                    {buttons.map(({name, icon}) => (
+                    {buttons.map(({name, icon, path}) => (
                         <ListItem key={name} disablePadding>
-                            <ListItemButton sx={{
+                            <ListItemButton onClick={() => navigate(path)}
+                            sx={{
                                 transition: 'background-color 0.3s ease',
                                 '&:hover': {
                                     backgroundColor: '#C7C7D3',

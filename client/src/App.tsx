@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import {Box, Toolbar} from "@mui/material";
 import AppRouter from "./components/AppRouter";
 import {BrowserRouter} from "react-router-dom";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
                 <AppRouter/>
             </Box>
         </Box>
+        <Footer/>
     </BrowserRouter>
   );
 }

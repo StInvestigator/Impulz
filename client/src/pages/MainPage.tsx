@@ -7,6 +7,10 @@ import TrackItem from "../components/items/TrackItem";
 import GenreList from "../components/lists/GenreList";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import BestPlaylistCarouselList from "../components/carousel_list/BestPlaylistCarouselList";
+import TopFiveGenreList from "../components/lists/TopFiveGenreList";
+import RecommendTodayCarouselList from "../components/carousel_list/RecommendTodayCarouselList";
+import SelectedForYouCarouselList from "../components/carousel_list/SelectedForYouCarouselList";
+import TopSelections from "../components/TopSelections";
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -36,21 +40,27 @@ const MainPage = () => {
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"}/>
-            <Box component={"section"} display={"flex"} gap={3} mt={6} sx={{
-                width: '100%',
-            }}>
+            <Box component={"section"} display={"flex"} gap={3} mt={6}>
                 <TrackCarouselList tracks={tracks} itemWidth={200}/>
                 <GenreList/>
             </Box>
-            <Box component={"section"} mt={6} sx={{
-                width: '100%',
-            }}>
+            <Box component={"section"} mt={6}>
                 <AuthorCarouselList authors={authors} itemWidth={134}/>
             </Box>
-            <Box component={"section"} mt={6} sx={{
-                width: '100%',
-            }}>
+            <Box component={"section"} mt={6}>
                 <BestPlaylistCarouselList playlists={playlist} itemWidth={134}/>
+            </Box>
+            <Box component={"section"} mt={6}>
+                <TopFiveGenreList/>
+            </Box>
+            <Box component={"section"} mt={6}>
+                <RecommendTodayCarouselList playlists={playlist} itemWidth={134}/>
+            </Box>
+            <Box component={"section"} mt={6}>
+                <SelectedForYouCarouselList playlists={playlist} itemWidth={134}/>
+            </Box>
+            <Box component={"section"} mt={6}>
+                <TopSelections/>
             </Box>
         </>
     );

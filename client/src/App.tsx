@@ -4,7 +4,8 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { Box, Toolbar } from "@mui/material";
 import AppRouter from "./components/AppRouter";
-import { BrowserRouter } from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
+import Footer from "./components/Footer";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
@@ -33,6 +34,7 @@ function App() {
             <AppRouter />
           </Box>
         </Box>
+        <Footer/>
       </ThemeProvider>
     </BrowserRouter>
   );

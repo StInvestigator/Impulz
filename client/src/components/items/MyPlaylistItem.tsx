@@ -1,6 +1,6 @@
-import React, {FC} from 'react';
-import {ListItem, ListItemButton,Box,Typography, ListItemIcon, ListItemText} from "@mui/material";
-import pushPinImage from "../../images/pushPin.png"
+import React, { FC } from 'react';
+import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
+import pushPinImage from "../../images/pushPin.svg"
 
 interface PlaylistProps {
     image: string,
@@ -8,7 +8,7 @@ interface PlaylistProps {
     countTracks: number;
 }
 
-const MyPlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
+const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
     return (
         <ListItem disablePadding>
             <ListItemButton sx={{
@@ -16,32 +16,40 @@ const MyPlaylistItem: FC<PlaylistProps> = ({image, name, countTracks}) => {
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
                     backgroundColor: '#C7C7D3',
-                }
+                },
+                padding: "22px 12px",
             }}>
                 <ListItemIcon>
-                    <Box component="img" src={image}/>
+                    <Box component="img" src={image} />
                 </ListItemIcon>
                 <ListItemText
+                    disableTypography
+                    sx={{fontWeight:600, fontSize: "14px"}}
+
                     primary={name}
                     secondary={
-                        <Box
+                        < Box
                             component="span"
                             sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}
                         >
                             <Box component="img" src={pushPinImage} />
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
+                                color="black"
                                 ml={0.5}
                                 component="span"
+                                fontSize={12}
                             >
-                                Плейліст {countTracks} пісень
+
+
+
+                                Плейліст &middot; {countTracks} пісень
                             </Typography>
                         </Box>
                     }
                 />
             </ListItemButton>
-        </ListItem>
+        </ListItem >
     );
 };
 

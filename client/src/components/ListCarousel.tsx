@@ -1,7 +1,11 @@
 import React, { ReactNode, useRef, useState, useEffect } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import {Box, Button, IconButton, Typography} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import arrowLeftImg from "../images/arrow/arrowLeft.png"
+import arrowRightImg from "../images/arrow/arrowRight.png"
+import playImage from "../images/play.png";
+
 
 interface ListCarouselProps {
     title: string;
@@ -51,6 +55,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
     return (
         <Box
             position="relative"
+            borderRadius={"10px"}
             sx={{
                 backgroundColor: '#ABA5A5',
                 boxSizing: 'border-box',
@@ -60,7 +65,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
             }}
         >
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                <Typography variant="h1" fontSize={font_size_title}>
+                <Typography variant="h1" fontSize={font_size_title} fontFamily={"Manrope, sans-serif"} fontWeight={700}>
                     {title}
                 </Typography>
                 <Button sx={{
@@ -76,7 +81,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
             </Box>
 
             {/* Кнопка Влево */}
-            <Button
+            <IconButton
                 onClick={() => handleScroll('left')}
                 disabled={offset === 0}
                 sx={{
@@ -85,14 +90,13 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
                     left: 10,
                     transform: 'translateY(-50%)',
                     zIndex: 1,
-                    minWidth: 'auto',
                     color: 'white',
                     backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
                 }}
             >
-                <ArrowBackIosIcon />
-            </Button>
+                <Box component={"img"} src={arrowLeftImg} width={"30px"} height={"30px"}/>
+            </IconButton>
 
             {/* Контейнер прокрутки */}
             <Box ref={containerRef} sx={{ overflow: 'hidden', width: '100%' }}>
@@ -113,7 +117,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
             </Box>
 
             {/* Кнопка Вправо */}
-            <Button
+            <IconButton
                 onClick={() => handleScroll('right')}
                 disabled={offset >= maxOffset}
                 sx={{
@@ -122,14 +126,13 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
                     right: 10,
                     transform: 'translateY(-50%)',
                     zIndex: 1,
-                    minWidth: 'auto',
                     color: 'white',
                     backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
                 }}
             >
-                <ArrowForwardIosIcon />
-            </Button>
+                <Box component={"img"} src={arrowRightImg} width={"30px"} height={"30px"}/>
+            </IconButton>
         </Box>
     );
 };

@@ -11,6 +11,20 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 const theme = createTheme({
   typography: {
     fontFamily: '"Work Sans", sans-serif',
+    h2: {
+      fontWeight: 700,
+    },
+    h3: {
+      fontWeight: 600,
+      fontSize: "16px"
+    },
+    h4: {
+      fontWeight: 400,
+      fontSize: "14px"
+    },
+    allVariants: {
+      lineHeight: 1.2,
+    },
   },
 });
 
@@ -20,7 +34,6 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-
         <Navbar />
         <Box component="main" display={"flex"}>
           <Sidebar />

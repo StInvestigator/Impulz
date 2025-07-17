@@ -5,8 +5,8 @@ import TopSelectionsList from "./lists/TopSelectionsList";
 const TopSelections = () => {
     return (
         <Box width={"100%"}>
-            <Box display={"flex"} justifyContent={"space-between"} px={5}>
-                <Typography variant={"h2"} fontSize={"36px"} fontWeight={700}>
+            <Box display={"flex"} justifyContent={"space-between"} px={3}>
+                <Typography variant={"h1"} fontSize={"36px"} fontWeight={700}>
                     Топ добірок
                 </Typography>
                 <Button sx={{

@@ -76,7 +76,9 @@ const Sidebar = () => {
                                 <ListItemIcon>
                                     <Box component="img" src={icon}/>
                                 </ListItemIcon>
-                                <ListItemText primary={name} />
+                                <ListItemText primary={name} primaryTypographyProps={{
+                                    variant: 'h3',
+                                }}/>
                             </ListItemButton>
                         </ListItem>
                     ))}

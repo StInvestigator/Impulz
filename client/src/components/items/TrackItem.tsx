@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
-import {Box, Card, CardActionArea, IconButton, Typography} from "@mui/material";
+import {Box, IconButton, Typography} from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import playImage from "../../images/play.png";
 
 interface TrackItemProps {
     track: string;
@@ -9,32 +10,31 @@ interface TrackItemProps {
 
 const TrackItem: FC<TrackItemProps> = ({itemWidth, track}) => {
     return (
-        <Card
+        <Box
             sx={{
-                minWidth: itemWidth,
-                height: 266,
-                color: 'white',
-                borderRadius: 2,
-                flexShrink: 0,
+                width: itemWidth,
             }}
         >
-            <CardActionArea>
-                <Box bgcolor="gray" width="100%" height="178px" />
-            </CardActionArea>
-            <Box display="flex" justifyContent="space-between" alignItems="center" px={2} py={1}>
-                <Box>
-                    <Typography gutterBottom variant="h5" sx={{ color: "black", fontSize: "14px" }}>
-                        {track}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "black", fontSize: "12px" }}>
-                        Альбом - Rihana
-                    </Typography>
-                </Box>
-                <IconButton>
-                    <PlayCircleIcon />
-                </IconButton>
+            <Box bgcolor="gray" width="100%" height="178px" borderRadius={"10px 10px 0 0"}>
+
             </Box>
-        </Card>
+            <Box display={"flex"} justifyContent={"center"} alignItems={"center"} height={"88px"} bgcolor={"white"} px={1} borderRadius={"0 0 10px 10px"}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
+                    <Box>
+                        <Typography variant={"h3"} gutterBottom sx={{ color: "black"}}>
+                            {track}
+                        </Typography>
+                        <Typography variant={"h4"} sx={{ color: "black"}}>
+                            Альбом - Rihana
+                        </Typography>
+                    </Box>
+                    <IconButton sx={{padding: 0}}>
+                        <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
+                             height={"30px"}/>
+                    </IconButton>
+                </Box>
+            </Box>
+        </Box>
     );
 };
 

@@ -12,7 +12,7 @@ const top_5_genres = [
 
 const TopFiveGenreList = () => {
     return (
-        <Box p={3} bgcolor={"#D9D9D9"}>
+        <Box p={3} bgcolor={"#D9D9D9"} borderRadius={"10px"}>
             <Typography variant={"h1"} fontSize={"36px"} fontWeight={700} mb={"5px"}>
                 Найбільше слухають
             </Typography>

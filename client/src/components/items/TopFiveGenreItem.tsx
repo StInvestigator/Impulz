@@ -20,7 +20,7 @@ const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index}) => {
                                  height={"160px"}/>
                         </IconButton>
                     </Box>
-                    <Box display={"flex"} justifyContent={"flex-end"} alignItems={"center"} width={"40%"} boxSizing={"border-box"} padding={"10px"}>
+                    <Box display={"flex"} justifyContent={"flex-end"} alignItems={"center"} width={"40%"} boxSizing={"border-box"} padding={3}>
                         <Typography variant={"h2"} fontSize={"36px"} fontWeight={700} color={"white"}
                                     textAlign={"center"}>
                             {genre}
@@ -43,7 +43,7 @@ const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index}) => {
                     </Typography>
                 </Box>
                 <Box borderRadius={'0px 1000px 1000px 0px'} width={"100%"} display={"flex"} justifyContent={"flex-end"} bgcolor={"#919496"}>
-                    <Box display={"flex"} justifyContent={"flex-start"} alignItems={"center"} width={"40%"} boxSizing={"border-box"} padding={"10px"}>
+                    <Box display={"flex"} justifyContent={"flex-start"} alignItems={"center"} width={"40%"} boxSizing={"border-box"} padding={3}>
                         <Typography variant={"h2"} fontSize={"36px"} fontWeight={700} color={"white"}
                                     textAlign={"center"}>
                             {genre}

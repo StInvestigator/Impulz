@@ -6,11 +6,12 @@ import ListCarousel from "../ListCarousel";
 interface TrackListProps {
     tracks: string[];
     itemWidth: number;
+    name: string;
 }
 
-const TrackCarouselList: FC<TrackListProps> = ({ tracks, itemWidth }) => {
+const TrackBigCarouselList: FC<TrackListProps> = ({ tracks, itemWidth, name }) => {
     return (
-        <ListCarousel title={"Хіти тижня"} font_size_title={64} count_items={tracks.length}>
+        <ListCarousel title={name} font_size_title={64} count_items={tracks.length}>
             {tracks.map((track, index) => (
                 <TrackItem key={index} track={track} itemWidth={itemWidth} />
             ))}
@@ -18,4 +19,4 @@ const TrackCarouselList: FC<TrackListProps> = ({ tracks, itemWidth }) => {
     );
 };
 
-export default TrackCarouselList;
+export default TrackBigCarouselList;

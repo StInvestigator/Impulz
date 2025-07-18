@@ -2,8 +2,8 @@ import React, { ReactNode, useRef, useState, useEffect } from 'react';
 import {Box, Button, IconButton, Typography} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import arrowLeftImg from "../images/arrow/arrowLeft.png"
-import arrowRightImg from "../images/arrow/arrowRight.png"
+import arrowLeftImg from "../images/arrow/arrowLeft.svg"
+import arrowRightImg from "../images/arrow/arrowRight.svg"
 import playImage from "../images/play.svg";
 
 
@@ -74,7 +74,9 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
                     borderRadius: "10px",
                     fontSize: "12px",
                     fontWeight: 600,
-                    color: "black"
+                    color: "black",
+                    textTransform: "none",
+                    padding: "8px 12px"
                 }}>
                     Дивитись всі
                 </Button>

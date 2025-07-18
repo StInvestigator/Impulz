@@ -25,7 +25,6 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                 <ListItemText
                     disableTypography
                     sx={{fontWeight:600, fontSize: "14px"}}
-
                     primary={name}
                     secondary={
                         < Box
@@ -34,13 +33,13 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                         >
                             <Box component="img" src={pushPinImage} />
                             <Typography
-                                variant="h4"
-                                color="text.secondary"
+                                color="black"
                                 ml={0.5}
                                 component="span"
                                 fontSize={12}
+                                fontWeight={400}
                             >
-                                Плейліст &middot; {countTracks} пісень
+                                плейліст &middot; {countTracks} пісень
                             </Typography>
                         </Box>
                     }

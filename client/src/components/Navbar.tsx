@@ -2,9 +2,13 @@ import React from 'react';
 import {AppBar, Box, Button, Link, OutlinedInput, Toolbar, IconButton} from "@mui/material";
 import LanguageIcon from '@mui/icons-material/Language';
 import SearchIcon from '@mui/icons-material/Search';
-import frame from '../images/logo.png'
+import {useNavigate} from "react-router-dom";
+import frame from '../images/logo.svg'
+
 
 const Navbar = () => {
+    const navigate = useNavigate()
+
     const linkStyles = {
         display: "flex",
         alignItems: "center",
@@ -23,7 +27,9 @@ const Navbar = () => {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <Box component="img" src={frame} alt="Impulz"/>
+                    <IconButton onClick={() => navigate("/")}>
+                        <Box component="img" src={frame} alt="Impulz"/>
+                    </IconButton>
                     <Box component="form" sx={{width: "450px", display: "flex", position: "relative"}}>
                         <OutlinedInput placeholder="Пошук треків, альбомів, виконавців" sx={{width: "450px", backgroundColor: "#D9D9D9", borderRadius: "10px"}}/>
                         <IconButton sx={{width: "53px", height: "30px", backgroundColor: "white", borderRadius: "10px", position: "absolute", right: "0"}}>

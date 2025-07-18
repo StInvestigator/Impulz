@@ -1,9 +1,7 @@
 import React from 'react';
-import {Box, Typography} from "@mui/material";
-import mainImage from "../images/mainImage.png"
-import ListCarousel from "../components/ListCarousel";
+import {Box} from "@mui/material";
+import mainImage from "../images/mainImage.svg"
 import TrackCarouselList from "../components/carousel_list/TrackCarouselList";
-import TrackItem from "../components/items/TrackItem";
 import GenreList from "../components/lists/GenreList";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import BestPlaylistCarouselList from "../components/carousel_list/BestPlaylistCarouselList";

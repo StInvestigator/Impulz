@@ -18,4 +18,4 @@ const TrackSmallCarouselList: FC<TracklistListProps> = ({tracks, itemWidth, name
     );
 };
 
-export default TrackSmallCarouselList;
+export default TrackSmallCarouselList; 

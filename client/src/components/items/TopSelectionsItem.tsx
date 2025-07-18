@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, IconButton, Typography} from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import playImage from "../../images/play.png";
+import playImage from "../../images/play.svg";
 
 const TopSelectionsItem = () => {
     return (

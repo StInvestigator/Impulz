@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Box, Card, IconButton, Typography} from "@mui/material";
-import playImage from "../../images/play.png";
+import playImage from "../../images/play.svg";
 
 interface PlaylistItemProps {
     playlist: string;
@@ -34,7 +34,7 @@ const PublicPlaylistItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
                     {playlist}
                 </Typography>
                 <Typography variant="h4" fontWeight={400} sx={{ color: "black"}}>
-                    Альбом - Rihana
+                    Альбом &middot; Rihana
                 </Typography>
             </Box>
         </Box>

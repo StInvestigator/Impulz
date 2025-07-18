@@ -41,7 +41,7 @@ function App() {
             width: "100%",
             marginLeft: `320px`,
             marginTop: "48px",
-            padding: "48px 20px",
+            padding: "60px 20px",
             overflowX: 'hidden', // предотвращает скролл
           }}>
             <AppRouter />

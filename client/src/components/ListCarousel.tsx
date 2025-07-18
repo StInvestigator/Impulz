@@ -4,7 +4,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import arrowLeftImg from "../images/arrow/arrowLeft.png"
 import arrowRightImg from "../images/arrow/arrowRight.png"
-import playImage from "../images/play.png";
+import playImage from "../images/play.svg";
 
 
 interface ListCarouselProps {
@@ -105,7 +105,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
                         display: 'flex',
                         transition: 'transform 0.5s ease',
                         transform: `translateX(-${offset}px)`,
-                        gap: 2
+                        gap: 3
                     }}
                 >
                     {React.Children.map(children, (child, index) => (

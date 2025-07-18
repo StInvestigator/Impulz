@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {Box, IconButton, Typography} from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import playImage from "../../images/play.png";
+import playImage from "../../images/play.svg";
 
 interface TrackItemProps {
     track: string;
@@ -25,7 +25,7 @@ const TrackItem: FC<TrackItemProps> = ({itemWidth, track}) => {
                             {track}
                         </Typography>
                         <Typography variant={"h4"} sx={{ color: "black"}}>
-                            Альбом - Rihana
+                            Альбом &middot; Rihana
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

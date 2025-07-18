@@ -13,14 +13,16 @@ import {
 } from "@mui/material";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import mainImg from "../images/main.png"
-import libraryImg from "../images/library.png"
-import downloadImg from "../images/download.png"
-import subscriptionImg from "../images/subscription.png"
-import createPlaylistImg from "../images/createPlaylist.png"
+import mainImg from "../images/sidebar/main.svg"
+import libraryImg from "../images/sidebar/library.svg"
+import downloadImg from "../images/sidebar/download.svg"
+import subscriptionImg from "../images/sidebar/subscription.svg"
+import link from "../images/sidebar/link.svg"
+import createPlaylistImg from "../images/sidebar/createPlaylist.svg"
 import MyPlaylistList from "./lists/MyPlaylistList";
 
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
+import { Image } from '@mui/icons-material';
 
 const buttons = [
     {
@@ -47,7 +49,7 @@ const buttons = [
 
 
 const Sidebar = () => {
-    
+
     const navigate = useNavigate();
 
     return (
@@ -62,41 +64,62 @@ const Sidebar = () => {
                 backgroundColor: "#887D7D",
             }}
         >
-            <Box sx={{paddingLeft: "24px"}}>
-                <List>
-                    {buttons.map(({name, icon, path}) => (
+            <Box sx={{ paddingLeft: "24px" }}>
+
+                <Box sx={{ display: 'flex' }}>
+                    <Box
+                        component="button"
+                        onClick={() => navigate('/')}
+                        sx={{
+                            backgroundImage: `url(${link})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundColor: 'transparent',
+                            margin: '20px 20px 20px auto',
+                            border: 'none',
+                            width: '20px',
+                            height: '20px',
+                            cursor: 'pointer',
+                            padding: 0,
+                        }}
+                    />
+                </Box>
+
+                <List disablePadding>
+                    {buttons.map(({ name, icon, path }) => (
                         <ListItem key={name} disablePadding>
                             <ListItemButton onClick={() => navigate(path)}
-                            sx={{
-                                transition: 'background-color 0.3s ease',
-                                '&:hover': {
-                                    backgroundColor: '#C7C7D3',
-                                }
-                            }}>
+                                sx={{
+                                    transition: 'background-color 0.3s ease',
+                                    '&:hover': {
+                                        backgroundColor: '#C7C7D3',
+                                    },
+                                    padding: "22px 12px"
+                                }}>
                                 <ListItemIcon>
-                                    <Box component="img" src={icon}/>
+                                    <Box component="img" src={icon} />
                                 </ListItemIcon>
-                                <ListItemText primary={name} primaryTypographyProps={{
-                                    variant: 'h3',
-                                }}/>
+                                <ListItemText primary={name} disableTypography sx={{fontSize:"16px", fontWeight:600}} />
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
-                <Divider sx={{ backgroundColor: 'black', height: '2px' }} />
+                <Divider sx={{ backgroundColor: 'black', height: '1px', marginTop: "24px" }} />
                 <Button sx={{
-                    margin: "16px 54px",
+                    margin: "30px 53px 60px",
                     height: "32px",
                     border: "1px solid black",
                     borderRadius: "10px",
-                    fontSize: "12px",
+                    fontSize: "14px",
                     fontWeight: 400,
-                    color: "black"
+                    color: "black",
+                    padding: "6px 12px",
+                    textTransform: "none"
                 }}>
-                    <Box component="img" src={createPlaylistImg} style={{paddingRight: "10px"}}/>
-                    Створити плейлист
+                    <Box component="img" src={createPlaylistImg} style={{ paddingRight: "10px" }} />
+                    Створити плейліст
                 </Button>
-                <MyPlaylistList/>
+                <MyPlaylistList />
             </Box>
         </Box>
     );

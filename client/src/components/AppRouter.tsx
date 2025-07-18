@@ -3,6 +3,7 @@ import {Routes, Route, Navigate} from "react-router-dom";
 import MainPage from "../pages/MainPage";
 import HelloPage from "../pages/HelloPage";
 import LibraryPage from '../pages/LibraryPage';
+import CategoryPage from '../pages/CategoryPage';
 
 const pages = [
     {
@@ -16,6 +17,10 @@ const pages = [
     {
         path: "/hello",
         Component: HelloPage,
+    },
+    {
+        path: "/category",
+        Component: CategoryPage,
     }
 ]
 

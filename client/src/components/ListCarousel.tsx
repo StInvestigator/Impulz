@@ -10,11 +10,12 @@ import playImage from "../images/play.svg";
 interface ListCarouselProps {
     title: string;
     font_size_title: number;
+    gap: number;
     count_items: number;
     children: ReactNode;
 }
 
-const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count_items, children }) => {
+const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title, gap ,count_items, children }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const firstItemRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +30,6 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
                 setContainerWidth(containerRef.current.offsetWidth);
             }
             if (firstItemRef.current) {
-                const gap = 16; // если gap: 2 в MUI (2 * 8px)
                 setItemWidth(firstItemRef.current.offsetWidth + gap);
             }
         };
@@ -107,7 +107,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title ,count
                         display: 'flex',
                         transition: 'transform 0.5s ease',
                         transform: `translateX(-${offset}px)`,
-                        gap: 3
+                        gap: `${gap}px`
                     }}
                 >
                     {React.Children.map(children, (child, index) => (

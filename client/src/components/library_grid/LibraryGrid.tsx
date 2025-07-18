@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 import bg1 from "../../images/library/library_bg1.png";
 
@@ -90,10 +91,16 @@ const Block = styled(Box)<BlockProps>(({ theme, image, align }) => ({
     color: 'Black'
 }));
 
-const LibraryGrid: React.FC = () => (
+
+const LibraryGrid = () => {
+
+    const navigate = useNavigate();
+
+    return (
     <GridContainer>
         {elements.map((elem, index) => (
             <GridItem
+                onClick={()=>navigate('/category?category='+elem.title)}
                 key={index}
                 colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
                 rowSpan={elem.height}
@@ -105,7 +112,7 @@ const LibraryGrid: React.FC = () => (
                 </Block>
             </GridItem>
         ))}
-    </GridContainer>
-);
+    </GridContainer>)
+};
 
 export default LibraryGrid;

@@ -6,11 +6,12 @@ import PublicPlaylistItem from "../items/PublicPlaylistItem";
 interface PlaylistListProps {
     playlists: string[];
     itemWidth: number;
+    name: string;
 }
 
-const RecommendTodayCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth}) => {
+const PlaylistCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth, name}) => {
     return (
-        <ListCarousel title={"Рекомендації за сьогодні"} font_size_title={24} count_items={playlists.length}>
+        <ListCarousel title={name} font_size_title={24} gap={24} count_items={playlists.length}>uselList.tsx
             {playlists.map((playlist, index) => (
                 <PublicPlaylistItem key={index} playlist={playlist} itemWidth={itemWidth} />
             ))}
@@ -18,4 +19,4 @@ const RecommendTodayCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth
     );
 };
 
-export default RecommendTodayCarouselList;
+export default PlaylistCarouselList;

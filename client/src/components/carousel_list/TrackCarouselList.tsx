@@ -10,7 +10,7 @@ interface TrackListProps {
 
 const TrackCarouselList: FC<TrackListProps> = ({ tracks, itemWidth }) => {
     return (
-        <ListCarousel title={"Хіти тижня"} gap={24} font_size_title={64} count_items={tracks.length}>
+        <ListCarousel title={"Хіти тижня"} font_size_title={64} count_items={tracks.length}>
             {tracks.map((track, index) => (
                 <TrackItem key={index} track={track} itemWidth={itemWidth} />
             ))}

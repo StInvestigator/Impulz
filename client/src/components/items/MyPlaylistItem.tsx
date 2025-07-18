@@ -34,15 +34,12 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                         >
                             <Box component="img" src={pushPinImage} />
                             <Typography
-                                variant="body2"
-                                color="black"
+                                variant="h4"
+                                color="text.secondary"
                                 ml={0.5}
                                 component="span"
                                 fontSize={12}
                             >
-
-
-
                                 Плейліст &middot; {countTracks} пісень
                             </Typography>
                         </Box>

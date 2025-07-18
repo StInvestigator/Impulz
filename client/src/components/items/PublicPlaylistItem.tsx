@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
-import {Box, Card, Typography} from "@mui/material";
+import {Box, Card, IconButton, Typography} from "@mui/material";
+import playImage from "../../images/play.svg";
 
 interface PlaylistItemProps {
     playlist: string;
@@ -8,27 +9,35 @@ interface PlaylistItemProps {
 
 const PublicPlaylistItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
     return (
-        <Card
+        <Box
             sx={{
-                minWidth: itemWidth,
+                width: itemWidth,
                 bgcolor: "#ABA5A5",
                 boxShadow: "none",
                 color: 'black',
                 flexShrink: 0,
             }}
         >
-            <Box width={itemWidth} height={itemWidth} bgcolor={"white"}>
-
+            <Box position={"relative"} width={itemWidth} height={itemWidth} bgcolor={"white"} borderRadius={"10px"}>
+                <IconButton sx={{
+                    padding: 0,
+                    position: "absolute",
+                    top: 80,
+                    left: 80,
+                }}>
+                    <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
+                         height={"30px"}/>
+                </IconButton>
             </Box>
             <Box mt={1}>
-                <Typography gutterBottom variant="h5" fontWeight={600} sx={{ color: "black", fontSize: "14px" }}>
+                <Typography gutterBottom variant="h3" fontWeight={600} sx={{ color: "black" }}>
                     {playlist}
                 </Typography>
-                <Typography variant="body2" fontWeight={400} sx={{ color: "black", fontSize: "12px" }}>
-                    Альбом - Rihana
+                <Typography variant="h4" fontWeight={400} sx={{ color: "black"}}>
+                    Альбом &middot; Rihana
                 </Typography>
             </Box>
-        </Card>
+        </Box>
     );
 };
 

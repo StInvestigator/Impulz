@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 import {Box, IconButton, Typography} from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import playImage from "../../images/play.svg";
+import medalImage from "../../images/medal.svg";
 
 interface TrackItemProps {
     track: string;
@@ -15,8 +16,9 @@ const TrackItem: FC<TrackItemProps> = ({itemWidth, track}) => {
                 width: itemWidth,
             }}
         >
-            <Box bgcolor="gray" width="100%" height="178px" borderRadius={"10px 10px 0 0"}>
-
+            <Box bgcolor="gray" width="100%" height="178px" borderRadius={"10px 10px 0 0"} position={"relative"}>
+                <Box component={"img"} position={"absolute"} right={10} top={10} src={medalImage} borderRadius={'50%'} width={"30px"}
+                     height={"30px"}/>
             </Box>
             <Box display={"flex"} justifyContent={"center"} alignItems={"center"} height={"88px"} bgcolor={"white"} px={1} borderRadius={"0 0 10px 10px"}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>

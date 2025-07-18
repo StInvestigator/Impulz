@@ -2,6 +2,7 @@ import React from 'react';
 import {Box, IconButton, Typography} from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import playImage from "../../images/play.svg";
+import pushPinImage from "../../images/pushPin.svg";
 
 const TopSelectionsItem = () => {
     return (
@@ -16,6 +17,7 @@ const TopSelectionsItem = () => {
                             Тіна Кароль
                         </Typography>
                         <Typography variant={"h4"}>
+                            <Box component="img" src={pushPinImage} mr={"5px"}/>
                             Виконавець
                         </Typography>
                     </Box>

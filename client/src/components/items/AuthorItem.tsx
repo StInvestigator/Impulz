@@ -30,10 +30,10 @@ const AuthorItem: FC<AuthorItemProps> = ({author, itemWidth}) => {
                 </IconButton>
             </Box>
             <Box textAlign={"center"} mt={1}>
-                <Typography gutterBottom variant="h5" fontWeight={600} sx={{ color: "black", fontSize: "14px" }}>
+                <Typography gutterBottom variant="h3">
                     {author}
                 </Typography>
-                <Typography variant="body2" fontWeight={400} sx={{ color: "black", fontSize: "12px" }}>
+                <Typography variant="h4">
                     Виконавець
                 </Typography>
             </Box>

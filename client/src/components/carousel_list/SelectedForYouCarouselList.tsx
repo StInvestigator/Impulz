@@ -10,7 +10,7 @@ interface PlaylistListProps {
 
 const SelectedForYouCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth}) => {
     return (
-        <ListCarousel title={"Перегляньте підібране для вас"} font_size_title={24} count_items={playlists.length}>
+        <ListCarousel title={"Перегляньте підібране для вас"} font_size_title={24} gap={24} count_items={playlists.length}>
             {playlists.map((playlist, index) => (
                 <PublicPlaylistItem key={index} playlist={playlist} itemWidth={itemWidth} />
             ))}

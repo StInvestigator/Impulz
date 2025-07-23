@@ -58,6 +58,7 @@ const Navbar = memo(() => {
                         <Typography variant={"mainSbL"} textTransform={"none"}>
                             {t("login")}
                         </Typography>
+
                     </Button>
                 </Box>
             </Toolbar>

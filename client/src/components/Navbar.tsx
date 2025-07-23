@@ -1,15 +1,13 @@
 import React from 'react';
 import {AppBar, Box, Button, Link, OutlinedInput, Toolbar, IconButton} from "@mui/material";
+import LanguageIcon from '@mui/icons-material/Language';
 import SearchIcon from '@mui/icons-material/Search';
 import {useNavigate} from "react-router-dom";
 import frame from '../images/logo.svg'
-import Dropdown from "./Dropdown";
-import {useTranslation} from "react-i18next";
 
 
 const Navbar = () => {
     const navigate = useNavigate()
-    const { t } = useTranslation("navbar");
 
     const linkStyles = {
         display: "flex",
@@ -33,7 +31,7 @@ const Navbar = () => {
                         <Box component="img" src={frame} alt="Impulz"/>
                     </IconButton>
                     <Box component="form" sx={{width: "450px", display: "flex", position: "relative"}}>
-                        <OutlinedInput placeholder={t("search")} sx={{width: "450px", backgroundColor: "#D9D9D9", borderRadius: "10px"}}/>
+                        <OutlinedInput placeholder="Пошук треків, альбомів, виконавців" sx={{width: "450px", backgroundColor: "#D9D9D9", borderRadius: "10px"}}/>
                         <IconButton sx={{width: "53px", height: "30px", backgroundColor: "white", borderRadius: "10px", position: "absolute", right: "0"}}>
                             <SearchIcon />
                         </IconButton>
@@ -45,9 +43,12 @@ const Navbar = () => {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <Dropdown/>
+                    <Link href="#" sx={linkStyles}>
+                        <LanguageIcon sx={{marginRight: "6px", width: "20px", height: "20px"}}/>
+                        Українська
+                    </Link>
                     <Link href="#" sx={{...linkStyles, color: "#D9DADC"}}>
-                        {t("registration")}
+                        Зареєструватися
                     </Link>
                     <Button sx={{
                         backgroundColor: "#D9D9D9",
@@ -57,9 +58,7 @@ const Navbar = () => {
                         padding: "7px 15px",
                         fontFamily: 'Work Sans, sans-serif',
                         fontWeight: 600,
-                    }}>
-                        {t("login")}
-                    </Button>
+                    }}>Увійти</Button>
                 </Box>
             </Toolbar>
         </AppBar>

@@ -3,7 +3,6 @@ import {Box, Button, Typography} from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 
 import {useEffect} from 'react';
-
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";

@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
-import TrackItem from "../items/TrackItem";
-import { Box } from "@mui/material";
-import ListCarousel from "../ListCarousel";
+import type {FC} from "react";
+import TrackItem from "../items/TrackItem.tsx";
+import ListCarousel from "../ListCarousel.tsx";
 
 interface TrackListProps {
     tracks: string[];

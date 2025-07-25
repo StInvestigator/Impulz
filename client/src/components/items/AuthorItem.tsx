@@ -1,6 +1,6 @@
-import React, {FC} from 'react';
+import type {FC} from "react";
 import {Box, Card, IconButton, Typography} from "@mui/material";
-import playImage from "../../images/play.svg";
+import playImage from "../../assets/play.svg";
 
 interface AuthorItemProps {
     author: string;

@@ -1,7 +1,6 @@
-import React, {FC} from 'react';
-import TrackItem from "../items/TrackItem";
-import ListCarousel from "../ListCarousel";
-import AuthorItem from "../items/AuthorItem";
+import ListCarousel from "../ListCarousel.tsx";
+import AuthorItem from "../items/AuthorItem.tsx";
+import type {FC} from "react";
 
 interface AuthorListProps {
     authors: string[];

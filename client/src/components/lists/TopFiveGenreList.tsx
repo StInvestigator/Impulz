@@ -1,6 +1,5 @@
-import React from 'react';
 import {Box, Typography} from "@mui/material";
-import TopFiveGenreItem from "../items/TopFiveGenreItem";
+import TopFiveGenreItem from "../items/TopFiveGenreItem.tsx";
 
 const top_5_genres = [
     "Інструментальна музика",

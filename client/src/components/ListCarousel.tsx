@@ -1,10 +1,7 @@
-import React, { ReactNode, useRef, useState, useEffect } from 'react';
 import {Box, Button, IconButton, Typography} from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import arrowLeftImg from "../images/arrow/arrowLeft.svg"
-import arrowRightImg from "../images/arrow/arrowRight.svg"
-import playImage from "../images/play.svg";
+import arrowLeftImg from "../assets/arrow/arrowLeft.svg"
+import arrowRightImg from "../assets/arrow/arrowRight.svg"
+import {type ReactNode, type FC, useRef, useState, useEffect, Children} from "react";
 
 
 interface ListCarouselProps {
@@ -15,7 +12,7 @@ interface ListCarouselProps {
     children: ReactNode;
 }
 
-const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title, gap ,count_items, children }) => {
+const ListCarousel: FC<ListCarouselProps> = ({title,font_size_title, gap ,count_items, children }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const firstItemRef = useRef<HTMLDivElement>(null);
 
@@ -110,7 +107,7 @@ const ListCarousel: React.FC<ListCarouselProps> = ({title,font_size_title, gap ,
                         gap: `${gap}px`
                     }}
                 >
-                    {React.Children.map(children, (child, index) => (
+                    {Children.map(children, (child, index) => (
                         <Box ref={index === 0 ? firstItemRef : null}>
                             {child}
                         </Box>

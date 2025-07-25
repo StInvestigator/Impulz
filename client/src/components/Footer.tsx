@@ -1,8 +1,7 @@
-import React from 'react';
 import {Box, IconButton, Link, Typography} from "@mui/material";
-import instagramImage from "../images/footer/instagram.svg"
-import twitterImage from "../images/footer/twitter.svg"
-import facebookImage from "../images/footer/facebook.svg"
+import instagramImage from "../assets/footer/instagram.svg"
+import twitterImage from "../assets/footer/twitter.svg"
+import facebookImage from "../assets/footer/facebook.svg"
 
 
 const Footer = () => {

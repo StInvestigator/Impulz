@@ -1,8 +1,7 @@
-import React, {FC} from 'react';
+import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import playImage from "../../images/play.svg";
-import medalImage from "../../images/medal.svg";
+import playImage from "../../assets/play.svg";
+import medalImage from "../../assets/medal.svg";
 
 interface TrackItemProps {
     track: string;

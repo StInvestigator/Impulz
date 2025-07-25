@@ -1,9 +1,8 @@
-import React from 'react';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-import bg1 from "../../images/library/library_bg1.png";
+import bg1 from "../../assets/library/library_bg1.png";
 
 type Element = {
     title: string;

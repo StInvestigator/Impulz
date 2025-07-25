@@ -1,9 +1,8 @@
-import React from 'react';
 import {Routes, Route, Navigate} from "react-router-dom";
-import MainPage from "../pages/MainPage";
-import HelloPage from "../pages/HelloPage";
-import LibraryPage from '../pages/LibraryPage';
-import CategoryPage from '../pages/CategoryPage';
+import MainPage from "../pages/MainPage.tsx";
+import HelloPage from "../pages/HelloPage.tsx";
+import LibraryPage from '../pages/LibraryPage.tsx';
+import CategoryPage from '../pages/CategoryPage.tsx';
 
 const pages = [
     {

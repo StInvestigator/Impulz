@@ -1,6 +1,5 @@
-import React from 'react';
 import {Box} from "@mui/material";
-import mainImage from "../images/mainImage.svg"
+import mainImage from "../assets/mainImage.svg"
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";

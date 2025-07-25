@@ -1,9 +1,6 @@
-import React from 'react';
-import {List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import playlistImage from "../../images/sidebar/playlistImage.svg"
-import MyPlaylistItem from "../items/MyPlaylistItem";
+import {List} from "@mui/material";
+import playlistImage from "../../assets/sidebar/playlistImage.svg"
+import MyPlaylistItem from "../items/MyPlaylistItem.tsx";
 
 const MyPlaylistList = () => {
     return (

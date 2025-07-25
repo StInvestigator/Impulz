@@ -1,7 +1,6 @@
-import React, {FC} from 'react';
-import AuthorItem from "../items/AuthorItem";
-import ListCarousel from "../ListCarousel";
-import PublicPlaylistItem from "../items/PublicPlaylistItem";
+import type {FC} from "react";
+import ListCarousel from "../ListCarousel.tsx";
+import PublicPlaylistItem from "../items/PublicPlaylistItem.tsx";
 
 interface PlaylistListProps {
     playlists: string[];

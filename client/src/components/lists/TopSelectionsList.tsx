@@ -1,5 +1,4 @@
-import React from 'react';
-import TopSelectionsItem from "../items/TopSelectionsItem";
+import TopSelectionsItem from "../items/TopSelectionsItem.tsx";
 
 const top_5_genres = [
     "1",

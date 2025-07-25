@@ -1,6 +1,6 @@
-import React, {FC} from 'react';
+import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
-import diskImage from "../../images/disk.svg"
+import diskImage from "../../assets/disk.svg"
 
 interface GenreItemProps {
     genre: string;

@@ -1,6 +1,5 @@
-import React from 'react';
 import {Box, Button, Typography} from "@mui/material";
-import TopSelectionsList from "./lists/TopSelectionsList";
+import TopSelectionsList from "./lists/TopSelectionsList.tsx";
 
 const TopSelections = () => {
     return (

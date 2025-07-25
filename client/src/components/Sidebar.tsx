@@ -1,28 +1,22 @@
-import React from 'react';
 import {
     Box,
     Button,
-    Divider,
-    Drawer, Icon,
+    Divider, IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Toolbar
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import mainImg from "../images/sidebar/main.svg"
-import libraryImg from "../images/sidebar/library.svg"
-import downloadImg from "../images/sidebar/download.svg"
-import subscriptionImg from "../images/sidebar/subscription.svg"
-import link from "../images/sidebar/link.svg"
-import createPlaylistImg from "../images/sidebar/createPlaylist.svg"
-import MyPlaylistList from "./lists/MyPlaylistList";
+import mainImg from "../assets/sidebar/main.svg"
+import libraryImg from "../assets/sidebar/library.svg"
+import downloadImg from "../assets/sidebar/download.svg"
+import subscriptionImg from "../assets/sidebar/subscription.svg"
+import link from "../assets/sidebar/link.svg"
+import createPlaylistImg from "../assets/sidebar/createPlaylist.svg"
+import MyPlaylistList from "./lists/MyPlaylistList.tsx";
 
-import { redirect, useNavigate } from 'react-router-dom';
-import { Image } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const buttons = [
     {
@@ -67,14 +61,9 @@ const Sidebar = () => {
             <Box sx={{ paddingLeft: "24px" }}>
 
                 <Box sx={{ display: 'flex' }}>
-                    <Box
-                        component="button"
+                    <IconButton
                         onClick={() => navigate('/')}
                         sx={{
-                            backgroundImage: `url(${link})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            backgroundColor: 'transparent',
                             margin: '20px 20px 20px auto',
                             border: 'none',
                             width: '20px',
@@ -82,7 +71,9 @@ const Sidebar = () => {
                             cursor: 'pointer',
                             padding: 0,
                         }}
-                    />
+                    >
+                        <Box component={"img"} src={link}/>
+                    </IconButton>
                 </Box>
 
                 <List disablePadding>

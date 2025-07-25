@@ -1,13 +1,12 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 header, aside{
-  font-family: "Work Sans", sans-serif;
+    font-family: "Work Sans", sans-serif;
 }
 
 article {
-  font-family: "Manrope", sans-serif;
+    font-family: "Manrope", sans-serif;
 }
-

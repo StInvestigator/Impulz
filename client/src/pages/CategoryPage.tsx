@@ -1,10 +1,8 @@
-import React, { FC } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
-import CircleImg from '../images/category/Circle.svg'
+import { Box } from "@mui/material";
+import CircleImg from '../assets/category/Circle.svg'
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
-import PlaylistCarouselList from "../components/carousel_list/PlaylistCarouselList";
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -22,13 +20,13 @@ const authors = [
     'Автор 15', 'Автор 16'
 ];
 
-const playlist = [
-    'Плейлист 1', 'Плейлист 2', 'Плейлист 3',
-    'Плейлист 4', 'Плейлист 5', 'Плейлист 6',
-    'Плейлист 7', 'Плейлист 8', 'Плейлист 9', 'Плейлист 10', 'Плейлист 11',
-    'Плейлист 12', 'Плейлист 13', 'Плейлист 14',
-    'Плейлист 15', 'Плейлист 16'
-];
+// const playlist = [
+//     'Плейлист 1', 'Плейлист 2', 'Плейлист 3',
+//     'Плейлист 4', 'Плейлист 5', 'Плейлист 6',
+//     'Плейлист 7', 'Плейлист 8', 'Плейлист 9', 'Плейлист 10', 'Плейлист 11',
+//     'Плейлист 12', 'Плейлист 13', 'Плейлист 14',
+//     'Плейлист 15', 'Плейлист 16'
+// ];
 
 const CategoryPage = () => {
     const [searchParams] = useSearchParams();

@@ -3,6 +3,7 @@ import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
 import LibraryPage from '../pages/LibraryPage.tsx';
 import CategoryPage from '../pages/CategoryPage.tsx';
+import AuthorPage from "../pages/AuthorPage.tsx";
 
 const pages = [
     {
@@ -20,6 +21,10 @@ const pages = [
     {
         path: "/category",
         Component: CategoryPage,
+    },
+    {
+        path: "/author/:name",
+        Component: AuthorPage,
     }
 ]
 

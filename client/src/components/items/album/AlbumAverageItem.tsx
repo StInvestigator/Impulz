@@ -1,29 +1,27 @@
-import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
-import playImage from "../../assets/play.svg";
-import medalImage from "../../assets/medal.svg";
+import playImage from "../../../assets/play.svg";
+import type {FC} from "react";
 
-interface TrackItemProps {
-    track: string;
-    itemWidth: number;
+interface AlbumItemProps {
+    album: string;
+    itemHeight: number;
 }
 
-const TrackItem: FC<TrackItemProps> = ({itemWidth, track}) => {
+const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
     return (
         <Box
             sx={{
-                width: itemWidth,
+                width: "100%",
             }}
         >
-            <Box bgcolor="gray" width="100%" height="178px" borderRadius={"10px 10px 0 0"} position={"relative"}>
-                <Box component={"img"} position={"absolute"} right={10} top={10} src={medalImage} borderRadius={'50%'} width={"30px"}
-                     height={"30px"}/>
+            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative"}>
+
             </Box>
-            <Box display={"flex"} justifyContent={"center"} alignItems={"center"} height={"88px"} bgcolor={"white"} px={1} borderRadius={"0 0 10px 10px"}>
+            <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
                     <Box>
                         <Typography variant={"h3"} gutterBottom sx={{ color: "black"}}>
-                            {track}
+                            {album}
                         </Typography>
                         <Typography variant={"h4"} sx={{ color: "black"}}>
                             Альбом &middot; Rihana
@@ -39,4 +37,4 @@ const TrackItem: FC<TrackItemProps> = ({itemWidth, track}) => {
     );
 };
 
-export default TrackItem;
+export default AlbumAverageItem;

@@ -37,7 +37,7 @@ const MainPage = () => {
         <>
             <Box component={"img"} src={mainImage} width={"100%"}/>
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                <TrackBigCarouselList tracks={tracks} itemWidth={200} name='Хіти тижня'/>
+                <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} name='Хіти тижня'/>
                 <GenreList/>
             </Box>
             <Box component={"section"} mt={"60px"}>

@@ -26,22 +26,18 @@ const AdminGuard = ({ children } : PropsWithChildren) : ReactElement => {
 
     return <>{children}</>;
 };
-
-const routes = [
+const pages = [
     {
         path: "/",
-        element: <MainPage />,
-        isAdmin: false
-    },
-    {
-        path: "/hello",
-        element: <HelloPage />,
-        isAdmin: false
+        Component: MainPage,
     },
     {
         path: "/library",
-        element: <LibraryPage />,
-        isAdmin: false
+        Component: LibraryPage,
+    },
+    {
+        path: "/hello",
+        Component: HelloPage,
     },
     {
         path: "/category",
@@ -63,27 +59,15 @@ const routes = [
         path: "/allTopSelections",
         Component: TopSelectionsPage,
     }
-];
+]
 
 const AppRouter = () => {
+
     return (
         <Routes>
-            {routes.map((route) => {
-                let element = route.element;
-
-                if (route.isAdmin) {
-                    element = <AdminGuard>{route.element}</AdminGuard>;
-                }
-
-                return (
-                    <Route
-                        key={route.path}
-                        path={route.path}
-                        element={element}
-                    />
-                );
-            })}
-
+            {pages.map(({path, Component}) =>
+                <Route key={path} path={path} Component={Component}/>
+            )}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

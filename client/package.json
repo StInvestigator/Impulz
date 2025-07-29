@@ -18,12 +18,14 @@
     "@types/keycloak-js": "^2.5.4",
     "http-proxy-middleware": "^2.0.6",
     "keycloak-js": "^26.2.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "i18next": "^25.3.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^15.6.1",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.7.0"
   },
   "devDependencies": {

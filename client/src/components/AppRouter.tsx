@@ -1,10 +1,11 @@
 import React, {PropsWithChildren, ReactElement, ReactNode} from 'react';
-import { Routes, Route, Navigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
-import MainPage from "../pages/MainPage";
-import HelloPage from "../pages/HelloPage";
-import LibraryPage from '../pages/LibraryPage';
-import CategoryPage from '../pages/CategoryPage';
+import {Routes, Route, Navigate} from "react-router-dom";
+import MainPage from "../pages/MainPage.tsx";
+import HelloPage from "../pages/HelloPage.tsx";
+import LibraryPage from '../pages/LibraryPage.tsx';
+import CategoryPage from '../pages/CategoryPage.tsx';
+import AuthorPage from "../pages/AuthorPage.tsx";
 
 
 const AdminGuard = ({ children } : PropsWithChildren) : ReactElement => {
@@ -21,54 +22,36 @@ const AdminGuard = ({ children } : PropsWithChildren) : ReactElement => {
 
     return <>{children}</>;
 };
-
-const routes = [
+const pages = [
     {
         path: "/",
-        element: <MainPage />,
-        isAdmin: false
-    },
-    {
-        path: "/hello",
-        element: <HelloPage />,
-        isAdmin: false
+        Component: MainPage,
     },
     {
         path: "/library",
-        element: <LibraryPage />,
-        isAdmin: false
+        Component: LibraryPage,
+    },
+    {
+        path: "/hello",
+        Component: HelloPage,
     },
     {
         path: "/category",
-        element: <CategoryPage />,
-        isAdmin: false
+        Component: CategoryPage,
     },
     {
-        path: "/subscriptions",
-        element: <LibraryPage/>,
-        isAdmin: true
+        path: "/allAuthors",
+        Component: AuthorPage,
     }
-];
+]
 
 const AppRouter = () => {
+
     return (
         <Routes>
-            {routes.map((route) => {
-                let element = route.element;
-
-                if (route.isAdmin) {
-                    element = <AdminGuard>{route.element}</AdminGuard>;
-                }
-
-                return (
-                    <Route
-                        key={route.path}
-                        path={route.path}
-                        element={element}
-                    />
-                );
-            })}
-
+            {pages.map(({path, Component}) =>
+                <Route key={path} path={path} Component={Component}/>
+            )}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

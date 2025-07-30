@@ -16,7 +16,6 @@ CREATE TABLE authors (
 
 CREATE TABLE albums (
                         id SERIAL PRIMARY KEY,
-                        author_id INT REFERENCES authors (user_id) ON DELETE SET NULL,
                         title VARCHAR(200) NOT NULL,
                         release_date DATE,
                         image_url TEXT,
@@ -59,6 +58,12 @@ CREATE TABLE track_authors (
                                track_id  INT REFERENCES tracks  (id) ON DELETE CASCADE,
                                author_id INT REFERENCES authors (user_id) ON DELETE CASCADE,
                                PRIMARY KEY (track_id, author_id)
+);
+
+CREATE TABLE album_authors (
+                               album_id  INT REFERENCES albums  (id) ON DELETE CASCADE,
+                               author_id INT REFERENCES authors (user_id) ON DELETE CASCADE,
+                               PRIMARY KEY (album_id, author_id)
 );
 
 CREATE TABLE playlists (

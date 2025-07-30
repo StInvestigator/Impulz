@@ -1,7 +1,0 @@
-package com.example.server.data.repository;
-
-import com.example.server.model.Playlist;
-import com.example.server.model.Track;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface TrackRepository extends JpaRepository<Track, Long> { }

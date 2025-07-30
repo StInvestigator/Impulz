@@ -5,18 +5,6 @@ spring:
     resources:
       static-locations: classpath:/static/
       add-mappings: true
-
-  datasource:
-    url: jdbc:postgresql://localhost:5435/impulz
-    username: root
-    password: root
-    driver-class-name: org.postgresql.Driver
-
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    locations: classpath:db/migration
-
   security:
     oauth2:
       resourceserver:
@@ -49,5 +37,3 @@ server:
 logging:
   level:
     org.springframework.security: TRACE
-
-

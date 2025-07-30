@@ -14,7 +14,7 @@ import java.util.Set;
 public class Author {
     @Id
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")

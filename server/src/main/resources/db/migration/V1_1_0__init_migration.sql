@@ -8,7 +8,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE authors (
-                         user_id INT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
+                         user_id BIGINT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
                          bio TEXT,
                          created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                          followers_count BIGINT NOT NULL DEFAULT 0
@@ -24,7 +24,7 @@ CREATE TABLE albums (
 
 CREATE TABLE tracks (
                         id SERIAL PRIMARY KEY,
-                        album_id INT REFERENCES albums (id) ON DELETE SET NULL,
+                        album_id BIGINT REFERENCES albums (id) ON DELETE SET NULL,
                         title VARCHAR(200) NOT NULL,
                         duration_sec INT NOT NULL,
                         file_url TEXT NOT NULL,
@@ -39,14 +39,14 @@ CREATE TABLE genres (
 );
 
 CREATE TABLE track_genres (
-                              track_id INT REFERENCES tracks (id) ON DELETE CASCADE,
-                              genre_id INT REFERENCES genres (id) ON DELETE CASCADE,
+                              track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
+                              genre_id BIGINT REFERENCES genres (id) ON DELETE CASCADE,
                               PRIMARY KEY (track_id, genre_id)
 );
 
 CREATE TABLE subtitles (
                            id SERIAL PRIMARY KEY,
-                           track_id INT REFERENCES tracks (id) ON DELETE CASCADE,
+                           track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
                            start_time_ms INT NOT NULL,
                            end_time_ms INT NOT NULL,
                            text TEXT NOT NULL
@@ -55,20 +55,20 @@ CREATE TABLE subtitles (
 CREATE INDEX idx_subtitles_track_time ON subtitles (track_id, start_time_ms, end_time_ms);
 
 CREATE TABLE track_authors (
-                               track_id  INT REFERENCES tracks  (id) ON DELETE CASCADE,
-                               author_id INT REFERENCES authors (user_id) ON DELETE CASCADE,
+                               track_id  BIGINT REFERENCES tracks  (id) ON DELETE CASCADE,
+                               author_id BIGINT REFERENCES authors (user_id) ON DELETE CASCADE,
                                PRIMARY KEY (track_id, author_id)
 );
 
 CREATE TABLE album_authors (
-                               album_id  INT REFERENCES albums  (id) ON DELETE CASCADE,
-                               author_id INT REFERENCES authors (user_id) ON DELETE CASCADE,
+                               album_id  BIGINT REFERENCES albums  (id) ON DELETE CASCADE,
+                               author_id BIGINT REFERENCES authors (user_id) ON DELETE CASCADE,
                                PRIMARY KEY (album_id, author_id)
 );
 
 CREATE TABLE playlists (
                            id SERIAL PRIMARY KEY,
-                           owner_id INT REFERENCES users (id) ON DELETE CASCADE,
+                           owner_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
                            title VARCHAR(200) NOT NULL,
                            is_public BOOLEAN DEFAULT FALSE,
                            image_url TEXT,
@@ -76,23 +76,23 @@ CREATE TABLE playlists (
 );
 
 CREATE TABLE playlist_tracks (
-                                 playlist_id INT REFERENCES playlists (id) ON DELETE CASCADE,
-                                 track_id INT REFERENCES tracks (id) ON DELETE CASCADE,
+                                 playlist_id BIGINT REFERENCES playlists (id) ON DELETE CASCADE,
+                                 track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
                                  position INT NOT NULL,
                                  PRIMARY KEY (playlist_id, track_id)
 );
 
 CREATE TABLE author_followers (
-                                  author_id INT REFERENCES authors (user_id) ON DELETE CASCADE,
-                                  follower_id INT REFERENCES users (id) ON DELETE CASCADE,
+                                  author_id BIGINT REFERENCES authors (user_id) ON DELETE CASCADE,
+                                  follower_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
                                   followed_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                   PRIMARY KEY (author_id, follower_id)
 );
 
 CREATE TABLE track_plays (
                              id BIGSERIAL PRIMARY KEY,
-                             track_id INT REFERENCES tracks (id) ON DELETE CASCADE,
-                             user_id INT REFERENCES users (id) ON DELETE SET NULL,
+                             track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
+                             user_id BIGINT REFERENCES users (id) ON DELETE SET NULL,
                              played_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
@@ -135,8 +135,8 @@ INSERT INTO roles (name) VALUES
                              ('MODERATOR');
 
 CREATE TABLE user_roles (
-                            user_id INT REFERENCES users(id)     ON DELETE CASCADE,
-                            role_id INT REFERENCES roles(id)     ON DELETE CASCADE,
+                            user_id BIGINT REFERENCES users(id)     ON DELETE CASCADE,
+                            role_id BIGINT REFERENCES roles(id)     ON DELETE CASCADE,
                             PRIMARY KEY (user_id, role_id)
 );
 
@@ -170,15 +170,15 @@ CREATE TRIGGER trg_dec_author_followers
 
 
 CREATE TABLE user_favorite_playlists (
-                                         user_id     INT REFERENCES users     (id) ON DELETE CASCADE,
-                                         playlist_id INT REFERENCES playlists (id) ON DELETE CASCADE,
+                                         user_id     BIGINT REFERENCES users     (id) ON DELETE CASCADE,
+                                         playlist_id BIGINT REFERENCES playlists (id) ON DELETE CASCADE,
                                          added_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                          PRIMARY KEY (user_id, playlist_id)
 );
 
 CREATE TABLE user_favorite_albums (
-                                      user_id  INT REFERENCES users  (id) ON DELETE CASCADE,
-                                      album_id INT REFERENCES albums (id) ON DELETE CASCADE,
+                                      user_id  BIGINT REFERENCES users  (id) ON DELETE CASCADE,
+                                      album_id BIGINT REFERENCES albums (id) ON DELETE CASCADE,
                                       added_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                       PRIMARY KEY (user_id, album_id)
 );

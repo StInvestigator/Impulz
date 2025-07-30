@@ -10,12 +10,12 @@ import java.util.Objects;
 @Embeddable
 public class AuthorFollowerKey implements Serializable {
     @Column(name = "author_id")
-    private Integer authorId;
+    private Long authorId;
     @Column(name = "follower_id")
-    private Integer followerId;
+    private Long followerId;
 
     public AuthorFollowerKey() {}
-    public AuthorFollowerKey(Integer authorId, Integer followerId) {
+    public AuthorFollowerKey(Long authorId, Long followerId) {
         this.authorId = authorId;
         this.followerId = followerId;
     }

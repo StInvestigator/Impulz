@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "tracks")
 public class Track {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;

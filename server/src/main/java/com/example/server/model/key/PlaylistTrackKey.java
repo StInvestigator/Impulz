@@ -10,12 +10,12 @@ import java.util.Objects;
 @Embeddable
 public class PlaylistTrackKey implements Serializable {
     @Column(name = "playlist_id")
-    private Integer playlistId;
+    private Long playlistId;
     @Column(name = "track_id")
-    private Integer trackId;
+    private Long trackId;
 
     public PlaylistTrackKey() {}
-    public PlaylistTrackKey(Integer playlistId, Integer trackId) {
+    public PlaylistTrackKey(Long playlistId, Long trackId) {
         this.playlistId = playlistId;
         this.trackId = trackId;
     }

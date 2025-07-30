@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "playlists")
 public class Playlist {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Integer id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @ManyToOne @JoinColumn(name = "owner_id", nullable = false) private User owner;
     @Column(nullable = false, length = 200) private String title;
     @Column(name = "is_public") private Boolean isPublic;

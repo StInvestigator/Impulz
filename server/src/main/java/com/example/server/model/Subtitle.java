@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "subtitles")
 public class Subtitle {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "track_id", nullable = false)
     private Track track;

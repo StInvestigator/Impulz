@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "albums")
 public class Album {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @ManyToMany
     @JoinTable(
             name = "album_authors",

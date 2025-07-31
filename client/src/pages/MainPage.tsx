@@ -41,7 +41,7 @@ const MainPage = () => {
 
     return (
         <>
-            <Box component={"img"} src={mainImage} width={"100%"}/>
+            <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"}/>
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
                 <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")}/>
                 <GenreList/>

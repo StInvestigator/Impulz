@@ -28,12 +28,12 @@ const buttons = [
     {
         name: "button-library",
         icon: libraryImg,
-        path: "/library"
+        path: "/library",
     },
     {
         name: "button-download",
         icon: downloadImg,
-        path: "/downloads"
+        path: "/downloads",
     },
     {
         name: "button-subscribe",

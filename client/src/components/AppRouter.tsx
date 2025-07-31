@@ -1,3 +1,4 @@
+
 import {Routes, Route, Navigate} from "react-router-dom";
 import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
@@ -7,19 +8,40 @@ import ProfilePage from "../pages/ProfilePage.tsx";
 import AlbumColaborationPlaylistPage from "../pages/AlbumColaborationPlaylistPage.tsx";
 import AuthorPage from "../pages/AuthorPage.tsx";
 import TopSelectionsPage from "../pages/TopSelectionsPage.tsx";
+import React, {PropsWithChildren, ReactElement, ReactNode} from 'react';
+import { useKeycloak } from "@react-keycloak/web";
 
-const pages = [
+
+const AdminGuard = ({ children } : PropsWithChildren) : ReactElement => {
+    const { keycloak } = useKeycloak();
+
+    if (!keycloak.hasRealmRole('admin')) {
+        return (
+            <div style={{ padding: 20 }}>
+                <h3>Доступ запрещён</h3>
+                <p>Требуется роль администратора</p>
+            </div>
+        );
+    }
+
+    return <>{children}</>;
+};
+
+const routes = [
     {
         path: "/",
-        Component: MainPage,
-    },
-    {
-        path: "/library",
-        Component: LibraryPage,
+        element: <MainPage />,
+        isAdmin: false
     },
     {
         path: "/hello",
-        Component: HelloPage,
+        element: <HelloPage />,
+        isAdmin: false
+    },
+    {
+        path: "/library",
+        element: <LibraryPage />,
+        isAdmin: false
     },
     {
         path: "/category",
@@ -41,15 +63,27 @@ const pages = [
         path: "/allTopSelections",
         Component: TopSelectionsPage,
     }
-]
+];
 
 const AppRouter = () => {
-
     return (
         <Routes>
-            {pages.map(({path, Component}) =>
-                <Route key={path} path={path} Component={Component}/>
-            )}
+            {routes.map((route) => {
+                let element = route.element;
+
+                if (route.isAdmin) {
+                    element = <AdminGuard>{route.element}</AdminGuard>;
+                }
+
+                return (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={element}
+                    />
+                );
+            })}
+
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

@@ -45,7 +45,7 @@ const CategoryPage = () => {
                 alignItems="center"
                 position="relative"
             >
-                <Box component="img" src={CircleImg} />
+                <Box component="img" src={CircleImg} draggable={"false"}/>
                 <Box
                     position="absolute"
                     bottom={0}

@@ -33,12 +33,12 @@ const buttons = [
     {
         name: "Бібліотека",
         icon: libraryImg,
-        path: "/library"
+        path: "/library",
     },
     {
         name: "Завантажити",
         icon: downloadImg,
-        path: "/downloads"
+        path: "/downloads",
     },
     {
         name: "Підписка",

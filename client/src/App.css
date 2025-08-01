@@ -10,3 +10,8 @@ header, aside{
 article {
     font-family: "Manrope", sans-serif;
 }
+
+img {
+    -webkit-user-drag: none;
+    user-select: none;
+}

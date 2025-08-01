@@ -1,5 +1,6 @@
 import {Box, Button, Typography} from "@mui/material";
 import AlbumAverageItem from "../items/album/AlbumAverageItem.tsx";
+import { useTranslation } from 'react-i18next';
 
 const albums = [
     "Альбом 1",
@@ -10,11 +11,14 @@ const albums = [
 ]
 
 const AlbumList = () => {
+    
+    const { t } = useTranslation('authorPage')
+
     return (
         <Box width={"100%"}>
             <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
                 <Typography variant={"h2"} fontSize={"24px"}>
-                    Альбоми
+                    {t("title-albums")}
                 </Typography>
                 <Button sx={{
                     height: "32px",
@@ -25,7 +29,7 @@ const AlbumList = () => {
                     color: "black",
                     textTransform: "none"
                 }}>
-                    Дивитись всі
+                    {t("button-watch-all")}
                 </Button>
             </Box>
             <Box display={"flex"} marginTop={"20px"} gap={3}>

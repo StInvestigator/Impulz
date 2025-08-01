@@ -1,7 +1,8 @@
-import type {FC} from "react";
+import {type FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import {useNavigate} from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 interface AuthorItemProps {
     author: string;
@@ -10,6 +11,8 @@ interface AuthorItemProps {
 
 const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth}) => {
     const navigate = useNavigate()
+
+    const { t } = useTranslation('other')
 
     return (
         <Box
@@ -44,12 +47,12 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth}) => {
                          height={"30px"}/>
                 </IconButton>
             </Box>
-            <Box textAlign={"center"} mt={1}>
-                <Typography gutterBottom variant="h3">
+            <Box display="flex" flexDirection="column" flexGrow={1} textAlign={"center"} mt={1}>
+                <Typography gutterBottom variant="mainSbL">
                     {author}
                 </Typography>
-                <Typography variant="h4">
-                    Виконавець
+                <Typography variant="mainRM">
+                    {t("title-author")}
                 </Typography>
             </Box>
         </Box>

@@ -1,6 +1,7 @@
 import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../assets/play.svg";
+import { useTranslation } from 'react-i18next';
 
 interface PlaylistItemProps {
     playlist: string;
@@ -8,6 +9,9 @@ interface PlaylistItemProps {
 }
 
 const PublicPlaylistItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
+
+    const { t } = useTranslation('other')
+
     return (
         <Box
             sx={{
@@ -29,12 +33,12 @@ const PublicPlaylistItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
                          height={"30px"}/>
                 </IconButton>
             </Box>
-            <Box mt={1}>
-                <Typography gutterBottom variant="h3" fontWeight={600} sx={{ color: "black" }}>
+            <Box display="flex" flexDirection="column" flexGrow={1} mt={1}>
+                <Typography gutterBottom variant="mainSbL">
                     {playlist}
                 </Typography>
-                <Typography variant="h4" fontWeight={400} sx={{ color: "black"}}>
-                    Альбом &middot; Rihana
+                <Typography variant="mainRM">
+                    {t("title-album")} &middot; Rihana
                 </Typography>
             </Box>
         </Box>

@@ -1,6 +1,7 @@
 import type {FC} from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import pushPinImage from "../../assets/pushPin.svg"
+import { useTranslation } from 'react-i18next';
 
 interface PlaylistProps {
     image: string,
@@ -9,6 +10,9 @@ interface PlaylistProps {
 }
 
 const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
+
+    const { t } = useTranslation('other')
+    
     return (
         <ListItem disablePadding>
             <ListItemButton sx={{
@@ -36,10 +40,9 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                                 color="black"
                                 ml={0.5}
                                 component="span"
-                                fontSize={12}
-                                fontWeight={400}
+                                variant={"mainRM"}
                             >
-                                плейліст &middot; {countTracks} пісень
+                                {t("title-playlist")} &middot; {countTracks} {t("title-song")}
                             </Typography>
                         </Box>
                     }

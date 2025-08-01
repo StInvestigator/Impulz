@@ -1,12 +1,18 @@
 import {Box, Button, IconButton, Typography} from "@mui/material";
 import playImage from "../assets/play.svg";
-import type {FC} from "react";
+import {type FC, useState} from "react";
+import { useTranslation } from 'react-i18next';
 
 interface ProfileAuthorProps{
     name: string;
 }
 
 const ProfileAuthor: FC<ProfileAuthorProps> = ({name}) => {
+
+    const [isSubscribe, setIsSubscribe] = useState(false)
+
+    const { t } = useTranslation('authorPage')
+
     return (
         <>
             <Box display={"flex"} justifyContent={"center"} alignItems={"center"} position={"relative"} height={"100%"} >
@@ -24,7 +30,7 @@ const ProfileAuthor: FC<ProfileAuthorProps> = ({name}) => {
                         left={0}
                         zIndex={2}
                     >
-                        <Typography variant={"h2"} fontSize={"36px"}>
+                        <Typography variant={"h2"}>
                             {name}
                         </Typography>
                     </Box>
@@ -51,7 +57,7 @@ const ProfileAuthor: FC<ProfileAuthorProps> = ({name}) => {
                 <Box
                     display={"flex"}
                     flexDirection="column"
-                    gap={"16px"}
+                    gap={"12px"}
                     height={"190px"}
                     width={"85%"}
                     position={"absolute"}
@@ -64,15 +70,25 @@ const ProfileAuthor: FC<ProfileAuthorProps> = ({name}) => {
                         flexDirection="column"
                         gap={"16px"}
                     >
-                        <Button sx={{
-                            borderRadius: "10px",
-                            marginLeft: "auto",
-                            backgroundColor: "white",
-                            color: "black",
-                            textTransform: "none"
+                        <Button 
+                            onClick={() => isSubscribe ? setIsSubscribe(false) : setIsSubscribe(true)}
+                            sx={{
+                                minWidth: "175px",
+                                borderRadius: "10px",
+                                marginLeft: "auto",
+                                backgroundColor: "white",
+                                color: "black",
+                                textTransform: "none",
+                                padding: "12px"
                         }}>
-                            <Typography variant={"h2"} fontSize={"24px"} fontFamily={'"Manrope", sans-serif'}>
-                                Підписатися
+                            <Typography variant={"h3"} lineHeight={"24px"} fontFamily={'"Manrope", sans-serif'}>
+                                {
+                                    isSubscribe
+                                    ?
+                                        t("button-unsubscribe")
+                                        :
+                                        t("button-subscribe")
+                                }
                             </Typography>
                         </Button>
                         <Box
@@ -87,11 +103,11 @@ const ProfileAuthor: FC<ProfileAuthorProps> = ({name}) => {
                             alignItems={"center"}
                         >
                             <Box textAlign={"center"} color={"white"}>
-                                <Typography variant={"h2"} fontSize={"24px"} fontFamily={'"Manrope", sans-serif'}>
+                                <Typography variant={"h3"} fontSize={"24px"} fontFamily={'"Manrope", sans-serif'}>
                                     123 555
                                 </Typography>
-                                <Typography variant={"h3"} fontFamily={'"Manrope", sans-serif'}>
-                                    Слухачів за місяць
+                                <Typography variant={"mainSbM"} fontFamily={'"Manrope", sans-serif'}>
+                                    {t("title-subscribers")}
                                 </Typography>
                             </Box>
                         </Box>
@@ -108,11 +124,11 @@ const ProfileAuthor: FC<ProfileAuthorProps> = ({name}) => {
                         alignItems={"center"}
                     >
                         <Box textAlign={"center"} color={"white"}>
-                            <Typography variant={"h2"} fontSize={"24px"} fontFamily={'"Manrope", sans-serif'}>
+                            <Typography variant={"h3"} fontSize={"24px"} fontFamily={'"Manrope", sans-serif'}>
                                 123 555
                             </Typography>
-                            <Typography variant={"h3"} fontFamily={'"Manrope", sans-serif'}>
-                                Слухачів за місяць
+                            <Typography variant={"mainSbM"} fontFamily={'"Manrope", sans-serif'}>
+                                {t("title-listeners-month")}
                             </Typography>
                         </Box>
                     </Box>

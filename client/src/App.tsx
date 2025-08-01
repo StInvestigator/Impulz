@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import { ThemeProvider } from '@mui/material/styles';
 import ScrollToTop from "./components/ScrollToTop.tsx";
 import {theme} from "./theme.ts";
+
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import { useEffect } from "react";

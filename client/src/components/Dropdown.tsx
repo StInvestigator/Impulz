@@ -46,8 +46,6 @@ export default function Dropdown() {
     return (
         <Box ref={ref} sx={{ position: "relative", display: "inline-block" }}>
             <Button onClick={() => setOpen(!open)} sx={{
-                fontSize: "14px",
-                fontWeight: 600,
                 fontFamily: 'Work Sans, sans-serif',
                 cursor: "pointer",
                 backgroundColor: "black",

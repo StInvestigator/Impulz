@@ -48,6 +48,7 @@ const MainPage = () => {
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
     }, []);
+    const { t } = useTranslation('main')
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"}/>

@@ -8,11 +8,11 @@ i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-        fallbackLng: 'en',
+        fallbackLng: 'uk',
         backend: {
             loadPath: '/src/locales/{{lng}}/{{ns}}.json',
         },
-        ns: ['navbar', "sidebar", "main"],
+        ns: ['navbar', "sidebar", "main", "footer"],
         defaultNS: 'main',
         interpolation: {
             escapeValue: false,

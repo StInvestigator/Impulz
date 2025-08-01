@@ -1,8 +1,12 @@
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../assets/play.svg";
 import pushPinImage from "../../assets/pushPin.svg";
+import { useTranslation } from 'react-i18next';
 
 const TopSelectionsItem = () => {
+
+    const { t } = useTranslation('other')
+    
     return (
         <Box width={"100%"} height={"500px"}>
             <Box height={"108px"} display={"flex"} padding={"24px"} bgcolor={"#ABA5A5"} borderRadius={"10px 10px 0 0"}>
@@ -10,13 +14,13 @@ const TopSelectionsItem = () => {
 
                 </Box>
                 <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"} marginLeft={"24px"}>
-                    <Box>
-                        <Typography variant={"h3"}>
+                    <Box display={"flex"} flexDirection={"column"}>
+                        <Typography variant={"mainSbL"}>
                             Тіна Кароль
                         </Typography>
-                        <Typography variant={"h4"}>
+                        <Typography variant={"mainRM"}>
                             <Box component="img" src={pushPinImage} mr={"5px"}/>
-                            Виконавець
+                            {t("title-author")}
                         </Typography>
                     </Box>
                 </Box>

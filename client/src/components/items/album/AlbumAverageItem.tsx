@@ -1,6 +1,7 @@
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
+import { useTranslation } from 'react-i18next';
 
 interface AlbumItemProps {
     album: string;
@@ -8,6 +9,9 @@ interface AlbumItemProps {
 }
 
 const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
+
+    const { t } = useTranslation('other')
+    
     return (
         <Box
             sx={{
@@ -19,12 +23,12 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
             </Box>
             <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
-                    <Box>
-                        <Typography variant={"h3"} gutterBottom sx={{ color: "black"}}>
+                    <Box display={"flex"} flexDirection={"column"}>
+                        <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
                             {album}
                         </Typography>
-                        <Typography variant={"h4"} sx={{ color: "black"}}>
-                            Альбом &middot; Rihana
+                        <Typography variant={"mainRM"} sx={{ color: "black"}}>
+                            {t("title-album")} &middot; Rihana
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

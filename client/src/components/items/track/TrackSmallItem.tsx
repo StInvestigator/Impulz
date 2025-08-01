@@ -21,9 +21,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({track}) => {
             >
                 <Typography
                     variant="h2"
-                    fontSize="36px"
                     color="white"
-                    fontFamily='"Manrope", sans-serif'
                 >
                     {track}
                 </Typography>
@@ -55,7 +53,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({track}) => {
                     justifyContent="center"
                 >
                     <Typography
-                        variant="h3"
+                        variant="mainSbL"
                         noWrap
                         sx={{
                             overflow: "hidden",
@@ -67,7 +65,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({track}) => {
                         Constellations
                     </Typography>
                     <Typography
-                        variant="h4"
+                        variant="mainRM"
                         noWrap
                         sx={{
                             overflow: "hidden",
@@ -83,8 +81,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({track}) => {
 
 
                 <Typography
-                    variant="h3"
-                    marginLeft="24px"
+                    variant="mainSbL"
                     flexShrink={0}
                 >
                     03 : 56

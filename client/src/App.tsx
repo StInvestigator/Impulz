@@ -5,40 +5,14 @@ import { Box } from "@mui/material";
 import AppRouter from "./components/AppRouter";
 import { BrowserRouter, useLocation, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import { useEffect } from "react";
 
-const theme = createTheme({
-    typography: {
-        fontFamily: '"Work Sans", sans-serif',
-        h2: {
-            fontWeight: 700,
-        },
-        h3: {
-            fontWeight: 600,
-            fontSize: "16px"
-        },
-        h4: {
-            fontWeight: 400,
-            fontSize: "14px"
-        },
-        allVariants: {
-            lineHeight: 1.2,
-        },
-    },
-    components: {
-        MuiLink: {
-            styleOverrides: {
-                root: {
-                    textDecoration: 'none',
-                    color: 'white',
-                },
-            },
-        },
-    }
-});
+import { ThemeProvider } from '@mui/material/styles';
+import ScrollToTop from "./components/ScrollToTop.tsx";
+import {theme} from "./theme.ts";
 
 function App() {
   return (
@@ -74,24 +48,27 @@ const SecuredContent = () => {
     return <div>Loading or redirecting to login...</div>;
   }
     return (
-        <BrowserRouter>
+        <>
             <ThemeProvider theme={theme}>
-                <Navbar />
-                <Box component="main" display={"flex"}>
-                    <Sidebar />
-                    <Box component="article" sx={{
-                        width: "100%",
-                        marginLeft: `320px`,
-                        marginTop: "48px",
-                        padding: "60px 20px 120px 20px",
-                        overflowX: 'hidden', // предотвращает скролл
-                    }}>
-                        <AppRouter />
+                <BrowserRouter>
+                    <Navbar />
+                    <Box component="main" display={"flex"}>
+                        <Sidebar />
+                        <Box component="article" sx={{
+                            width: "100%",
+                            marginLeft: `320px`,
+                            marginTop: "48px",
+                            padding: "60px 20px 120px 20px",
+                            overflowX: 'hidden', // предотвращает скролл
+                        }}>
+                            <ScrollToTop />
+                            <AppRouter />
+                        </Box>
                     </Box>
-                </Box>
-                <Footer/>
+                    <Footer/>
+                </BrowserRouter>
             </ThemeProvider>
-        </BrowserRouter>
+        </>
     );
 }
 

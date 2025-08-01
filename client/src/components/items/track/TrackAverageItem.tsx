@@ -2,6 +2,7 @@ import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
+import { useTranslation } from 'react-i18next';
 
 interface TrackItemProps {
     track: string;
@@ -11,6 +12,9 @@ interface TrackItemProps {
 }
 
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
+
+    const { t } = useTranslation('other')
+
     return (
         <Box
             sx={{
@@ -25,14 +29,14 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                          height={"30px"}/>
                 }
             </Box>
-            <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
-                    <Box>
-                        <Typography variant={"h3"} gutterBottom sx={{ color: "black"}}>
+            <Box display={"flex"} padding={"24px 12px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
+                <Box display="flex" alignItems="center" width={"100%"}>
+                    <Box display="flex" flexDirection="column" flexGrow={1}>
+                        <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
                             {track}
                         </Typography>
-                        <Typography variant={"h4"} sx={{ color: "black"}}>
-                            Альбом &middot; Rihana
+                        <Typography variant={"mainRM"} sx={{ color: "black"}}>
+                            {t("title-album")} &middot; Rihana
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

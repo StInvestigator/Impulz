@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import CircleImg from '../assets/category/Circle.svg'
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
+import { useTranslation } from 'react-i18next';
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -31,6 +32,7 @@ const authors = [
 const CategoryPage = () => {
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
+    const { t } = useTranslation('category')
     return (
         <>
             <Box
@@ -61,15 +63,15 @@ const CategoryPage = () => {
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList authors={authors} itemWidth={134} name='Найкращі виконавці цього жанру' />
+                <AuthorCarouselList authors={authors} itemWidth={134} name={t("title-best-author-genre")} />
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name='Найкращі пісні жанру' />
+                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-best-song-genre")} />
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name='Нові релізи' />
+                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-new-release")} />
             </Box>
         </>
     );

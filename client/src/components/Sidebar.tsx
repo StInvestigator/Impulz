@@ -15,36 +15,39 @@ import subscriptionImg from "../assets/sidebar/subscription.svg"
 import link from "../assets/sidebar/link.svg"
 import createPlaylistImg from "../assets/sidebar/createPlaylist.svg"
 import MyPlaylistList from "./lists/MyPlaylistList.tsx";
-
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import {useAppNavigate} from "../hooks/useAppNavigate.ts";
+import {memo} from "react";
 
 const buttons = [
     {
-        name: "Головна",
+        name: "button-main",
         icon: mainImg,
         path: "/"
     },
     {
-        name: "Бібліотека",
+        name: "button-library",
         icon: libraryImg,
         path: "/library",
     },
     {
-        name: "Завантажити",
+        name: "button-download",
         icon: downloadImg,
         path: "/downloads",
     },
     {
-        name: "Підписка",
+        name: "button-subscribe",
         icon: subscriptionImg,
         path: "/subscriptions"
     }
 ]
 
 
-const Sidebar = () => {
+const Sidebar = memo(() => {
 
-    const navigate = useNavigate();
+    const navigate = useAppNavigate()
+
+    const { t } = useTranslation('sidebar')
 
     return (
         <Box
@@ -90,7 +93,7 @@ const Sidebar = () => {
                                 <ListItemIcon>
                                     <Box component="img" src={icon} />
                                 </ListItemIcon>
-                                <ListItemText primary={name} disableTypography sx={{fontSize:"16px", fontWeight:600}} />
+                                <ListItemText primary={t(`${name}`)} disableTypography sx={{fontSize:"16px", fontWeight:600}} />
                             </ListItemButton>
                         </ListItem>
                     ))}
@@ -108,12 +111,12 @@ const Sidebar = () => {
                     textTransform: "none"
                 }}>
                     <Box component="img" src={createPlaylistImg} style={{ paddingRight: "10px" }} />
-                    Створити плейліст
+                    {t("button-create-playlist")}
                 </Button>
                 <MyPlaylistList />
             </Box>
         </Box>
     );
-};
+});
 
 export default Sidebar;

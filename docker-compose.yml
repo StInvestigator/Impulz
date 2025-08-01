@@ -34,10 +34,11 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
 
       KC_HOSTNAME_URL: http://localhost:9090
-      KC_HOSTNAME_ADMIN_URL: http://localhost:9090
+      KC_HOSTNAME_ADMIN_URL: http://localhost:9093
     command: ["start-dev"]
     ports:
       - "9090:8080"
+      - "9093:8080"
     depends_on:
       keycloak-db:
         condition: service_healthy
@@ -47,3 +48,4 @@ services:
 
 volumes:
   keycloak-db:
+  keycloak-data:

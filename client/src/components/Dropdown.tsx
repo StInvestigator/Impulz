@@ -1,6 +1,6 @@
 import {useState, useRef, useEffect} from "react";
 import LanguageIcon from "@mui/icons-material/Language";
-import {Box, Button} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import i18n from "i18next";
 
 type LangOption = {
@@ -46,8 +46,6 @@ export default function Dropdown() {
     return (
         <Box ref={ref} sx={{ position: "relative", display: "inline-block" }}>
             <Button onClick={() => setOpen(!open)} sx={{
-                fontSize: "14px",
-                fontWeight: 600,
                 fontFamily: 'Work Sans, sans-serif',
                 cursor: "pointer",
                 backgroundColor: "black",
@@ -55,7 +53,9 @@ export default function Dropdown() {
                 textTransform: "none"
             }}>
                 <LanguageIcon sx={{marginRight: "6px", width: "20px", height: "20px"}}/>
-                {selectedLabel}
+                <Typography variant={"mainSbL"} textTransform={"none"}>
+                    {selectedLabel}
+                </Typography>
             </Button>
 
             {open && (

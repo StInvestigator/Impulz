@@ -1,23 +1,22 @@
-import {AppBar, Box, Button, Link, OutlinedInput, Toolbar, IconButton} from "@mui/material";
+import {AppBar, Box, Button, Link, OutlinedInput, Toolbar, IconButton, Typography} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import {useNavigate} from "react-router-dom";
 import frame from '../assets/logo.svg'
 import {useTranslation} from "react-i18next";
 import Dropdown from "./Dropdown.tsx";
+import {useAppNavigate} from "../hooks/useAppNavigate.ts";
+import {memo} from "react";
 
-
-const Navbar = () => {
-    const navigate = useNavigate()
+const Navbar = memo(() => {
     const { t } = useTranslation("navbar")
+    const navigate = useAppNavigate()
 
     const linkStyles = {
         display: "flex",
         alignItems: "center",
         textDecoration: "none",
         color: "inherit",
-        fontSize: "14px",
-        fontWeight: 600
     };
+
 
     return (
         <AppBar sx={{backgroundColor: "black", zIndex: (theme) => theme.zIndex.drawer + 1}}>
@@ -39,30 +38,31 @@ const Navbar = () => {
                     </Box>
                 </Box>
                 <Box sx={{
-                    width: "361px",
+                    width: "392px",
                     height: "30px",
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <Link href="#" sx={linkStyles}>
+                    <Link variant={"mainSbL"} sx={linkStyles}>
                         <Dropdown/>
                     </Link>
-                    <Link href="#" sx={{...linkStyles, color: "#D9DADC"}}>
+                    <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC"}}>
                         {t("registration")}
                     </Link>
                     <Button sx={{
                         backgroundColor: "#D9D9D9",
                         color: "black",
                         borderRadius: "10px",
-                        fontSize: "12px",
                         padding: "7px 15px",
-                        fontFamily: 'Work Sans, sans-serif',
-                        fontWeight: 600,
-                    }}>{t("login")}</Button>
+                    }}>
+                        <Typography variant={"mainSbL"} textTransform={"none"}>
+                            {t("login")}
+                        </Typography>
+                    </Button>
                 </Box>
             </Toolbar>
         </AppBar>
     );
-};
+});
 
 export default Navbar;

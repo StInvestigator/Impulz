@@ -1,24 +1,26 @@
-import {Box, Button, IconButton, Typography} from '@mui/material';
+import {Box, Button, IconButton, Typography, type TypographyProps} from '@mui/material';
 import arrowLeftImg from "../assets/arrow/arrowLeft.svg"
 import arrowRightImg from "../assets/arrow/arrowRight.svg"
 import {type ReactNode, type FC, useRef, useState, useEffect, Children} from "react";
+import { useTranslation } from 'react-i18next';
 
 
 interface ListCarouselProps {
     title: string;
-    font_size_title: number;
+    variant: TypographyProps['variant'];
     gap: number;
     count_items: number;
     children: ReactNode;
 }
 
-const ListCarousel: FC<ListCarouselProps> = ({title,font_size_title, gap ,count_items, children }) => {
+const ListCarousel: FC<ListCarouselProps> = ({title, variant, gap ,count_items, children }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const firstItemRef = useRef<HTMLDivElement>(null);
 
     const [offset, setOffset] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
     const [itemWidth, setItemWidth] = useState(0); // динамически вычисляется
+    const { t } = useTranslation('other')
 
     // Измеряем ширину контейнера и одного элемента
     useEffect(() => {
@@ -62,20 +64,19 @@ const ListCarousel: FC<ListCarouselProps> = ({title,font_size_title, gap ,count_
             }}
         >
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                <Typography variant="h1" fontSize={font_size_title} fontFamily={"Manrope, sans-serif"} fontWeight={700}>
+                <Typography variant={variant}>
                     {title}
                 </Typography>
                 <Button sx={{
-                    height: "32px",
                     border: "1px solid black",
                     borderRadius: "10px",
-                    fontSize: "12px",
-                    fontWeight: 600,
                     color: "black",
                     textTransform: "none",
                     padding: "8px 12px"
                 }}>
-                    Дивитись всі
+                    <Typography variant={"mainSbS"}>
+                        {t("button-watch-all")}
+                    </Typography>
                 </Button>
             </Box>
 
@@ -84,6 +85,7 @@ const ListCarousel: FC<ListCarouselProps> = ({title,font_size_title, gap ,count_
                 onClick={() => handleScroll('left')}
                 disabled={offset === 0}
                 sx={{
+                    display: offset === 0 ? "none" : "block",
                     position: 'absolute',
                     top: '50%',
                     left: 10,
@@ -120,6 +122,7 @@ const ListCarousel: FC<ListCarouselProps> = ({title,font_size_title, gap ,count_
                 onClick={() => handleScroll('right')}
                 disabled={offset >= maxOffset}
                 sx={{
+                    display: offset >= maxOffset  ? "none" : "block",
                     position: 'absolute',
                     top: '50%',
                     right: 10,

@@ -1,5 +1,6 @@
 import {Box, Button, Typography} from "@mui/material";
 import TrackSmallItem from "../items/track/TrackSmallItem.tsx";
+import { useTranslation } from 'react-i18next';
 
 const tracks = [
     "1",
@@ -11,11 +12,14 @@ const tracks = [
 ]
 
 const TrackList = () => {
+
+    const { t } = useTranslation('authorPage')
+
     return (
         <Box width={"100%"}>
             <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
                 <Typography variant={"h2"} fontSize={"36px"}>
-                    Популярны треки
+                    {t("title-popular-tracks")}
                 </Typography>
                 <Button sx={{
                     height: "32px",
@@ -26,7 +30,7 @@ const TrackList = () => {
                     color: "black",
                     textTransform: "none"
                 }}>
-                    Дивитись всі
+                    {t("button-watch-all")}
                 </Button>
             </Box>
             <Box display={"grid"} marginTop={"20px"} sx={{

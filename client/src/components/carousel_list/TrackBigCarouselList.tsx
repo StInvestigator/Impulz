@@ -1,17 +1,19 @@
 import type {FC} from "react";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
 import ListCarousel from "../ListCarousel.tsx";
+import type {TypographyProps} from "@mui/material";
 
 interface TrackListProps {
     tracks: string[];
+    title: string,
+    variant: TypographyProps['variant'];
     itemWidth: number;
     itemHeight: number;
-    name: string;
 }
 
-const TrackBigCarouselList: FC<TrackListProps> = ({ tracks, itemWidth, itemHeight, name }) => {
+const TrackBigCarouselList: FC<TrackListProps> = ({ tracks, itemWidth, itemHeight, title, variant }) => {
     return (
-        <ListCarousel title={name} gap={24} font_size_title={64} count_items={tracks.length}>
+        <ListCarousel gap={24} count_items={tracks.length} variant={variant} title={title}>
             {tracks.map((track, index) => (
                 <TrackAverageItem key={index} track={track} itemHeight={itemHeight} itemWidth={itemWidth} isMedal/>
             ))}

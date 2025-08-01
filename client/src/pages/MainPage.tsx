@@ -7,6 +7,7 @@ import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import PlaylistCarouselList from "../components/carousel_list/PlaylistCarouselList";
 import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import TopSelections from "../components/TopSelections";
+import { useTranslation } from 'react-i18next';
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -33,27 +34,30 @@ const playlist = [
 ];
 
 const MainPage = () => {
+
+    const { t } = useTranslation('main')
+
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"}/>
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} name='Хіти тижня'/>
+                <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} variant={"h1"} title={t("title-hits-week")}/>
                 <GenreList/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList authors={authors} itemWidth={134} name='Найкращі виконавці цього місяця'/>
+                <AuthorCarouselList authors={authors} itemWidth={134} name={t("title-best-author-month")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <PlaylistCarouselList playlists={playlist} itemWidth={134} name='Слухати найкращі плейлисти'/>
+                <PlaylistCarouselList playlists={playlist} itemWidth={134} name={t("title-listen-best-playlists")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <TopFiveGenreList/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name='Рекомендації за сьогодні'/>
+                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-recomendation-today")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name='Перегляньте підібране для вас'/>
+                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-watch-for-you")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <TopSelections/>

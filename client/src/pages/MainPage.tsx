@@ -1,4 +1,4 @@
-import {Box} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
@@ -6,8 +6,9 @@ import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarous
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import PlaylistCarouselList from "../components/carousel_list/PlaylistCarouselList";
 import TopFiveGenreList from "../components/lists/TopFiveGenreList";
-import TopSelections from "../components/TopSelections";
 import { useTranslation } from 'react-i18next';
+import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
+import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -35,32 +36,49 @@ const playlist = [
 
 const MainPage = () => {
 
-    const { t } = useTranslation('main')
+    const route = useAppNavigate()
+    const { t } = useTranslation(['main', 'other'])
 
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"}/>
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} variant={"h1"} title={t("title-hits-week")}/>
+                <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")}/>
                 <GenreList/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList authors={authors} itemWidth={134} name={t("title-best-author-month")}/>
+                <AuthorCarouselList authors={authors} itemWidth={134} name={t("main:title-best-author-month")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <PlaylistCarouselList playlists={playlist} itemWidth={134} name={t("title-listen-best-playlists")}/>
+                <PlaylistCarouselList playlists={playlist} itemWidth={134} name={t("main:title-listen-best-playlists")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <TopFiveGenreList/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-recomendation-today")}/>
+                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("main:title-recomendation-today")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-watch-for-you")}/>
+                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("main:title-watch-for-you")}/>
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TopSelections/>
+                <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>
+                    <Typography variant={"h1"} fontSize={"36px"} fontWeight={700}>
+                        {t("main:title-top-selections")}
+                    </Typography>
+                    <Button onClick={() => route("/allTopSelections")} sx={{
+                        height: "32px",
+                        border: "1px solid black",
+                        borderRadius: "10px",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: "black",
+                        textTransform: "none"
+                    }}>
+                        {t("other:button-watch-all")}
+                    </Button>
+                </Box>
+                <TopSelectionsList/>
             </Box>
         </>
     );

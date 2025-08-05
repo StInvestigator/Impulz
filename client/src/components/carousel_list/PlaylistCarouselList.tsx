@@ -1,6 +1,6 @@
 import type {FC} from "react";
 import ListCarousel from "../ListCarousel.tsx";
-import PublicPlaylistItem from "../items/PublicPlaylistItem.tsx";
+import PublicPlaylistSmallItem from "../items/playlist/PublicPlaylistSmallItem.tsx";
 
 interface PlaylistListProps {
     playlists: string[];
@@ -12,7 +12,7 @@ const PlaylistCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth, name
     return (
         <ListCarousel title={name} variant={"h3"} gap={24} count_items={playlists.length}>
             {playlists.map((playlist, index) => (
-                <PublicPlaylistItem key={index} playlist={playlist} itemWidth={itemWidth} />
+                <PublicPlaylistSmallItem key={index} playlist={playlist} itemWidth={itemWidth} />
             ))}
         </ListCarousel>
     );

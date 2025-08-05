@@ -13,36 +13,18 @@ const podcasts = [
 
 const PodcastList = () => {
 
-    const { t } = useTranslation('authorPage')
-
     return (
-        <Box width={"100%"}>
-            <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
-                <Typography variant={"h2"} fontSize={"24px"}>
-                    {t("title-collaborations")}
-                </Typography>
-                <Button sx={{
-                    height: "32px",
-                    border: "1px solid black",
-                    borderRadius: "10px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    color: "black",
-                    textTransform: "none"
-                }}>
-                    {t("button-watch-all")}
-                </Button>
-            </Box>
-            <Box display={"flex"} marginTop={"20px"} gap={3}>
-                {podcasts.map((podcast, index) =>
-                    index % 2 === 0
-                        ?
-                        <TrackAverageItem key={index} track={podcast} itemHeight={260}/>
-                        :
-                        <AlbumAverageItem key={index} album={podcast} itemHeight={260}/>
+        <Box display={"grid"} sx={{
+            gridTemplateColumns: "repeat(5, 1fr)"
+        }} gap={3}>
+            {podcasts.map((podcast, index) =>
+                index % 2 === 0
+                    ?
+                    <TrackAverageItem key={index} track={podcast} itemHeight={260}/>
+                    :
+                    <AlbumAverageItem key={index} album={podcast} itemHeight={260}/>
 
-                )}
-            </Box>
+            )}
         </Box>
     );
 };

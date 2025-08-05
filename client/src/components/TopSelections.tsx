@@ -24,13 +24,7 @@ const TopSelections = () => {
                     {t("button-watch-all")}
                 </Button>
             </Box>
-            <Box display={"grid"} sx={{
-                gridTemplateColumns: {
-                    md: "repeat(4, 1fr)",
-                    sm: "repeat(3, 1fr)",
-                    xs: "repeat(2, 1fr)"
-                }
-            }} gap={3}>
+            <Box>
                 <TopSelectionsList/>
             </Box>
         </Box>

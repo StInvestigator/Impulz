@@ -1,6 +1,6 @@
 import {List} from "@mui/material";
 import playlistImage from "../../assets/sidebar/playlistImage.svg"
-import MyPlaylistItem from "../items/MyPlaylistItem.tsx";
+import MyPlaylistItem from "../items/playlist/MyPlaylistItem.tsx";
 
 const MyPlaylistList = () => {
     return (

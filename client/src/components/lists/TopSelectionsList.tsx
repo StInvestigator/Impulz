@@ -1,4 +1,5 @@
 import TopSelectionsItem from "../items/TopSelectionsItem.tsx";
+import {Box} from "@mui/material";
 
 const top_5_genres = [
     "1",
@@ -17,11 +18,13 @@ const top_5_genres = [
 
 const TopSelectionsList = () => {
     return (
-        <>
+        <Box display={"grid"} sx={{
+            gridTemplateColumns: "repeat(4, 1fr)"
+        }} gap={3}>
             {top_5_genres.map((index) =>
                 <TopSelectionsItem key={index}/>
             )}
-        </>
+        </Box>
     );
 };
 

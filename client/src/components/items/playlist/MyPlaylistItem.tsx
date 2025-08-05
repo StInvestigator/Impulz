@@ -1,6 +1,6 @@
 import type {FC} from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
-import pushPinImage from "../../assets/pushPin.svg"
+import pushPinImage from "../../../assets/pushPin.svg"
 import { useTranslation } from 'react-i18next';
 
 interface PlaylistProps {

@@ -1,6 +1,6 @@
 import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
-import playImage from "../../assets/play.svg";
+import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
 
 interface PlaylistItemProps {
@@ -8,7 +8,7 @@ interface PlaylistItemProps {
     itemWidth: number;
 }
 
-const PublicPlaylistItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
+const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
 
     const { t } = useTranslation('other')
 
@@ -45,4 +45,4 @@ const PublicPlaylistItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
     );
 };
 
-export default PublicPlaylistItem;
+export default PublicPlaylistSmallItem;

@@ -1,36 +1,48 @@
 import {Box} from "@mui/material";
-import ProfileAuthor from "../components/ProfileAuthor.tsx";
-import {useParams} from "react-router-dom";
-import TrackList from "../components/lists/TrackList.tsx";
-import AlbumList from "../components/lists/AlbumList.tsx";
-import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
+import MyPagination from "../components/MyPagination.tsx";
+import {useState} from "react";
+
+const authors = [
+    "Автор 1",
+    "Автор 2",
+    "Автор 3",
+    "Автор 4",
+    "Автор 5",
+    "Автор 1",
+    "Автор 2",
+    "Автор 3",
+    "Автор 4",
+    "Автор 5",
+    "Автор 1",
+    "Автор 2",
+    "Автор 3",
+    "Автор 4",
+    "Автор 5",
+    "Автор 1",
+    "Автор 2",
+    "Автор 3",
+    "Автор 4",
+    "Автор 5",
+    "Автор 1",
+    "Автор 2",
+    "Автор 3",
+    "Автор 4",
+    "Автор 5",
+]
 
 const AuthorPage = () => {
-    const {name} = useParams<{name: string}>();
+
+    const [page, setPage] = useState(1)
 
     return (
         <>
-            <Box component={"section"} height={"450px"} sx={{
-                backgroundColor: "#D9D9D9"
-            }}>
-                <ProfileAuthor name={name ?? "Анонім"}/>
+            <h2>Найкращі виконавці цього жанру | Схожі виконавці</h2>
+            <Box component={"section"} marginTop={"20px"} >
+                <AuthorList authors={authors}/>
             </Box>
-
-            <Box component={"section"} mt={"60px"}>
-                <TrackList/>
-            </Box>
-
-            <Box component={"section"} mt={"60px"}>
-                <AlbumList/>
-            </Box>
-
-            <Box component={"section"} mt={"60px"}>
-                <PodcastList/>
-            </Box>
-
-            <Box component={"section"} mt={"60px"}>
-                <AuthorList/>
+            <Box component={"section"} marginTop={"60px"}>
+                <MyPagination totalPages={30} currentPage={page} onPageChange={setPage}/>
             </Box>
         </>
     );

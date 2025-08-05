@@ -1,4 +1,3 @@
-
 import {Box, Button, Typography} from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 
@@ -48,7 +47,8 @@ const MainPage = () => {
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
     }, []);
-    const { t } = useTranslation('main')
+    const route = useAppNavigate()
+    const { t } = useTranslation(['main', 'other'])
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"}/>

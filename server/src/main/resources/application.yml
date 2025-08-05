@@ -17,30 +17,6 @@ spring:
     baseline-on-migrate: true
     locations: classpath:db/migration
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9090/realms/OauthMain
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:9090/realms/OauthMain
-            user-name-attribute: preferred_username
-            authorization-uri: http://localhost:9090/realms/OauthMain/protocol/openid-connect/auth
-            token-uri: http://localhost:9090/realms/OauthMain/protocol/openid-connect/token
-            user-info-uri: http://localhost:9090/realms/OauthMain/protocol/openid-connect/userinfo
-            jwk-set-uri: http://localhost:9090/realms/OauthMain/protocol/openid-connect/certs
-        registration:
-          keycloak:
-            client-id: ImpulzClient
-            client-secret: OkKom9tfLCqqTB2KKzMTgjsC7mDvh2P9
-            scope: openid,profile
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            client-name: keycloak
-            provider: keycloak
-            authorization-grant-type: authorization_code
-
 server:
   port: 8083
   servlet:

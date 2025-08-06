@@ -7,8 +7,6 @@ import ProfilePage from "../pages/ProfilePage.tsx";
 import AlbumColaborationPlaylistPage from "../pages/AlbumColaborationPlaylistPage.tsx";
 import AuthorPage from "../pages/AuthorPage.tsx";
 import TopSelectionsPage from "../pages/TopSelectionsPage.tsx";
-import React, {PropsWithChildren, ReactElement, ReactNode} from 'react';
-import { useKeycloak } from "@react-keycloak/web";
 
 
 const pages = [

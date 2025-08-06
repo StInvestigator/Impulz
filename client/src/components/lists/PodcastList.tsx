@@ -1,7 +1,6 @@
-import {Box, Button, Typography} from "@mui/material";
+import {Box} from "@mui/material";
 import AlbumAverageItem from "../items/album/AlbumAverageItem.tsx";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
-import { useTranslation } from 'react-i18next';
 
 const podcasts = [
     "Трек 1",

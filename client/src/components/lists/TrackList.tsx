@@ -1,6 +1,5 @@
-import {Box, Button, Typography} from "@mui/material";
+import {Box} from "@mui/material";
 import TrackSmallItem from "../items/track/TrackSmallItem.tsx";
-import { useTranslation } from 'react-i18next';
 
 const tracks = [
     "1",

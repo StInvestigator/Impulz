@@ -4,17 +4,19 @@ import com.example.server.model.id.PlaylistTrack;
 import com.example.server.model.id.UserFavoritePlaylist;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@ToString(exclude = {"owner"})
 @Entity
 @Table(name = "playlists")
 public class Playlist {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-    @ManyToOne @JoinColumn(name = "owner_id", nullable = false) private User owner;
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner_id", nullable = false) private User owner;
     @Column(nullable = false, length = 200) private String title;
     @Column(name = "is_public") private Boolean isPublic;
     @Column(name = "image_url") private String imageUrl;

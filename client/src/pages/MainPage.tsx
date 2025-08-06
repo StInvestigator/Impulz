@@ -1,5 +1,9 @@
+
 import {Box, Button, Typography} from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
+
+import {useEffect} from 'react';
+
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
@@ -34,11 +38,17 @@ const playlist = [
     'Плейлист 15', 'Плейлист 16'
 ];
 
+
 const MainPage = () => {
 
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
-
+    useEffect(() => {
+        fetch('http://localhost:8083/api/playlists/') // replace with your backend URL
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"}/>

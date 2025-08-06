@@ -39,8 +39,6 @@ const playlist = [
 
 const MainPage = () => {
 
-    const route = useAppNavigate()
-    const { t } = useTranslation(['main', 'other'])
     useEffect(() => {
         fetch('http://localhost:8083/api/playlists/')
             .then(response => response.json())

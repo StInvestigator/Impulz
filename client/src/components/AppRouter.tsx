@@ -1,4 +1,3 @@
-
 import {Routes, Route, Navigate} from "react-router-dom";
 import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
@@ -12,20 +11,6 @@ import React, {PropsWithChildren, ReactElement, ReactNode} from 'react';
 import { useKeycloak } from "@react-keycloak/web";
 
 
-const AdminGuard = ({ children } : PropsWithChildren) : ReactElement => {
-    const { keycloak } = useKeycloak();
-
-    if (!keycloak.hasRealmRole('admin')) {
-        return (
-            <div style={{ padding: 20 }}>
-                <h3>Доступ запрещён</h3>
-                <p>Требуется роль администратора</p>
-            </div>
-        );
-    }
-
-    return <>{children}</>;
-};
 const pages = [
     {
         path: "/",

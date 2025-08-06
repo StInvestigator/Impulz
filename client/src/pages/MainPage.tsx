@@ -42,7 +42,7 @@ const MainPage = () => {
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
     useEffect(() => {
-        fetch('http://localhost:8083/api/playlists/') // replace with your backend URL
+        fetch('http://localhost:8083/api/playlists/')
             .then(response => response.json())
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));

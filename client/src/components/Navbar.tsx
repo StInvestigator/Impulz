@@ -5,8 +5,10 @@ import {useTranslation} from "react-i18next";
 import Dropdown from "./Dropdown.tsx";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import {memo} from "react";
+import { useKeycloak } from "@react-keycloak/web";
 
 const Navbar = memo(() => {
+    const { keycloak } = useKeycloak();
     const { t } = useTranslation("navbar")
     const navigate = useAppNavigate()
 
@@ -46,7 +48,7 @@ const Navbar = memo(() => {
                     <Link variant={"mainSbL"} sx={linkStyles}>
                         <Dropdown/>
                     </Link>
-                    <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC"}}>
+                    <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC"}} onClick={()=>keycloak.register()}>
                         {t("registration")}
                     </Link>
                     <Button sx={{
@@ -55,7 +57,7 @@ const Navbar = memo(() => {
                         borderRadius: "10px",
                         padding: "7px 15px",
                     }}>
-                        <Typography variant={"mainSbL"} textTransform={"none"}>
+                        <Typography variant={"mainSbL"} textTransform={"none"} onClick={()=>keycloak.login()}>
                             {t("login")}
                         </Typography>
                     </Button>

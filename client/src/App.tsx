@@ -15,14 +15,17 @@ import { useEffect } from "react";
 
 function App() {
   return (
+    <ReactKeycloakProvider
+      authClient={keycloak}
+      initOptions={{
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+      }}
+    >
       <BrowserRouter>
-        <ReactKeycloakProvider
-            authClient={keycloak}
-            initOptions={{ onLoad: 'login-required' }}
-        >
-          <SecuredContent />
-        </ReactKeycloakProvider>
+        <SecuredContent />
       </BrowserRouter>
+    </ReactKeycloakProvider>
   );
 }
 
@@ -32,44 +35,38 @@ const SecuredContent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (initialized) {
-      if (location.hash.includes('state=')) {
-        navigate('/', { replace: true });
-      }
-
-      if (!keycloak.authenticated) {
-        keycloak.login();
-      }
+    if (initialized && location.hash.includes('state=')) {
+      navigate('/', { replace: true });
     }
-  }, [initialized, keycloak, location, navigate]);
+  }, [initialized, location, navigate]);
 
-  if (!initialized || !keycloak.authenticated) {
-    return <div>Loading or redirecting to login...</div>;
+  if (!initialized) return <div>Loading...</div>;
+
+  if (!keycloak.authenticated && location.pathname !== "/") {
+    keycloak.login();
+    return <div>Redirecting to login...</div>;
   }
-
-    return (
-        <>
-            <ThemeProvider theme={theme}>
-                <BrowserRouter>
-                    <Navbar />
-                    <Box component="main" display={"flex"}>
-                        <Sidebar />
-                        <Box component="article" sx={{
-                            width: "100%",
-                            marginLeft: `320px`,
-                            marginTop: "48px",
-                            padding: "60px 20px 120px 20px",
-                            overflowX: 'hidden', // предотвращает скролл
-                        }}>
-                            <ScrollToTop />
-                            <AppRouter />
-                        </Box>
-                    </Box>
-                    <Footer/>
-                </BrowserRouter>
-            </ThemeProvider>
-        </>
-    );
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <Navbar />
+        <Box component="main" display={"flex"}>
+          <Sidebar />
+          <Box component="article" sx={{
+            width: "100%",
+            marginLeft: `320px`,
+            marginTop: "48px",
+            padding: "60px 20px 120px 20px",
+            overflowX: 'hidden', // предотвращает скролл
+          }}>
+            <ScrollToTop />
+            <AppRouter />
+          </Box>
+        </Box>
+        <Footer />
+      </ThemeProvider>
+    </>
+  );
 }
 
 export default App;

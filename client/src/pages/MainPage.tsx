@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect} from 'react';
 import {Box} from "@mui/material";
 import mainImage from "../images/mainImage.svg"
 import GenreList from "../components/lists/GenreList";
@@ -33,7 +33,15 @@ const playlist = [
     'Плейлист 15', 'Плейлист 16'
 ];
 
+
 const MainPage = () => {
+
+    useEffect(() => {
+        fetch('http://localhost:8083/api/playlists/') // replace with your backend URL
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"}/>

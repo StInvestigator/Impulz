@@ -124,22 +124,6 @@ CREATE TRIGGER trg_inc_play
     FOR EACH ROW
     EXECUTE FUNCTION increment_track_plays();
 
-CREATE TABLE roles (
-                       id   SERIAL PRIMARY KEY,
-                       name VARCHAR(50) NOT NULL UNIQUE   -- e.g. 'USER', 'AUTHOR', 'MODERATOR'
-);
-
-INSERT INTO roles (name) VALUES
-                             ('USER'),
-                             ('AUTHOR'),
-                             ('MODERATOR');
-
-CREATE TABLE user_roles (
-                            user_id BIGINT REFERENCES users(id)     ON DELETE CASCADE,
-                            role_id BIGINT REFERENCES roles(id)     ON DELETE CASCADE,
-                            PRIMARY KEY (user_id, role_id)
-);
-
 
 CREATE OR REPLACE FUNCTION trg_inc_author_followers() RETURNS TRIGGER AS $$
 BEGIN

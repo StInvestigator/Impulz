@@ -9,14 +9,6 @@ INSERT INTO authors (user_id, bio)
 VALUES (1, 'Electronic music producer.'),
        (2, 'Singer-songwriter.');
 
--- ROLES
-INSERT INTO user_roles (user_id, role_id)
-VALUES (1, 2), -- alice is AUTHOR
-       (1, 1), -- and USER
-       (2, 2),
-       (2, 1),
-       (3, 1);
-
 -- GENRES
 INSERT INTO genres (id, name)
 VALUES (1, 'Electronic'),

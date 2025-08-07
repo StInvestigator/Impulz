@@ -35,14 +35,6 @@ public class User {
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private Set<Playlist> playlists = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
-
     @OneToMany(mappedBy = "user")
     private Set<UserFavoriteAlbum> favoriteAlbums = new HashSet<>();
     @OneToMany(mappedBy = "user")

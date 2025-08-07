@@ -5,6 +5,11 @@ spring:
     resources:
       static-locations: classpath:/static/
       add-mappings: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/Impulz
 
   datasource:
     url: jdbc:postgresql://localhost:5435/impulz

@@ -32,3 +32,10 @@ logging:
     org.springframework.security: TRACE
 
 
+keycloak:
+   keycloakUrl: http://localhost:9090
+   realm: Impulz
+   clientId: ImpulzServer
+   clientSecret: XwsMl50NUc8GEybyhMGtI7QejOPLeK8X
+
+

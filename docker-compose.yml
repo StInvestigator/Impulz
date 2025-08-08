@@ -32,7 +32,8 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HOSTNAME_URL: http://localhost:9090
       KC_HOSTNAME_ADMIN_URL: http://localhost:9090
-    command: ["start-dev"]
+      KC_FEATURES: scripts
+    command: ["start-dev", "--import-realm"]
     ports:
       - "9090:8080"
     depends_on:
@@ -40,6 +41,7 @@ services:
         condition: service_healthy
     volumes:
       - ./keycloak_data:/opt/keycloak/data
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
     restart: unless-stopped
 
 volumes:

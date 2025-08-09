@@ -1,8 +1,11 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import AuthorReducer from "./reducers/AuthorSlice.ts"
+import PlaylistReducer from "./reducers/PlaylistSlice.ts"
+
 
 const rootReducer = combineReducers({
-    AuthorReducer
+    AuthorReducer,
+    PlaylistReducer
 })
 
 export const setupStore = () => {

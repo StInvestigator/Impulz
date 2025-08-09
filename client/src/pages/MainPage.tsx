@@ -11,7 +11,9 @@ import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
-import keycloak from "../keycloak";
+import {$authApi} from "../http";
+import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
+import {fetchPlaylists} from "../store/reducers/ActionCreators.ts";
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -39,25 +41,22 @@ const playlist = [
 
 
 const MainPage = () => {
+    const {playlists, isLoading, error} = useAppSelector(state => state.PlaylistReducer)
+    const dispatch = useAppDispatch()
+
+    const fetchData = async () => {
+        try {
+            dispatch(fetchPlaylists())
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
 
     useEffect(() => {
-        fetch('http://localhost:8083/api/playlists/', {
-            headers: {
-                Authorization: `Bearer ${keycloak.token}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-// console.log(keycloak.token);
-        fetch('http://localhost:8083/api/admin', {
-            headers: {
-                Authorization: `Bearer ${keycloak.token}`
-            }
-        })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+        fetchData();
+        setTimeout(() => {
+            console.log(playlists);
+        }, 1000)
     }, []);
 
 

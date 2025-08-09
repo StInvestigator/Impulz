@@ -36,7 +36,7 @@ keycloak:
    keycloakUrl: http://localhost:9090
    realm: Impulz
    clientId: ImpulzServer
-   clientSecret: rH7rGCZrgy5dcM7RNeA44lgvYVtOPtFH
+   clientSecret: QeFy6ySgALNQ50FuDlIMQZDFeh8K2abU
    admin-username: admin
    admin-password: admin
 

@@ -1,2 +1,1 @@
-CREATE DATABASE impulz;
 CREATE DATABASE keycloak;

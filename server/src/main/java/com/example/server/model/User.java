@@ -4,41 +4,37 @@ import com.example.server.model.id.UserFavoriteAlbum;
 import com.example.server.model.id.UserFavoritePlaylist;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@ToString(exclude = {"playlists"})
+@Data
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "keycloak_id", unique = true, nullable = false, length = 36)
+    private String Id;
+
+    @Column(nullable = false, length = 50, unique = true)
     private String username;
-    @Column(nullable = false, unique = true, length = 100)
+
+    @Column(nullable = false, length = 100, unique = true)
     private String email;
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
-    @Column(name = "image_url")
-    private String imageUrl;
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    private Set<Playlist> playlists = new HashSet<>();
+    @Column(columnDefinition = "TEXT")
+    private String bio;
 
-    @OneToMany(mappedBy = "user")
-    private Set<UserFavoriteAlbum> favoriteAlbums = new HashSet<>();
-    @OneToMany(mappedBy = "user")
-    private Set<UserFavoritePlaylist> favoritePlaylists = new HashSet<>();
-    @OneToOne(mappedBy = "user")
+    @Column(name = "avatar_url", columnDefinition = "TEXT")
+    private String avatarUrl;
+
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP")
+    private OffsetDateTime createdAt = OffsetDateTime.now();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Author authorProfile;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Playlist> playlists = new HashSet<>();
 }

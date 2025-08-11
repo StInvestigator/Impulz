@@ -72,7 +72,7 @@ public class RoleController
     public ResponseEntity<String> getUserIdByEmail(@RequestParam String email) {
         List<UserRepresentation> users = keycloak.realm(realm).users().searchByEmail(email, true);
         if (users.isEmpty()) {
-            return ResponseEntity.status(404).body("Пользователь с email '" + email + "' не найден");
+            return ResponseEntity.status(404).body("User with email '" + email + "' not found");
         }
         return ResponseEntity.ok(users.get(0).getId());
     }

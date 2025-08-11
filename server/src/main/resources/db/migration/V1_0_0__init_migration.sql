@@ -1,14 +1,14 @@
 CREATE TABLE users (
-                       id SERIAL PRIMARY KEY,
+                       keycloak_id VARCHAR(36) PRIMARY KEY,
                        username VARCHAR(50) UNIQUE NOT NULL,
                        email VARCHAR(100) UNIQUE NOT NULL,
-                       password_hash TEXT NOT NULL,
-                       image_url TEXT,
-                       created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+                       bio TEXT,
+                       avatar_url TEXT,
+                       created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE authors (
-                         user_id BIGINT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
+                         user_id VARCHAR(36) PRIMARY KEY REFERENCES users (keycloak_id) ON DELETE CASCADE,
                          bio TEXT,
                          created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                          followers_count BIGINT NOT NULL DEFAULT 0
@@ -56,19 +56,19 @@ CREATE INDEX idx_subtitles_track_time ON subtitles (track_id, start_time_ms, end
 
 CREATE TABLE track_authors (
                                track_id  BIGINT REFERENCES tracks  (id) ON DELETE CASCADE,
-                               author_id BIGINT REFERENCES authors (user_id) ON DELETE CASCADE,
+                               author_id VARCHAR(36) REFERENCES authors (user_id) ON DELETE CASCADE,
                                PRIMARY KEY (track_id, author_id)
 );
 
 CREATE TABLE album_authors (
-                               album_id  BIGINT REFERENCES albums  (id) ON DELETE CASCADE,
-                               author_id BIGINT REFERENCES authors (user_id) ON DELETE CASCADE,
+                               album_id BIGINT REFERENCES albums(id) ON DELETE CASCADE,
+                               author_id VARCHAR(36) REFERENCES authors(user_id) ON DELETE CASCADE,
                                PRIMARY KEY (album_id, author_id)
 );
 
 CREATE TABLE playlists (
                            id SERIAL PRIMARY KEY,
-                           owner_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
+                           owner_id VARCHAR(36) REFERENCES users (keycloak_id) ON DELETE CASCADE,
                            title VARCHAR(200) NOT NULL,
                            is_public BOOLEAN DEFAULT FALSE,
                            image_url TEXT,
@@ -83,8 +83,8 @@ CREATE TABLE playlist_tracks (
 );
 
 CREATE TABLE author_followers (
-                                  author_id BIGINT REFERENCES authors (user_id) ON DELETE CASCADE,
-                                  follower_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
+                                  author_id VARCHAR(36) REFERENCES authors (user_id) ON DELETE CASCADE,
+                                  follower_id VARCHAR(36) REFERENCES users (keycloak_id) ON DELETE CASCADE,
                                   followed_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                   PRIMARY KEY (author_id, follower_id)
 );
@@ -92,7 +92,7 @@ CREATE TABLE author_followers (
 CREATE TABLE track_plays (
                              id BIGSERIAL PRIMARY KEY,
                              track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
-                             user_id BIGINT REFERENCES users (id) ON DELETE SET NULL,
+                             user_id VARCHAR(36) REFERENCES users (keycloak_id) ON DELETE SET NULL,
                              played_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
@@ -154,14 +154,14 @@ CREATE TRIGGER trg_dec_author_followers
 
 
 CREATE TABLE user_favorite_playlists (
-                                         user_id     BIGINT REFERENCES users     (id) ON DELETE CASCADE,
+                                         user_id     VARCHAR(36) REFERENCES users     (keycloak_id) ON DELETE CASCADE,
                                          playlist_id BIGINT REFERENCES playlists (id) ON DELETE CASCADE,
                                          added_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                          PRIMARY KEY (user_id, playlist_id)
 );
 
 CREATE TABLE user_favorite_albums (
-                                      user_id  BIGINT REFERENCES users  (id) ON DELETE CASCADE,
+                                      user_id  VARCHAR(36) REFERENCES users  (keycloak_id) ON DELETE CASCADE,
                                       album_id BIGINT REFERENCES albums (id) ON DELETE CASCADE,
                                       added_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                       PRIMARY KEY (user_id, album_id)
@@ -169,13 +169,13 @@ CREATE TABLE user_favorite_albums (
 
 CREATE MATERIALIZED VIEW user_quick_access AS
 SELECT
-    u.id               AS user_id,
+    u.keycloak_id      AS user_id,
     fp.playlist_id     AS favorite_playlist,
     fa.album_id        AS favorite_album,
     fp.added_at        AS playlist_added,
     fa.added_at        AS album_added
 FROM users u
-         LEFT JOIN user_favorite_playlists fp ON fp.user_id = u.id
-         LEFT JOIN user_favorite_albums    fa ON fa.user_id = u.id;
+         LEFT JOIN user_favorite_playlists fp ON fp.user_id = u.keycloak_id
+         LEFT JOIN user_favorite_albums    fa ON fa.user_id = u.keycloak_id;
 
 CREATE INDEX idx_quick_access_user ON user_quick_access (user_id);

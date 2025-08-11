@@ -10,12 +10,12 @@ import java.util.Objects;
 @Embeddable
 public class UserFavoritePlaylistKey implements Serializable {
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
     @Column(name = "playlist_id")
     private Long playlistId;
 
     public UserFavoritePlaylistKey() {}
-    public UserFavoritePlaylistKey(Long userId, Long playlistId) {
+    public UserFavoritePlaylistKey(String userId, Long playlistId) {
         this.userId = userId;
         this.playlistId = playlistId;
     }

@@ -4,6 +4,8 @@ import com.example.server.model.User;
 import com.example.server.model.repository.UserRepository;
 import com.example.server.service.KeycloakSyncService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

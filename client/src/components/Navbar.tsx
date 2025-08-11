@@ -6,6 +6,7 @@ import Dropdown from "./Dropdown.tsx";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import {memo} from "react";
 import { useKeycloak } from "@react-keycloak/web";
+import LogoutButton from "./LogoutButton";
 
 const Navbar = memo(() => {
     const { keycloak } = useKeycloak();
@@ -48,9 +49,14 @@ const Navbar = memo(() => {
                     <Link variant={"mainSbL"} sx={linkStyles}>
                         <Dropdown/>
                     </Link>
-                    <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC"}} onClick={()=>keycloak.register()}>
-                        {t("registration")}
-                    </Link>
+                    <Button>
+                        <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC"}} onClick={()=>keycloak.register()}>
+                            {t("registration")}
+                        </Link>
+                    </Button>
+                    <div>
+                        {keycloak.authenticated && <LogoutButton/>}
+                    </div>
                     <Button sx={{
                         backgroundColor: "#D9D9D9",
                         color: "black",

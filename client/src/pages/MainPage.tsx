@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 
-import { useEffect } from 'react';
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
@@ -11,7 +10,6 @@ import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
-import keycloak from "../keycloak";
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -39,28 +37,6 @@ const playlist = [
 
 
 const MainPage = () => {
-
-    useEffect(() => {
-        fetch('http://localhost:8083/api/playlists/', {
-            headers: {
-                Authorization: `Bearer ${keycloak.token}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-// console.log(keycloak.token);
-        fetch('http://localhost:8083/api/admin', {
-            headers: {
-                Authorization: `Bearer ${keycloak.token}`
-            }
-        })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-    }, []);
-
-
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
     return (

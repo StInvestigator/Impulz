@@ -31,13 +31,10 @@ logging:
   level:
     org.springframework.security: TRACE
 
-
 keycloak:
-   keycloakUrl: http://localhost:9090
-   realm: Impulz
-   clientId: ImpulzServer
-   clientSecret: QeFy6ySgALNQ50FuDlIMQZDFeh8K2abU
-   admin-username: admin
-   admin-password: admin
-
-
+  keycloakUrl: http://localhost:9090
+  realm: Impulz
+  clientId: ImpulzServer
+  clientSecret: PGI80PTF69TCx03xScxVm7JWNyowL6OD
+  admin-username: admin
+  admin-password: admin

@@ -38,7 +38,33 @@ const SecuredContent = () => {
     if (initialized && location.hash.includes('state=')) {
       navigate('/', { replace: true });
     }
-  }, [initialized, location, navigate]);
+
+    if (initialized && keycloak.authenticated && keycloak.token) {
+      sendTokenToBackend(keycloak.token);
+    }
+  }, [initialized, location, navigate, keycloak]);
+
+  const sendTokenToBackend = (token: string) => {
+    fetch('http://localhost:8083/api/login-success', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('User synced successfully:', data);
+        })
+        .catch(error => {
+          console.error('Error sending token to backend:', error);
+        });
+  };
 
   if (!initialized) return <div>Loading...</div>;
 
@@ -46,26 +72,27 @@ const SecuredContent = () => {
     keycloak.login();
     return <div>Redirecting to login...</div>;
   }
+
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Navbar />
-        <Box component="main" display={"flex"}>
-          <Sidebar />
-          <Box component="article" sx={{
-            width: "100%",
-            marginLeft: `320px`,
-            marginTop: "48px",
-            padding: "60px 20px 120px 20px",
-            overflowX: 'hidden', // предотвращает скролл
-          }}>
-            <ScrollToTop />
-            <AppRouter />
+      <>
+        <ThemeProvider theme={theme}>
+          <Navbar />
+          <Box component="main" display={"flex"}>
+            <Sidebar />
+            <Box component="article" sx={{
+              width: "100%",
+              marginLeft: `320px`,
+              marginTop: "48px",
+              padding: "60px 20px 120px 20px",
+              overflowX: 'hidden',
+            }}>
+              <ScrollToTop />
+              <AppRouter />
+            </Box>
           </Box>
-        </Box>
-        <Footer />
-      </ThemeProvider>
-    </>
+          <Footer />
+        </ThemeProvider>
+      </>
   );
 }
 

@@ -8,7 +8,7 @@ export interface ITrack {
     imgUrl: string;
     fileUrl: string;
     timePlay: string;
-    author: IAuthorDTO;
+    authors: IAuthorDTO[];
     genres: IGenreDTO[];
     subtitles: ISubtitleDTO[];
 }

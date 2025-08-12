@@ -2,7 +2,6 @@ CREATE TABLE users (
                        keycloak_id VARCHAR(36) PRIMARY KEY,
                        username VARCHAR(50) UNIQUE NOT NULL,
                        email VARCHAR(100) UNIQUE NOT NULL,
-                       bio TEXT,
                        avatar_url TEXT,
                        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -78,7 +77,6 @@ CREATE TABLE playlists (
 CREATE TABLE playlist_tracks (
                                  playlist_id BIGINT REFERENCES playlists (id) ON DELETE CASCADE,
                                  track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
-                                 position INT NOT NULL,
                                  PRIMARY KEY (playlist_id, track_id)
 );
 

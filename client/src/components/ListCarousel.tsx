@@ -92,8 +92,8 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, gap ,count_items, 
                     transform: 'translateY(-50%)',
                     zIndex: 1,
                     color: 'white',
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
+                    backgroundColor: 'rgba(255,255,255,0)',
+                    '&:hover': { backgroundColor: 'rgba(255,255,255,0)' }
                 }}
             >
                 <Box component={"img"} src={arrowLeftImg} width={"30px"} height={"30px"}/>

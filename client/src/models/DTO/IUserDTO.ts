@@ -1,5 +1,5 @@
 export interface IUserDTO {
-    id: number;
+    id: string;
     name: string;
     imgUrl: string;
 }

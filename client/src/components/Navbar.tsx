@@ -49,11 +49,9 @@ const Navbar = memo(() => {
                     <Link variant={"mainSbL"} sx={linkStyles}>
                         <Dropdown/>
                     </Link>
-                    <Button>
-                        <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC"}} onClick={()=>keycloak.register()}>
-                            {t("registration")}
-                        </Link>
-                    </Button>
+                    <Link variant={"mainSbL"} sx={{...linkStyles, color: "#D9DADC",cursor: "pointer"}} onClick={()=>keycloak.register()}>
+                        {t("registration")}
+                    </Link>
                     <div>
                         {keycloak.authenticated && <LogoutButton/>}
                     </div>

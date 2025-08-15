@@ -1,8 +1,8 @@
 
-INSERT INTO users (keycloak_id, username, email, bio, avatar_url) VALUES
-('a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Alice', 'alice@example.com', 'Electronic music producer', 'https://img.com/alice.jpg'),
-('b2c3d4e5-f6g7-8901-h2i3-j4k5l6m7n8o9', 'Bob', 'bob@example.com', 'Singer-songwriter', 'https://img.com/bob.jpg'),
-('c3d4e5f6-g7h8-9012-i3j4-k5l6m7n8o9p0', 'Charlie', 'charlie@example.com', 'Music enthusiast', 'https://img.com/charlie.jpg');
+INSERT INTO users (keycloak_id, username, email, avatar_url) VALUES
+('a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Alice', 'alice@example.com', 'https://img.com/alice.jpg'),
+('b2c3d4e5-f6g7-8901-h2i3-j4k5l6m7n8o9', 'Bob', 'bob@example.com', 'https://img.com/bob.jpg'),
+('c3d4e5f6-g7h8-9012-i3j4-k5l6m7n8o9p0', 'Charlie', 'charlie@example.com', 'https://img.com/charlie.jpg');
 
 INSERT INTO authors (user_id, bio) VALUES
 ('a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Electronic music producer.'),
@@ -42,10 +42,10 @@ INSERT INTO playlists (owner_id, title, is_public, image_url) VALUES
 ('c3d4e5f6-g7h8-9012-i3j4-k5l6m7n8o9p0', 'My Favorites', true, 'https://img.com/favorites.jpg'),
 ('c3d4e5f6-g7h8-9012-i3j4-k5l6m7n8o9p0', 'Workout Mix', false, 'https://img.com/workout.jpg');
 
-INSERT INTO playlist_tracks (playlist_id, track_id, position) VALUES
-(1, 1, 1),
-(1, 3, 2),
-(2, 2, 1);
+INSERT INTO playlist_tracks (playlist_id, track_id) VALUES
+(1, 1),
+(1, 3),
+(2, 2);
 
 INSERT INTO author_followers (author_id, follower_id) VALUES
 ('a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'c3d4e5f6-g7h8-9012-i3j4-k5l6m7n8o9p0'),

@@ -54,7 +54,11 @@ const ProfilePage = () => {
                         {t("other:button-watch-all")}
                     </Button>
                 </Box>
-                <TrackList/>
+                <Box display={"grid"} sx={{
+                    gridTemplateColumns: "repeat(2, 1fr)"
+                }} gap={3}>
+                    <TrackList/>
+                </Box>
             </Box>
 
             <Box component={"section"} mt={"60px"}>

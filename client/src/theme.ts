@@ -72,5 +72,53 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiPagination: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#fff',
+                    display: "flex",
+                    justifyContent: "center"
+                },
+            },
+        },
+        MuiPaginationItem: {
+            styleOverrides: {
+                ellipsis: {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    minWidth: 44,
+                    height: 44,
+                    fontSize: '16px',
+                    '&:hover': {
+                        backgroundColor: 'white',
+                        color: "black"
+                    },
+                },
+                root: {
+                    minWidth: "44px",
+                    height: "44px",
+                    color: 'black',
+                    border: "1px solid black",
+                    borderRadius: "10px",
+                    fontFamily: '"Work Sans", sans-serif',
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    userSelect: 'none',
+                    textTransform: "none",
+                    lineHeight: 1.5,
+                    '&.Mui-selected': {
+                        backgroundColor: 'black',
+                        color: '#fff',
+                    },
+                    // например, при наведении
+                    '&:hover': {
+                        backgroundColor: 'black',
+                        color: '#fff',
+                    },
+                },
+            },
+        },
     }
 });

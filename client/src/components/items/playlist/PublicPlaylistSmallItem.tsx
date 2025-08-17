@@ -2,6 +2,7 @@ import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
+import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
 
 interface PlaylistItemProps {
     playlist: string;
@@ -11,6 +12,7 @@ interface PlaylistItemProps {
 const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
 
     const { t } = useTranslation('other')
+    const route = useAppNavigate()
 
     return (
         <Box
@@ -20,15 +22,26 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) =
                 boxShadow: "none",
                 color: 'black',
                 flexShrink: 0,
+                cursor: "pointer",
+                transition: 'background-color 0.3s ease',
+                "&:hover": {
+                    backgroundColor: "gray"
+                }
             }}
+            onClick={() => route(`/playlist/${playlist}`)}
         >
             <Box position={"relative"} width={itemWidth} height={itemWidth} bgcolor={"white"} borderRadius={"10px"}>
-                <IconButton sx={{
-                    padding: 0,
-                    position: "absolute",
-                    top: 80,
-                    left: 80,
-                }}>
+                <IconButton
+                    onClick={(e) => {
+                        e.stopPropagation()
+                    }}
+                    sx={{
+                        padding: 0,
+                        position: "absolute",
+                        top: 80,
+                        left: 80
+                    }}
+                >
                     <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                          height={"30px"}/>
                 </IconButton>

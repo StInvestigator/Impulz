@@ -7,6 +7,7 @@ import ProfilePage from "../pages/ProfilePage.tsx";
 import AlbumColaborationPlaylistPage from "../pages/AlbumColaborationPlaylistPage.tsx";
 import AuthorPage from "../pages/AuthorPage.tsx";
 import TopSelectionsPage from "../pages/TopSelectionsPage.tsx";
+import PlaylistItemPage from "../pages/PlaylistItemPage.tsx";
 
 
 const pages = [
@@ -41,6 +42,10 @@ const pages = [
     {
         path: "/allTopSelections",
         Component: TopSelectionsPage,
+    },
+    {
+        path: "/playlist/:name",
+        Component: PlaylistItemPage,
     }
 ]
 

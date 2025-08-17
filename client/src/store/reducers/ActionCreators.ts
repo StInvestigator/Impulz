@@ -10,7 +10,7 @@ export const fetchPlaylists = createAsyncThunk<
     'playlist/fetchAll',
     async (_, {rejectWithValue}) => {
         try {
-            const response = await $authApi.get<IPlaylist[]>("http://localhost:8083/api/playlists/")
+            const response = await $authApi.get<IPlaylist[]>("/api/playlists/")
             return response.data;
         } catch (e) {
             return rejectWithValue("Не удалось загрузить пользователей")

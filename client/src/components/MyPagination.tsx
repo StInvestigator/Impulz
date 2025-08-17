@@ -1,7 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { Pagination, PaginationItem, Typography } from '@mui/material';
 
 interface CustomPaginationProps {
     currentPage: number;
@@ -9,158 +7,58 @@ interface CustomPaginationProps {
     onPageChange: (page: number) => void;
 }
 
-const MyPagination: React.FC<CustomPaginationProps> = ({currentPage, totalPages, onPageChange}) => {
-    const getPageNumbers = () => {
-        const pages: (number | string)[] = [];
-
-        const blockStart = Math.floor((currentPage - 1) / 10) * 10;
-
-        // Рассчитываем предпоследнюю как ближайшее кратное 10 от currentPage
-        const nearestMultipleOf10 = Math.min(
-            Math.ceil(currentPage / 10) * 10,
-            totalPages - 1
-        );
-
-        // Добавляем первую страницу
-        if (blockStart === 0){
-            pages.push(1);
-        }
-        else{
-            pages.push(blockStart);
-        }
-
-        // Троеточие после 1, если надо
-        if (currentPage > 5) {
-            pages.push('...');
-        }
-
-        // Добавляем текущую и соседей
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-            if (i > 1 && i < totalPages) {
-                pages.push(i);
-            }
-        }
-
-        // Предпоследняя кратная 10, если не дублируется
-        if (
-            nearestMultipleOf10 !== totalPages &&
-            !pages.includes(nearestMultipleOf10)
-        ) {
-            if (
-                typeof pages[pages.length - 1] === 'number' &&
-                (pages[pages.length - 1] as number) < nearestMultipleOf10 - 1
-            ) {
-                pages.push('...');
-            }
-            pages.push(nearestMultipleOf10);
-        }
-
-        // Последняя страница
-        if (!pages.includes(totalPages)) {
-            pages.push(totalPages);
-        }
-
-        return pages;
-    };
-
-    const handleClick = (page: number | string) => {
-        if (typeof page === 'number' && page !== currentPage) {
-            onPageChange(page);
-        }
-    };
-
-    const handlePrevious = () => {
-        if (currentPage > 1) onPageChange(currentPage - 1);
-    };
-
-    const handleNext = () => {
-        if (currentPage < totalPages) onPageChange(currentPage + 1);
-    };
-
+function CustomPrevious() {
     return (
-        <Box display="flex" justifyContent="center" gap={3}>
-            <Button
-                variant="outlined"
-                onClick={handlePrevious}
-                disabled={currentPage === 1}
-                sx={{
-                    padding: "12px",
-                    color: "black",
-                    border: "1px solid black",
-                    textTransform: "none",
-                    borderRadius: "10px",
-                    "&:hover": {
-                        backgroundColor: "black",
-                        color: "white"
-                    }
-                }}
-            >
-                <KeyboardArrowLeftIcon sx={{
-                    width: "20px",
-                    height: "20px"
-                }}/>
-                <Typography variant={"mainSbL"} >
-                    Попередня
-                </Typography>
-            </Button>
+        <Typography variant="mainSbL" sx={{ userSelect: 'none', padding: "12px" }}>
+            ← Назад
+        </Typography>
+    );
+}
 
-            {getPageNumbers().map((item, index) => (
-                typeof item === 'number' ? (
-                    <Button
-                        key={index}
-                        onClick={() => handleClick(item)}
-                        sx={{
-                            padding: "12px",
-                            color: item === currentPage ? "white" : "black",
-                            backgroundColor: item === currentPage ? "black" : "transparent",
-                            border: "1px solid black",
-                            textTransform: "none",
-                            minWidth: 'unset',
-                            borderRadius: "10px",
-                            "&:hover": {
-                                backgroundColor: "black",
-                                color: "white",
-                            },
-                        }}
-                    >
-                        <Typography variant={"mainSbL"} width={"20px"} height={"20px"}>
-                            {item}
-                        </Typography>
-                    </Button>
-                ) : (
-                    <Typography key={index} width={"20px"} height={"20px"} variant="button" sx={{
-                        padding: "12px",
-                        textAlign: "center",
-                        border: "1px solid black",
-                        borderRadius: "10px",
-                    }}>
-                        {item}
-                    </Typography>
-                )
-            ))}
+function CustomNext() {
+    return (
+        <Typography variant="mainSbL" sx={{ userSelect: 'none', padding: "12px" }}>
+            Вперёд →
+        </Typography>
+    );
+}
 
-            <Button
-                variant="outlined"
-                onClick={handleNext}
-                disabled={currentPage === totalPages}
-                sx={{
-                    padding: "12px",
-                    color: "black",
-                    border: "1px solid black",
-                    textTransform: "none",
-                    borderRadius: "10px",
-                    "&:hover": {
-                        backgroundColor: "black",
-                        color: "white"
-                    }
-                }}
-            >
-                <Typography variant={"mainSbL"} >
-                    Наступна
-                </Typography>
-                <KeyboardArrowRightIcon/>
-            </Button>
-        </Box>
+function CustomFirst() {
+    return (
+        <Typography variant="mainSbL" sx={{ userSelect: 'none', padding: "12px" }}>
+            « В начало
+        </Typography>
+    );
+}
+
+function CustomLast() {
+    return (
+        <Typography variant="mainSbL" sx={{ userSelect: 'none', padding: "12px" }}>
+            В конец »
+        </Typography>
+    );
+}
+
+const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+    return (
+        <Pagination
+            count={totalPages}
+            page={currentPage}
+            showFirstButton
+            showLastButton
+            onChange={(_, page) => onPageChange(page)}
+            renderItem={(item) => (
+                <PaginationItem
+                    {...item}
+                    slots={{
+                        previous: CustomPrevious,
+                        next: CustomNext,
+                        first: CustomFirst,
+                        last: CustomLast,
+                    }}
+                />
+            )}
+        />
     );
 };
 

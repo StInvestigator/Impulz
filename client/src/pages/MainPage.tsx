@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 
+import { useEffect } from 'react';
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
@@ -10,8 +11,6 @@ import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
-
-import {$authApi} from "../http";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {fetchPlaylists} from "../store/reducers/ActionCreators.ts";
 
@@ -41,6 +40,25 @@ const playlist = [
 
 
 const MainPage = () => {
+    const {playlists} = useAppSelector(state => state.PlaylistReducer)
+    const dispatch = useAppDispatch()
+
+    const fetchData = async () => {
+        try {
+            dispatch(fetchPlaylists())
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        setTimeout(() => {
+            console.log(playlists);
+        }, 1000)
+    }, []);
+
+
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
     return (

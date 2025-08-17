@@ -1,4 +1,3 @@
-import {Box} from "@mui/material";
 import TrackSmallItem from "../items/track/TrackSmallItem.tsx";
 
 const tracks = [
@@ -14,13 +13,11 @@ const TrackList = () => {
 
 
     return (
-        <Box display={"grid"} sx={{
-            gridTemplateColumns: "repeat(2, 1fr)"
-        }} gap={3}>
+        <>
             {tracks.map(track =>
                 <TrackSmallItem key={track} track={track}/>
             )}
-        </Box>
+        </>
     );
 };
 

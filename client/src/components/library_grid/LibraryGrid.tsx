@@ -1,8 +1,13 @@
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CirclesCard from './CirclesCard';
+import BackdropCircle from './BackdropCircle';
 
 import bg1 from "../../assets/library/library_bg1.png";
+
+// Диаметры заданы в компонентах через constants.ts
 
 type Element = {
     title: string;
@@ -34,20 +39,7 @@ const elements: Element[] = [
     { title: 'Для вас', imageUrl: bg1, align: 'left', height: 1, width: 1, borderRadius: "10px" },
     { title: 'Інструментальна музика', imageUrl: bg1, align: 'center', height: 1, width: 1, borderRadius: "10px" },
     { title: 'Інструментальна музика', imageUrl: bg1, align: 'right', height: 1, width: 1, borderRadius: "10px" },
-
-    { title: 'Для вас', imageUrl: bg1, align: 'left', height: 1, width: 1, borderRadius: "10px" },
-    { title: 'Інструментальна музика', imageUrl: bg1, align: 'center', height: 1, width: 1, borderRadius: "10px" },
-    { title: 'Інструментальна музика', imageUrl: bg1, align: 'right', height: 1, width: 1, borderRadius: "10px" },
-
-    { title: 'Для вас', imageUrl: bg1, align: 'left', height: 1, width: 1, borderRadius: "10px" },
-    { title: 'Інструментальна музика', imageUrl: bg1, align: 'center', height: 1, width: 1, borderRadius: "10px" },
-    { title: 'Інструментальна музика', imageUrl: bg1, align: 'right', height: 1, width: 1, borderRadius: "10px" },
 ];
-
-interface BlockProps {
-    image: string;
-    align: Element['align'];
-}
 
 const GridContainer = styled('div')(({ theme }) => ({
     display: 'grid',
@@ -64,54 +56,67 @@ const GridItem = styled('div')<{
     height: `calc(${rowSpan} * 200px + ${(rowSpan - 1) * 24}px)`,
 }));
 
-const Block = styled(Box)<BlockProps>(({ theme, image, align }) => ({
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    backgroundImage: `url(${image})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    display: 'flex',
-    justifyContent:
-        align === 'left'
-            ? 'flex-start'
-            : align === 'center'
-                ? 'center'
-                : 'flex-end',
-    alignItems: 'flex-start',
-    padding: theme.spacing(1),
-    boxSizing: 'border-box',
-    fontSize: '24px',
-    fontWeight: 700,
-    cursor: 'pointer',
-    placeItems: 'center',
-    paddingBlock: 0,
-    paddingInline: 0,
-    color: 'Black'
-}));
+// Карточка и фон вынесены в отдельные компоненты
 
 
 const LibraryGrid = () => {
 
     const navigate = useNavigate();
 
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [center, setCenter] = useState<{ x: number; y: number } | null>(null);
+
+    useLayoutEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+
+        let raf = 0;
+        const update = () => {
+            const r = el.getBoundingClientRect();
+            setCenter({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+        };
+
+        // run once after layout settles (helps during HMR)
+        raf = requestAnimationFrame(update);
+
+        const ro = new ResizeObserver(() => {
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(update);
+        });
+        ro.observe(el);
+
+        window.addEventListener('resize', update);
+        return () => {
+            cancelAnimationFrame(raf);
+            ro.disconnect();
+            window.removeEventListener('resize', update);
+        };
+    }, []);
+
     return (
-    <GridContainer>
-        {elements.map((elem, index) => (
-            <GridItem
-                onClick={()=>navigate('/category?category='+elem.title)}
-                key={index}
-                colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
-                rowSpan={elem.height}
-            >
-                <Block image={elem.imageUrl} align={elem.align} borderRadius={elem.borderRadius}>
-                    <Box sx={{ backgroundColor: '#FFF', padding: '12px', borderRadius: '10px' }}>
-                        {elem.title}
-                    </Box>
-                </Block>
-            </GridItem>
-        ))}
-    </GridContainer>)
+        <Box ref={containerRef} position={"relative"} width={"100%"}>
+            {/* Полупрозрачный центральный бэкграунд */}
+            <BackdropCircle />
+            <GridContainer>
+                {elements.map((elem, index) => (
+                    <GridItem
+                        onClick={()=>navigate('/category?category='+elem.title)}
+                        key={index}
+                        colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
+                        rowSpan={elem.height}
+                    >
+                        <CirclesCard image={elem.imageUrl} align={elem.align} borderRadius={elem.borderRadius} center={center}>
+                            <Box
+                                sx={{ backgroundColor: '#FFF', padding: '12px', borderRadius: '10px' }}
+                            >
+                                {elem.title}
+                            </Box>
+                        </CirclesCard>
+                    </GridItem>
+                ))}
+            </GridContainer>
+        </Box>
+    )
 };
 
 export default LibraryGrid;

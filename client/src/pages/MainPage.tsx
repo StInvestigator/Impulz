@@ -12,10 +12,10 @@ import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
-import {fetchPlaylists} from "../store/reducers/ActionCreators.ts";
+import {fetchPlaylists} from "../store/reducers/action-creators/playlist.ts";
 
 const tracks = [
-    'Трек 1', 'Трек 2', 'Трек 3',
+    'Трек 2', 'Трек 2', 'Трек 3',
     'Трек 4', 'Трек 5', 'Трек 6',
     'Трек 7', 'Трек 8', 'Трек 9', 'Трек 10', 'Трек 11',
     'Трек 12', 'Трек 13', 'Трек 14',

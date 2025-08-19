@@ -12,6 +12,7 @@ import {theme} from "./theme.ts";
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import { useEffect } from "react";
+import Player from './components/Player.tsx';
 
 function App() {
   return (
@@ -90,6 +91,7 @@ const SecuredContent = () => {
               <AppRouter />
             </Box>
           </Box>
+          <Player/>
           <Footer />
         </ThemeProvider>
       </>

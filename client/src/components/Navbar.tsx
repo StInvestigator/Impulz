@@ -22,7 +22,7 @@ const Navbar = memo(() => {
 
 
     return (
-        <AppBar sx={{backgroundColor: "black", zIndex: (theme) => theme.zIndex.drawer + 1}}>
+        <AppBar sx={{backgroundColor: "black", zIndex: (theme) => theme.zIndex.drawer + 3}}>
             <Toolbar variant="dense" sx={{display:"flex", justifyContent: "space-between"}}>
                 <Box sx={{
                     width: "766px",

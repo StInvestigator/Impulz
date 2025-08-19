@@ -1,6 +1,6 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import type {IPlaylist} from "../../models/IPlaylist.ts";
-import {fetchPlaylists} from "./ActionCreators.ts";
+import {fetchPlaylists} from "./action-creators/playlist.ts";
 
 interface PlaylistState {
     isLoading: boolean;

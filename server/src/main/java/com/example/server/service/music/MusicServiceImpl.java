@@ -1,5 +1,6 @@
-package com.example.server.service;
+package com.example.server.service.music;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,20 +15,14 @@ import java.io.IOException;
 import java.time.Duration;
 
 @Service
-public class MusicService {
+@RequiredArgsConstructor
+public class MusicServiceImpl implements MusicService{
     private final S3Client s3Client;
     private final S3Presigner presigner;
-    private final String bucketName;
 
-    public MusicService(
-            S3Client s3Client,
-            S3Presigner presigner,
-            @Value("${aws.s3.bucket-name}") String bucketName
-    ) {
-        this.s3Client = s3Client;
-        this.presigner = presigner;
-        this.bucketName = bucketName;
-    }
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
+
 
     public String uploadMusic(MultipartFile file, String fileName) throws IOException {
         String key = "music/" + fileName;

@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "genres")
 public class Genre {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable = false, unique = true, length = 50)
     private String name;
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "genres") private Set<Track> tracks = new HashSet<>();

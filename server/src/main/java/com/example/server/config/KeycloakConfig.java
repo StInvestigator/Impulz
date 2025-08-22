@@ -1,4 +1,4 @@
-package com.example.server.controller;
+package com.example.server.config;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;

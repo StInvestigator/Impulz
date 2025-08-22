@@ -10,6 +10,11 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9090/realms/Impulz
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
 
   datasource:
     url: jdbc:postgresql://localhost:5435/impulz

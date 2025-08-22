@@ -1,36 +1,19 @@
-package com.example.server.service;
+package com.example.server.service.keycloak;
+
 
 import com.example.server.model.User;
 import com.example.server.model.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.jwt.Jwt;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
-@Slf4j
-@Service
+@Log4j2
 @RequiredArgsConstructor
-@Transactional
-public class KeycloakSyncService {
+@Service
+public class KeycloakServiceImpl implements KeycloakService {
     private final UserRepository userRepository;
 
-    public User syncUserFromKeycloak(Jwt jwt) {
-        Objects.requireNonNull(jwt, "JWT cannot be null");
-        String keycloakId = jwt.getSubject();
-        String username = jwt.getClaim("preferred_username");
-        String email = jwt.getClaim("email");
-
-        log.debug("Syncing user: {}, username: {}, email: {}", keycloakId, username, email);
-
-        return userRepository.findById(keycloakId)
-                .map(existingUser -> updateExistingUser(existingUser, username, email))
-                .orElseGet(() -> createNewUser(keycloakId, username, email));
-    }
-
-    private User updateExistingUser(User user, String username, String email) {
+    public User updateExistingUser(User user, String username, String email) {
         boolean needsUpdate = false;
 
         if (username != null && !username.equals(user.getUsername())) {
@@ -52,7 +35,7 @@ public class KeycloakSyncService {
         return user;
     }
 
-    private User createNewUser(String id, String username, String email) {
+    public User createNewUser(String id, String username, String email) {
         User newUser = new User();
         newUser.setId(id);
         newUser.setUsername(username);

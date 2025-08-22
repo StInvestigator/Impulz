@@ -1,7 +1,7 @@
 package com.example.server.controller;
 
 import com.example.server.model.Playlist;
-import com.example.server.service.playlist.PlaylistService;
+import com.example.server.service.playlist.PlaylistServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,15 +13,15 @@ import java.util.List;
 @RequestMapping("/playlists")
 public class PlaylistController {
 
-    private final PlaylistService  playlistService;
+    private final PlaylistServiceImpl playlistServiceImpl;
 
     @Autowired
-    public PlaylistController(PlaylistService playlistService) {
-        this.playlistService = playlistService;
+    public PlaylistController(PlaylistServiceImpl playlistServiceImpl) {
+        this.playlistServiceImpl = playlistServiceImpl;
     }
 
     @GetMapping("/")
     public List<Playlist> getAllPlaylists() {
-        return playlistService.getAllPlaylists();
+        return playlistServiceImpl.getAllPlaylists();
     }
 }

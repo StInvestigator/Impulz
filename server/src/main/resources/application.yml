@@ -48,8 +48,8 @@ aws:
   region: us-east-1
   s3:
     bucket-name: impulz-bucket-1
-  accessKeyId: AKIAT7YEJYD365MFO3QJ
-  secretKey: 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
+  accessKeyId: AKIAT7YEJYD3ZCZVXUMF
+  secretKey: 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
 
 music:
   base-url: https://impulz-bucket-1.s3.us-east-1.amazonaws.com/music/

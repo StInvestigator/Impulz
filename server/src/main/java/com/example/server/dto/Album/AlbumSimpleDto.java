@@ -9,7 +9,7 @@ import java.util.Set;
 public class AlbumSimpleDto
 {
     private Long id;
-    private String name;
+    private String title;
     private String imgUrl;
     private String createdAt;
     private Set<UserSimpleDto> authors;

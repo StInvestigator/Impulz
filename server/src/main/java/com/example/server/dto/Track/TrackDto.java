@@ -3,6 +3,7 @@ package com.example.server.dto.Track;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Genre.GenreSimpleDto;
 import com.example.server.dto.Subtitle.SubtitleSimpleDto;
+import com.example.server.model.Album;
 import lombok.Data;
 
 import java.util.Set;
@@ -11,10 +12,11 @@ import java.util.Set;
 public class TrackDto
 {
     private Long id;
-    private String name;
+    private String title;
     private String imgUrl;
     private String fileUrl;
-    private String timePlay;
+    private Long durationSec;
+    private Album album;
     private Set<AuthorSimpleDto> authors;
     private Set<GenreSimpleDto> genre;
     private Set<SubtitleSimpleDto> subtitles;

@@ -1,5 +1,6 @@
 package com.example.server.controller;
 
+import com.example.server.model.Track;
 import com.example.server.service.music.MusicServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,10 @@ public class MusicController
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
             @RequestParam("file")MultipartFile file,
-            @RequestParam String fileName
+            @RequestParam Track track
     ) throws IOException {
-        String result = musicServiceImpl.uploadMusic(file, fileName);
-        return ResponseEntity.ok(result);
+        musicServiceImpl.uploadMusic(file, track);
+        return ResponseEntity.ok("Track successfully saved");
     }
 
     @GetMapping("/stream/{fileName}")

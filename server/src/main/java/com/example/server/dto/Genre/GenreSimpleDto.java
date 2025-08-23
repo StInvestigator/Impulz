@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class GenreSimpleDto
 {
-    private Integer id;
+    private Long id;
     private String name;
 }

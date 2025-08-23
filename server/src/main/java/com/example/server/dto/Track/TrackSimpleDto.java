@@ -1,7 +1,5 @@
 package com.example.server.dto.Track;
 
-import com.example.server.dto.Album.AlbumSimpleDto;
-import com.example.server.dto.User.UserSimpleDto;
 import lombok.Data;
 
 import java.util.Set;
@@ -10,10 +8,9 @@ import java.util.Set;
 public class TrackSimpleDto
 {
     private Long id;
-    private String name;
-    private String timePlay;
+    private String title;
+    private Long durationSec;
     private String imgUrl;
-    private String fileUrl;
-    private Set<UserSimpleDto> authors;
-    private AlbumSimpleDto album;
+    private Set<String> authors;
+    private String album;
 }

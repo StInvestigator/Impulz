@@ -10,9 +10,9 @@ import java.util.Set;
 public class AuthorDto
 {
     private String bio;
+    private String imgUrl;
     private Long followersCount;
     private Long subscriptions;
     private Set<TrackSimpleDto> tracks;
     private Set<AlbumSimpleDto> albums;
-    private Set<AuthorSimpleDto> followersList;
 }

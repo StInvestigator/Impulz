@@ -28,7 +28,7 @@ public class Track {
     private String title;
 
     @Column(name = "duration_sec", nullable = false)
-    private Integer durationSec;
+    private Long durationSec;
 
     @Column(name = "file_url", nullable = false)
     private String fileUrl;

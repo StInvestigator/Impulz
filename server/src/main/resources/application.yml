@@ -1,3 +1,6 @@
+app:
+  temp-dir: ${java.io.tmpdir}/audio_uploads
+
 spring:
   application:
     name: server
@@ -48,8 +51,8 @@ aws:
   region: us-east-1
   s3:
     bucket-name: impulz-bucket-1
-  accessKeyId: AKIAT7YEJYD365MFO3QJ
-  secretKey: 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
+  accessKeyId: AKIAT7YEJYD37Q7ZO6EO
+  secretKey: 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
 
 music:
   base-url: https://impulz-bucket-1.s3.us-east-1.amazonaws.com/music/

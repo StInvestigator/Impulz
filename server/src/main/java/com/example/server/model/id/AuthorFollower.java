@@ -4,11 +4,13 @@ import com.example.server.model.*;
 import com.example.server.model.key.AuthorFollowerKey;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 
 @Data
 @Entity
+@ToString(exclude = {"author","follower"})
 @Table(name = "author_followers")
 public class AuthorFollower {
     @EmbeddedId

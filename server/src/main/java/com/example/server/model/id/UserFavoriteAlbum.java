@@ -7,11 +7,13 @@ import com.example.server.model.key.UserFavoritePlaylistKey;
 import com.example.server.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 
 @Data
 @Entity
+@ToString(exclude = {"user","album"})
 @Table(name = "user_favorite_albums")
 public class UserFavoriteAlbum {
     @EmbeddedId

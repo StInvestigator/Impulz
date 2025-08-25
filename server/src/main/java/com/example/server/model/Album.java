@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = {"authors"})
+@ToString(exclude = {"authors","tracks"})
 @Table(name = "albums")
 public class Album {
     @Id
@@ -30,7 +30,7 @@ public class Album {
     private String title;
 
     @Column(name = "release_date")
-    private LocalDate releaseDate;
+    private OffsetDateTime releaseDate;
 
     @Column(name = "image_url")
     private String imageUrl;

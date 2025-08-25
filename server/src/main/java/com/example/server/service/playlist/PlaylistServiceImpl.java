@@ -8,33 +8,28 @@ import com.example.server.model.Track;
 import com.example.server.model.id.PlaylistTrack;
 import com.example.server.model.key.PlaylistTrackKey;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PlaylistServiceImpl implements PlaylistService {
-    private final PlaylistRepository playlistRepo;
-    private final TrackRepository trackRepo;
-    private final PlaylistTrackRepository playlistTrackRepo;
+    private final PlaylistRepository playlistRepository;
+    private final TrackRepository trackRepository;
+    private final PlaylistTrackRepository playlistTrackRepository;
 
-    public PlaylistServiceImpl(PlaylistRepository playlistRepo,
-                               TrackRepository trackRepo,
-                               PlaylistTrackRepository playlistTrackRepo) {
-        this.playlistRepo = playlistRepo;
-        this.trackRepo = trackRepo;
-        this.playlistTrackRepo = playlistTrackRepo;
-    }
 
     public List<Playlist> getAllPlaylists() {
-        return playlistRepo.findAll();
+        return playlistRepository.findAll();
     }
 
     public void addTrackToPlaylist(Long playlistId, Long trackId, int position) {
         // Загружаем существующие сущности
-        Playlist playlist = playlistRepo.findById(playlistId)
+        Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found"));
-        Track track = trackRepo.findById(trackId)
+        Track track = trackRepository.findById(trackId)
                 .orElseThrow(() -> new EntityNotFoundException("Track not found"));
 
         // Формируем ключ и саму запись
@@ -46,6 +41,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         entry.setPosition(position);
 
         // Сохраняем
-        playlistTrackRepo.save(entry);
+        playlistTrackRepository.save(entry);
     }
 }

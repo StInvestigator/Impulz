@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@ToString(exclude = {"owner"})
+@ToString(exclude = {"owner","tracks","favoredBy"})
 @Entity
 @Table(name = "playlists")
 public class Playlist {

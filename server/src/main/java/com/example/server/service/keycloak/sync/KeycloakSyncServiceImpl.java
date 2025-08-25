@@ -1,7 +1,7 @@
 package com.example.server.service.keycloak.sync;
 
 import com.example.server.model.User;
-import com.example.server.model.repository.UserRepository;
+import com.example.server.data.repository.UserRepository;
 import com.example.server.service.keycloak.KeycloakServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

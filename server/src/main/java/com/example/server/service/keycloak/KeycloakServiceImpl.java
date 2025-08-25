@@ -2,7 +2,7 @@ package com.example.server.service.keycloak;
 
 
 import com.example.server.model.User;
-import com.example.server.model.repository.UserRepository;
+import com.example.server.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

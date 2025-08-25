@@ -3,11 +3,13 @@ import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
 import LibraryPage from '../pages/LibraryPage.tsx';
 import CategoryPage from '../pages/CategoryPage.tsx';
-import ProfilePage from "../pages/ProfilePage.tsx";
+import AuthorProfilePage from "../pages/AuthorProfilePage.tsx";
 import AlbumColaborationPlaylistPage from "../pages/AlbumColaborationPlaylistPage.tsx";
 import AuthorPage from "../pages/AuthorPage.tsx";
 import TopSelectionsPage from "../pages/TopSelectionsPage.tsx";
 import PlaylistItemPage from "../pages/PlaylistItemPage.tsx";
+import FavoriteTracksPage from "../pages/FavoriteTracksPage.tsx";
+import UserProfilePage from "../pages/UserProfilePage.tsx";
 
 
 const pages = [
@@ -29,7 +31,11 @@ const pages = [
     },
     {
         path: "/author/:name",
-        Component: ProfilePage,
+        Component: AuthorProfilePage,
+    },
+    {
+        path: "/user/:name",
+        Component: UserProfilePage,
     },
     {
         path: "/all",
@@ -46,6 +52,10 @@ const pages = [
     {
         path: "/playlist/:name",
         Component: PlaylistItemPage,
+    },
+    {
+        path: "/favoriteTracks",
+        Component: FavoriteTracksPage,
     }
 ]
 

@@ -1,5 +1,5 @@
 import {Box, Button, Typography} from "@mui/material";
-import ProfileAuthor from "../components/ProfileAuthor.tsx";
+import Profile from "../components/Profile.tsx";
 import {useParams} from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
 import AlbumList from "../components/lists/AlbumList.tsx";
@@ -24,7 +24,7 @@ const albums = [
     "Альбом 5",
 ]
 
-const ProfilePage = () => {
+const AuthorProfilePage = () => {
     const {name} = useParams<{name: string}>();
     const route = useAppNavigate();
     const { t } = useTranslation(["authorPage", "other"]);
@@ -34,7 +34,7 @@ const ProfilePage = () => {
             <Box component={"section"} height={"450px"} sx={{
                 backgroundColor: "#D9D9D9"
             }}>
-                <ProfileAuthor name={name ?? "Анонім"}/>
+                <Profile type="author" name={name ?? "Анонім"}/>
             </Box>
 
             <Box component={"section"} mt={"60px"}>
@@ -124,4 +124,4 @@ const ProfilePage = () => {
     );
 };
 
-export default ProfilePage;
+export default AuthorProfilePage;

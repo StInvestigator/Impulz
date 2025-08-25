@@ -20,7 +20,6 @@ public class MusicServiceImpl implements MusicService{
     private static final String S3_MUSIC_PREFIX = "music/";
 
     private final S3StorageServiceImpl s3StorageService;
-    private final AudioServiceImpl audioService;
     private final TrackRepository trackRepository;
 
     @Transactional(rollbackFor = Exception.class)
@@ -31,14 +30,13 @@ public class MusicServiceImpl implements MusicService{
             throw new RuntimeException("File already exists: " + track.getTitle());
         }
 
-        AudioMetadata metadata = audioService.extractMetadata(file);
 
         track.setFileUrl(key);
-        track.setDurationSec(metadata.getDurationSec());
+        track.setDurationSec(1L);
         Track savedTrack = trackRepository.save(track);
 
         try {
-            s3StorageService.uploadFile(file, key, metadata.getContentType());
+            s3StorageService.uploadFile(file, key, "");
             return savedTrack;
 
         } catch (Exception e) {

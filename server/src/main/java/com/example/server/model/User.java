@@ -4,6 +4,7 @@ import com.example.server.model.id.UserFavoriteAlbum;
 import com.example.server.model.id.UserFavoritePlaylist;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@ToString(exclude = {"authorProfile","playlists","favoriteAlbums","favoritePlaylists"})
 @Table(name = "users")
 public class User {
     @Id
@@ -37,4 +39,10 @@ public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Playlist> playlists = new HashSet<>();
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserFavoriteAlbum> favoriteAlbums = new HashSet<>();
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<UserFavoritePlaylist> favoritePlaylists = new HashSet<>();
 }

@@ -1,0 +1,20 @@
+package com.example.server.controller.model;
+
+import com.example.server.data.repository.GenreRepository;
+import com.example.server.dto.Genre.GenreSimpleDto;
+import com.example.server.model.Genre;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/genre")
+@RequiredArgsConstructor
+public class GenreController {
+    private final GenreRepository genreRepository;
+
+    @GetMapping("/simpleDto/{id}")
+    public GenreSimpleDto getGenreSimpleDto(@PathVariable Long id){
+        Genre genre = genreRepository.getGenreById(id);
+        return GenreSimpleDto.fromEntity(genre);
+    }
+}

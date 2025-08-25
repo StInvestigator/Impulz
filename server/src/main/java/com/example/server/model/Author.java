@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = {"albums","tracks"})
+@ToString(exclude = {"albums","tracks","followers"})
 @Table(name = "authors")
 public class Author {
     @Id

@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"album"})
-@EqualsAndHashCode(exclude = {"album",""})
+@EqualsAndHashCode(exclude = {"album","authors","genres","subtitles","plays","playlistEntries"})
 @Table(name = "tracks")
 public class Track {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

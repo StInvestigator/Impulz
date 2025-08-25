@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  app:
+    build: .
+    environment:
+      - FFMPEG_PATH=/usr/bin/ffmpeg
+    ports:
+      - ""
   postgres:
     image: postgres:17.4
     container_name: app_postgres

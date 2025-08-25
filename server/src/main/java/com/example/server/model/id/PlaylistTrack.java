@@ -9,11 +9,13 @@ import com.example.server.model.key.UserFavoritePlaylistKey;
 import com.example.server.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 
 @Data
 @Entity
+@ToString(exclude = {"playlist","track"})
 @Table(name = "playlist_tracks")
 public class PlaylistTrack {
     @EmbeddedId
@@ -31,4 +33,6 @@ public class PlaylistTrack {
 
     @Column(nullable = false)
     private Integer position;
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.server.service.audio;
 
 import com.example.server.data.AudioMetadata;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,17 @@ import java.io.IOException;
 public class AudioServiceImpl implements AudioService {
     @Value("${app.temp-dir:/tmp}")
     private String tempDir;
+
+    @PostConstruct
+    public void init() {
+        File dir = new File(tempDir);
+        if (!dir.exists()) {
+            boolean created = dir.mkdirs();
+            if (!created) {
+
+            }
+        }
+    }
 
     public AudioMetadata extractMetadata(MultipartFile file) {
         File tempFile = null;

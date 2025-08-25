@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = {"user"})
+@ToString(exclude = {"user","track"})
 @Table(name = "track_plays")
 public class TrackPlay {
     @Id

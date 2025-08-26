@@ -11,7 +11,9 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 
 @Service
@@ -24,7 +26,7 @@ public class S3StorageServiceImpl implements S3StorageService{
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
-    public void uploadFile(MultipartFile file, String key, String contentType) {
+    public void uploadFile(File file, String key, String contentType) {
         try {
             s3Client.putObject(
                     PutObjectRequest.builder()
@@ -32,9 +34,9 @@ public class S3StorageServiceImpl implements S3StorageService{
                             .key(key)
                             .contentType(contentType)
                             .build(),
-                    RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+                    RequestBody.fromFile(file)
             );
-        } catch (SdkException | IOException e) {
+        } catch (SdkException e) {
             throw new RuntimeException("S3 upload failed: " + e.getMessage(), e);
         }
     }

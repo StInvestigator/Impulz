@@ -13,6 +13,7 @@ import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import { useEffect } from "react";
 import Player from './components/Player.tsx';
+import {$authApi} from "./http";
 
 function App() {
   return (
@@ -41,30 +42,18 @@ const SecuredContent = () => {
     }
 
     if (initialized && keycloak.authenticated && keycloak.token) {
-      sendTokenToBackend(keycloak.token);
+      sendTokenToBackend();
     }
   }, [initialized, location, navigate, keycloak]);
 
-  const sendTokenToBackend = (token: string) => {
-    fetch('http://localhost:8083/api/login-success', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('User synced successfully:', data);
-        })
-        .catch(error => {
-          console.error('Error sending token to backend:', error);
-        });
+  const sendTokenToBackend = async() => {
+    try {
+      const response = await $authApi.post("/api/login-success");
+      console.log("user synced successfully: ",response.data);
+    }
+    catch (error){
+      console.error("Error sending token to backend:",error);
+    }
   };
 
   if (!initialized) return <div>Loading...</div>;

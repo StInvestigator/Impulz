@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 
 @Slf4j
@@ -18,6 +22,7 @@ import java.time.Duration;
 public class MusicServiceImpl implements MusicService{
 
     private static final String S3_MUSIC_PREFIX = "music/";
+    private final AudioServiceImpl audioService;
 
     private final S3StorageServiceImpl s3StorageService;
     private final TrackRepository trackRepository;
@@ -25,22 +30,37 @@ public class MusicServiceImpl implements MusicService{
     @Transactional(rollbackFor = Exception.class)
     public Track uploadMusic(MultipartFile file, Track track) {
         String key = S3_MUSIC_PREFIX + track.getTitle();
+        File tempFile = null;
 
         if (s3StorageService.fileExists(key)) {
             throw new RuntimeException("File already exists: " + track.getTitle());
         }
 
-
-        track.setFileUrl(key);
-        track.setDurationSec(1L);
-        Track savedTrack = trackRepository.save(track);
-
         try {
-            s3StorageService.uploadFile(file, key, "");
+            AudioMetadata audioMetadata = audioService.extractMetadata(file);
+            track.setFileUrl(key);
+            track.setDurationSec(audioMetadata.getDurationSec());
+
+            Track savedTrack = trackRepository.save(track);
+
+            tempFile = new File(audioMetadata.getTempFilePath());
+            s3StorageService.uploadFile(tempFile, key, audioMetadata.getContentType());
+
             return savedTrack;
 
         } catch (Exception e) {
             throw new RuntimeException("S3 upload failed: " + e.getMessage(), e);
+        } finally {
+            if (tempFile != null && tempFile.exists()) {
+                try {
+                    boolean deleted = Files.deleteIfExists(tempFile.toPath());
+                    if (!deleted) {
+                        log.warn("Failed to delete temp file: {}", tempFile.getAbsolutePath());
+                    }
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file: {}", tempFile.getAbsolutePath(), e);
+                }
+            }
         }
     }
 

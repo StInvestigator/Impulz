@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 @Slf4j
@@ -24,6 +27,7 @@ public class KeycloakSyncServiceImpl implements KeycloakSyncService {
         String keycloakId = jwt.getSubject();
         String username = jwt.getClaim("preferred_username");
         String email = jwt.getClaim("email");
+
 
         log.debug("Syncing user: {}, username: {}, email: {}", keycloakId, username, email);
 

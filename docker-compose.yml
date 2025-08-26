@@ -1,12 +1,24 @@
 version: "3.8"
 
 services:
-  app:
-    build: .
+  minio:
+    image: minio/minio
+    container_name: impulz_minio
     environment:
-      - FFMPEG_PATH=/usr/bin/ffmpeg
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
     ports:
-      - ""
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
   postgres:
     image: postgres:17.4
     container_name: app_postgres
@@ -55,3 +67,4 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:

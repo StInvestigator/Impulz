@@ -13,29 +13,32 @@ import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
     private final KeycloakSyncServiceImpl keycloakSyncServiceImpl;
-
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
+    private final JwtDecoder jwtDecoder;
 
     @PostMapping("/login-success")
     public ResponseEntity<?> handleLoginSuccess(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        JwtDecoder decoder = JwtDecoders.fromIssuerLocation(issuerUri);
-        Jwt jwt = decoder.decode(token);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-        log.info("Processing login for user: {}", jwt.getSubject());
+        String token = authHeader.replace("Bearer ", "");
+
         try {
+            Jwt jwt = jwtDecoder.decode(token);
+            log.info("Processing login for user: {}", jwt.getSubject());
+
             User user = keycloakSyncServiceImpl.syncUserFromKeycloak(jwt);
             return ResponseEntity.ok(user);
+
         } catch (Exception e) {
-            log.error("Login processing failed", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            log.error("Login processing failed: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
         }
     }
 }

@@ -1,32 +1,51 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { Box, Grid, IconButton } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import sharik from "../assets/mp3/butyrka-sharik.mp3"
 import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
 
 
 let audio: HTMLAudioElement;
 
+import { $authApi } from '../http/index.ts';
+
+const musicService = {
+    getStreamUrl: async (id: number): Promise<string> => {
+        const response = await $authApi.get(`/api/music/stream/${id}`);
+        return response.data;
+    },
+};
+
 const Player = () => {
     const {pause, currentTime, duration, volume} = useAppSelector(state => state.player)
     const dispatch = useAppDispatch()
+    const [streamUrl, setStreamUrl] = useState<string>('');
 
     useEffect(() => {
-        if (!audio) {
-            audio = new Audio()
-            audio.src = sharik
-            audio.onloadedmetadata = () => {
-                dispatch(setDuration(Math.ceil(audio.duration)))
+        loadStreamUrl();
+    }, []);
+
+    const loadStreamUrl = async () => {
+        try {
+            const url = await musicService.getStreamUrl(23);
+            setStreamUrl(url);
+
+            if (!audio) {
+                audio = new Audio(url);
+                audio.onloadedmetadata = () => {
+                    dispatch(setDuration(Math.ceil(audio.duration)));
+                };
+                audio.ontimeupdate = () => {
+                    dispatch(setCurrentTime(Math.ceil(audio.currentTime)));
+                };
             }
-            audio.ontimeupdate = () => {
-                dispatch(setCurrentTime(Math.ceil(audio.currentTime)))
-            }
+        } catch (error) {
+            console.error('Error loading stream URL:', error);
         }
-    }, [])
+    };
 
     const play = () => {
         if (pause) {
@@ -49,6 +68,9 @@ const Player = () => {
         dispatch(setCurrentTime(Number(e.target.value)))
     }
 
+    if(!streamUrl){
+        return <div>Loading...</div>
+    }
 
     return (
         <Box height={"60px"} width={"100%"} position={"fixed"} bottom={0} display={"flex"} alignItems={"center"} padding={"0 10px"} bgcolor={"lightgray"} boxSizing={"border-box"} sx={{

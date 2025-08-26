@@ -1,8 +1,10 @@
 package com.example.server.controller;
 
+import com.example.server.data.repository.TrackRepository;
 import com.example.server.factory.track.TrackFactory;
 import com.example.server.model.Track;
 import com.example.server.service.music.MusicServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,15 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/music")
+@RequiredArgsConstructor
 public class MusicController
 {
     private final MusicServiceImpl musicServiceImpl;
     private final TrackFactory trackFactory;
-
-    public MusicController(MusicServiceImpl musicServiceImpl, TrackFactory trackFactory){
-        this.musicServiceImpl = musicServiceImpl;
-        this.trackFactory = trackFactory;
-    }
+    private final TrackRepository trackRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
@@ -42,11 +41,11 @@ public class MusicController
         }
     }
 
-    @GetMapping("/stream/{fileName}")
-    public ResponseEntity<String> getStreamUrl(@PathVariable String fileName){
+    @GetMapping("/stream/{id}")
+    public ResponseEntity<String> getStreamUrl(@PathVariable Long id){
         try {
-            String key = "music/" + fileName;
-            String url = musicServiceImpl.getStreamUrl(key);
+            Track track = trackRepository.getTrackById(id);
+            String url = musicServiceImpl.getStreamUrl(track.getFileUrl());
             return ResponseEntity.ok(url);
         }
         catch (Exception e){

@@ -26,13 +26,11 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     public void addTrackToPlaylist(Long playlistId, Long trackId, int position) {
-        // Загружаем существующие сущности
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found"));
         Track track = trackRepository.findById(trackId)
                 .orElseThrow(() -> new EntityNotFoundException("Track not found"));
 
-        // Формируем ключ и саму запись
         PlaylistTrackKey key = new PlaylistTrackKey(playlistId, trackId);
         PlaylistTrack entry = new PlaylistTrack();
         entry.setId(key);
@@ -40,7 +38,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         entry.setTrack(track);
         entry.setPosition(position);
 
-        // Сохраняем
         playlistTrackRepository.save(entry);
     }
 }

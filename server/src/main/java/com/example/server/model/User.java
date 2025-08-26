@@ -25,9 +25,6 @@ public class User {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
-    @Column(columnDefinition = "TEXT")
-    private String bio;
-
     @Column(name = "avatar_url", columnDefinition = "TEXT")
     private String avatarUrl;
 

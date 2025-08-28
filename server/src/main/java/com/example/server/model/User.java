@@ -14,6 +14,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"authorProfile","playlists","favoriteAlbums","favoritePlaylists"})
+@EqualsAndHashCode(exclude = {"authorProfile","playlists","favoriteAlbums","favoritePlaylists"})
 @Table(name = "users")
 public class User {
     @Id

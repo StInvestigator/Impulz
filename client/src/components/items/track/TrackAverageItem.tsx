@@ -2,19 +2,16 @@ import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
-import { useTranslation } from 'react-i18next';
+import type {ITrackDTO} from "../../../models/DTO/ITrackDTO.ts";
 
 interface TrackItemProps {
-    track: string;
+    track: ITrackDTO;
     itemHeight: number;
     itemWidth?: number;
     isMedal?: boolean;
 }
 
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
-
-    const { t } = useTranslation('other')
-
     return (
         <Box
             sx={{
@@ -33,10 +30,10 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                 <Box display="flex" alignItems="center" width={"100%"}>
                     <Box display="flex" flexDirection="column" flexGrow={1}>
                         <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
-                            {track}
+                            {track.title}
                         </Typography>
                         <Typography variant={"mainRM"} sx={{ color: "black"}}>
-                            {t("title-album")} &middot; Rihana
+                            {track.album}
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

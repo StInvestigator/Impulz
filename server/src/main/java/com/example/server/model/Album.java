@@ -13,6 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"authors","tracks"})
+@EqualsAndHashCode(exclude = {"authors","tracks"})
 @Table(name = "albums")
 public class Album {
     @Id

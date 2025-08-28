@@ -2,12 +2,14 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import AuthorReducer from "./reducers/AuthorSlice.ts"
 import PlaylistReducer from "./reducers/PlaylistSlice.ts"
 import PlayerReducer from "./reducers/PlayerSlice.ts"
+import TrackReducer from "./reducers/TrackSlice.ts"
 
 
 const rootReducer = combineReducers({
     AuthorReducer,
     PlaylistReducer,
-    player: PlayerReducer
+    player: PlayerReducer,
+    track: TrackReducer
 })
 
 export const setupStore = () => {

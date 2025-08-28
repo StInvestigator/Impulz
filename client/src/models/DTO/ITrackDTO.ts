@@ -10,3 +10,4 @@ export interface ITrackDTO {
     authors: IUserDTO[];
     album: IAlbumDTO;
 }
+

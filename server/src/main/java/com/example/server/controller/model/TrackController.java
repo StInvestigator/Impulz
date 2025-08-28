@@ -8,13 +8,16 @@ import com.example.server.service.music.MusicServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/track")
 @RequiredArgsConstructor
 public class TrackController
 {
-    private TrackRepository trackRepository;
-    private MusicServiceImpl musicService;
+    private final TrackRepository trackRepository;
+    private final MusicServiceImpl musicService;
 
     @GetMapping("/simpleDto/{id}")
     public TrackSimpleDto getSimpleTrackDto(@PathVariable Long id){
@@ -26,6 +29,14 @@ public class TrackController
     public TrackDto getTrackDto(@PathVariable Long id){
         Track track = trackRepository.getTrackById(id);
         return TrackDto.fromEntity(track,musicService);
+    }
+
+    @GetMapping("/get20MostListenedTracksByWeek")
+    public List<TrackSimpleDto> get20MostListenedTracksByWeek(){
+        List<Track> tracks = trackRepository.findTop20MostPlayedTracksThisWeek();
+        return tracks.stream()
+                .map(TrackSimpleDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
 }

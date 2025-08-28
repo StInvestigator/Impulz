@@ -12,7 +12,7 @@ import {theme} from "./theme.ts";
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import { useEffect } from "react";
-import Player from './components/Player.tsx';
+import MusicPlayer from './components/MusicPlayer.tsx';
 import {$authApi} from "./http";
 
 function App() {
@@ -80,7 +80,7 @@ const SecuredContent = () => {
               <AppRouter />
             </Box>
           </Box>
-          <Player/>
+          <MusicPlayer/>
           <Footer />
         </ThemeProvider>
       </>

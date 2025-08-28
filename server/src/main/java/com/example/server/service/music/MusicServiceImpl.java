@@ -65,10 +65,14 @@ public class MusicServiceImpl implements MusicService{
     }
 
     public String getStreamUrl(String fileUrl) {
-        return s3StorageService.generatePresignedUrl(
-                fileUrl,
-                Duration.ofHours(4)
-        );
+        if (fileUrl != null && !fileUrl.trim().isEmpty()) {
+            return s3StorageService.generatePresignedUrl(
+                    fileUrl,
+                    Duration.ofHours(4)
+            );
+        } else {
+            return null;
+        }
     }
 
     public boolean isMusicExists(String key) {

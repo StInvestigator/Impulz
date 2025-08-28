@@ -17,7 +17,7 @@ import java.util.Set;
 public class User {
     @Id
     @Column(name = "keycloak_id", unique = true, nullable = false, length = 36)
-    private String Id;
+    private String id;
 
     @Column(nullable = false, length = 50, unique = true)
     private String username;

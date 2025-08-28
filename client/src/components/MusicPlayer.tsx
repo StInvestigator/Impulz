@@ -8,6 +8,7 @@ import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '.
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http/index.ts';
 import keycloak from "../keycloak.ts";
+import type {ITrackDTO} from "../models/DTO/ITrackDTO.ts";
 
 interface PlaybackStats {
     trackId: number;
@@ -19,15 +20,10 @@ interface PlaybackStats {
 const playbackService = {
     sendPlaybackStats: async (stats: PlaybackStats): Promise<void> => {
         try {
-            await $authApi.post('/api/tracks/playback', stats, {
-                headers: {
-                    'Authorization': `Bearer ${keycloak.token}`
-                }
-            });
+            await $authApi.post('/api/tracks/playback', stats);
         } catch (error) {
             console.error('Failed to send playback stats:', error);
         }
-
     },
 
     getStreamUrl: async (id: number): Promise<string> => {
@@ -36,10 +32,23 @@ const playbackService = {
     },
 };
 
+const trackDataService = {
+    getTrackDataById: async (id: number): Promise<ITrackDTO> => {
+        try {
+            const response = await $authApi.get(`/api/track/Dto/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to get track data: ', error);
+            throw error;
+        }
+    }
+}
+
 const MusicPlayer = () => {
     const { pause, currentTime, duration, volume } = useAppSelector(state => state.player);
     const dispatch = useAppDispatch();
     const [streamUrl, setStreamUrl] = useState<string>('');
+    const [trackData, setTrackData] = useState<ITrackDTO | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const hasSentPlayback = useRef<boolean>(false);
     const trackIdRef = useRef<number>(5);
@@ -51,9 +60,9 @@ const MusicPlayer = () => {
 
         if (shouldSend && keycloak.authenticated) {
             const userId = keycloak.tokenParsed?.sub ||
-                                          keycloak?.subject ||
-                                          keycloak.idTokenParsed?.sub ||
-                                          'unknown-user';
+                keycloak?.subject ||
+                keycloak.idTokenParsed?.sub ||
+                'unknown-user';
             const stats: PlaybackStats = {
                 trackId: trackIdRef.current,
                 currentTime: currentTime,
@@ -75,6 +84,8 @@ const MusicPlayer = () => {
             try {
                 const url = await playbackService.getStreamUrl(trackIdRef.current);
                 setStreamUrl(url);
+                const trackDataResponse = await trackDataService.getTrackDataById(trackIdRef.current);
+                setTrackData(trackDataResponse);
 
                 if (!audioRef.current) {
                     audioRef.current = new Audio(url);
@@ -146,7 +157,7 @@ const MusicPlayer = () => {
         }
     };
 
-    if (!streamUrl) {
+    if (!streamUrl || !trackData) {
         return <div>Loading...</div>;
     }
 
@@ -168,8 +179,12 @@ const MusicPlayer = () => {
             </IconButton>
 
             <Grid container direction="column" sx={{ width: 200, margin: '0 20px' }}>
-                <Box>Бутырка-Шарик</Box>
-                <Box sx={{ fontSize: 12, color: 'gray' }}>OopsSorry228</Box>
+                <Box>{trackData.title}</Box>
+                <Box sx={{ fontSize: 12, color: 'gray' }}>
+                    {
+                        trackData.authors.map(author => author.name).join(', ')
+                    }
+                </Box>
             </Grid>
 
             <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime}/>

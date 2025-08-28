@@ -1,45 +1,47 @@
 package com.example.server.dto.Track;
 
+import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Genre.GenreSimpleDto;
 import com.example.server.dto.Subtitle.SubtitleSimpleDto;
-import com.example.server.model.Album;
 import com.example.server.model.Track;
-import com.example.server.service.music.MusicService;
 import lombok.Data;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
-public class TrackDto
-{
+public class TrackDto {
     private Long id;
     private String title;
     private String imgUrl;
-    private String fileUrl;
     private Long durationSec;
-    private Album album;
+    private AlbumSimpleDto album;
     private Set<AuthorSimpleDto> authors;
     private Set<GenreSimpleDto> genre;
     private Set<SubtitleSimpleDto> subtitles;
 
-    public static TrackDto fromEntity(Track track, MusicService musicService){
+    public static TrackDto fromEntity(Track track) {
         TrackDto dto = new TrackDto();
-        Album album = track.getAlbum();
 
         dto.setId(track.getId());
         dto.setTitle(track.getTitle());
-        dto.setAlbum(album);
-        dto.setImgUrl(album.getImageUrl());
         dto.setDurationSec(track.getDurationSec());
+
+        if (track.getAlbum() != null) {
+            AlbumSimpleDto album = AlbumSimpleDto.fromEntity(track.getAlbum());
+            dto.setAlbum(album);
+            dto.setImgUrl(album.getImgUrl());
+        }
 
         dto.setAuthors(track.getAuthors().stream()
                 .map(author -> {
                     AuthorSimpleDto authorSimpleDto = new AuthorSimpleDto();
                     authorSimpleDto.setId(author.getId());
-                    authorSimpleDto.setName(author.getUser().getUsername());
-                    authorSimpleDto.setImgUrl(author.getUser().getAvatarUrl());
+                    if (author.getUser() != null) {
+                        authorSimpleDto.setName(author.getUser().getUsername());
+                        authorSimpleDto.setImgUrl(author.getUser().getAvatarUrl());
+                    }
                     return authorSimpleDto;
                 }).collect(Collectors.toSet()));
 
@@ -61,7 +63,6 @@ public class TrackDto
                     return subtitleSimpleDto;
                 }).collect(Collectors.toSet()));
 
-        dto.setFileUrl(musicService.getStreamUrl(track.getFileUrl()));
         return dto;
     }
 }

@@ -23,6 +23,7 @@ public class Author {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id", referencedColumnName = "keycloak_id")
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(columnDefinition = "TEXT")

@@ -27,6 +27,7 @@ public class User {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
+    @EqualsAndHashCode.Exclude
     @Column(name = "avatar_url", columnDefinition = "TEXT")
     private String avatarUrl;
 

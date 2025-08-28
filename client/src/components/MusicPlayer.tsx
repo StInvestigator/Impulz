@@ -2,12 +2,13 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, Grid, IconButton,Link } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http/index.ts';
 import keycloak from "../keycloak.ts";
+import type { ITrackDTO } from "../models/DTO/ITrackDTO.ts";
 
 interface PlaybackStats {
     trackId: number;
@@ -19,91 +20,86 @@ interface PlaybackStats {
 const playbackService = {
     sendPlaybackStats: async (stats: PlaybackStats): Promise<void> => {
         try {
-            await $authApi.post('/api/tracks/playback', stats, {
-                headers: {
-                    'Authorization': `Bearer ${keycloak.token}`
-                }
-            });
+            await $authApi.post('/api/tracks/playback', stats);
         } catch (error) {
             console.error('Failed to send playback stats:', error);
         }
-
     },
-
     getStreamUrl: async (id: number): Promise<string> => {
         const response = await $authApi.get(`/api/music/stream/${id}`);
         return response.data;
     },
 };
 
+const trackDataService = {
+    getTrackDataById: async (id: number): Promise<ITrackDTO> => {
+        const response = await $authApi.get(`/api/track/Dto/${id}`);
+        return response.data;
+    }
+}
+
 const MusicPlayer = () => {
     const { pause, currentTime, duration, volume } = useAppSelector(state => state.player);
     const dispatch = useAppDispatch();
     const [streamUrl, setStreamUrl] = useState<string>('');
+    const [trackData, setTrackData] = useState<ITrackDTO | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const hasSentPlayback = useRef<boolean>(false);
     const trackIdRef = useRef<number>(5);
+    const listenedTimeRef = useRef<number>(0);
+    const lastTimeRef = useRef<number>(0);
 
-    const sendPlaybackStats = useCallback(async (currentTime: number, duration: number) => {
-        if (hasSentPlayback.current) return;
-
-        const shouldSend = currentTime >= 30 || currentTime >= duration;
-
-        if (shouldSend && keycloak.authenticated) {
-            const userId = keycloak.tokenParsed?.sub ||
-                                          keycloak?.subject ||
-                                          keycloak.idTokenParsed?.sub ||
-                                          'unknown-user';
-            const stats: PlaybackStats = {
-                trackId: trackIdRef.current,
-                currentTime: currentTime,
-                duration: duration,
-                userId: userId
-            };
-
-            try {
-                await playbackService.sendPlaybackStats(stats);
-                hasSentPlayback.current = true;
-            } catch (error) {
-                console.error('Failed to send playback stats:', error);
-            }
+    const sendPlaybackStats = useCallback(async () => {
+        if (hasSentPlayback.current || !keycloak.authenticated || !audioRef.current) return;
+        const userId = keycloak.tokenParsed?.sub || keycloak?.subject || keycloak.idTokenParsed?.sub || 'unknown-user';
+        const stats: PlaybackStats = {
+            trackId: trackIdRef.current,
+            currentTime: Math.min(audioRef.current.currentTime, duration),
+            duration: duration,
+            userId: userId
+        };
+        try {
+            await playbackService.sendPlaybackStats(stats);
+            hasSentPlayback.current = true;
+        } catch (error) {
+            console.error('Failed to send playback stats:', error);
         }
-    }, []);
+    }, [duration]);
 
     useEffect(() => {
         const loadStream = async () => {
-            try {
-                const url = await playbackService.getStreamUrl(trackIdRef.current);
-                setStreamUrl(url);
+            const url = await playbackService.getStreamUrl(trackIdRef.current);
+            setStreamUrl(url);
+            const trackDataResponse = await trackDataService.getTrackDataById(trackIdRef.current);
+            setTrackData(trackDataResponse);
 
-                if (!audioRef.current) {
-                    audioRef.current = new Audio(url);
+            if (!audioRef.current) {
+                const audio = new Audio(url);
+                audio.volume = volume / 100;
+                audioRef.current = audio;
 
-                    audioRef.current.onloadedmetadata = () => {
-                        const audioDuration = Math.ceil(audioRef.current!.duration);
-                        dispatch(setDuration(audioDuration));
-                    };
+                audio.onloadedmetadata = () => {
+                    dispatch(setDuration(Math.ceil(audio.duration)));
+                };
 
-                    audioRef.current.ontimeupdate = () => {
-                        if (audioRef.current && !hasSentPlayback.current) {
-                            const currentTime = audioRef.current.currentTime;
-                            dispatch(setCurrentTime(Math.ceil(currentTime)));
+                audio.ontimeupdate = () => {
+                    if (!audioRef.current) return;
+                    const current = audioRef.current.currentTime;
+                    dispatch(setCurrentTime(Math.ceil(current)));
 
-                            if (currentTime >= 30 || currentTime >= audioRef.current.duration) {
-                                sendPlaybackStats(currentTime, audioRef.current.duration);
-                            }
-                        }
-                    };
+                    if (!audioRef.current.paused) {
+                        const delta = current - lastTimeRef.current;
+                        if (delta > 0 && delta < 5) listenedTimeRef.current += delta;
+                    }
+                    lastTimeRef.current = current;
 
-                    audioRef.current.onended = () => {
-                        if (audioRef.current && !hasSentPlayback.current) {
-                            sendPlaybackStats(audioRef.current.duration, audioRef.current.duration);
-                        }
-                        dispatch(pauseTrack());
-                    };
-                }
-            } catch (error) {
-                console.error('Error loading stream:', error);
+                    if (listenedTimeRef.current >= 30) sendPlaybackStats();
+                };
+
+                audio.onended = () => {
+                    sendPlaybackStats();
+                    dispatch(pauseTrack());
+                };
             }
         };
 
@@ -115,40 +111,39 @@ const MusicPlayer = () => {
                 audioRef.current = null;
             }
             hasSentPlayback.current = false;
+            listenedTimeRef.current = 0;
+            lastTimeRef.current = 0;
         };
     }, [dispatch, sendPlaybackStats]);
 
-    const play = () => {
-        if (!audioRef.current) return;
+    useEffect(() => {
+        if (audioRef.current) audioRef.current.volume = volume / 100;
+    }, [volume]);
 
-        if (pause) {
-            dispatch(playTrack());
-            audioRef.current.play().catch(console.error);
-        } else {
-            dispatch(pauseTrack());
-            audioRef.current.pause();
-        }
+    useEffect(() => {
+        if (!audioRef.current) return;
+        if (pause && !audioRef.current.paused) audioRef.current.pause();
+        if (!pause && audioRef.current.paused) audioRef.current.play().catch(console.error);
+    }, [pause]);
+
+    const play = () => {
+        dispatch(pause ? playTrack() : pauseTrack());
     };
 
     const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (audioRef.current) {
-            const newVolume = Number(e.target.value) / 100;
-            audioRef.current.volume = newVolume;
-            dispatch(setVolume(Number(e.target.value)));
-        }
+        const newVolume = Number(e.target.value);
+        dispatch(setVolume(newVolume));
     };
 
     const changeCurrentTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (audioRef.current) {
-            const newTime = Number(e.target.value);
-            audioRef.current.currentTime = newTime;
-            dispatch(setCurrentTime(newTime));
-        }
+        if (!audioRef.current) return;
+        const newTime = Number(e.target.value);
+        audioRef.current.currentTime = newTime;
+        dispatch(setCurrentTime(newTime));
+        lastTimeRef.current = newTime;
     };
 
-    if (!streamUrl) {
-        return <div>Loading...</div>;
-    }
+    if (!streamUrl || !trackData) return <div>Loading...</div>;
 
     return (
         <Box
@@ -163,17 +158,44 @@ const MusicPlayer = () => {
             boxSizing={"border-box"}
             sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
-            <IconButton onClick={play}>
-                {pause ? <PlayCircleIcon/> : <PauseCircleIcon/>}
-            </IconButton>
-
+            <IconButton onClick={play}>{pause ? <PlayCircleIcon/> : <PauseCircleIcon/>}</IconButton>
             <Grid container direction="column" sx={{ width: 200, margin: '0 20px' }}>
-                <Box>Бутырка-Шарик</Box>
-                <Box sx={{ fontSize: 12, color: 'gray' }}>OopsSorry228</Box>
+                <Box>{trackData.title}</Box>
+                {/* TODO href */}
+                <Box sx={{ fontSize: 12, color: 'gray' }}>
+                    <Link
+                        href="#"
+                        underline="none"
+                        sx={{
+                            color: 'inherit',
+                            '&:hover': {
+                                textDecoration: 'underline',
+                                color: '#1976d2',
+                                cursor: 'pointer',
+                            },
+                        }}
+                    >
+                        {trackData.authors.map(author => author.name).join(', ')}
+                    </Link>
+                    <s style={{ margin: '5px' }}>•</s>
+                    <Link
+                        href="#"
+                        underline="none"
+                        sx={{
+                            color: 'inherit',
+                            '&:hover': {
+                                textDecoration: 'underline',
+                                color: '#1976d2',
+                                cursor: 'pointer',
+                            },
+                        }}
+                    >
+                        {trackData.album.title}
+                    </Link>
+                </Box>
+
             </Grid>
-
             <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime}/>
-
             <VolumeUpIcon sx={{ marginLeft: 'auto' }}/>
             <TrackProgress left={volume} right={100} onChange={changeVolume}/>
         </Box>

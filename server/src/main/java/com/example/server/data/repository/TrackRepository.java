@@ -12,8 +12,19 @@ import java.util.List;
 @Repository
 public interface TrackRepository extends JpaRepository<Track, Long> {
 
-    Track getTrackById(Long id);
+    @Query("""
+        SELECT t FROM Track t
+        LEFT JOIN FETCH t.album
+        LEFT JOIN FETCH t.authors a
+        LEFT JOIN FETCH a.user
+        LEFT JOIN FETCH t.genres
+        LEFT JOIN FETCH t.subtitles
+        WHERE t.id = :id
+    """)
+    Track getTrackById(@Param("id") Long id);
+
     Track getTrackByTitle(String title);
+
     Track findTrackByFileUrl(String fileUrl);
 
     @Query(value = """

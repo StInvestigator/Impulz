@@ -4,6 +4,7 @@ import com.example.server.model.id.PlaylistTrack;
 import com.example.server.model.id.UserFavoritePlaylist;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Data
 @ToString(exclude = {"owner","tracks","favoredBy"})
+@EqualsAndHashCode(exclude = {"owner","tracks","favoredBy"})
 @Entity
 @Table(name = "playlists")
 public class Playlist {

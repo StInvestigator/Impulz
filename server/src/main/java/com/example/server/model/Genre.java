@@ -2,6 +2,7 @@ package com.example.server.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"tracks"})
+@EqualsAndHashCode(exclude = {"tracks"})
 @Table(name = "genres")
 public class Genre {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

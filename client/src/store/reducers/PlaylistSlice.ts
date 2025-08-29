@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {IPlaylist} from "../../models/IPlaylist.ts";
+import type {IPlaylist} from "../../models/PlaylistDto.ts";
 import {fetchPlaylists} from "./action-creators/playlist.ts";
 
 interface PlaylistState {

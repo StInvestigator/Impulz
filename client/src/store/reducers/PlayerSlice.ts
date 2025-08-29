@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ITrack } from '../../models/ITrack';
+import type { ITrack } from '../../models/TrackDto.ts';
 
 interface PlayerState {
     active: null | ITrack;

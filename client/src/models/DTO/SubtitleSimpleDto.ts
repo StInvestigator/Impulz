@@ -1,4 +1,4 @@
-export interface ISubtitle {
+export interface SubtitleSimpleDto {
     id: number;
     startTimeMs: number;
     endTimeMs: number;

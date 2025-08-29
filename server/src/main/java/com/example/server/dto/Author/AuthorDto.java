@@ -13,7 +13,6 @@ public class AuthorDto
 {
     private String id;
     private String bio;
-    private String imgUrl;
     private Long followersCount;
     // TODO
     // private Long subscriptions;
@@ -24,7 +23,6 @@ public class AuthorDto
         AuthorDto dto = new AuthorDto();
         dto.setId(author.getId());
         dto.setBio(author.getBio());
-        dto.setImgUrl(author.getUser().getAvatarUrl());
         dto.setFollowersCount(author.getFollowersCount());
         // dto.setSubscriptions() ???
         dto.setAlbums(author.getAlbums().stream()

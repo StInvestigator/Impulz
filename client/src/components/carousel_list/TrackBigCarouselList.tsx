@@ -2,10 +2,10 @@ import type {FC} from "react";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
 import ListCarousel from "../ListCarousel.tsx";
 import type {TypographyProps} from "@mui/material";
-import type {ITrackDTO} from "../../models/DTO/ITrackDTO.ts";
+import type {TrackSimpleDto} from "../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackListProps {
-    tracks: ITrackDTO[];
+    tracks: TrackSimpleDto[];
     title: string,
     variant: TypographyProps['variant'];
     itemWidth: number;

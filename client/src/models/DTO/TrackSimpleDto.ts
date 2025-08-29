@@ -1,4 +1,4 @@
-export interface ITrackDTO {
+export interface TrackSimpleDto {
     id: number;
     title: string;
     durationSec: number;

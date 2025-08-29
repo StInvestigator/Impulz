@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import type {IPlaylist} from "../../../models/IPlaylist.ts";
+import type {IPlaylist} from "../../../models/PlaylistDto.ts";
 import {$authApi} from "../../../http/index.ts";
 
 export const fetchPlaylists = createAsyncThunk<

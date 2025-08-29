@@ -1,5 +1,4 @@
-
-export interface IGenre {
+export interface GenreSimpleDto {
     id: number;
     name: string;
 }

@@ -8,7 +8,7 @@ import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '.
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http/index.ts';
 import keycloak from "../keycloak.ts";
-import type { ITrackDTO } from "../models/DTO/ITrackDTO.ts";
+import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
 
 interface PlaybackStats {
     trackId: number;
@@ -32,7 +32,7 @@ const playbackService = {
 };
 
 const trackDataService = {
-    getTrackDataById: async (id: number): Promise<ITrackDTO> => {
+    getTrackDataById: async (id: number): Promise<TrackSimpleDto> => {
         const response = await $authApi.get(`/api/track/Dto/${id}`);
         return response.data;
     }
@@ -42,7 +42,7 @@ const MusicPlayer = () => {
     const { pause, currentTime, duration, volume } = useAppSelector(state => state.player);
     const dispatch = useAppDispatch();
     const [streamUrl, setStreamUrl] = useState<string>('');
-    const [trackData, setTrackData] = useState<ITrackDTO | null>(null);
+    const [trackData, setTrackData] = useState<TrackSimpleDto | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const hasSentPlayback = useRef<boolean>(false);
     const trackIdRef = useRef<number>(5);
@@ -175,7 +175,7 @@ const MusicPlayer = () => {
                             },
                         }}
                     >
-                        {trackData.authors.map(author => author.name).join(', ')}
+                        {trackData.authors.map(author => author).join(', ')}
                     </Link>
                     <s style={{ margin: '5px' }}>•</s>
                     <Link
@@ -190,7 +190,7 @@ const MusicPlayer = () => {
                             },
                         }}
                     >
-                        {trackData.album.title}
+                        {trackData.album}
                     </Link>
                 </Box>
 

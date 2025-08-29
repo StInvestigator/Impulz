@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import type {ITrackDTO} from "../../../models/DTO/ITrackDTO.ts";
+import type {ITrackDTO} from "../../../models/DTO/TrackSimpleDto.ts";
 
 export const fetchTop20TracksByWeek = createAsyncThunk<ITrackDTO[]>(
     "track/fetchTop20TracksByWeek",

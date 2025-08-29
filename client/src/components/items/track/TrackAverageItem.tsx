@@ -2,10 +2,10 @@ import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
-import type {ITrackDTO} from "../../../models/DTO/ITrackDTO.ts";
+import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackItemProps {
-    track: ITrackDTO;
+    track: TrackSimpleDto;
     itemHeight: number;
     itemWidth?: number;
     isMedal?: boolean;

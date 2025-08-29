@@ -27,7 +27,6 @@ const playbackService = {
         }
     },
 
-    // Возвращаем objectURL (string) или null при ошибке
     getStreamUrl: async (id: number): Promise<string | null> => {
         try {
             const res = await $authApi.get(`/api/music/stream/${id}`, {
@@ -65,9 +64,9 @@ const MusicPlayer: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const objectUrlRef = useRef<string | null>(null); // храним текущий objectURL чтобы revoke при смене
+    const objectUrlRef = useRef<string | null>(null);
     const hasSentPlayback = useRef<boolean>(false);
-    const trackIdRef = useRef<number>(5); // замените на реальный trackId из пропсов/редукса
+    const trackIdRef = useRef<number>(5);
     const listenedTimeRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
 
@@ -101,7 +100,6 @@ const MusicPlayer: React.FC = () => {
             setLoading(true);
             setError(null);
 
-            // 1) получить stream URL (objectURL)
             const url = await playbackService.getStreamUrl(trackIdRef.current);
             if (!mounted) return;
 
@@ -111,14 +109,12 @@ const MusicPlayer: React.FC = () => {
                 return;
             }
 
-            // revoke предыдущий URL, если был
             if (objectUrlRef.current) {
-                try { URL.revokeObjectURL(objectUrlRef.current); } catch (e) { /*ignore*/ }
+                URL.revokeObjectURL(objectUrlRef.current);
             }
             objectUrlRef.current = url;
             setStreamUrl(url);
 
-            // 2) получить метаданные трека
             try {
                 const trackInfo = await trackDataService.getTrackDataById(trackIdRef.current);
                 if (!mounted) return;
@@ -128,11 +124,8 @@ const MusicPlayer: React.FC = () => {
                 if (mounted) setError('Не удалось получить данные трека');
             }
 
-            // 3) создаём audio (если ещё нет) и настраиваем обработчики
             if (!audioRef.current) {
                 const audio = new Audio(url);
-                // crossOrigin устанавливаем только если необходимо (и сервер поддерживает CORS)
-                // audio.crossOrigin = 'use-credentials'; // либо 'anonymous'
                 audio.volume = Math.max(0, Math.min(1, volume / 100));
                 audioRef.current = audio;
 
@@ -151,19 +144,16 @@ const MusicPlayer: React.FC = () => {
                     }
                     lastTimeRef.current = cur;
 
-                    // отправляем, когда прослушали >= 30 сек
                     if (listenedTimeRef.current >= 30) {
                         sendPlaybackStats();
                     }
                 };
 
                 audio.onended = () => {
-                    // при окончании можно попытаться отправить ещё раз (если не отправлено)
                     sendPlaybackStats();
                     dispatch(pauseTrack());
                 };
             } else {
-                // если audioRef уже есть (например, при повторном вызове), просто сменим src
                 audioRef.current.src = url;
                 audioRef.current.load();
             }
@@ -175,36 +165,27 @@ const MusicPlayer: React.FC = () => {
 
         return () => {
             mounted = false;
-            // cleanup audio
             if (audioRef.current) {
-                try {
-                    audioRef.current.pause();
-                } catch (e) { /* ignore */ }
-                // не удаляем handlers явно — GC очистит, но можно:
+                audioRef.current.pause();
                 audioRef.current.onloadedmetadata = null;
                 audioRef.current.ontimeupdate = null;
                 audioRef.current.onended = null;
                 audioRef.current = null;
             }
-            // revoke objectURL
             if (objectUrlRef.current) {
-                try { URL.revokeObjectURL(objectUrlRef.current); } catch (e) { /*ignore*/ }
+                URL.revokeObjectURL(objectUrlRef.current);
                 objectUrlRef.current = null;
             }
-            // reset playback tracking
             hasSentPlayback.current = false;
             listenedTimeRef.current = 0;
             lastTimeRef.current = 0;
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, sendPlaybackStats]); // trackIdRef не в deps т.к. ref; volume отдельно ниже
+    }, [dispatch, sendPlaybackStats]);
 
-    // синхронизируем volume
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
     }, [volume]);
 
-    // pause/play в зависимости от глобального состояния
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -262,10 +243,36 @@ const MusicPlayer: React.FC = () => {
             <Grid container direction="column" sx={{ width: 240, margin: '0 20px' }}>
                 <Box sx={{ fontWeight: 600 }}>{trackData.title ?? 'Unknown title'}</Box>
                 <Box sx={{ fontSize: 12, color: 'gray' }}>
-                    <Box>{trackData.authors?.map(a => a).join(', ') ?? 'Unknown artist'}</Box>
+                    <Link
+                        href={"/"}
+                            underline="none"
+                            sx={{
+                            color: 'inherit',
+                            '&:hover': {
+                            textDecoration: 'underline',
+                            color: '#1976d2',
+                            cursor: 'pointer',
+                        },
+                        }}
+                            >
+                        {trackData.authors?.map(author => author.name).join(', ') ?? 'Unknown artist'}
+                    </Link>
                     <Box component="span" sx={{ mx: 1 }}>•</Box>
-                    <Box>{trackData.album.title ?? 'Unknown album'}</Box>
-                </Box>
+                    <Link
+                        href={"/"}
+                            underline="none"
+                            sx={{
+                            color: 'inherit',
+                            '&:hover': {
+                            textDecoration: 'underline',
+                            color: '#1976d2',
+                            cursor: 'pointer',
+                        },
+                        }}>
+                        {trackData.album?.title ?? 'Unknown album'}
+                    </Link>
+
+                    </Box>
             </Grid>
 
             <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime} />

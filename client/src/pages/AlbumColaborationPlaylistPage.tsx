@@ -1,4 +1,4 @@
-import {Box, Pagination} from "@mui/material";
+import {Box} from "@mui/material";
 import AlbumColaborationPlaylistList from "../components/lists/AlbumColaborationPlaylistList.tsx";
 import MyPagination from "../components/MyPagination.tsx";
 import {useState} from "react";

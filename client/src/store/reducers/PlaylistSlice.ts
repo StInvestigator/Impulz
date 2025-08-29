@@ -1,10 +1,10 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {IPlaylist} from "../../models/PlaylistDto.ts";
+import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 import {fetchPlaylists} from "./action-creators/playlist.ts";
 
 interface PlaylistState {
     isLoading: boolean;
-    playlists: IPlaylist[];
+    playlists: PlaylistDto[];
     error: string;
 }
 
@@ -24,7 +24,7 @@ export const PlaylistSlice = createSlice({
                 state.isLoading = true;
                 state.error = '';
             })
-            .addCase(fetchPlaylists.fulfilled, (state, action: PayloadAction<IPlaylist[]>) => {
+            .addCase(fetchPlaylists.fulfilled, (state, action: PayloadAction<PlaylistDto[]>) => {
                 state.isLoading = false;
                 state.error = '';
                 state.playlists = action.payload;

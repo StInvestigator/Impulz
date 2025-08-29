@@ -4,6 +4,7 @@ import com.example.server.model.id.UserFavoriteAlbum;
 import com.example.server.model.id.UserFavoritePlaylist;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"authorProfile","playlists","favoriteAlbums","favoritePlaylists"})
+@EqualsAndHashCode(exclude = {"authorProfile","playlists","favoriteAlbums","favoritePlaylists"})
 @Table(name = "users")
 public class User {
     @Id
@@ -25,6 +27,7 @@ public class User {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
+    @EqualsAndHashCode.Exclude
     @Column(name = "avatar_url", columnDefinition = "TEXT")
     private String avatarUrl;
 

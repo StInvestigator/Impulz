@@ -3,6 +3,7 @@ package com.example.server.model;
 import com.example.server.model.id.AuthorFollower;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"albums","tracks","followers"})
+@EqualsAndHashCode(exclude = {"albums","tracks","followers"})
 @Table(name = "authors")
 public class Author {
     @Id
@@ -21,6 +23,7 @@ public class Author {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id", referencedColumnName = "keycloak_id")
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(columnDefinition = "TEXT")

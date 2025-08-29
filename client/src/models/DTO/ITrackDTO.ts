@@ -1,13 +1,8 @@
-import type { IAlbumDTO } from "./IAlbumDTO";
-import type { IUserDTO } from "./IUserDTO";
-
 export interface ITrackDTO {
     id: number;
     title: string;
-    durationSec: string;
+    durationSec: number;
     imgUrl: string;
-    fileUrl: string;
-    authors: IUserDTO[];
-    album: IAlbumDTO;
+    authors: string[];
+    album: string;
 }
-

@@ -13,7 +13,7 @@ export const fetchPlaylists = createAsyncThunk<
             const response = await $authApi.get<IPlaylist[]>("/api/playlists/")
             return response.data;
         } catch (e) {
-            return rejectWithValue("Не удалось загрузить пользователей")
+            return rejectWithValue("Не удалось загрузить пользователей");
         }
     }
 )

@@ -2,6 +2,7 @@ package com.example.server.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"authors","tracks"})
+@EqualsAndHashCode(exclude = {"authors","tracks"})
 @Table(name = "albums")
 public class Album {
     @Id

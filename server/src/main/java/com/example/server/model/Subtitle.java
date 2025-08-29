@@ -2,6 +2,7 @@ package com.example.server.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"track"})
+@EqualsAndHashCode(exclude = {"track"})
 @Table(name = "subtitles")
 public class Subtitle {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

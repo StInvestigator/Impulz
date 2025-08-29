@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
-import {fetchPlaylists} from "../store/reducers/action-creators/playlist.ts";
+import {fetchTop20TracksByWeek} from "../store/reducers/action-creators/tracks.ts";
 
 const tracks = [
     'Трек 2', 'Трек 2', 'Трек 3',
@@ -40,32 +40,23 @@ const playlist = [
 
 
 const MainPage = () => {
-    const {playlists} = useAppSelector(state => state.PlaylistReducer)
-    const dispatch = useAppDispatch()
-
-    const fetchData = async () => {
-        try {
-            dispatch(fetchPlaylists())
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
+    const dispatch = useAppDispatch();
+    const { topTracks} = useAppSelector(state => state.track);
 
     useEffect(() => {
-        fetchData();
-        setTimeout(() => {
-            console.log(playlists);
-        }, 1000)
-    }, []);
+        dispatch(fetchTop20TracksByWeek());
+    }, [dispatch]);
 
+    console.log(topTracks);
 
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
+
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"} />
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                <TrackBigCarouselList tracks={tracks} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} />
+                <TrackBigCarouselList tracks={topTracks} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} />
                 <GenreList />
             </Box>
             <Box component={"section"} mt={"60px"}>

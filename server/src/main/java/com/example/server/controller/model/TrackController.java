@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class TrackController
 {
     private final TrackRepository trackRepository;
-    private final MusicServiceImpl musicService;
 
     @GetMapping("/simpleDto/{id}")
     public TrackSimpleDto getSimpleTrackDto(@PathVariable Long id){
@@ -28,7 +27,7 @@ public class TrackController
     @GetMapping("/Dto/{id}")
     public TrackDto getTrackDto(@PathVariable Long id){
         Track track = trackRepository.getTrackById(id);
-        return TrackDto.fromEntity(track,musicService);
+        return TrackDto.fromEntity(track);
     }
 
     @GetMapping("/get20MostListenedTracksByWeek")

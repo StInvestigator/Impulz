@@ -4,7 +4,7 @@ import React from 'react';
 interface TrackProgressProps {
     left: number;
     right: number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onChange: (e:never) => void
 }
 
 const TrackProgress: React.FC<TrackProgressProps> =

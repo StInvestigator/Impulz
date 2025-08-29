@@ -2,6 +2,7 @@ package com.example.server.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
@@ -9,6 +10,7 @@ import java.time.OffsetDateTime;
 @Data
 @Entity
 @ToString(exclude = {"user", "track"})
+@EqualsAndHashCode(exclude = {"user", "track"})
 @Table(name = "track_plays")
 public class TrackPlay {
 

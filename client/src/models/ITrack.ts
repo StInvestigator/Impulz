@@ -8,7 +8,7 @@ export interface ITrack {
     title: string;
     imgUrl: string;
     fileUrl: string;
-    timePlay: number;
+    durationSec: number;
     album: IAlbumDTO;
     authors: IAuthorDTO[];
     genres: IGenreDTO[];

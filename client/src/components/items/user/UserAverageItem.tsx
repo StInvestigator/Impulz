@@ -1,42 +1,41 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from '@mui/material';
+import { type FC } from 'react'
 import playImage from "../../../assets/play.svg";
-import type { FC } from "react";
-import { useTranslation } from "react-i18next";
 
-interface AuthorItemProps {
-  author: string;
+
+interface UserItemProps {
+  user: string;
 }
 
-const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
-  const { t } = useTranslation("other");
+
+const UserAverageItem: FC<UserItemProps> = ({user}) => {
 
   return (
     <Box
       width="100%"
       boxSizing={"border-box"}
-      bgcolor={"#B9B9B9"}
       borderRadius={"1000px 1000px 0 0"}
     >
       <Box
         bgcolor="gray"
         mx={"auto"}
         borderRadius={"50%"}
-        sx={{ width: "min(270px, 90%)", aspectRatio: "1 / 1" }}
+        sx={{ width: "90%", aspectRatio: "1 / 1" }}
       />
       <Box
         display="flex"
         justifyContent="space-between"
-        padding={"24px"}
+        padding={"12px 24px"}
         boxSizing={"border-box"}
         alignItems="center"
         width={"100%"}
+        bgcolor={"#B9B9B9"}
+        marginTop={"10px"}
+        borderRadius={"10px"}
       >
         <Box display={"flex"} flexDirection={"column"}>
-          <Typography variant={"mainSbL"} gutterBottom>
-            {author}
-          </Typography>
-          <Typography variant={"mainRM"}>
-            {t("title-album")} &middot; Rihana
+          <Typography variant={"mainSbL"} display={"flex"} alignItems={"center"}>
+            {user}
           </Typography>
         </Box>
         <IconButton sx={{ padding: 0 }}>
@@ -51,6 +50,6 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
       </Box>
     </Box>
   );
-};
+}
 
-export default AuthorAverageItem;
+export default UserAverageItem

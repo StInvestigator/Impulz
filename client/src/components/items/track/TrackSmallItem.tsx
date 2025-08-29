@@ -77,7 +77,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                             noWrap
                             maxWidth={"100%"}
                         >
-                            rnvjnjnjdkmkvmckmmooooooooooooo[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[
+                            rnvjnjnjdkmkvmckmmooooooooooooojjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
                         </Typography>
                     </Box>
                 ) : (

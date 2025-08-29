@@ -1,11 +1,7 @@
 import Box from '@mui/material/Box';
 import { BG_DIAMETER } from './constants';
 
-type BackdropCircleProps = {
-  zIndex?: (theme: any) => number | number;
-};
-
-const BackdropCircle = ({ zIndex = (theme: any) => theme.zIndex.drawer + 2}: BackdropCircleProps) => (
+const BackdropCircle = () => (
   <Box
     position={"absolute"}
     top={"50%"}
@@ -16,7 +12,7 @@ const BackdropCircle = ({ zIndex = (theme: any) => theme.zIndex.drawer + 2}: Bac
       aspectRatio: 1,
       transform: 'translate(-50%, -50%)',
       bgcolor: 'rgba(255, 255, 255, 0.4)',
-      zIndex,
+      zIndex: (theme) => theme.zIndex.drawer + 2,
       pointerEvents: 'none',
     }}
   />

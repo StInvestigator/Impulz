@@ -7,6 +7,7 @@ import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
+import UserList from "../components/lists/UserList.tsx";
 
 const authors = [
     "Автор 1",
@@ -14,6 +15,14 @@ const authors = [
     "Автор 3",
     "Автор 4",
     "Автор 5",
+]
+
+const users = [
+    "User 1",
+    "User 2",
+    "User 3",
+    "User 4",
+    "User 5",
 ]
 
 const albums = [
@@ -119,6 +128,26 @@ const AuthorProfilePage = () => {
                     </Button>
                 </Box>
                 <AuthorList authors={authors}/>
+            </Box>
+
+            <Box component={"section"} mt={"60px"}>
+                <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                    <Typography variant={"h2"} fontSize={"24px"}>
+                        {t("authorPage:title-subscribers")}
+                    </Typography>
+                    <Button onClick={() => route("/allAuthors")} sx={{
+                        height: "32px",
+                        border: "1px solid black",
+                        borderRadius: "10px",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: "black",
+                        textTransform: "none"
+                    }}>
+                        {t("other:button-watch-all")}
+                    </Button>
+                </Box>
+                <UserList users={users}/>
             </Box>
         </>
     );

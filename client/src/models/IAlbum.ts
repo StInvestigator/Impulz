@@ -7,5 +7,5 @@ export interface IAlbum {
     imgUrl: string;
     authors: IAuthorDTO[];
     releaseDate: string;
-    tracks: ITrackDTO[];
+    tracks: ITrackDTO[]; 
 }

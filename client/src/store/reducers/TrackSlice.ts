@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchTop20TracksByWeek} from "./action-creators/tracks.ts";
-import type { ITrackDTO} from "../../models/DTO/TrackSimpleDto.ts";
+import type { TrackSimpleDto} from "../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackState {
-    topTracks: ITrackDTO[];
+    topTracks: TrackSimpleDto[];
     loading: boolean;
     error: string | null;
 }

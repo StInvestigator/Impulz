@@ -13,7 +13,7 @@ const AuthorList:FC<AlbumListProps> = ({authors}) => {
             gridTemplateColumns: "repeat(5, 1fr)"
         }} gap={3}>
             {authors.map((author, index) =>
-                <AuthorAverageItem key={index} author={author} itemHeight={360}/>
+                <AuthorAverageItem key={index} author={author}/>
             )}
         </Box>
     );

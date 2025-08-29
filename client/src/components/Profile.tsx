@@ -72,6 +72,7 @@ const Profile: FC<ProfileProps> = ({ name, type }) => {
         </Box>
         <Box
           display={"flex"}
+          justifyContent={"flex-end"}
           flexDirection="column"
           gap={"12px"}
           height={"190px"}
@@ -80,15 +81,15 @@ const Profile: FC<ProfileProps> = ({ name, type }) => {
           bottom={28}
           zIndex={0}
         >
-          <Box
-            height={"100%"}
-            marginRight={4}
-            display={"flex"}
-            justifyContent={"flex-end"}
-            flexDirection="column"
-            gap={"16px"}
-          >
-            {type === "author" && (
+          {type === "author" && (
+            <Box
+              height={"100%"}
+              marginRight={4}
+              display={"flex"}
+              justifyContent={"flex-end"}
+              flexDirection="column"
+              gap={"16px"}
+            >
               <Button
                 onClick={() =>
                   isSubscribe ? setIsSubscribe(false) : setIsSubscribe(true)
@@ -113,36 +114,36 @@ const Profile: FC<ProfileProps> = ({ name, type }) => {
                     : t("button-subscribe")}
                 </Typography>
               </Button>
-            )}
 
-            <Box
-              bgcolor={"#716060"}
-              boxSizing={"border-box"}
-              padding={"6px 12px"}
-              borderRadius={"10px"}
-              marginLeft={"auto"}
-              width={"60%"}
-              display={"flex"}
-              justifyContent={"flex-end"}
-              alignItems={"center"}
-            >
-              <Box textAlign={"center"} color={"white"}>
-                <Typography
-                  variant={"h3"}
-                  fontSize={"24px"}
-                  fontFamily={'"Manrope", sans-serif'}
-                >
-                  123 555
-                </Typography>
-                <Typography
-                  variant={"mainSbM"}
-                  fontFamily={'"Manrope", sans-serif'}
-                >
-                  {t("title-subscribers")}
-                </Typography>
+              <Box
+                bgcolor={"#716060"}
+                boxSizing={"border-box"}
+                padding={"6px 12px"}
+                borderRadius={"10px"}
+                marginLeft={"auto"}
+                width={"60%"}
+                display={"flex"}
+                justifyContent={"flex-end"}
+                alignItems={"center"}
+              >
+                <Box textAlign={"center"} color={"white"}>
+                  <Typography
+                    variant={"h3"}
+                    fontSize={"24px"}
+                    fontFamily={'"Manrope", sans-serif'}
+                  >
+                    123 555
+                  </Typography>
+                  <Typography
+                    variant={"mainSbM"}
+                    fontFamily={'"Manrope", sans-serif'}
+                  >
+                    {t("title-subscribers")}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-          </Box>
+          )}
           <Box
             bgcolor={"#716060"}
             padding={"6px 12px"}

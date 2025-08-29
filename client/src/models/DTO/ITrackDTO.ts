@@ -3,8 +3,8 @@ import type { IUserDTO } from "./IUserDTO";
 
 export interface ITrackDTO {
     id: number;
-    name: string;
-    timePlay: string;
+    title: string;
+    durationSec: string;
     imgUrl: string;
     fileUrl: string;
     authors: IUserDTO[];

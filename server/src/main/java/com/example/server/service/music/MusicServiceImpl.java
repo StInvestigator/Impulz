@@ -3,16 +3,20 @@ package com.example.server.service.music;
 import com.example.server.data.AudioMetadata;
 import com.example.server.data.repository.TrackRepository;
 import com.example.server.model.Track;
+import com.example.server.service.audio.AudioService;
 import com.example.server.service.audio.AudioServiceImpl;
+import com.example.server.service.s3.S3StorageService;
 import com.example.server.service.s3.S3StorageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.time.Duration;
 
@@ -22,9 +26,9 @@ import java.time.Duration;
 public class MusicServiceImpl implements MusicService{
 
     private static final String S3_MUSIC_PREFIX = "music/";
-    private final AudioServiceImpl audioService;
+    private final AudioService audioService;
 
-    private final S3StorageServiceImpl s3StorageService;
+    private final S3StorageService s3StorageService;
     private final TrackRepository trackRepository;
 
     @Transactional(rollbackFor = Exception.class)
@@ -92,5 +96,13 @@ public class MusicServiceImpl implements MusicService{
         trackRepository.delete(track);
 
         s3StorageService.deleteFile(key);
+    }
+
+    public HeadObjectResponse getHeadObjectResponse(String key){
+        return s3StorageService.getHeadObjectResponse(key);
+    }
+
+    public InputStream getInputStream(String key, String range){
+        return s3StorageService.getInputStream(key,range);
     }
 }

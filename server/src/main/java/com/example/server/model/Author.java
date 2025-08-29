@@ -13,7 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = {"albums","tracks","followers"})
-@EqualsAndHashCode(exclude = {"albums","tracks","followers"})
+@EqualsAndHashCode(exclude = {"user","albums","tracks","followers"})
 @Table(name = "authors")
 public class Author {
     @Id
@@ -23,7 +23,6 @@ public class Author {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id", referencedColumnName = "keycloak_id")
-    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(columnDefinition = "TEXT")

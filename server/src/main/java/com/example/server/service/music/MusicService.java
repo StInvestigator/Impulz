@@ -2,8 +2,10 @@ package com.example.server.service.music;
 
 import com.example.server.model.Track;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface MusicService
 {
@@ -11,4 +13,6 @@ public interface MusicService
     String getStreamUrl(String fileUrl);
     boolean isMusicExists(String key);
     void deleteMusic(String fileName);
+    HeadObjectResponse getHeadObjectResponse(String key);
+    InputStream getInputStream(String key, String range);
 }

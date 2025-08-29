@@ -25,9 +25,8 @@ const playbackService = {
             console.error('Failed to send playback stats:', error);
         }
     },
-    getStreamUrl: async (id: number): Promise<string> => {
-        const response = await $authApi.get(`/api/music/stream/${id}`);
-        return response.data;
+    getStreamUrl: (id: number): string => {
+        return `http://localhost:8083/api/music/stream/${id}`;
     },
 };
 
@@ -68,7 +67,7 @@ const MusicPlayer = () => {
 
     useEffect(() => {
         const loadStream = async () => {
-            const url = await playbackService.getStreamUrl(trackIdRef.current);
+            const url = playbackService.getStreamUrl(trackIdRef.current);
             setStreamUrl(url);
             const trackDataResponse = await trackDataService.getTrackDataById(trackIdRef.current);
             setTrackData(trackDataResponse);

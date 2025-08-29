@@ -21,7 +21,7 @@ public class AuthController {
     private final JwtDecoder jwtDecoder;
 
     @PostMapping("/login-success")
-    public ResponseEntity<?> handleLoginSuccess(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> handleLoginSuccess(@RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -31,9 +31,7 @@ public class AuthController {
         try {
             Jwt jwt = jwtDecoder.decode(token);
             log.info("Processing login for user: {}", jwt.getSubject());
-
-            User user = keycloakSyncServiceImpl.syncUserFromKeycloak(jwt);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok().build();
 
         } catch (Exception e) {
             log.error("Login processing failed: {}", e.getMessage(), e);

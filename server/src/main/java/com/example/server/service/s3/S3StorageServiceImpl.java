@@ -2,6 +2,10 @@ package com.example.server.service.s3;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.exception.SdkException;
@@ -18,7 +22,7 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
-public class S3StorageServiceImpl implements S3StorageService{
+public class S3StorageServiceImpl implements S3StorageService {
 
     private final S3Client s3Client;
     private final S3Presigner presigner;
@@ -82,6 +86,42 @@ public class S3StorageServiceImpl implements S3StorageService{
             return false;
         } catch (SdkException e) {
             throw new RuntimeException("S3 check failed: " + e.getMessage(), e);
+        }
+    }
+
+    public HeadObjectResponse getHeadObjectResponse(String key) {
+        return s3Client.headObject(
+                HeadObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build()
+        );
+    }
+
+    public InputStream getInputStream(String key, String range) {
+        if (range != null) {
+            String[] ranges = range.replace("bytes=", "").split("-");
+            long start = Long.parseLong(ranges[0]);
+            long end = (ranges.length > 1 && !ranges[1].isEmpty())
+                    ? Long.parseLong(ranges[1])
+                    : getHeadObjectResponse(key).contentLength() - 1;
+
+            String actRange = "bytes=" + start + "-" + end;
+
+            GetObjectRequest rangeRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .range(range)
+                    .build();
+
+            return s3Client.getObject(rangeRequest);
+        } else {
+            GetObjectRequest fullRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+
+            return s3Client.getObject(fullRequest);
         }
     }
 }

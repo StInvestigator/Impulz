@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 interface AlbumItemProps {
     album: string;
     itemHeight: number;
-    color: "dark" | "light";
+    color?: "dark" | "light";
 }
 
 const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light"}) => {

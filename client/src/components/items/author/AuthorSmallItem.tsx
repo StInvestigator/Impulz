@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 interface AuthorItemProps {
     author: string;
     itemWidth: number;
+    color?: "dark" | "light";
 }
 
-const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth}) => {
+const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth, color = "light"}) => {
     const navigate = useNavigate()
 
     const { t } = useTranslation('other')
@@ -19,7 +20,6 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth}) => {
             onClick={() => navigate(`/author/${author}`)}
             sx={{
                 width: itemWidth,
-                backgroundColor: "#ABA5A5",
                 boxShadow: "none",
                 color: 'black',
                 flexShrink: 0,
@@ -47,7 +47,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth}) => {
                          height={"30px"}/>
                 </IconButton>
             </Box>
-            <Box display="flex" flexDirection="column" flexGrow={1} textAlign={"center"} mt={1}>
+            <Box display="flex" flexDirection="column" flexGrow={1} textAlign={"center"} mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography gutterBottom variant="mainSbL">
                     {author}
                 </Typography>

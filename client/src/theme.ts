@@ -64,6 +64,11 @@ export const theme = createTheme({
         },
     },
     components: {
+        MuiButton: {
+            defaultProps: {
+                disableRipple: true,  // Отключаем эффект клика по умолчанию
+            },
+        },
         MuiLink: {
             styleOverrides: {
                 root: {
@@ -117,6 +122,31 @@ export const theme = createTheme({
                         backgroundColor: 'black',
                         color: '#fff',
                     },
+                },
+            },
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#FFFFFF", // цвет бордера в обычном состоянии
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#FFFFFF", // цвет бордера при наведении
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#FFFFFF", // цвет бордера при фокусе
+                    },
+                    "& .MuiOutlinedInput-input": {
+                        padding: "0px 60px 0px 24px" // внутренние отступы для текста
+                    }
+                },
+            },
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                input: {
+                    padding: '12px 16px',
                 },
             },
         },

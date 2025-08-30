@@ -50,8 +50,8 @@ export default function Dropdown() {
         sx={{
           fontFamily: "Work Sans, sans-serif",
           cursor: "pointer",
-          backgroundColor: "black",
-          color: "white",
+          backgroundColor: "var(--columbia-blue)",
+          color: "var(--dark-purple)",
           textTransform: "none",
         }}
       >
@@ -70,7 +70,6 @@ export default function Dropdown() {
             top: "100%",
             left: 0,
             marginTop: "4px",
-            backgroundColor: "white",
             boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
             zIndex: 10,
           }}
@@ -83,15 +82,17 @@ export default function Dropdown() {
                 padding: "8px 12px",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
-                backgroundColor: "black",
-                color: "white",
+                backgroundColor: "var(--columbia-blue)",
+                color: "var(--dark-purple)",
                 "&:hover": {
                   backgroundColor: "white",
-                  color: "black",
+                  color: "var(--dark-purple)",
                 },
               }}
             >
-              {option.label}
+              <Typography variant={"mainSbL"} textTransform={"none"}>
+                {option.label}
+              </Typography>
             </Box>
           ))}
         </Box>

@@ -58,7 +58,7 @@ const Sidebar = memo(() => {
                 overflowY: 'auto',
                 marginTop: "48px",
                 position: "fixed",
-                backgroundColor: "#887D7D",
+                backgroundColor: "var(--dark-purple)",
             }}
         >
             <Box sx={{ paddingLeft: "24px" }}>
@@ -93,24 +93,24 @@ const Sidebar = memo(() => {
                                 <ListItemIcon>
                                     <Box component="img" src={icon} />
                                 </ListItemIcon>
-                                <ListItemText primary={t(`${name}`)} disableTypography sx={{fontSize:"16px", fontWeight:600}} />
+                                <ListItemText primary={t(`${name}`)} disableTypography sx={{fontSize:"16px", fontWeight:600, color: "var(--orange-peel)" }} />
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
-                <Divider sx={{ backgroundColor: 'black', height: '1px', marginTop: "24px" }} />
+                <Divider sx={{ backgroundColor: 'var(--columbia-blue)', height: '1px', marginTop: "24px" }} />
                 <Button sx={{
                     margin: "30px 53px 60px",
                     height: "32px",
-                    border: "1px solid black",
+                    border: "1px solid var(--columbia-blue)",
                     borderRadius: "10px",
                     fontSize: "14px",
                     fontWeight: 400,
-                    color: "black",
+                    color: "var(--columbia-blue)",
                     padding: "6px 12px",
                     textTransform: "none"
                 }}>
-                    <Box component="img" src={createPlaylistImg} style={{ paddingRight: "10px" }} />
+                    <Box component="img" src={createPlaylistImg} color={"var(--columbia-blue)"} style={{ paddingRight: "10px" }} />
                     {t("button-create-playlist")}
                 </Button>
                 <MyPlaylistList />

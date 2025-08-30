@@ -10,7 +10,13 @@ interface PlaylistListProps {
 
 const PlaylistCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth, name}) => {
     return (
-        <ListCarousel title={name} variant={"h3"} gap={24} count_items={playlists.length}>
+        <ListCarousel
+            title={name}
+            variant={"h3"}
+            gap={24}
+            count_items={playlists.length}
+            bgColor={"var(--dark-purple)"}
+        >
             {playlists.map((playlist, index) => (
                 <PublicPlaylistSmallItem key={index} playlist={playlist} itemWidth={itemWidth} />
             ))}

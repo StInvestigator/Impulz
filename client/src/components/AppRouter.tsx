@@ -11,7 +11,6 @@ import PlaylistItemPage from "../pages/PlaylistItemPage.tsx";
 import FavoriteTracksPage from "../pages/FavoriteTracksPage.tsx";
 import UserProfilePage from "../pages/UserProfilePage.tsx";
 
-
 const pages = [
     {
         path: "/",

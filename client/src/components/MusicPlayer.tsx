@@ -66,7 +66,7 @@ const MusicPlayer: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const objectUrlRef = useRef<string | null>(null);
     const hasSentPlayback = useRef<boolean>(false);
-    const trackIdRef = useRef<number>(5);
+    const trackIdRef = useRef<number>(4);
     const listenedTimeRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
 
@@ -123,6 +123,8 @@ const MusicPlayer: React.FC = () => {
                 console.error('Failed to get track data:', err);
                 if (mounted) setError('Не удалось получить данные трека');
             }
+
+            console.log(trackData)
 
             if (!audioRef.current) {
                 const audio = new Audio(url);
@@ -269,7 +271,7 @@ const MusicPlayer: React.FC = () => {
                             cursor: 'pointer',
                         },
                         }}>
-                        {trackData.album?.title ?? 'Unknown album'}
+                        {trackData.album.title ?? 'Unknown album'}
                     </Link>
 
                     </Box>

@@ -25,4 +25,9 @@ public class Playlist {
     @Column(name = "created_at", nullable = false) private OffsetDateTime createdAt;
     @OneToMany(mappedBy = "playlist") private Set<PlaylistTrack> tracks = new HashSet<>();
     @OneToMany(mappedBy = "playlist") private Set<UserFavoritePlaylist> favoredBy = new HashSet<>();
+
+    @Transient
+    public Long getLikesCount(){
+        return (long) favoredBy.size();
+    }
 }

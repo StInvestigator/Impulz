@@ -41,13 +41,12 @@ const playlist = [
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
-    const { topTracks} = useAppSelector(state => state.track);
+    const { topTracks } = useAppSelector(state => state.track);
 
     useEffect(() => {
         dispatch(fetchTop20TracksByWeek());
     }, [dispatch]);
 
-    console.log(topTracks);
 
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])

@@ -4,7 +4,11 @@ import com.example.server.data.repository.TrackRepository;
 import com.example.server.factory.track.TrackFactory;
 import com.example.server.model.Track;
 import com.example.server.service.music.MusicServiceImpl;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +22,7 @@ import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,7 +32,12 @@ public class MusicController {
     private final MusicServiceImpl musicService;
     private final TrackFactory trackFactory;
     private final TrackRepository trackRepository;
-    private final S3Client s3Client;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    @Value("${server.url}")
+    private String baseUrl;
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
@@ -47,9 +57,29 @@ public class MusicController {
         }
     }
 
+    @GetMapping("/link/{id}")
+    public ResponseEntity<String> getLink(@PathVariable Long id) {
+
+        String token = Jwts.builder()
+                .setSubject("stream:" + id)
+                .setExpiration(new Date(System.currentTimeMillis() + 300_000)) // 5 минут
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        String url = String.format(baseUrl + "/api/music/stream/%d?token=%s", id, token);
+        return ResponseEntity.ok(url);
+    }
+
     @GetMapping("/stream/{id}")
-    public ResponseEntity<InputStreamResource> getStreamUrl(@PathVariable Long id, @RequestHeader(value = "Range", required = false) String rangeHeader) {
+    public ResponseEntity<InputStreamResource> stream(@PathVariable Long id,
+                                                      @RequestParam String token,
+                                                      @RequestHeader(value = "Range", required = false) String rangeHeader) {
         try {
+            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            if (!claims.getSubject().equals("stream:" + id)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
             Track track = trackRepository.getTrackById(id);
             if (track == null) {
                 return ResponseEntity.notFound().build();
@@ -71,14 +101,15 @@ public class MusicController {
                         .header(HttpHeaders.ACCEPT_RANGES, "bytes")
                         .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(end - start + 1))
                         .header(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + end + "/" + fileSize)
-                        .body(new InputStreamResource(musicService.getInputStream(key,rangeHeader)));
+                        .body(new InputStreamResource(musicService.getInputStream(key, rangeHeader)));
             } else {
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, head.contentType())
                         .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileSize))
                         .body(new InputStreamResource(musicService.getInputStream(key, null)));
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }

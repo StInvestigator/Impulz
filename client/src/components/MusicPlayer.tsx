@@ -1,4 +1,3 @@
-// MusicPlayer.tsx
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
@@ -9,7 +8,7 @@ import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '.
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http/index.ts';
 import keycloak from "../keycloak.ts";
-import type { TrackSimpleDto } from '../models/DTO/TrackSimpleDto.ts';
+import type {TrackDto} from "../models/TrackDto.ts";
 
 interface PlaybackStats {
     trackId: number;
@@ -27,28 +26,14 @@ const playbackService = {
         }
     },
 
-    getStreamUrl: async (id: number): Promise<string | null> => {
-        try {
-            const res = await $authApi.get(`/api/music/stream/${id}`, {
-                responseType: 'blob',
-                headers: {
-                    Accept: 'audio/*'
-                },
-
-            });
-
-            const contentType = res.headers['content-type'] || 'audio/mpeg';
-            const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: contentType });
-            return URL.createObjectURL(blob);
-        } catch (err) {
-            console.error('getStreamUrl error:', err);
-            return null;
-        }
+    getStreamUrl: async (id: number): Promise<string> => {
+         const response = await $authApi.get(`/api/music/link/${id}`)
+         return response.data
     },
 };
 
 const trackDataService = {
-    getTrackDataById: async (id: number): Promise<TrackSimpleDto> => {
+    getTrackDataById: async (id: number): Promise<TrackDto> => {
         const response = await $authApi.get(`/api/track/Dto/${id}`);
         return response.data;
     },
@@ -59,7 +44,7 @@ const MusicPlayer: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const [streamUrl, setStreamUrl] = useState<string | null>(null);
-    const [trackData, setTrackData] = useState<TrackSimpleDto | null>(null);
+    const [trackData, setTrackData] = useState<TrackDto | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -196,14 +181,12 @@ const MusicPlayer: React.FC = () => {
             if (!audio.paused) audio.pause();
         } else {
             if (audio.paused) audio.play().catch(err => {
-                // play может быть заблокирован политиками автоплея
                 console.error('play error:', err);
             });
         }
     }, [pause]);
 
     const togglePlay = () => {
-        // переключаем глобальное состояние плей/пауза
         if (pause) dispatch(playTrack());
         else dispatch(pauseTrack());
     };

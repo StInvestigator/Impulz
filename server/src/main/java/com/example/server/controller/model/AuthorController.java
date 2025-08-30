@@ -32,7 +32,7 @@ public class AuthorController
         return AuthorDto.fromEntity(author);
     }
 
-    @GetMapping("/findTop20AuthorsOfMonth")
+    @GetMapping("/simpleDto/findTop20AuthorsOfMonth")
     public List<AuthorSimpleDto> findTop20AuthorsOfMonth() {
         List<Author> authors = authorService.findTop20AuthorsOfMonth();
         return authors.stream()

@@ -12,9 +12,11 @@ public interface AuthorRepository extends JpaRepository<Author,String>
 
     @Query(value = """
     SELECT a.* FROM authors a
-    JOIN author_monthly_plays amp ON amp.author_id = a.user_id
-    WHERE amp.month = date_trunc('month', now())
-    ORDER BY amp.plays_count DESC
+    JOIN track_authors ta ON ta.author_id = a.user_id
+    JOIN track_plays tp ON tp.track_id = ta.track_id
+    WHERE date_trunc('month', tp.played_at) = date_trunc('month', now())
+    GROUP BY a.user_id
+    ORDER BY COUNT(tp.id) DESC
     LIMIT 20
     """, nativeQuery = true)
     List<Author> findTop20AuthorsOfMonth();

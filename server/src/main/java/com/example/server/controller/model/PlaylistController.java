@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/playlist")
 @RequiredArgsConstructor
@@ -27,5 +29,13 @@ public class PlaylistController {
     public PlaylistDto getPlaylistDto(@PathVariable Long id){
         Playlist playlist = playlistService.getPlaylistsById(id);
         return PlaylistDto.fromEntity(playlist);
+    }
+
+    @GetMapping("/simpleDto/findTop20PlaylistsByFavorites")
+    public List<PlaylistSimpleDto> findTop20PlaylistsByFavorites(){
+        List<Playlist> playlists = playlistService.findTop20PlaylistsByFavorites();
+        return playlists.stream()
+                .map(PlaylistSimpleDto::fromEntity)
+                .toList();
     }
 }

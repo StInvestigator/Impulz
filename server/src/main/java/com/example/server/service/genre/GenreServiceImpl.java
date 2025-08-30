@@ -5,6 +5,8 @@ import com.example.server.model.Genre;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService
@@ -13,5 +15,9 @@ public class GenreServiceImpl implements GenreService
 
     public Genre getGenreById(Long id) {
         return genreRepository.getGenreById(id);
+    }
+
+    public List<Genre> findTop5Genres(){
+        return genreRepository.findTop5Genres();
     }
 }

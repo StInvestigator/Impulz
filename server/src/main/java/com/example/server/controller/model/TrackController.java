@@ -31,7 +31,7 @@ public class TrackController
         return TrackDto.fromEntity(track);
     }
 
-    @GetMapping("/get20MostListenedTracksByWeek")
+    @GetMapping("/simpleDto/find20MostListenedTracksByWeek")
     public List<TrackSimpleDto> get20MostListenedTracksByWeek(){
         List<Track> tracks = trackService.findTop20MostPlayedTracksThisWeek();
         return tracks.stream()

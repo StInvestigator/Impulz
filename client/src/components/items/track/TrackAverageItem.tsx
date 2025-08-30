@@ -15,10 +15,11 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
     return (
         <Box
             sx={{
-                width: itemWidth || "100%"
+                width: itemWidth || "100%",
+                position: "relative",
             }}
         >
-            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative"}>
+            <Box bgcolor="gray" width="100%" height={`${itemHeight}px`} borderRadius={"10px 10px 10px 10px"} position={"relative"}>
                 {
                     isMedal
                     &&
@@ -26,7 +27,17 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                          height={"30px"}/>
                 }
             </Box>
-            <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
+            <Box
+                display={"flex"}
+                padding={"24px"}
+                width={"100%"}
+                height={"88px"}
+                boxSizing={"border-box"}
+                bgcolor={"var(--orange-peel-20)"}
+                borderRadius={"0 0 10px 10px"}
+                position={"absolute"}
+                bottom={0}
+            >
                 <Box display="flex" alignItems="center" width={"100%"}>
                     <Box display="flex" flexDirection="column" flexGrow={1}>
                         <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>

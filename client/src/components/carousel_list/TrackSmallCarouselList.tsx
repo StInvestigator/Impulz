@@ -10,7 +10,7 @@ interface TracklistListProps {
 
 const TrackSmallCarouselList: FC<TracklistListProps> = ({tracks, itemWidth, name}) => {
     return (
-        <ListCarousel title={name}  variant={"h3"} gap={24} count_items={tracks.length}>
+        <ListCarousel title={name} variant={"h3"} gap={24} count_items={tracks.length}>
             {tracks.map((track, index) => (
                 <PublicPlaylistSmallItem key={index} playlist={track} itemWidth={itemWidth} />
             ))}

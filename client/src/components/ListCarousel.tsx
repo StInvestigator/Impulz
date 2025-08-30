@@ -8,12 +8,14 @@ import { useTranslation } from 'react-i18next';
 interface ListCarouselProps {
     title: string;
     variant: TypographyProps['variant'];
+    bgColor?: string;
+    textColor?: string;
     gap: number;
     count_items: number;
     children: ReactNode;
 }
 
-const ListCarousel: FC<ListCarouselProps> = ({title, variant, gap ,count_items, children }) => {
+const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor, gap ,count_items, children }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const firstItemRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +58,7 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, gap ,count_items, 
             position="relative"
             borderRadius={"10px"}
             sx={{
-                backgroundColor: '#ABA5A5',
+                backgroundColor: bgColor || 'var(--dark-purple)',
                 boxSizing: 'border-box',
                 width: '100%',
                 overflowX: 'hidden',
@@ -64,15 +66,15 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, gap ,count_items, 
             }}
         >
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                <Typography variant={variant}>
+                <Typography variant={variant} color={textColor || 'var(--deep-sky-blue)'}>
                     {title}
                 </Typography>
                 <Button sx={{
-                    border: "1px solid black",
-                    borderRadius: "10px",
-                    color: "black",
-                    textTransform: "none",
-                    padding: "8px 12px"
+                    border: `1px solid ${textColor || 'var(--deep-sky-blue)'}`, 
+                    borderRadius: "10px", // Скругление углов
+                    color: textColor || 'var(--deep-sky-blue)', // Цвет текста
+                    textTransform: "none", // Без изменения регистра текста
+                    padding: "8px 12px",
                 }}>
                     <Typography variant={"mainSbS"}>
                         {t("button-watch-all")}

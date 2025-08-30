@@ -13,7 +13,7 @@ const AlbumList:FC<AlbumListProps> = ({albums}) => {
             gridTemplateColumns: "repeat(5, 1fr)"
         }} gap={3}>
             {albums.map(album =>
-                <AlbumAverageItem key={album} album={album} itemHeight={360}/>
+                <AlbumAverageItem key={album} album={album} itemHeight={360} color={"light"}/>
             )}
         </Box>
     );

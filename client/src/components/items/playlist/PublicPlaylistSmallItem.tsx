@@ -7,9 +7,10 @@ import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
 interface PlaylistItemProps {
     playlist: string;
     itemWidth: number;
+    color?: "dark" | "light";
 }
 
-const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) => {
+const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, color = "light"}) => {
 
     const { t } = useTranslation('other')
     const route = useAppNavigate()
@@ -18,7 +19,6 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) =
         <Box
             sx={{
                 width: itemWidth,
-                bgcolor: "#ABA5A5",
                 boxShadow: "none",
                 color: 'black',
                 flexShrink: 0,
@@ -46,7 +46,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth}) =
                          height={"30px"}/>
                 </IconButton>
             </Box>
-            <Box display="flex" flexDirection="column" flexGrow={1} mt={1}>
+            <Box display="flex" flexDirection="column" flexGrow={1} mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography gutterBottom variant="mainSbL">
                     {playlist}
                 </Typography>

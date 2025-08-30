@@ -28,16 +28,15 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                 </ListItemIcon>
                 <ListItemText
                     disableTypography
-                    sx={{fontWeight:600, fontSize: "14px"}}
+                    sx={{fontWeight:400, fontSize: "16px", color: "var(--columbia-blue)"}}
                     primary={name}
                     secondary={
                         < Box
                             component="span"
-                            sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}
+                            sx={{ display: 'flex', color: "var(--columbia-blue)", alignItems: 'center', mt: 0.5 }}
                         >
                             <Box component="img" src={pushPinImage} />
                             <Typography
-                                color="black"
                                 ml={0.5}
                                 component="span"
                                 variant={"mainRM"}

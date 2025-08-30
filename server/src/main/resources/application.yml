@@ -28,6 +28,7 @@ spring:
     locations: classpath:db/migration
 
 server:
+  url: http://localhost:8083
   port: 8083
   servlet:
     context-path: /api
@@ -63,3 +64,6 @@ music:
 
 app:
   temp-dir: ${java.io.tmpdir}/audio_uploads
+
+jwt:
+  secret: wI0Fcd3rZPL+CQ6X5koM0dn8CKV2gA3VX0Z0M4cV2Rk=

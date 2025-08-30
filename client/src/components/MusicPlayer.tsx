@@ -27,23 +27,9 @@ const playbackService = {
         }
     },
 
-    getStreamUrl: async (id: number): Promise<string | null> => {
-        try {
-            const res = await $authApi.get(`/api/music/stream/${id}`, {
-                responseType: 'blob',
-                headers: {
-                    Accept: 'audio/*'
-                },
-
-            });
-
-            const contentType = res.headers['content-type'] || 'audio/mpeg';
-            const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: contentType });
-            return URL.createObjectURL(blob);
-        } catch (err) {
-            console.error('getStreamUrl error:', err);
-            return null;
-        }
+    getStreamUrl: async (id: number): Promise<string> => {
+         const response = await $authApi.get(`/api/music/link/${id}`)
+         return response.data
     },
 };
 

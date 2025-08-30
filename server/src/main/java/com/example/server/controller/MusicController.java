@@ -32,7 +32,6 @@ public class MusicController {
     private final MusicServiceImpl musicService;
     private final TrackFactory trackFactory;
     private final TrackRepository trackRepository;
-    private final S3Client s3Client;
 
     @Value("${jwt.secret}")
     private String secretKey;

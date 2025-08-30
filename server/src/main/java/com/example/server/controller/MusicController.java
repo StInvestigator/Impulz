@@ -62,7 +62,7 @@ public class MusicController {
 
         String token = Jwts.builder()
                 .setSubject("stream:" + id)
-                .setExpiration(new Date(System.currentTimeMillis() + 300_000)) // 5 минут
+                .setExpiration(new Date(System.currentTimeMillis() + 14_400_000))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 

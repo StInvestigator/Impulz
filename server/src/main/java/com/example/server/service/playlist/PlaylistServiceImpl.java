@@ -20,6 +20,13 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final TrackRepository trackRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
 
+    public Playlist getPlaylistsById(Long id){
+        return playlistRepository.getPlaylistsById(id);
+    }
+
+    public List<Playlist> findTop20PlaylistsByFavorites(){
+        return playlistRepository.findTop20PlaylistsByFavorites();
+    }
 
     public List<Playlist> getAllPlaylists() {
         return playlistRepository.findAll();

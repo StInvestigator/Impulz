@@ -17,6 +17,14 @@ public class GenreServiceImpl implements GenreService
         return genreRepository.getGenreById(id);
     }
 
+    public void createGenre(Genre genre){
+        genreRepository.save(genre);
+    }
+
+    public void deleteGenre(Genre genre){
+        genreRepository.delete(genre);
+    }
+
     public List<Genre> findTop5Genres(){
         return genreRepository.findTop5Genres();
     }

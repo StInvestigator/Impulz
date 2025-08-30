@@ -5,4 +5,6 @@ import com.example.server.model.Album;
 public interface AlbumService
 {
     Album getAlbumById(Long id);
+    void create(Album album);
+    void delete(Album album);
 }

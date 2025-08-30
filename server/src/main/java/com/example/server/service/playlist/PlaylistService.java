@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface PlaylistService {
     Playlist getPlaylistsById(Long id);
+    void createPlaylist(Playlist playlist);
+    void deletePlaylist(Playlist playlist);
     List<Playlist> findTop20PlaylistsByFavorites();
     List<Playlist> getAllPlaylists();
 

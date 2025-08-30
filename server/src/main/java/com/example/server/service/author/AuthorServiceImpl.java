@@ -17,6 +17,14 @@ public class AuthorServiceImpl implements AuthorService
         return authorRepository.getAuthorById(id);
     }
 
+    public void createAuthor(Author author) {
+        authorRepository.save(author);
+    }
+
+    public void deleteAuthor(Author author){
+        authorRepository.delete(author);
+    }
+
     public List<Author> findTop20AuthorsOfMonth() {
         return authorRepository.findTop20AuthorsOfMonth();
     }

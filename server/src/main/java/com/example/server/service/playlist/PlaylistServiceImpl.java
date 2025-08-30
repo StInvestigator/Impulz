@@ -24,6 +24,14 @@ public class PlaylistServiceImpl implements PlaylistService {
         return playlistRepository.getPlaylistsById(id);
     }
 
+    public void createPlaylist(Playlist playlist){
+        playlistRepository.save(playlist);
+    }
+
+    public void deletePlaylist(Playlist playlist){
+        playlistRepository.delete(playlist);
+    }
+
     public List<Playlist> findTop20PlaylistsByFavorites(){
         return playlistRepository.findTop20PlaylistsByFavorites();
     }

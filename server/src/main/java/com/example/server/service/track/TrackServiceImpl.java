@@ -13,17 +13,22 @@ public class TrackServiceImpl implements TrackService
 {
     private final TrackRepository trackRepository;
 
-    @Override
     public Track getTrackById(Long id) {
         return trackRepository.getTrackById(id);
     }
 
-    @Override
+    public void createTrack(Track track){
+        trackRepository.save(track);
+    }
+
+    public void deleteTrack(Track track){
+        trackRepository.delete(track);
+    }
+
     public Track findTrackByFileUrl(String fileUrl) {
         return trackRepository.findTrackByFileUrl(fileUrl);
     }
 
-    @Override
     public List<Track> findTop20MostPlayedTracksThisWeek() {
         return trackRepository.findTop20MostPlayedTracksThisWeek();
     }

@@ -17,4 +17,12 @@ public class AlbumServiceImpl implements AlbumService
         return albumRepository.getAlbumById(id);
     }
 
+    public void create(Album album){
+        albumRepository.save(album);
+    }
+
+    public void delete(Album album){
+        albumRepository.delete(album);
+    }
+
 }

@@ -8,4 +8,6 @@ public interface AuthorService
 {
     Author getAuthorById(String id);
     List<Author> findTop20AuthorsOfMonth();
+    void createAuthor(Author author);
+    void deleteAuthor(Author author);
 }

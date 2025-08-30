@@ -3,6 +3,7 @@ package com.example.server.controller.model;
 import com.example.server.data.repository.GenreRepository;
 import com.example.server.dto.Genre.GenreSimpleDto;
 import com.example.server.model.Genre;
+import com.example.server.service.genre.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/genre")
 @RequiredArgsConstructor
 public class GenreController {
-    private final GenreRepository genreRepository;
+    private final GenreService genreService;
 
     @GetMapping("/simpleDto/{id}")
     public GenreSimpleDto getGenreSimpleDto(@PathVariable Long id){
-        Genre genre = genreRepository.getGenreById(id);
+        Genre genre = genreService.getGenreById(id);
         return GenreSimpleDto.fromEntity(genre);
     }
 }

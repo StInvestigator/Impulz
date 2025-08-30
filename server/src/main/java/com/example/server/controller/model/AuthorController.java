@@ -4,28 +4,40 @@ import com.example.server.data.repository.AuthorRepository;
 import com.example.server.dto.Author.AuthorDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.model.Author;
+import com.example.server.service.author.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/author")
 @RequiredArgsConstructor
 public class AuthorController
 {
-    private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
 
     @GetMapping("/simpleDto/{id}")
     public AuthorSimpleDto getAuthorSimpleDto(@PathVariable String id){
-        Author author = authorRepository.getAuthorById(id);
+        Author author = authorService.getAuthorById(id);
         return AuthorSimpleDto.fromEntity(author);
     }
 
     @GetMapping("/Dto/{id}")
     public AuthorDto getAuthorDto(@PathVariable String id){
-        Author author = authorRepository.getAuthorById(id);
+        Author author = authorService.getAuthorById(id);
         return AuthorDto.fromEntity(author);
     }
+
+    @GetMapping("/findTop20AuthorsOfMonth")
+    public List<AuthorSimpleDto> findTop20AuthorsOfMonth() {
+        List<Author> authors = authorService.findTop20AuthorsOfMonth();
+        return authors.stream()
+                .map(AuthorSimpleDto::fromEntity)
+                .toList();
+    }
+
 }

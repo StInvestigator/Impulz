@@ -23,8 +23,6 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     """)
     Track getTrackById(@Param("id") Long id);
 
-    Track getTrackByTitle(String title);
-
     Track findTrackByFileUrl(String fileUrl);
 
     @Query(value = """

@@ -3,6 +3,8 @@ import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { setTrackActive } from "../../../store/reducers/PlayerSlice.ts";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -12,6 +14,12 @@ interface TrackItemProps {
 }
 
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
+    const dispatch = useAppDispatch()
+
+    const play = () => {
+        dispatch(setTrackActive(track))
+    }
+
     return (
         <Box
             sx={{
@@ -47,7 +55,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                             {track.album}
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0}}>
+                    <IconButton sx={{padding: 0}} onClick={play}>
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

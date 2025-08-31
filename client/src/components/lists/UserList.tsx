@@ -1,9 +1,10 @@
 import type { FC } from "react";
 import UserAverageItem from "../items/user/UserAverageItem";
 import { Box } from "@mui/material";
+import type { UserSimpleDto } from "../../models/DTO/UserSimpleDto";
 
 interface UserListProps {
-    users: string[]
+    users: UserSimpleDto[]
 }
 
 const UserList: FC<UserListProps> = ({users}) => {

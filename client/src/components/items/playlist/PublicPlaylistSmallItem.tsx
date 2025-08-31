@@ -3,9 +3,10 @@ import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
 import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
+import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 
 interface PlaylistItemProps {
-    playlist: string;
+    playlist: PlaylistSimpleDto;
     itemWidth: number;
     color?: "dark" | "light";
 }
@@ -48,10 +49,10 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
             </Box>
             <Box display="flex" flexDirection="column" flexGrow={1} mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography gutterBottom variant="mainSbL">
-                    {playlist}
+                    {playlist.title}
                 </Typography>
                 <Typography variant="mainRM">
-                    {t("title-album")} &middot; Rihana
+                    {t("title-album")} &middot; {playlist.owner?.name || "Unknown"}
                 </Typography>
             </Box>
         </Box>

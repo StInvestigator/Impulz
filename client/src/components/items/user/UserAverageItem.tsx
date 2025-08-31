@@ -1,10 +1,11 @@
 import { Box, IconButton, Typography } from '@mui/material';
 import { type FC } from 'react'
 import playImage from "../../../assets/play.svg";
+import type { UserSimpleDto } from '../../../models/DTO/UserSimpleDto';
 
 
 interface UserItemProps {
-  user: string;
+  user: UserSimpleDto;
 }
 
 
@@ -35,7 +36,7 @@ const UserAverageItem: FC<UserItemProps> = ({user}) => {
       >
         <Box display={"flex"} flexDirection={"column"}>
           <Typography variant={"mainSbL"} display={"flex"} alignItems={"center"}>
-            {user}
+            {user.name}
           </Typography>
         </Box>
         <IconButton sx={{ padding: 0 }}>

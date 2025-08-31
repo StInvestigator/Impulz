@@ -1,11 +1,13 @@
-import { useEffect, type FC } from "react";
+import { type FC } from "react";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
 import ListCarousel from "../ListCarousel.tsx";
 import { Skeleton, type TypographyProps } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
-import { fetchTop20TracksByWeek } from "../../store/reducers/action-creators/tracks.ts";
+import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackListProps {
+  tracks: TrackSimpleDto[];
+  isLoading: boolean;
+  error: string | null;
   title: string;
   variant: TypographyProps["variant"];
   itemWidth: number;
@@ -13,21 +15,18 @@ interface TrackListProps {
 }
 
 const TrackBigCarouselList: FC<TrackListProps> = ({
+  tracks,
+  isLoading,
+  error,
   itemWidth,
   itemHeight,
   title,
   variant,
 }) => {
-  const dispatch = useAppDispatch();
-  const { topTracks, loading, error } = useAppSelector((state) => state.track);
-
-  useEffect(() => {
-    dispatch(fetchTop20TracksByWeek());
-  }, [dispatch]);
 
   return (
     <>
-      {loading || error ? (
+      {isLoading || error ? (
         <Skeleton
           variant="rectangular"
           width="100%"
@@ -37,13 +36,13 @@ const TrackBigCarouselList: FC<TrackListProps> = ({
       ) : (
         <ListCarousel
           gap={24}
-          count_items={topTracks.length}
+          count_items={tracks.length}
           variant={variant}
           title={title}
           bgColor={"var(--dark-purple)"}
           textColor={"var(--orange-peel)"}
         >
-          {topTracks.map((track, index) => (
+          {tracks.map((track, index) => (
             <TrackAverageItem
               key={index}
               track={track}

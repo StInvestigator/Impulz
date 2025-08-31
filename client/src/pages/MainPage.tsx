@@ -10,6 +10,11 @@ import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
+import { fetchTop20TracksByWeek } from "../store/reducers/action-creators/tracks.ts";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
+import { useEffect } from "react";
+import { fetchTop20AuthorsByWeek } from "../store/reducers/action-creators/author.ts";
+import { fetchTop20PlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 
 const tracks = [
     'Трек 2', 'Трек 2', 'Трек 3',
@@ -19,39 +24,35 @@ const tracks = [
     'Трек 15', 'Трек 16'
 ];
 
-const authors = [
-    'Автор 1', 'Автор 2', 'Автор 3',
-    'Автор 4', 'Автор 5', 'Автор 6',
-    'Автор 7', 'Автор 8', 'Автор 9', 'Автор 10', 'Автор 11',
-    'Автор 12', 'Автор 13', 'Автор 14',
-    'Автор 15', 'Автор 16'
-];
-
-const playlist = [
-    'Плейлист 1', 'Плейлист 2', 'Плейлист 3',
-    'Плейлист 4', 'Плейлист 5', 'Плейлист 6',
-    'Плейлист 7', 'Плейлист 8', 'Плейлист 9', 'Плейлист 10', 'Плейлист 11',
-    'Плейлист 12', 'Плейлист 13', 'Плейлист 14',
-    'Плейлист 15', 'Плейлист 16'
-];
-
-
 const MainPage = () => {
+    const dispatch = useAppDispatch();
+    const { topTracks, isLoading: tracksLoading, error: tracksError } = useAppSelector((state) => state.track);
+    const { topAuthors, isLoading: authorsLoading, error: authorsError } = useAppSelector((state) => state.author);
+    const { topPlaylists, isLoading: playlistsLoading, error: playlistsError } = useAppSelector((state) => state.playlist);
+
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
+
+    useEffect(() => {
+        dispatch(fetchTop20TracksByWeek());
+        dispatch(fetchTop20AuthorsByWeek());
+        dispatch(fetchTop20PlaylistsByWeek());
+
+        console.log(topAuthors);
+    }, [dispatch]);
 
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"} />
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                <TrackBigCarouselList itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} />
+                <TrackBigCarouselList tracks={topTracks} isLoading={tracksLoading} error={tracksError} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} />
                 <GenreList />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList authors={authors} itemWidth={134} name={t("main:title-best-author-month")} />
+                <AuthorCarouselList authors={topAuthors} isLoading={authorsLoading} error={authorsError} itemWidth={134} name={t("main:title-best-author-month")} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <PlaylistCarouselList playlists={playlist} itemWidth={134} name={t("main:title-listen-best-playlists")} />
+                <PlaylistCarouselList playlists={topPlaylists} isLoading={playlistsLoading} error={playlistsError} itemWidth={134} name={t("main:title-listen-best-playlists")} />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <TopFiveGenreList />

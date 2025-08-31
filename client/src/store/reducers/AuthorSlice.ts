@@ -1,30 +1,36 @@
 import {createSlice} from "@reduxjs/toolkit";
-
-const authors = [
-    'Автор 1', 'Автор 2', 'Автор 3',
-    'Автор 4', 'Автор 5', 'Автор 6',
-    'Автор 7', 'Автор 8','Автор 9', 'Автор 10', 'Автор 11',
-    'Автор 12', 'Автор 13', 'Автор 14',
-    'Автор 15', 'Автор 16'
-];
+import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto";
+import { fetchTop20AuthorsByWeek } from "./action-creators/author";
 
 interface AuthorState {
+    topAuthors: AuthorSimpleDto[];
     isLoading: boolean;
-    authors: string[];
-    error: string;
+    error: string | null;
 }
 
 const initialState: AuthorState = {
+    topAuthors: [],
     isLoading: false,
-    authors: authors,
-    error: ""
+    error: null
 }
 
 export const AuthorSlice = createSlice({
     name: "author",
     initialState,
-    reducers: {
-
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchTop20AuthorsByWeek.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchTop20AuthorsByWeek.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.topAuthors = action.payload;
+            })
+            .addCase(fetchTop20AuthorsByWeek.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || "Unknown error";
+            });
     }
 })
 

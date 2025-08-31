@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { TrackDto } from '../../models/TrackDto.ts';
+import type { TrackSimpleDto } from '../../models/DTO/TrackSimpleDto.ts';
 
 interface PlayerState {
-    active: null | TrackDto;
+    active?: TrackSimpleDto | null;
     volume: number;
     duration: number;
     currentTime: number;
@@ -28,7 +28,7 @@ const playerSlice = createSlice({
         pauseTrack: (state) => {
             state.pause = true;
         },
-        setActive: (state, action: PayloadAction<TrackDto>) => {
+        setTrackActive: (state, action: PayloadAction<TrackSimpleDto>) => {
             state.active = action.payload;
             state.duration = 0;
             state.currentTime = 0;
@@ -48,7 +48,7 @@ const playerSlice = createSlice({
 export const { 
     playTrack, 
     pauseTrack, 
-    setActive, 
+    setTrackActive, 
     setDuration, 
     setCurrentTime, 
     setVolume 

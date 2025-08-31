@@ -3,7 +3,9 @@ package com.example.server.controller;
 import com.example.server.data.repository.TrackRepository;
 import com.example.server.factory.track.TrackFactory;
 import com.example.server.model.Track;
+import com.example.server.service.music.MusicService;
 import com.example.server.service.music.MusicServiceImpl;
+import com.example.server.service.track.TrackService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,9 +31,8 @@ import java.util.List;
 @RequestMapping("/music")
 @RequiredArgsConstructor
 public class MusicController {
-    private final MusicServiceImpl musicService;
-    private final TrackFactory trackFactory;
-    private final TrackRepository trackRepository;
+    private final MusicService musicService;
+    private final TrackService trackService;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -48,7 +49,7 @@ public class MusicController {
             @RequestParam List<Long> genreIds
     ) throws IOException {
         try {
-            Track track = trackFactory.createTrack(title, albumId, authorIds, genreIds);
+            Track track = trackService.createTrack(title, albumId, authorIds, genreIds);
 
             Track savedTrack = musicService.uploadMusic(file, track);
             return ResponseEntity.ok("Track successfully saved with ID: " + savedTrack.getId());
@@ -80,7 +81,7 @@ public class MusicController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
-            Track track = trackRepository.getTrackById(id);
+            Track track = trackService.getTrackById(id);
             if (track == null) {
                 return ResponseEntity.notFound().build();
             }

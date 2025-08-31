@@ -8,6 +8,7 @@ public interface TrackService
 {
     Track getTrackById(Long id);
     void createTrack(Track track);
+    Track createTrack(String title, Long albumId, List<String> authorIds,List<Long> genreIds);
     void deleteTrack(Track track);
     Track findTrackByFileUrl(String fileUrl);
     List<Track> findTop20MostPlayedTracksThisWeek();

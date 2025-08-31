@@ -23,26 +23,5 @@ public class TrackFactory
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
 
-    public Track createTrack(String title, Long albumId, List<String> authorIds,List<Long> genreIds){
-        Track track = new Track();
-        track.setTitle(title);
-        track.setLikes(0L);
-        track.setTotalPlays(0L);
-        track.setCreatedAt(OffsetDateTime.now());
 
-        track.setAlbum(albumRepository.findById(albumId)
-                .orElseThrow(() -> new RuntimeException("Album not found with id: " + albumId)));
-
-        if(authorIds != null && !authorIds.isEmpty()){
-            Set<Author> authors = new HashSet<>(authorRepository.findAllById(authorIds));
-            track.setAuthors(authors);
-        }
-
-        if(genreIds != null & !genreIds.isEmpty()){
-            Set<Genre> genres = new HashSet<>(genreRepository.findAllById(genreIds));
-            track.setGenres(genres);
-        }
-
-        return track;
-    }
 }

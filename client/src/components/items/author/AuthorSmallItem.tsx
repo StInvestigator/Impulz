@@ -3,9 +3,10 @@ import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import {useNavigate} from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 
 interface AuthorItemProps {
-    author: string;
+    author: AuthorSimpleDto;
     itemWidth: number;
     color?: "dark" | "light";
 }
@@ -49,7 +50,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth, color = "light
             </Box>
             <Box display="flex" flexDirection="column" flexGrow={1} textAlign={"center"} mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography gutterBottom variant="mainSbL">
-                    {author}
+                    {author.name}
                 </Typography>
                 <Typography variant="mainRM">
                     {t("title-author")}

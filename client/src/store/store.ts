@@ -6,8 +6,8 @@ import TrackReducer from "./reducers/TrackSlice.ts"
 
 
 const rootReducer = combineReducers({
-    AuthorReducer,
-    PlaylistReducer,
+    author: AuthorReducer,
+    playlist: PlaylistReducer,
     player: PlayerReducer,
     track: TrackReducer
 })

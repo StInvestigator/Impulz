@@ -1,17 +1,17 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {PlaylistDto} from "../../models/PlaylistDto.ts";
-import {fetchPlaylists} from "./action-creators/playlist.ts";
+import {fetchTop20PlaylistsByWeek} from "./action-creators/playlist.ts";
+import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 
 interface PlaylistState {
+    topPlaylists: PlaylistSimpleDto[];
     isLoading: boolean;
-    playlists: PlaylistDto[];
-    error: string;
+    error: string | null;
 }
 
 const initialState: PlaylistState = {
+    topPlaylists: [],
     isLoading: false,
-    playlists: [],
-    error: ""
+    error: null
 }
 
 export const PlaylistSlice = createSlice({
@@ -20,16 +20,16 @@ export const PlaylistSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchPlaylists.pending, (state) => {
+            .addCase(fetchTop20PlaylistsByWeek.pending, (state) => {
                 state.isLoading = true;
                 state.error = '';
             })
-            .addCase(fetchPlaylists.fulfilled, (state, action: PayloadAction<PlaylistDto[]>) => {
+            .addCase(fetchTop20PlaylistsByWeek.fulfilled, (state, action: PayloadAction<PlaylistSimpleDto[]>) => {
                 state.isLoading = false;
                 state.error = '';
-                state.playlists = action.payload;
+                state.topPlaylists = action.payload;
             })
-            .addCase(fetchPlaylists.rejected, (state, action: ReturnType<typeof fetchPlaylists.rejected>) => {
+            .addCase(fetchTop20PlaylistsByWeek.rejected, (state, action: ReturnType<typeof fetchTop20PlaylistsByWeek.rejected>) => {
                 state.isLoading = false;
                 state.error = action.payload || 'Unknown error';
             });

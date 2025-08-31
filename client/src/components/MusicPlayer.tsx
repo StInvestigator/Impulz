@@ -8,7 +8,6 @@ import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '.
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http/index.ts';
 import keycloak from "../keycloak.ts";
-import type {TrackDto} from "../models/TrackDto.ts";
 
 interface PlaybackStats {
     trackId: number;
@@ -32,39 +31,38 @@ const playbackService = {
     },
 };
 
-const trackDataService = {
-    getTrackDataById: async (id: number): Promise<TrackDto> => {
-        const response = await $authApi.get(`/api/track/Dto/${id}`);
-        return response.data;
-    },
-};
+// const trackDataService = {
+//     getTrackDataById: async (id: number): Promise<TrackSimpleDto> => {
+//         const response = await $authApi.get(`/api/track/simpleDto/${id}`);
+//         return response.data;
+//     },
+// };
 
 const MusicPlayer: React.FC = () => {
-    const { pause, currentTime, duration, volume } = useAppSelector(state => state.player);
+    const {active, pause, currentTime, duration, volume } = useAppSelector(state => state.player);
     const dispatch = useAppDispatch();
 
     const [streamUrl, setStreamUrl] = useState<string | null>(null);
-    const [trackData, setTrackData] = useState<TrackDto | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const objectUrlRef = useRef<string | null>(null);
     const hasSentPlayback = useRef<boolean>(false);
-    const trackIdRef = useRef<number>(4);
     const listenedTimeRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
 
     const sendPlaybackStats = useCallback(async () => {
         if (hasSentPlayback.current) return;
         if (!keycloak?.authenticated) return;
+        if (!active) return;
 
         const audio = audioRef.current;
         if (!audio) return;
 
         const userId = keycloak.tokenParsed?.sub || keycloak?.subject || keycloak.idTokenParsed?.sub || 'unknown-user';
         const stats: PlaybackStats = {
-            trackId: trackIdRef.current,
+            trackId: active.id,
             currentTime: Math.min(audio.currentTime, duration),
             duration,
             userId,
@@ -80,12 +78,14 @@ const MusicPlayer: React.FC = () => {
 
     useEffect(() => {
         let mounted = true;
+        if (!active) return;
 
         const loadStream = async () => {
             setLoading(true);
             setError(null);
+            dispatch(pauseTrack());
 
-            const url = await playbackService.getStreamUrl(trackIdRef.current);
+            const url = await playbackService.getStreamUrl(active.id);
             if (!mounted) return;
 
             if (!url) {
@@ -99,17 +99,18 @@ const MusicPlayer: React.FC = () => {
             }
             objectUrlRef.current = url;
             setStreamUrl(url);
+            console.log('Stream URL:', url);
 
-            try {
-                const trackInfo = await trackDataService.getTrackDataById(trackIdRef.current);
-                if (!mounted) return;
-                setTrackData(trackInfo);
-            } catch (err) {
-                console.error('Failed to get track data:', err);
-                if (mounted) setError('Не удалось получить данные трека');
-            }
+            // try {
+            //     const trackInfo = await trackDataService.getTrackDataById(active.id);
+            //     if (!mounted) return;
+            //     dispatch(setTrackActive(trackInfo));
+            // } catch (err) {
+            //     console.error('Failed to get track data:', err);
+            //     if (mounted) setError('Не удалось получить данные трека');
+            // }
 
-            console.log(trackData)
+            console.log(active)
 
             if (!audioRef.current) {
                 const audio = new Audio(url);
@@ -146,6 +147,7 @@ const MusicPlayer: React.FC = () => {
             }
 
             setLoading(false);
+            dispatch(playTrack());
         };
 
         loadStream();
@@ -167,7 +169,7 @@ const MusicPlayer: React.FC = () => {
             listenedTimeRef.current = 0;
             lastTimeRef.current = 0;
         };
-    }, [dispatch, sendPlaybackStats]);
+    }, [active]);
 
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
@@ -206,7 +208,7 @@ const MusicPlayer: React.FC = () => {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
-    if (!streamUrl || !trackData) return <div>Аудио не доступно</div>;
+    if (!streamUrl || !active) return <div>Аудио не доступно</div>;
 
     return (
         <Box
@@ -226,7 +228,7 @@ const MusicPlayer: React.FC = () => {
             </IconButton>
 
             <Grid container direction="column" sx={{ width: 240, margin: '0 20px' }}>
-                <Box sx={{ fontWeight: 600 }}>{trackData.title ?? 'Unknown title'}</Box>
+                <Box sx={{ fontWeight: 600 }}>{active.title ?? 'Unknown title'}</Box>
                 <Box sx={{ fontSize: 12, color: 'gray' }}>
                     <Link
                         href={"/"}
@@ -240,7 +242,7 @@ const MusicPlayer: React.FC = () => {
                         },
                         }}
                             >
-                        {trackData.authors?.map(author => author.name).join(', ') ?? 'Unknown artist'}
+                        {active.authors?.map(author => author).join(', ') ?? 'Unknown artist'}
                     </Link>
                     <Box component="span" sx={{ mx: 1 }}>•</Box>
                     <Link
@@ -254,7 +256,7 @@ const MusicPlayer: React.FC = () => {
                             cursor: 'pointer',
                         },
                         }}>
-                        {trackData.album.title ?? 'Unknown album'}
+                        {active.album ?? 'Unknown album'}
                     </Link>
 
                     </Box>

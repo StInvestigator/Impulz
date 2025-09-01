@@ -7,4 +7,5 @@ import java.util.List;
 public interface RecommendationService
 {
     List<RecommendationDto> getTodayRecommendations();
+    List<RecommendationDto> getPersonalizedRecommendationsByRecentGenres(String userId);
 }

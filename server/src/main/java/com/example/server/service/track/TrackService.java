@@ -1,6 +1,7 @@
 package com.example.server.service.track;
 
 import com.example.server.model.Track;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface TrackService
     Track findTrackByFileUrl(String fileUrl);
     List<Track> findTop20MostPlayedTracksThisWeek();
     List<Track> getRecommendedTracksToday();
+    List<Track> findPopularTrackByUserRecentGenres(String userId);
 }

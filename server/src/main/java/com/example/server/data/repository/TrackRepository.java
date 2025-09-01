@@ -46,6 +46,28 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     """, nativeQuery = true)
     List<Track> findRecommendedTracksToday();
 
+    @Query(value = """
+    WITH user_recent_genres AS (
+        SELECT tg.genre_id, MAX(tp.played_at) as last_played
+        FROM track_plays tp
+        JOIN track_genres tg ON tg.track_id = tp.track_id
+        WHERE tp.user_id = :userId
+        GROUP BY tg.genre_id
+        ORDER BY last_played DESC
+        LIMIT 5
+    )
+    SELECT t.*
+    FROM tracks t
+    JOIN track_genres tg ON tg.track_id = t.id
+    WHERE tg.genre_id IN (SELECT genre_id FROM user_recent_genres)
+    GROUP BY t.id
+    ORDER BY COUNT(tg.genre_id) DESC,
+             t.total_plays DESC,
+             t.likes DESC
+    LIMIT 15
+    """, nativeQuery = true)
+    List<Track> findPopularTrackByUserRecentGenres(@Param("userId") String userId);
+
     @Modifying
     @Query("UPDATE Track t SET t.totalPlays = t.totalPlays + 1 WHERE t.id = :trackId")
     void incrementTotalPlays(@Param("trackId") Long trackId);

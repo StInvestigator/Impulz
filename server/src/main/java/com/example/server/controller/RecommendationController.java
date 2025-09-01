@@ -16,6 +16,7 @@ import com.example.server.service.recommendation.RecommendationService;
 import com.example.server.service.track.TrackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -68,5 +69,10 @@ public class RecommendationController
     @GetMapping("/today")
     public List<RecommendationDto> getTodayRecommendations(){
         return recommendationService.getTodayRecommendations();
+    }
+
+    @GetMapping("/personalized/by-recent-genres/{userId}")
+    public List<RecommendationDto> getPersonalizedRecommendationsByRecentGenres(@PathVariable String userId){
+        return recommendationService.getPersonalizedRecommendationsByRecentGenres(userId);
     }
 }

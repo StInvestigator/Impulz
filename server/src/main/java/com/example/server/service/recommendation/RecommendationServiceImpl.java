@@ -22,11 +22,33 @@ public class RecommendationServiceImpl implements RecommendationService
     private final AlbumService albumService;
 
     public List<RecommendationDto> getTodayRecommendations(){
-        List<TrackRecommendationDto> trackRecommendations = trackService.getRecommendedTracksToday()
+        List<TrackRecommendationDto> trackRecommendations = trackService
+                .getRecommendedTracksToday()
                 .stream()
                 .map(TrackRecommendationDto::fromEntity)
                 .toList();
-        List<AlbumRecommendationDto> albumRecommendations = albumService.getRecommendedAlbumsToday()
+        List<AlbumRecommendationDto> albumRecommendations = albumService
+                .getRecommendedAlbumsToday()
+                .stream()
+                .map(AlbumRecommendationDto::fromEntity)
+                .toList();
+
+        List<RecommendationDto> recommendations = new ArrayList<>();
+        recommendations.addAll(trackRecommendations);
+        recommendations.addAll(albumRecommendations);
+
+        Collections.shuffle(recommendations);
+        return recommendations;
+    }
+
+    public List<RecommendationDto> getPersonalizedRecommendationsByRecentGenres(String userId){
+        List<TrackRecommendationDto> trackRecommendations = trackService
+                .findPopularTrackByUserRecentGenres(userId)
+                .stream()
+                .map(TrackRecommendationDto::fromEntity)
+                .toList();
+        List<AlbumRecommendationDto> albumRecommendations = albumService
+                .findPopularAlbumsByUserRecentGenres(userId)
                 .stream()
                 .map(AlbumRecommendationDto::fromEntity)
                 .toList();

@@ -5,6 +5,7 @@ import com.example.server.dto.Album.AlbumDto;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.model.Album;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,5 +30,9 @@ public class AlbumServiceImpl implements AlbumService
 
     public List<Album> getRecommendedAlbumsToday() {
         return albumRepository.findRecommendedAlbumsToday();
+    }
+
+    public List<Album> findPopularAlbumsByUserRecentGenres(String userId){
+        return albumRepository.findPopularAlbumsByUserRecentGenres(userId);
     }
 }

@@ -30,12 +30,4 @@ public class PlaylistController {
         Playlist playlist = playlistService.getPlaylistsById(id);
         return PlaylistDto.fromEntity(playlist);
     }
-
-    @GetMapping("/simpleDto/findTop20PlaylistsByFavorites")
-    public List<PlaylistSimpleDto> findTop20PlaylistsByFavorites(){
-        List<Playlist> playlists = playlistService.findTop20PlaylistsByFavorites();
-        return playlists.stream()
-                .map(PlaylistSimpleDto::fromEntity)
-                .toList();
-    }
 }

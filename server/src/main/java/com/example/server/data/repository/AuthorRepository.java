@@ -14,7 +14,7 @@ public interface AuthorRepository extends JpaRepository<Author,String>
     SELECT a.* FROM authors a
     JOIN track_authors ta ON ta.author_id = a.user_id
     JOIN track_plays tp ON tp.track_id = ta.track_id
-    WHERE date_trunc('month', tp.played_at) = date_trunc('month', now())
+    WHERE tp.played_at >= CURRENT_DATE - INTERVAL '30 days'
     GROUP BY a.user_id
     ORDER BY COUNT(tp.id) DESC
     LIMIT 20

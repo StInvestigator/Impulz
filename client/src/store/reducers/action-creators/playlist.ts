@@ -7,10 +7,10 @@ export const fetchTop20PlaylistsByWeek = createAsyncThunk<
     void,
     { rejectValue: string }
 >(
-    'playlist/simpleDto/fetchTop20PlaylistsByWeek',
+    'recommendations/simpleDto/fetchTop20PlaylistsByWeek',
     async (_, {rejectWithValue}) => {
         try {
-            const response = await $authApi.get<PlaylistSimpleDto[]>("http://localhost:8083/api/playlist/simpleDto/findTop20PlaylistsByFavorites")
+            const response = await $authApi.get<PlaylistSimpleDto[]>("http://localhost:8083/api/recommendations/simpleDto/findTop20PlaylistsByFavorites")
             return response.data;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {

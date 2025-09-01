@@ -6,6 +6,7 @@ import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.model.Author;
 import com.example.server.service.author.AuthorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/author")
 @RequiredArgsConstructor
@@ -31,13 +33,4 @@ public class AuthorController
         Author author = authorService.getAuthorById(id);
         return AuthorDto.fromEntity(author);
     }
-
-    @GetMapping("/simpleDto/findTop20AuthorsOfMonth")
-    public List<AuthorSimpleDto> findTop20AuthorsOfMonth() {
-        List<Author> authors = authorService.findTop20AuthorsOfMonth();
-        return authors.stream()
-                .map(AuthorSimpleDto::fromEntity)
-                .toList();
-    }
-
 }

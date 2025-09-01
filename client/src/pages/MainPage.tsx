@@ -13,8 +13,8 @@ import { useAppNavigate } from "../hooks/useAppNavigate.ts";
 import { fetchTop20TracksByWeek } from "../store/reducers/action-creators/tracks.ts";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { useEffect } from "react";
-import { fetchTop20AuthorsByWeek } from "../store/reducers/action-creators/author.ts";
 import { fetchTop20PlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
+import {fetchTop20AuthorsByMonth} from "../store/reducers/action-creators/author.ts";
 
 const tracks = [
     'Трек 2', 'Трек 2', 'Трек 3',
@@ -35,7 +35,7 @@ const MainPage = () => {
 
     useEffect(() => {
         dispatch(fetchTop20TracksByWeek());
-        dispatch(fetchTop20AuthorsByWeek());
+        dispatch(fetchTop20AuthorsByMonth());
         dispatch(fetchTop20PlaylistsByWeek());
 
         console.log(topAuthors);

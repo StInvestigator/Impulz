@@ -7,6 +7,8 @@ import com.example.server.model.Album;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AlbumServiceImpl implements AlbumService
@@ -25,4 +27,7 @@ public class AlbumServiceImpl implements AlbumService
         albumRepository.delete(album);
     }
 
+    public List<Album> getRecommendedAlbumsToday() {
+        return albumRepository.findRecommendedAlbumsToday();
+    }
 }

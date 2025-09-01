@@ -36,6 +36,16 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
         """, nativeQuery = true)
     List<Track> findTop20MostPlayedTracksThisWeek();
 
+    @Query(value = """
+    SELECT t.* FROM tracks t
+    LEFT JOIN track_plays tp ON tp.track_id = t.id
+    WHERE tp.played_at >= CURRENT_DATE - INTERVAL '7 days'
+    GROUP BY t.id
+    ORDER BY COUNT(tp.id) DESC, t.likes DESC
+    LIMIT 15
+    """, nativeQuery = true)
+    List<Track> findRecommendedTracksToday();
+
     @Modifying
     @Query("UPDATE Track t SET t.totalPlays = t.totalPlays + 1 WHERE t.id = :trackId")
     void incrementTotalPlays(@Param("trackId") Long trackId);

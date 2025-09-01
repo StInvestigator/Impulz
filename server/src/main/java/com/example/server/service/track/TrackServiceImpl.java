@@ -66,4 +66,8 @@ public class TrackServiceImpl implements TrackService
     public List<Track> findTop20MostPlayedTracksThisWeek() {
         return trackRepository.findTop20MostPlayedTracksThisWeek();
     }
+
+    public List<Track> getRecommendedTracksToday() {
+        return trackRepository.findRecommendedTracksToday();
+    }
 }

@@ -12,4 +12,5 @@ public interface TrackService
     void deleteTrack(Track track);
     Track findTrackByFileUrl(String fileUrl);
     List<Track> findTop20MostPlayedTracksThisWeek();
+    List<Track> getRecommendedTracksToday();
 }

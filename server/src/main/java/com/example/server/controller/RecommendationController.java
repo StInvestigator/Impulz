@@ -3,6 +3,7 @@ package com.example.server.controller;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Genre.GenreSimpleDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
+import com.example.server.dto.Recommendation.RecommendationDto;
 import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.model.Author;
 import com.example.server.model.Genre;
@@ -11,6 +12,7 @@ import com.example.server.model.Track;
 import com.example.server.service.author.AuthorService;
 import com.example.server.service.genre.GenreService;
 import com.example.server.service.playlist.PlaylistService;
+import com.example.server.service.recommendation.RecommendationService;
 import com.example.server.service.track.TrackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ public class RecommendationController
     private final TrackService trackService;
     private final GenreService genreService;
     private final PlaylistService playlistService;
+    private final RecommendationService recommendationService;
 
     @GetMapping("/simpleDto/findTop20AuthorsOfMonth")
     public List<AuthorSimpleDto> findTop20AuthorsOfMonth() {
@@ -62,5 +65,8 @@ public class RecommendationController
                 .toList();
     }
 
-
+    @GetMapping("/today")
+    public List<RecommendationDto> getTodayRecommendations(){
+        return recommendationService.getTodayRecommendations();
+    }
 }

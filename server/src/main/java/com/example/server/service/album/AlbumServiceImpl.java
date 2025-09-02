@@ -48,7 +48,7 @@ public class AlbumServiceImpl implements AlbumService
     }
 
     @Override
-    public Page<Album> findCollabotationsByAuthor(String authorId, Pageable pageable) {
+    public Page<Album> findCollaborationsByAuthor(String authorId, Pageable pageable) {
         return albumRepository.findAlbumsByAuthorWithMultipleAuthors(authorId, pageable);
     }
 }

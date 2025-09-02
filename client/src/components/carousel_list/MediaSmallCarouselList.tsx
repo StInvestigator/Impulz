@@ -42,26 +42,27 @@ const MediaSmallCarouselList: FC<TracklistListProps> = ({
           bgColor="var(--gradient-purple-rose)"
           textColor="var(--dark-purple)"
         >
-          {medias.map((media, index) => (
-            <>
-              {isPlaylistSimpleDto(media) && (
-                <PublicPlaylistSmallItem
-                  key={index}
-                  playlist={media}
-                  itemWidth={itemWidth}
-                  color="dark"
-                />
-              )}
-              {isAlbumSimpleDto(media) && (
-                <AlbumSmallItem
-                  key={index}
-                  album={media}
-                  itemWidth={itemWidth}
-                  color="dark"
-                />
-              )}
-            </>
-          ))}
+          {
+            medias
+                .filter(media => isPlaylistSimpleDto(media) || isAlbumSimpleDto(media))
+                .map(media => (
+                    isPlaylistSimpleDto(media) ? (
+                        <PublicPlaylistSmallItem
+                            key={media.id}
+                            playlist={media}
+                            itemWidth={itemWidth}
+                            color="dark"
+                        />
+                    ) : (
+                        <AlbumSmallItem
+                            key={media.id}
+                            album={media}
+                            itemWidth={itemWidth}
+                            color="dark"
+                        />
+                    )
+                ))
+          }
         </ListCarousel>
       )}
     </>

@@ -18,7 +18,7 @@ export const fetchTopPlaylistsByWeek = createAsyncThunk<
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
-            return rejectWithValue("Не удалось загрузить плейлисты");
+            return rejectWithValue(`Не удалось загрузить плейлисты:`);
         }
     }
 )

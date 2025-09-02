@@ -49,9 +49,9 @@ const Navbar = memo(() => {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <Button>
+                    <Box sx={{ position: 'relative' }}>
                         <Dropdown/>
-                    </Button>
+                    </Box>
                     <Button variant="text" onClick={()=>keycloak.register()} sx={{
                         color: "var(--dark-purple)",
                     }}>

@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
     private static final String[] WHITE_LIST = {
             "/", "/login-success",
-            "recommendations/**",
+            "/recommendations/**",
+            "/genres/simpleDto/findTop5Genres",
             "/music/stream/*"
     };
 

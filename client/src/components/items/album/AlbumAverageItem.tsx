@@ -1,7 +1,6 @@
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
-import { useTranslation } from 'react-i18next';
 import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
 
 interface AlbumItemProps {
@@ -12,7 +11,6 @@ interface AlbumItemProps {
 
 const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light"}) => {
 
-    const { t } = useTranslation('other')
     
     return (
         <Box
@@ -30,7 +28,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light
                             {album.title}
                         </Typography>
                         <Typography variant={"mainRM"} sx={{ color: "black"}}>
-                            {t("title-album")} &middot; {album.authors.join(", ") || "Unknown"}
+                            &middot; {album.authors?.join(", ") || "Unknown"}
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

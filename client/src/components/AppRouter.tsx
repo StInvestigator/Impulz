@@ -29,7 +29,7 @@ const pages = [
         Component: CategoryPage,
     },
     {
-        path: "/author/:name",
+        path: "/author/:id",
         Component: AuthorProfilePage,
     },
     {

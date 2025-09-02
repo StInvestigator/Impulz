@@ -7,6 +7,7 @@ import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
+import type {TrackSimpleDto} from "../models/DTO/TrackSimpleDto.ts";
 
 const authors = [
     "Автор 1",
@@ -23,6 +24,25 @@ const albums = [
     "Альбом 4",
     "Альбом 5",
 ]
+
+const tracks: TrackSimpleDto[] = [
+    {
+        id: 1,
+        title: "Назва треку 1",
+        album: "123",
+        authors: ["Автор 1"],
+        durationSec: 180,
+        imgUrl: ""
+    },
+    {
+        id: 2,
+        title: "Назва треку 2",
+        album: "123",
+        authors: ["Автор 2"],
+        durationSec: 210,
+        imgUrl: ""
+    }
+];
 
 const UserProfilePage = () => {
     const {name} = useParams<{name: string}>();
@@ -57,7 +77,7 @@ const UserProfilePage = () => {
                 <Box display={"grid"} sx={{
                     gridTemplateColumns: "repeat(2, 1fr)"
                 }} gap={3}>
-                    <TrackList/>
+                    <TrackList tracks={tracks}/>
                 </Box>
             </Box>
 

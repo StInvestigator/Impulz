@@ -18,7 +18,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth, color = "light
 
     return (
         <Box
-            onClick={() => navigate(`/author/${author}`)}
+            onClick={() => navigate(`/author/${author.id}`)}
             sx={{
                 width: itemWidth,
                 boxShadow: "none",

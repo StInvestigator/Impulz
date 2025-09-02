@@ -3,10 +3,9 @@ import type { AlbumSimpleDto } from "./DTO/AlbumSimpleDto.ts";
 
 export interface AuthorDto {
   id: number;
+  name: string;
   bio: string;
   followersCount: number;
-  // TODO
-  // subscriptions: number;
   tracks: TrackSimpleDto[];
   albums: AlbumSimpleDto[];
 }

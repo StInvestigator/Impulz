@@ -1,12 +1,14 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect } from "react";
+import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackItemProps {
-    track: string;
+    track: TrackSimpleDto;
+    index?: number;
 }
 
-const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
+const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
 
@@ -15,6 +17,12 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
             setCardWidth(cardRef.current.getBoundingClientRect().width);
         }
     }, []);
+
+    const formatDuration = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    };
 
     return (
         <Box
@@ -35,7 +43,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                 flexShrink={0}
             >
                 <Typography variant="h2" color="white">
-                    {track}
+                    {index !== undefined ? index + 1 : '#'}
                 </Typography>
             </Box>
 
@@ -55,6 +63,11 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                     width="60px"
                     borderRadius="4px"
                     flexShrink={0}
+                    sx={{
+                        backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                    }}
                 />
 
                 {cardWidth <= 800 ? (
@@ -70,14 +83,14 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                             noWrap
                             maxWidth={"100%"}
                         >
-                            Constellations
+                            {track.title || "Без названия"}
                         </Typography>
                         <Typography
                             variant="mainRM"
                             noWrap
                             maxWidth={"100%"}
                         >
-                            rnvjnjnjdkmkvmckmmooooooooooooojjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
+                            {track.authors.join(", ") || "Неизвестный исполнитель"}
                         </Typography>
                     </Box>
                 ) : (
@@ -88,7 +101,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                             textAlign="center"
                             sx={{ flexBasis: "20%", minWidth: 0 }}
                         >
-                            шоошшшшшшшшшшшшшшщлщлщлщjjj
+                            {track.title || "Без названия"}
                         </Typography>
 
                         <Typography
@@ -97,7 +110,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                             textAlign="center"
                             sx={{ flexBasis: "20%", minWidth: 0 }}
                         >
-                            ототцуаотцоутаоцkkkkkkkkk
+                            {track.authors || "Неизвестный исполнитель"}
                         </Typography>
 
                         <Typography
@@ -106,13 +119,13 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track }) => {
                             textAlign="center"
                             sx={{ flexBasis: "20%", minWidth: 0 }}
                         >
-                            отацотуоцтаоцту
+                            {track.album || "Без альбома"}
                         </Typography>
                     </>
                 )}
 
                 <Typography variant="mainSbL" flexShrink={0}>
-                    01 : 53
+                    {formatDuration(track.durationSec || 0)}
                 </Typography>
 
                 <IconButton sx={{ padding: 0 }}>

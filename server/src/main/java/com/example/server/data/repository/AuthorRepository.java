@@ -12,7 +12,6 @@ import java.util.List;
 
 public interface AuthorRepository extends JpaRepository<Author,String>
 {
-    Author getAuthorById(String id);
 
     @Query(value = """
     SELECT a.* FROM authors a

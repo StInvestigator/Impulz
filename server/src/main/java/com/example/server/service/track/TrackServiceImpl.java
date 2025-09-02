@@ -7,6 +7,7 @@ import com.example.server.data.repository.TrackRepository;
 import com.example.server.model.Author;
 import com.example.server.model.Genre;
 import com.example.server.model.Track;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public class TrackServiceImpl implements TrackService
     private final GenreRepository genreRepository;
 
     public Track getTrackById(Long id) {
-        return trackRepository.getTrackById(id);
+        return trackRepository.findById(id).orElseThrow();
     }
 
     public void createTrack(Track track){

@@ -35,7 +35,7 @@ public class TrackController {
         return TrackDto.fromEntity(track);
     }
 
-    @GetMapping("/getPopularByAuthor/{id}")
+    @GetMapping("/PopularByAuthor/{id}")
     public ResponseEntity<Page<TrackSimpleDto>> getPopularTracksByAuthor(@PathVariable String id, Pageable pageable) {
         try {
             Page<Track> tracks = trackService.findPopularTracksByAuthor(id, pageable);

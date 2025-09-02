@@ -41,7 +41,7 @@ public class AuthorController
         return AuthorDto.fromEntity(author);
     }
 
-    @GetMapping("/getFollowers/{id}")
+    @GetMapping("/Followers/{id}")
     public ResponseEntity<Page<UserSimpleDto>> getFollowers(@PathVariable String id, Pageable pageable) {
         Page<User> users = authorService.findFollowers(id, pageable);
         Page<UserSimpleDto> dtoPage = users.map(UserSimpleDto::fromEntity);

@@ -5,6 +5,7 @@ import com.example.server.data.repository.AuthorRepository;
 import com.example.server.model.Author;
 import com.example.server.model.User;
 import com.example.server.model.id.AuthorFollower;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorFollowersRepository authorFollowersRepository;
 
     public Author getAuthorById(String id) {
-        return authorRepository.getAuthorById(id);
+        return authorRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Author not found"));
     }
 
     public void createAuthor(Author author) {
@@ -33,7 +34,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Page<User> findFollowers(String authorId, Pageable pageable) {
-        return authorFollowersRepository.findAllByAuthor(authorRepository.getAuthorById(authorId), pageable).map(AuthorFollower::getFollower);
+        return authorFollowersRepository.findAllByAuthor(authorRepository.findById(authorId).orElseThrow(), pageable).map(AuthorFollower::getFollower);
     }
 
     public List<Author> findTop20AuthorsOfMonth() {

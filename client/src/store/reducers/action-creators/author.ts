@@ -1,14 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 import axios from "axios";
-import {$authApi} from "../../../http";
-import type {AuthorDto} from "../../../models/AuthorDto.ts";
+import { $authApi } from "../../../http";
+import type { AuthorDto } from "../../../models/AuthorDto.ts";
 
-export const fetchTop20AuthorsByMonth = createAsyncThunk<AuthorSimpleDto[]>(
-    "recommendations/simpleDto/fetchTop20AuthorsByMonth",
-    async () => {
-        const response = await axios.get("http://localhost:8083/api/recommendations/simpleDto/findTop20AuthorsOfMonth");
-        return response.data;
+export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
+    { page?: number; size?: number }
+>(
+    "authors/BestAuthorsOfMonth",
+    async ({ page = 0, size = 20 }) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
+
+        const response = await axios.get(
+            `http://localhost:8083/api/authors/BestAuthorsOfMonth?${params}`
+        );
+        return response.data.content;
     }
 );
 
@@ -21,4 +29,3 @@ export const fetchAuthorDetails = createAsyncThunk<AuthorDto, string>(
         return response.data;
     }
 );
-

@@ -61,7 +61,7 @@ const AuthorProfilePage = () => {
     useEffect(() => {
         if (id) {
             dispatch(fetchAuthorDetails(id));
-            dispatch(fetchPopularTracksByAuthor({ authorId: id }));
+            dispatch(fetchPopularTracksByAuthor({ authorId: id, page:0, size:20 }));
         }
     }, [dispatch, id]);
 

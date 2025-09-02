@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
-    Playlist getPlaylistsById(Long id);
 
     @Query(value = """
         SELECT p.* FROM playlists p

@@ -5,6 +5,7 @@ import medalImage from "../../../assets/medal.svg";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { setTrackActive } from "../../../store/reducers/PlayerSlice.ts";
+import keycloak from "../../../keycloak.ts";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -17,7 +18,12 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
     const dispatch = useAppDispatch()
 
     const play = () => {
-        dispatch(setTrackActive(track))
+        if(keycloak.authenticated){
+            dispatch(setTrackActive(track))
+        }
+        else {
+            keycloak.login();
+        }
     }
 
     return (

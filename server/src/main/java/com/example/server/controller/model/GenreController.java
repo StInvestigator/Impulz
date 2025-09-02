@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/genres")
 @RequiredArgsConstructor
 public class GenreController {
     private final GenreService genreService;
@@ -21,11 +21,4 @@ public class GenreController {
         return GenreSimpleDto.fromEntity(genre);
     }
 
-    @GetMapping("/simpleDto/findTop5Genres")
-    public List<GenreSimpleDto> findTop5Genres(){
-        List<Genre> genres = genreService.findTop5Genres();
-        return genres.stream()
-                .map(GenreSimpleDto::fromEntity)
-                .toList();
-    }
 }

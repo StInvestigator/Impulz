@@ -1,7 +1,12 @@
 package com.example.server.service.track;
 
+import com.example.server.model.Author;
 import com.example.server.model.Track;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TrackService
@@ -12,4 +17,7 @@ public interface TrackService
     void deleteTrack(Track track);
     Track findTrackByFileUrl(String fileUrl);
     List<Track> findTop20MostPlayedTracksThisWeek();
+    List<Track> getRecommendedTracksToday();
+    List<Track> findPopularTrackByUserRecentGenres(String userId);
+    Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable);
 }

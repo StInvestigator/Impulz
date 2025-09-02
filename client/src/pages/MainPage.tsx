@@ -12,9 +12,9 @@ import { useAppNavigate } from "../hooks/useAppNavigate.ts";
 import { fetchTop20TracksByWeek } from "../store/reducers/action-creators/tracks.ts";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { useEffect } from "react";
-import { fetchTop20AuthorsByWeek } from "../store/reducers/action-creators/author.ts";
 import { fetchTop20PlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 import { fetchTop5Genres } from "../store/reducers/action-creators/genre.ts";
+import {fetchTop20AuthorsByMonth} from "../store/reducers/action-creators/author.ts";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ const MainPage = () => {
 
     useEffect(() => {
         dispatch(fetchTop20TracksByWeek());
-        dispatch(fetchTop20AuthorsByWeek());
+        dispatch(fetchTop20AuthorsByMonth());
         dispatch(fetchTop20PlaylistsByWeek());
         dispatch(fetchTop5Genres());
 

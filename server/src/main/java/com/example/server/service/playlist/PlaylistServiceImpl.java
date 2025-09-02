@@ -7,6 +7,7 @@ import com.example.server.model.Playlist;
 import com.example.server.model.Track;
 import com.example.server.model.id.PlaylistTrack;
 import com.example.server.model.key.PlaylistTrackKey;
+import com.example.server.service.track.TrackService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaylistServiceImpl implements PlaylistService {
     private final PlaylistRepository playlistRepository;
-    private final TrackRepository trackRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
+    private final TrackService trackService;
 
     public Playlist getPlaylistsById(Long id){
-        return playlistRepository.getPlaylistsById(id);
+        return playlistRepository.findById(id).orElseThrow();
     }
 
     public void createPlaylist(Playlist playlist){
@@ -43,8 +44,11 @@ public class PlaylistServiceImpl implements PlaylistService {
     public void addTrackToPlaylist(Long playlistId, Long trackId, int position) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found"));
-        Track track = trackRepository.findById(trackId)
-                .orElseThrow(() -> new EntityNotFoundException("Track not found"));
+        Track track = trackService.getTrackById(trackId);
+
+        if(track == null){
+            throw new EntityNotFoundException("Track not found");
+        }
 
         PlaylistTrackKey key = new PlaylistTrackKey(playlistId, trackId);
         PlaylistTrack entry = new PlaylistTrack();

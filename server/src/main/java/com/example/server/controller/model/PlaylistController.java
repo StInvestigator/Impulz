@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/playlist")
+@RequestMapping("/playlists")
 @RequiredArgsConstructor
 public class PlaylistController {
     private final PlaylistService playlistService;
@@ -29,13 +29,5 @@ public class PlaylistController {
     public PlaylistDto getPlaylistDto(@PathVariable Long id){
         Playlist playlist = playlistService.getPlaylistsById(id);
         return PlaylistDto.fromEntity(playlist);
-    }
-
-    @GetMapping("/simpleDto/findTop20PlaylistsByFavorites")
-    public List<PlaylistSimpleDto> findTop20PlaylistsByFavorites(){
-        List<Playlist> playlists = playlistService.findTop20PlaylistsByFavorites();
-        return playlists.stream()
-                .map(PlaylistSimpleDto::fromEntity)
-                .toList();
     }
 }

@@ -21,4 +21,11 @@ public class GenreController {
         return GenreSimpleDto.fromEntity(genre);
     }
 
+    @GetMapping("/simpleDto/findTop5Genres")
+    public List<GenreSimpleDto> findTop5Genres(){
+        List<Genre> genres = genreService.findTop5Genres();
+        return genres.stream()
+                .map(GenreSimpleDto::fromEntity)
+                .toList();
+    }
 }

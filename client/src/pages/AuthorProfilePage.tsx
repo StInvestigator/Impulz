@@ -8,6 +8,11 @@ import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import UserList from "../components/lists/UserList.tsx";
+import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
+import {useEffect} from "react";
+import {fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
+import type {UserSimpleDto} from "../models/DTO/UserSimpleDto.ts";
+import {fetchAuthorDetails} from "../store/reducers/action-creators/author.ts";
 
 const authors = [
     "Автор 1",
@@ -17,12 +22,22 @@ const authors = [
     "Автор 5",
 ]
 
-const users = [
-    "User 1",
-    "User 2",
-    "User 3",
-    "User 4",
-    "User 5",
+const users: UserSimpleDto[] = [
+    {
+        id: "1",
+        name: "Анна Петрова",
+        imgUrl: "https://via.placeholder.com/60x60?text=AP"
+    },
+    {
+        id: "2",
+        name: "Иван Сидоров",
+        imgUrl: "https://via.placeholder.com/60x60?text=IS"
+    },
+    {
+        id: "3",
+        name: "Мария Иванова",
+        imgUrl: "https://via.placeholder.com/60x60?text=MI"
+    }
 ]
 
 const albums = [
@@ -33,17 +48,29 @@ const albums = [
     "Альбом 5",
 ]
 
+
 const AuthorProfilePage = () => {
-    const {name} = useParams<{name: string}>();
+    const dispatch = useAppDispatch();
+    const {id} = useParams<{ id:string }>();
     const route = useAppNavigate();
     const { t } = useTranslation(["authorPage", "other"]);
+
+    const { popularTracks} = useAppSelector(state => state.track);
+    const { currentAuthor } = useAppSelector(state => state.author);
+
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchAuthorDetails(id));
+            dispatch(fetchPopularTracksByAuthor({ authorId: id }));
+        }
+    }, [dispatch, id]);
 
     return (
         <>
             <Box component={"section"} height={"450px"} sx={{
                 backgroundColor: "#D9D9D9"
             }}>
-                <Profile type="author" name={name ?? "Анонім"}/>
+                <Profile type="author" name={currentAuthor?.name ?? "Анонім"}/>
             </Box>
 
             <Box component={"section"} mt={"60px"}>
@@ -66,7 +93,7 @@ const AuthorProfilePage = () => {
                 <Box display={"grid"} sx={{
                     gridTemplateColumns: "repeat(2, 1fr)"
                 }} gap={3}>
-                    <TrackList/>
+                    <TrackList tracks={popularTracks}/>
                 </Box>
             </Box>
 

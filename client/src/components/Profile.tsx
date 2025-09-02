@@ -4,7 +4,7 @@ import { type FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface ProfileProps {
-  name: string;
+  name: string | null;
   type: "user" | "author";
 }
 

@@ -4,6 +4,7 @@ import CircleImg from '../assets/category/Circle.svg'
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import { useTranslation } from 'react-i18next';
+import type {AuthorSimpleDto} from "../models/DTO/AuthorSimpleDto.ts";
 
 const tracks = [
     'Трек 1', 'Трек 2', 'Трек 3',
@@ -13,21 +14,33 @@ const tracks = [
     'Трек 15', 'Трек 16'
 ];
 
-const authors = [
-    'Автор 1', 'Автор 2', 'Автор 3',
-    'Автор 4', 'Автор 5', 'Автор 6',
-    'Автор 7', 'Автор 8', 'Автор 9', 'Автор 10', 'Автор 11',
-    'Автор 12', 'Автор 13', 'Автор 14',
-    'Автор 15', 'Автор 16'
+const authors: AuthorSimpleDto[] = [
+    {
+        id: 1,
+        name: 'Автор 1',
+        imgUrl: 'https://via.placeholder.com/150x150?text=Author+1'
+    },
+    {
+        id: 2,
+        name: 'Автор 2',
+        imgUrl: 'https://via.placeholder.com/150x150?text=Author+2'
+    },
+    {
+        id: 3,
+        name: 'Автор 3',
+        imgUrl: 'https://via.placeholder.com/150x150?text=Author+3'
+    },
+    {
+        id: 4,
+        name: 'Автор 4',
+        imgUrl: 'https://via.placeholder.com/150x150?text=Author+4'
+    },
+    {
+        id: 5,
+        name: 'Автор 5',
+        imgUrl: 'https://via.placeholder.com/150x150?text=Author+5'
+    },
 ];
-
-// const playlist = [
-//     'Плейлист 1', 'Плейлист 2', 'Плейлист 3',
-//     'Плейлист 4', 'Плейлист 5', 'Плейлист 6',
-//     'Плейлист 7', 'Плейлист 8', 'Плейлист 9', 'Плейлист 10', 'Плейлист 11',
-//     'Плейлист 12', 'Плейлист 13', 'Плейлист 14',
-//     'Плейлист 15', 'Плейлист 16'
-// ];
 
 const CategoryPage = () => {
     const [searchParams] = useSearchParams();

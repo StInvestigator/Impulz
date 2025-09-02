@@ -1,22 +1,34 @@
 import type {FC} from "react";
 import ListCarousel from "../ListCarousel.tsx";
 import PublicPlaylistSmallItem from "../items/playlist/PublicPlaylistSmallItem.tsx";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 
-interface PlaylistListProps {
-    playlists: PlaylistSimpleDto[];
+interface TracklistListProps {
+    tracks: string[];
     itemWidth: number;
     name: string;
 }
 
-const TrackSmallCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth, name}) => {
+const TrackSmallCarouselList: FC<TracklistListProps> = ({tracks, itemWidth, name}) => {
     return (
-        <ListCarousel title={name} bgColor="var(--gradient-purple-rose)" textColor="var(--dark-purple)" variant={"h3"} gap={24} count_items={playlists.length}>
-            {playlists.map((playlist, index) => (
-                <PublicPlaylistSmallItem key={index} playlist={playlist} itemWidth={itemWidth} color="dark"/>
+        <ListCarousel title={name} variant={"h3"} gap={24} count_items={tracks.length}>
+            {tracks.map((track, index) => (
+                <PublicPlaylistSmallItem
+                    key={index}
+                    playlist={{
+                        id: index,
+                        title: track,
+                        imgUrl: "",
+                        createdAt: new Date("2022-02-02"),
+                        owner: {
+                            id: "1",
+                            name: "Владелец плейлиста",
+                            imgUrl: ""
+                        },
+                    }}
+                    itemWidth={itemWidth}
+                />
             ))}
         </ListCarousel>
     );
 };
-
-export default TrackSmallCarouselList; 
+export default TrackSmallCarouselList;

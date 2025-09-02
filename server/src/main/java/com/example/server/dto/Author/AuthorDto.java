@@ -12,19 +12,18 @@ import java.util.stream.Collectors;
 public class AuthorDto
 {
     private String id;
+    private String name;
     private String bio;
     private Long followersCount;
-    // TODO
-    // private Long subscriptions;
     private Set<TrackSimpleDto> tracks;
     private Set<AlbumSimpleDto> albums;
 
     public static AuthorDto fromEntity(Author author){
         AuthorDto dto = new AuthorDto();
         dto.setId(author.getId());
+        dto.setName(author.getUser().getUsername());
         dto.setBio(author.getBio());
         dto.setFollowersCount(author.getFollowersCount());
-        // dto.setSubscriptions() ???
         dto.setAlbums(author.getAlbums().stream()
                 .map(AlbumSimpleDto::fromEntity)
                 .collect(Collectors.toSet()));

@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
-import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
+import MediaSmallCarouselList from "../components/carousel_list/MediaSmallCarouselList.tsx";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import PlaylistCarouselList from "../components/carousel_list/PlaylistCarouselList";
 import TopFiveGenreList from "../components/lists/TopFiveGenreList";
@@ -52,10 +52,10 @@ const MainPage = () => {
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList playlists={topPlaylists} itemWidth={134} name={t("main:title-recomendation-today")} />
+                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-recomendation-today")} isLoading={playlistsLoading} error={playlistsError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList playlists={topPlaylists} itemWidth={134} name={t("main:title-watch-for-you")} />
+                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>

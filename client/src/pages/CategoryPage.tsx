@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { Box } from "@mui/material";
 import CircleImg from '../assets/category/Circle.svg'
-import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
+import MediaSmallCarouselList from "../components/carousel_list/MediaSmallCarouselList.tsx";
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import { useTranslation } from 'react-i18next';
 import type {AuthorSimpleDto} from "../models/DTO/AuthorSimpleDto.ts";
@@ -80,11 +80,11 @@ const CategoryPage = () => {
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-best-song-genre")} />
+                <MediaSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-best-song-genre")} />
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-new-release")} />
+                <MediaSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-new-release")} />
             </Box>
         </>
     );

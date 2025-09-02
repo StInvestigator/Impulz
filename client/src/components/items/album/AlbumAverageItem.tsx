@@ -2,9 +2,10 @@ import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
 import { useTranslation } from 'react-i18next';
+import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
 
 interface AlbumItemProps {
-    album: string;
+    album: AlbumSimpleDto;
     itemHeight: number;
     color?: "dark" | "light";
 }
@@ -26,10 +27,10 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                     <Box display={"flex"} flexDirection={"column"}>
                         <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
-                            {album}
+                            {album.title}
                         </Typography>
                         <Typography variant={"mainRM"} sx={{ color: "black"}}>
-                            {t("title-album")} &middot; Rihana
+                            {t("title-album")} &middot; {album.authors.join(", ") || "Unknown"}
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

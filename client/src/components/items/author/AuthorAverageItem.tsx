@@ -1,14 +1,13 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type { FC } from "react";
-import { useTranslation } from "react-i18next";
+import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 
 interface AuthorItemProps {
-  author: string;
+  author: AuthorSimpleDto;
 }
 
 const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
-  const { t } = useTranslation("other");
 
   return (
     <Box
@@ -33,11 +32,11 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
       >
         <Box display={"flex"} flexDirection={"column"}>
           <Typography variant={"mainSbL"} gutterBottom>
-            {author}
+            {author.name}
           </Typography>
-          <Typography variant={"mainRM"}>
-            {t("title-album")} &middot; Rihana
-          </Typography>
+          {/* <Typography variant={"mainRM"}>
+            {t("title-album")} &middot; {author.}
+          </Typography> */}
         </Box>
         <IconButton sx={{ padding: 0 }}>
           <Box

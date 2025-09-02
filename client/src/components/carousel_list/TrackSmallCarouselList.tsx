@@ -8,7 +8,11 @@ interface TracklistListProps {
     name: string;
 }
 
-const TrackSmallCarouselList: FC<TracklistListProps> = ({tracks, itemWidth, name}) => {
+const TrackSmallCarouselList: FC<TracklistListProps> = ({tracks,itemWidth, name}) => {
+    if (!tracks || tracks.length === 0) {
+        return <div>Нет треков</div>;
+    }
+
     return (
         <ListCarousel title={name} variant={"h3"} gap={24} count_items={tracks.length}>
             {tracks.map((track, index) => (

@@ -21,33 +21,64 @@ import java.util.List;
 @RestController
 @RequestMapping("/albums")
 @RequiredArgsConstructor
-public class AlbumController
-{
+public class AlbumController {
     private final AlbumService albumService;
 
     @GetMapping("/simpleDto/{id}")
-    public AlbumSimpleDto getAlbumSimpleDto(@PathVariable Long id){
+    public AlbumSimpleDto getAlbumSimpleDto(@PathVariable Long id) {
         Album album = albumService.getAlbumById(id);
         return AlbumSimpleDto.fromEntity(album);
     }
 
     @GetMapping("/Dto/{id}")
-    public AlbumDto getAlbumDto(@PathVariable Long id){
+    public AlbumDto getAlbumDto(@PathVariable Long id) {
         Album album = albumService.getAlbumById(id);
         return AlbumDto.fromEntity(album);
     }
 
     @GetMapping("/ByAuthor/{id}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getAlbumsByAuthor(@PathVariable String id, Pageable pageable){
-        Page<Album> albums = albumService.findByAuthor(id, pageable);
-        Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-        return ResponseEntity.ok(dtoPage);
+    public ResponseEntity<Page<AlbumSimpleDto>> getAlbumsByAuthor(@PathVariable String id, Pageable pageable) {
+        try {
+            Page<Album> albums = albumService.findByAuthor(id, pageable);
+            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/ByAuthor/Collaborations/{id}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable){
-        Page<Album> albums = albumService.findCollabotationsByAuthor(id, pageable);
-        Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-        return ResponseEntity.ok(dtoPage);
+    public ResponseEntity<Page<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
+        try {
+            Page<Album> albums = albumService.findCollabotationsByAuthor(id, pageable);
+            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/Recommendations/Today")
+    public ResponseEntity<Page<AlbumSimpleDto>> getTodayRecommended(Pageable pageable) {
+        try {
+            Page<Album> albums = albumService.getRecommendedAlbumsToday(pageable);
+            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/Recommendations/PersonalByGenres/{userId}")
+    public ResponseEntity<Page<AlbumSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
+        try {
+            Page<Album> albums = albumService.findPopularAlbumsByUserRecentGenres(userId, pageable);
+            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 }

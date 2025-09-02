@@ -10,7 +10,7 @@ import java.util.List;
 public interface AuthorService
 {
     Author getAuthorById(String id);
-    List<Author> findTop20AuthorsOfMonth();
+    Page<Author> findTopAuthorsOfMonth(Pageable pageable);
     void createAuthor(Author author);
     void deleteAuthor(String authorId);
     Page<User> findFollowers(String authorId, Pageable pageable);

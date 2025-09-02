@@ -6,6 +6,9 @@ import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.model.Playlist;
 import com.example.server.service.playlist.PlaylistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,5 +32,15 @@ public class PlaylistController {
     public PlaylistDto getPlaylistDto(@PathVariable Long id){
         Playlist playlist = playlistService.getPlaylistsById(id);
         return PlaylistDto.fromEntity(playlist);
+    }
+
+    @GetMapping("/TopPlaylistsByFavorites")
+    public ResponseEntity<Page<PlaylistSimpleDto>> findTop20PlaylistsByFavorites(Pageable pageable) {
+        try {
+            Page<Playlist> playlists = playlistService.findTopPlaylistsByFavorites(pageable);
+            return ResponseEntity.ok(playlists.map(PlaylistSimpleDto::fromEntity));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

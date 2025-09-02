@@ -67,16 +67,16 @@ public class TrackServiceImpl implements TrackService
         return trackRepository.findTrackByFileUrl(fileUrl);
     }
 
-    public List<Track> findTop20MostPlayedTracksThisWeek() {
-        return trackRepository.findTop20MostPlayedTracksThisWeek();
+    public Page<Track> findMostPlayedTracksThisWeek(Pageable pageable) {
+        return trackRepository.findMostPlayedTracksThisWeek(pageable);
     }
 
-    public List<Track> getRecommendedTracksToday() {
-        return trackRepository.findRecommendedTracksToday();
+    public Page<Track> getRecommendedTracksToday(Pageable pageable) {
+        return trackRepository.findRecommendedTracksToday(pageable);
     }
 
-    public List<Track> findPopularTrackByUserRecentGenres(String userId){
-        return trackRepository.findPopularTrackByUserRecentGenres(userId);
+    public Page<Track> findPopularTrackByUserRecentGenres(String userId, Pageable pageable){
+        return trackRepository.findPopularTrackByUserRecentGenres(userId, pageable);
     }
 
     @Override

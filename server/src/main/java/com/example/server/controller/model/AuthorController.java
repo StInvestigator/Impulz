@@ -25,26 +25,41 @@ import java.util.List;
 @RestController
 @RequestMapping("/authors")
 @RequiredArgsConstructor
-public class AuthorController
-{
+public class AuthorController {
     private final AuthorService authorService;
 
     @GetMapping("/simpleDto/{id}")
-    public AuthorSimpleDto getAuthorSimpleDto(@PathVariable String id){
+    public AuthorSimpleDto getAuthorSimpleDto(@PathVariable String id) {
         Author author = authorService.getAuthorById(id);
         return AuthorSimpleDto.fromEntity(author);
     }
 
     @GetMapping("/Dto/{id}")
-    public AuthorDto getAuthorDto(@PathVariable String id){
+    public AuthorDto getAuthorDto(@PathVariable String id) {
         Author author = authorService.getAuthorById(id);
         return AuthorDto.fromEntity(author);
     }
 
     @GetMapping("/Followers/{id}")
     public ResponseEntity<Page<UserSimpleDto>> getFollowers(@PathVariable String id, Pageable pageable) {
-        Page<User> users = authorService.findFollowers(id, pageable);
-        Page<UserSimpleDto> dtoPage = users.map(UserSimpleDto::fromEntity);
-        return ResponseEntity.ok(dtoPage);
+        try {
+
+            Page<User> users = authorService.findFollowers(id, pageable);
+            Page<UserSimpleDto> dtoPage = users.map(UserSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/BestAuthorsOfMonth")
+    public ResponseEntity<Page<AuthorSimpleDto>> findTop20AuthorsOfMonth(Pageable pageable) {
+        try {
+
+            Page<Author> authors = authorService.findTopAuthorsOfMonth(pageable);
+            return ResponseEntity.ok(authors.map(AuthorSimpleDto::fromEntity));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

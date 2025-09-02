@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface GenreRepository extends JpaRepository<Genre,Long>
 {
-    Genre getGenreById(Long id);
 
     @Query(value = """
     SELECT g.* FROM genres g

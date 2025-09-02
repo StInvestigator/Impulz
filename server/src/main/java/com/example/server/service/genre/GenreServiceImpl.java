@@ -14,7 +14,7 @@ public class GenreServiceImpl implements GenreService
     private final GenreRepository genreRepository;
 
     public Genre getGenreById(Long id) {
-        return genreRepository.getGenreById(id);
+        return genreRepository.findById(id).orElseThrow();
     }
 
     public void createGenre(Genre genre){

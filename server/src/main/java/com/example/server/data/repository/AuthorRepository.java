@@ -1,6 +1,10 @@
 package com.example.server.data.repository;
 
 import com.example.server.model.Author;
+import com.example.server.model.User;
+import com.example.server.model.id.AuthorFollower;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -8,7 +12,6 @@ import java.util.List;
 
 public interface AuthorRepository extends JpaRepository<Author,String>
 {
-    Author getAuthorById(String id);
 
     @Query(value = """
     SELECT a.* FROM authors a

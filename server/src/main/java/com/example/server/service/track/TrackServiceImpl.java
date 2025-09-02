@@ -7,7 +7,10 @@ import com.example.server.data.repository.TrackRepository;
 import com.example.server.model.Author;
 import com.example.server.model.Genre;
 import com.example.server.model.Track;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +29,7 @@ public class TrackServiceImpl implements TrackService
     private final GenreRepository genreRepository;
 
     public Track getTrackById(Long id) {
-        return trackRepository.getTrackById(id);
+        return trackRepository.findById(id).orElseThrow();
     }
 
     public void createTrack(Track track){
@@ -74,5 +77,11 @@ public class TrackServiceImpl implements TrackService
 
     public List<Track> findPopularTrackByUserRecentGenres(String userId){
         return trackRepository.findPopularTrackByUserRecentGenres(userId);
+    }
+
+    @Override
+    public Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable) throws RuntimeException {
+        Author author = authorRepository.findById(authorId).orElseThrow(() -> new RuntimeException("Author not found with id: " + authorId));
+        return trackRepository.findByAuthorsOrderByTotalPlaysDesc(author, pageable);
     }
 }

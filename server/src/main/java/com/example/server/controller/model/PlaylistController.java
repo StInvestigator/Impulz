@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/playlist")
+@RequestMapping("/playlists")
 @RequiredArgsConstructor
 public class PlaylistController {
     private final PlaylistService playlistService;

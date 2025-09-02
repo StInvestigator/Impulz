@@ -1,6 +1,9 @@
 package com.example.server.data.repository;
 
 import com.example.server.model.Album;
+import com.example.server.model.Author;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,7 +12,6 @@ import java.util.List;
 
 public interface AlbumRepository extends JpaRepository<Album,Long>
 {
-    Album getAlbumById(Long id);
 
     @Query(value = """
     SELECT a.* FROM albums a
@@ -48,4 +50,20 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
     LIMIT 10
     """, nativeQuery = true)
     List<Album> findPopularAlbumsByUserRecentGenres(@Param("userId") String userId);
+
+    Page<Album> findByAuthors(Author author, Pageable pageable);
+
+    @Query(
+            value = "SELECT al.* FROM albums al " +
+                    "JOIN album_authors aa ON al.id = aa.album_id " +
+                    "WHERE aa.author_id = :authorId " +
+                    "AND al.id IN ( " +
+                    "  SELECT album_id FROM album_authors GROUP BY album_id HAVING COUNT(author_id) > 1" +
+                    ")",
+            countQuery = "SELECT COUNT(*) FROM ( " +
+                    "  SELECT album_id FROM album_authors GROUP BY album_id HAVING COUNT(author_id) > 1" +
+                    ") t JOIN albums al2 ON al2.id = t.album_id JOIN album_authors aa2 ON al2.id = aa2.album_id WHERE aa2.author_id = :authorId",
+            nativeQuery = true
+    )
+    Page<Album> findAlbumsByAuthorWithMultipleAuthors(@Param("authorId") String authorId, Pageable pageable);
 }

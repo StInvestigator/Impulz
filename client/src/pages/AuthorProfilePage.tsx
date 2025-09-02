@@ -10,9 +10,10 @@ import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import UserList from "../components/lists/UserList.tsx";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {useEffect} from "react";
-import {fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
+import {fetchAuthorCollaborations, fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
 import type {UserSimpleDto} from "../models/DTO/UserSimpleDto.ts";
 import {fetchAuthorDetails} from "../store/reducers/action-creators/author.ts";
+import {fetchAlbumsByAuthor} from "../store/reducers/action-creators/album.ts";
 
 const authors = [
     "Автор 1",
@@ -40,15 +41,6 @@ const users: UserSimpleDto[] = [
     }
 ]
 
-const albums = [
-    "Альбом 1",
-    "Альбом 2",
-    "Альбом 3",
-    "Альбом 4",
-    "Альбом 5",
-]
-
-
 const AuthorProfilePage = () => {
     const dispatch = useAppDispatch();
     const {id} = useParams<{ id:string }>();
@@ -57,11 +49,15 @@ const AuthorProfilePage = () => {
 
     const { popularTracks} = useAppSelector(state => state.track);
     const { currentAuthor } = useAppSelector(state => state.author);
+    const { albums } = useAppSelector(state => state.album);
+    const { collaborationTracks } = useAppSelector(state => state.track);
 
     useEffect(() => {
         if (id) {
             dispatch(fetchAuthorDetails(id));
-            dispatch(fetchPopularTracksByAuthor({ authorId: id, page:0, size:20 }));
+            dispatch(fetchAlbumsByAuthor({authorId: id,page: 0,size: 20}));
+            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 20 }));
+            dispatch(fetchAuthorCollaborations({authorId: id, page: 0, size: 20 }));
         }
     }, [dispatch, id]);
 

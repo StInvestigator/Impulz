@@ -20,4 +20,5 @@ public interface TrackService
     Page<Track> getRecommendedTracksToday(Pageable pageable);
     Page<Track> findPopularTrackByUserRecentGenres(String userId, Pageable pageable);
     Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable);
+    Page<Track> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable);
 }

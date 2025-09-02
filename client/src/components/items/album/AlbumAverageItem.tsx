@@ -28,7 +28,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light
                             {album.title}
                         </Typography>
                         <Typography variant={"mainRM"} sx={{ color: "black"}}>
-                            &middot; {album.authors?.join(", ") || "Unknown"}
+                            {album.authors?.map(author => author.name).join(", ") || "Unknown"}
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}}>

@@ -11,7 +11,6 @@ interface TrackItemProps {
 const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
-
     useLayoutEffect(() => {
         if (cardRef.current) {
             setCardWidth(cardRef.current.getBoundingClientRect().width);

@@ -33,3 +33,20 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
         return response.data.content;
     }
 );
+
+export const fetchAuthorCollaborations = createAsyncThunk<
+    TrackSimpleDto[],
+    { authorId: string; page?: number; size?: number }
+>(
+    "tracks/fetchAuthorCollaborations",
+    async ({ authorId, page = 0, size = 20 }) => {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $authApi.get(
+                `http://localhost:8083/api/tracks/ByAuthor/Collaborations/${authorId}?${params}`
+            );
+            return response.data.content;
+    }
+);

@@ -52,7 +52,7 @@ const MainPage = () => {
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-recomendation-today")} isLoading={playlistsLoading} error={playlistsError} />
+                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={playlistsLoading} error={playlistsError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} />

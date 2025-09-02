@@ -58,7 +58,7 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
             position="relative"
             borderRadius={"10px"}
             sx={{
-                backgroundColor: bgColor || 'var(--dark-purple)',
+                background: bgColor || 'var(--dark-purple)',
                 boxSizing: 'border-box',
                 width: '100%',
                 overflowX: 'hidden',

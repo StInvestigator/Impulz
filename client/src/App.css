@@ -6,6 +6,9 @@
     --dogwood-rose: #D90368;
     --deep-sky-blue: #00BFFF;
     --berkeley-blue: #003366;
+    --gradient-purple-rose: linear-gradient(90deg, rgba(35, 12, 51, 0.4) 0%, rgba(217, 3, 104, 0.4) 20.19%, rgba(217, 3, 104, 0.5) 50%, rgba(217, 3, 104, 0.4) 80%, rgba(35, 12, 51, 0.4) 100%);
+    --gradient-oranges: linear-gradient(#FF99004D, #FF990066, #FF990066, #FF990066, #FF99004D);
+
     /* --gradient-orange-rose: linear-gradient(90deg, rgba(255, 153, 0, 0.8) 0%, rgba(217, 3, 104, 0.4) 6.25%, #FF9900 50%, rgba(217, 3, 104, 0.4) 97.6%, rgba(255, 153, 0, 0.8) 100%) 1; */
 }
 

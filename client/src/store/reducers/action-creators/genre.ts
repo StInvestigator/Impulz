@@ -14,7 +14,7 @@ export const fetchTopGenres = createAsyncThunk<
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
-            const response = await $authApi.get(`http://localhost:8083/api/genres/TopGenres?${params}`)
+            const response = await axios.get(`http://localhost:8083/api/genres/TopGenres?${params}`)
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {

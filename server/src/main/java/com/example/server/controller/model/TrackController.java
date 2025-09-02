@@ -83,4 +83,16 @@ public class TrackController {
         }
     }
 
+    @GetMapping("/ByAuthor/Collaborations/{id}")
+    public ResponseEntity<Page<TrackSimpleDto>> getCollaborationsByAuthor(@PathVariable String id,Pageable pageable){
+        try {
+            Page<Track> tracks = trackService.findTracksByAuthorWithMultipleAuthors(id,pageable);
+            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

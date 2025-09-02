@@ -1,11 +1,8 @@
 package com.example.server.controller.model;
 
-import com.example.server.data.repository.AlbumRepository;
 import com.example.server.dto.Album.AlbumDto;
 import com.example.server.dto.Album.AlbumSimpleDto;
-import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.Album;
-import com.example.server.model.User;
 import com.example.server.service.album.AlbumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/albums")
@@ -50,7 +45,7 @@ public class AlbumController {
     @GetMapping("/ByAuthor/Collaborations/{id}")
     public ResponseEntity<Page<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
         try {
-            Page<Album> albums = albumService.findCollabotationsByAuthor(id, pageable);
+            Page<Album> albums = albumService.findCollaborationsByAuthor(id, pageable);
             Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
             return ResponseEntity.ok(dtoPage);
         } catch (Exception e) {

@@ -79,9 +79,12 @@ public class TrackServiceImpl implements TrackService
         return trackRepository.findPopularTrackByUserRecentGenres(userId, pageable);
     }
 
-    @Override
     public Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable) throws RuntimeException {
         Author author = authorRepository.findById(authorId).orElseThrow(() -> new RuntimeException("Author not found with id: " + authorId));
         return trackRepository.findByAuthorsOrderByTotalPlaysDesc(author, pageable);
+    }
+
+    public Page<Track> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable){
+        return trackRepository.findTracksByAuthorWithMultipleAuthors(authorId,pageable);
     }
 }

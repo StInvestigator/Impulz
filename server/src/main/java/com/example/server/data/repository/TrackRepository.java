@@ -99,6 +99,27 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     )
     Page<Track> findPopularTrackByUserRecentGenres(@Param("userId") String userId, Pageable pageable);
 
+    @Query(
+            value = """
+        SELECT t.* FROM tracks t 
+        JOIN track_authors ta ON t.id = ta.track_id 
+        WHERE ta.author_id = :authorId 
+        AND t.id IN ( 
+          SELECT track_id FROM track_authors GROUP BY track_id HAVING COUNT(author_id) > 1
+        )
+        """,
+            countQuery = """
+        SELECT COUNT(*) FROM ( 
+          SELECT track_id FROM track_authors GROUP BY track_id HAVING COUNT(author_id) > 1
+        ) t 
+        JOIN tracks t2 ON t2.id = t.track_id 
+        JOIN track_authors ta2 ON t2.id = ta2.track_id 
+        WHERE ta2.author_id = :authorId
+        """,
+            nativeQuery = true
+    )
+    Page<Track> findTracksByAuthorWithMultipleAuthors(@Param("authorId") String authorId, Pageable pageable);
+
     @Modifying
     @Query("UPDATE Track t SET t.totalPlays = t.totalPlays + 1 WHERE t.id = :trackId")
     void incrementTotalPlays(@Param("trackId") Long trackId);

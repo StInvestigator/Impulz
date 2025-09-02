@@ -4,6 +4,7 @@ import PlaylistReducer from "./reducers/PlaylistSlice.ts"
 import PlayerReducer from "./reducers/PlayerSlice.ts"
 import TrackReducer from "./reducers/TrackSlice.ts"
 import GenreReducer from "./reducers/GenreSlice.ts"
+import AlbumReducer from "./reducers/AlbumSlice.ts"
 
 
 const rootReducer = combineReducers({
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
     playlist: PlaylistReducer,
     player: PlayerReducer,
     track: TrackReducer,
-    genre: GenreReducer
+    genre: GenreReducer,
+    album: AlbumReducer
 })
 
 export const setupStore = () => {

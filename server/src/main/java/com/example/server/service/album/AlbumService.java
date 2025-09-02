@@ -1,13 +1,8 @@
 package com.example.server.service.album;
 
 import com.example.server.model.Album;
-import com.example.server.model.Author;
-import com.example.server.model.Genre;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface AlbumService
 {
@@ -17,5 +12,5 @@ public interface AlbumService
     Page<Album> getRecommendedAlbumsToday(Pageable pageable);
     Page<Album> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable);
     Page<Album> findByAuthor(String authorId, Pageable pageable);
-    Page<Album> findCollabotationsByAuthor(String authorId, Pageable pageable);
+    Page<Album> findCollaborationsByAuthor(String authorId, Pageable pageable);
 }

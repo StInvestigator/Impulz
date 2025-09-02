@@ -1,8 +1,10 @@
 package com.example.server.controller.model;
 
 import com.example.server.data.repository.TrackRepository;
+import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Track.TrackDto;
 import com.example.server.dto.Track.TrackSimpleDto;
+import com.example.server.model.Album;
 import com.example.server.model.Track;
 import com.example.server.service.music.MusicServiceImpl;
 import com.example.server.service.track.TrackService;
@@ -42,7 +44,42 @@ public class TrackController {
             Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
             return ResponseEntity.ok(dtoPage);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/Recommendations/Today")
+    public ResponseEntity<Page<TrackSimpleDto>> getTodayRecommended(Pageable pageable) {
+        try {
+            Page<Track> tracks = trackService.getRecommendedTracksToday(pageable);
+            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/Recommendations/PersonalByGenres/{userId}")
+    public ResponseEntity<Page<TrackSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
+        try {
+            Page<Track> tracks = trackService.findPopularTrackByUserRecentGenres(userId, pageable);
+            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/MostListenedTracksOfWeek")
+    public ResponseEntity<Page<TrackSimpleDto>> getMostListenedTracksByWeek(Pageable pageable) {
+        try {
+            Page<Track> tracks = trackService.findMostPlayedTracksThisWeek(pageable);
+            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

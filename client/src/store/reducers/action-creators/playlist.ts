@@ -1,17 +1,21 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 import axios from "axios";
 
-export const fetchTop20PlaylistsByWeek = createAsyncThunk<
+export const fetchTopPlaylistsByWeek = createAsyncThunk<
     PlaylistSimpleDto[],
-    void,
+    { page?: number; size?: number },
     { rejectValue: string }
 >(
-    'recommendations/simpleDto/fetchTop20PlaylistsByWeek',
-    async (_, {rejectWithValue}) => {
+    'playlists/TopPlaylistsByFavorites',
+    async ({ page = 0, size = 20 }, { rejectWithValue }) => {
         try {
-            const response = await axios.get<PlaylistSimpleDto[]>("http://localhost:8083/api/recommendations/simpleDto/findTop20PlaylistsByFavorites")
-            return response.data;
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await axios.get(`http://localhost:8083/api/playlists/TopPlaylistsByFavorites?${params}`)
+            return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue(`Не удалось загрузить плейлисты:`);

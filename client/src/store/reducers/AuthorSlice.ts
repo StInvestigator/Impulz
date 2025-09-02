@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAuthorDetails, fetchTop20AuthorsByMonth } from "./action-creators/author.ts";
+import { fetchAuthorDetails, fetchTopAuthorsByMonth } from "./action-creators/author.ts";
 import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
 
@@ -27,15 +27,15 @@ const authorSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchTop20AuthorsByMonth.pending, (state) => {
+            .addCase(fetchTopAuthorsByMonth.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchTop20AuthorsByMonth.fulfilled, (state, action) => {
+            .addCase(fetchTopAuthorsByMonth.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.topAuthors = action.payload;
                 state.error = null;
             })
-            .addCase(fetchTop20AuthorsByMonth.rejected, (state, action) => {
+            .addCase(fetchTopAuthorsByMonth.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузке авторов";
             })

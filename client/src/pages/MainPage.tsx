@@ -9,12 +9,12 @@ import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
 import { useAppNavigate } from "../hooks/useAppNavigate.ts";
-import { fetchTop20TracksByWeek } from "../store/reducers/action-creators/tracks.ts";
+import { fetchTopTracksByWeek } from "../store/reducers/action-creators/tracks.ts";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { useEffect } from "react";
-import { fetchTop20PlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
-import { fetchTop5Genres } from "../store/reducers/action-creators/genre.ts";
-import {fetchTop20AuthorsByMonth} from "../store/reducers/action-creators/author.ts";
+import { fetchTopPlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
+import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
+import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
@@ -27,10 +27,10 @@ const MainPage = () => {
     const { t } = useTranslation(['main', 'other'])
 
     useEffect(() => {
-        dispatch(fetchTop20TracksByWeek());
-        dispatch(fetchTop20AuthorsByMonth());
-        dispatch(fetchTop20PlaylistsByWeek());
-        dispatch(fetchTop5Genres());
+        dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
+        dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
+        dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
+        dispatch(fetchTopGenres({ page: 0, size: 5 }));
 
         console.log(topAuthors);
     }, [dispatch]);

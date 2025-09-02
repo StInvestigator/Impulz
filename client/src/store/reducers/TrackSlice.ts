@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchTop20TracksByWeek, fetchPopularTracksByAuthor } from "./action-creators/tracks.ts";
+import { fetchTopTracksByWeek, fetchPopularTracksByAuthor } from "./action-creators/tracks.ts";
 import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackState {
@@ -22,15 +22,15 @@ const trackSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchTop20TracksByWeek.pending, (state) => {
+            .addCase(fetchTopTracksByWeek.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchTop20TracksByWeek.fulfilled, (state, action) => {
+            .addCase(fetchTopTracksByWeek.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.topTracks = action.payload;
                 state.error = null;
             })
-            .addCase(fetchTop20TracksByWeek.rejected, (state, action) => {
+            .addCase(fetchTopTracksByWeek.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузке треков";
             })

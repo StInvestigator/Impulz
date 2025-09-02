@@ -16,8 +16,8 @@ public interface TrackService
     Track createTrack(String title, Long albumId, List<String> authorIds,List<Long> genreIds);
     void deleteTrack(Track track);
     Track findTrackByFileUrl(String fileUrl);
-    List<Track> findTop20MostPlayedTracksThisWeek();
-    List<Track> getRecommendedTracksToday();
-    List<Track> findPopularTrackByUserRecentGenres(String userId);
+    Page<Track> findMostPlayedTracksThisWeek(Pageable pageable);
+    Page<Track> getRecommendedTracksToday(Pageable pageable);
+    Page<Track> findPopularTrackByUserRecentGenres(String userId, Pageable pageable);
     Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable);
 }

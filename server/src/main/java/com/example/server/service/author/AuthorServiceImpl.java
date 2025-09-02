@@ -37,8 +37,8 @@ public class AuthorServiceImpl implements AuthorService {
         return authorFollowersRepository.findAllByAuthor(authorRepository.findById(authorId).orElseThrow(), pageable).map(AuthorFollower::getFollower);
     }
 
-    public List<Author> findTop20AuthorsOfMonth() {
-        return authorRepository.findTop20AuthorsOfMonth();
+    public Page<Author> findTopAuthorsOfMonth(Pageable pageable) {
+        return authorRepository.findTopAuthorsOfMonth(pageable);
     }
 
 }

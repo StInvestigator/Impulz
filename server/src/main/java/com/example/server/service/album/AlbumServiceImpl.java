@@ -34,12 +34,12 @@ public class AlbumServiceImpl implements AlbumService
         albumRepository.deleteById(id);
     }
 
-    public List<Album> getRecommendedAlbumsToday() {
-        return albumRepository.findRecommendedAlbumsToday();
+    public Page<Album> getRecommendedAlbumsToday(Pageable pageable) {
+        return albumRepository.findRecommendedAlbumsToday(pageable);
     }
 
-    public List<Album> findPopularAlbumsByUserRecentGenres(String userId){
-        return albumRepository.findPopularAlbumsByUserRecentGenres(userId);
+    public Page<Album> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable){
+        return albumRepository.findPopularAlbumsByUserRecentGenres(userId, pageable);
     }
 
     @Override

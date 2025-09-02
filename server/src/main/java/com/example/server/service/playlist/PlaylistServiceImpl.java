@@ -10,6 +10,8 @@ import com.example.server.model.key.PlaylistTrackKey;
 import com.example.server.service.track.TrackService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +35,8 @@ public class PlaylistServiceImpl implements PlaylistService {
         playlistRepository.delete(playlist);
     }
 
-    public List<Playlist> findTop20PlaylistsByFavorites(){
-        return playlistRepository.findTop20PlaylistsByFavorites();
+    public Page<Playlist> findTopPlaylistsByFavorites(Pageable pageable){
+        return playlistRepository.findTopPlaylistsByFavorites(pageable);
     }
 
     public List<Playlist> getAllPlaylists() {

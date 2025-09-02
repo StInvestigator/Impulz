@@ -14,8 +14,8 @@ public interface AlbumService
     Album getAlbumById(Long id);
     void create(Album album);
     void delete(Long id);
-    List<Album> getRecommendedAlbumsToday();
-    List<Album> findPopularAlbumsByUserRecentGenres(String userId);
+    Page<Album> getRecommendedAlbumsToday(Pageable pageable);
+    Page<Album> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable);
     Page<Album> findByAuthor(String authorId, Pageable pageable);
     Page<Album> findCollabotationsByAuthor(String authorId, Pageable pageable);
 }

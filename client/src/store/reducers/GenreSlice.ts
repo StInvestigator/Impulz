@@ -1,6 +1,6 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import type { GenreSimpleDto } from "../../models/DTO/GenreSimpleDto";
-import { fetchTop5Genres } from "./action-creators/genre";
+import { fetchTopGenres } from "./action-creators/genre";
 
 interface GenreState {
     topFiveGenres: GenreSimpleDto[];
@@ -20,14 +20,14 @@ export const GenreSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchTop5Genres.pending, (state) => {
+            .addCase(fetchTopGenres.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchTop5Genres.fulfilled, (state, action: PayloadAction<GenreSimpleDto[]>) => {
+            .addCase(fetchTopGenres.fulfilled, (state, action: PayloadAction<GenreSimpleDto[]>) => {
                 state.isLoading = false;
                 state.topFiveGenres = action.payload;
             })
-            .addCase(fetchTop5Genres.rejected, (state, action: ReturnType<typeof fetchTop5Genres.rejected>) => {
+            .addCase(fetchTopGenres.rejected, (state, action: ReturnType<typeof fetchTopGenres.rejected>) => {
                 state.isLoading = false;
                 state.error = action.payload || "Unknown error";
             });

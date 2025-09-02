@@ -2,17 +2,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { GenreSimpleDto } from "../../../models/DTO/GenreSimpleDto";
 import axios from "axios";
 
-export const fetchTop5Genres = createAsyncThunk<
+export const fetchTopGenres = createAsyncThunk<
     GenreSimpleDto[],
-    void,
+    {page?: number; size?: number},
     { rejectValue: string }
 >(
-    'genres/simpleDto/findTop5Genres',
-    async (_, {rejectWithValue}) => {
+    'genres/TopGenres',
+    async ({ page = 0, size = 5 }, { rejectWithValue }) => {
         try {
-            const response = await axios.get<GenreSimpleDto[]>("http://localhost:8083/api/genres/simpleDto/findTop5Genres")
-            return response.data;
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
 
+            const response = await $authApi.get(`http://localhost:8083/api/genres/TopGenres?${params}`)
+            return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue(`Не удалось загрузить жанры`);

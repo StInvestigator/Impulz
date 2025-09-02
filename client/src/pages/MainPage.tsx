@@ -1,6 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
-
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
 import TrackSmallCarouselList from "../components/carousel_list/TrackSmallCarouselList";
@@ -14,21 +13,15 @@ import { fetchTop20TracksByWeek } from "../store/reducers/action-creators/tracks
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { useEffect } from "react";
 import { fetchTop20PlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
+import { fetchTop5Genres } from "../store/reducers/action-creators/genre.ts";
 import {fetchTop20AuthorsByMonth} from "../store/reducers/action-creators/author.ts";
-
-const tracks = [
-    'Трек 2', 'Трек 2', 'Трек 3',
-    'Трек 4', 'Трек 5', 'Трек 6',
-    'Трек 7', 'Трек 8', 'Трек 9', 'Трек 10', 'Трек 11',
-    'Трек 12', 'Трек 13', 'Трек 14',
-    'Трек 15', 'Трек 16'
-];
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
     const { topTracks, isLoading: tracksLoading, error: tracksError } = useAppSelector((state) => state.track);
     const { topAuthors, isLoading: authorsLoading, error: authorsError } = useAppSelector((state) => state.author);
     const { topPlaylists, isLoading: playlistsLoading, error: playlistsError } = useAppSelector((state) => state.playlist);
+    const { topFiveGenres, isLoading: genresLoading, error: genresError } = useAppSelector((state) => state.genre);
 
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
@@ -37,6 +30,7 @@ const MainPage = () => {
         dispatch(fetchTop20TracksByWeek());
         dispatch(fetchTop20AuthorsByMonth());
         dispatch(fetchTop20PlaylistsByWeek());
+        dispatch(fetchTop5Genres());
 
         console.log(topAuthors);
     }, [dispatch]);
@@ -55,13 +49,13 @@ const MainPage = () => {
                 <PlaylistCarouselList playlists={topPlaylists} isLoading={playlistsLoading} error={playlistsError} itemWidth={134} name={t("main:title-listen-best-playlists")} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TopFiveGenreList />
+                <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("main:title-recomendation-today")} />
+                <TrackSmallCarouselList playlists={topPlaylists} itemWidth={134} name={t("main:title-recomendation-today")} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList tracks={tracks} itemWidth={134} name={t("main:title-watch-for-you")} />
+                <TrackSmallCarouselList playlists={topPlaylists} itemWidth={134} name={t("main:title-watch-for-you")} />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>

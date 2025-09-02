@@ -3,13 +3,15 @@ import AuthorReducer from "./reducers/AuthorSlice.ts"
 import PlaylistReducer from "./reducers/PlaylistSlice.ts"
 import PlayerReducer from "./reducers/PlayerSlice.ts"
 import TrackReducer from "./reducers/TrackSlice.ts"
+import GenreReducer from "./reducers/GenreSlice.ts"
 
 
 const rootReducer = combineReducers({
     author: AuthorReducer,
     playlist: PlaylistReducer,
     player: PlayerReducer,
-    track: TrackReducer
+    track: TrackReducer,
+    genre: GenreReducer
 })
 
 export const setupStore = () => {

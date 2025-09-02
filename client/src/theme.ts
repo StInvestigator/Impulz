@@ -1,7 +1,7 @@
 import {createTheme} from "@mui/material/styles";
 
 export const theme = createTheme({
-    typography: {
+    typography: { 
         h1: {
             fontFamily: '"Manrope", sans-serif',
             fontWeight: 700,
@@ -60,6 +60,7 @@ export const theme = createTheme({
         allVariants: {
             fontFamily: 'Work Sans, sans-serif',
             lineHeight: 1.2,
+            color: "var(--dark-purple)",
             userSelect: "none"
         },
     },

@@ -1,18 +1,19 @@
 import type {FC} from "react";
 import ListCarousel from "../ListCarousel.tsx";
 import PublicPlaylistSmallItem from "../items/playlist/PublicPlaylistSmallItem.tsx";
+import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 
-interface TracklistListProps {
-    tracks: string[];
+interface PlaylistListProps {
+    playlists: PlaylistSimpleDto[];
     itemWidth: number;
     name: string;
 }
 
-const TrackSmallCarouselList: FC<TracklistListProps> = ({tracks, itemWidth, name}) => {
+const TrackSmallCarouselList: FC<PlaylistListProps> = ({playlists, itemWidth, name}) => {
     return (
-        <ListCarousel title={name} variant={"h3"} gap={24} count_items={tracks.length}>
-            {tracks.map((track, index) => (
-                <PublicPlaylistSmallItem key={index} playlist={track} itemWidth={itemWidth} />
+        <ListCarousel title={name} bgColor="var(--gradient-purple-rose)" textColor="var(--dark-purple)" variant={"h3"} gap={24} count_items={playlists.length}>
+            {playlists.map((playlist, index) => (
+                <PublicPlaylistSmallItem key={index} playlist={playlist} itemWidth={itemWidth} color="dark"/>
             ))}
         </ListCarousel>
     );

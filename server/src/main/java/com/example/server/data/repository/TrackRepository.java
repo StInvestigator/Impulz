@@ -1,13 +1,18 @@
 package com.example.server.data.repository;
 
+import com.example.server.model.Author;
 import com.example.server.model.Track;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TrackRepository extends JpaRepository<Track, Long> {
@@ -71,4 +76,7 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     @Modifying
     @Query("UPDATE Track t SET t.totalPlays = t.totalPlays + 1 WHERE t.id = :trackId")
     void incrementTotalPlays(@Param("trackId") Long trackId);
+
+
+    Page<Track> findByAuthorsOrderByTotalPlaysDesc(Author author, Pageable pageable);
 }

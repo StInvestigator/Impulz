@@ -30,9 +30,7 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {
             "/", "/login-success",
             "recommendations/**",
-            "/music/stream/*",
-
-            "/**"
+            "/music/stream/*"
     };
 
     @Bean

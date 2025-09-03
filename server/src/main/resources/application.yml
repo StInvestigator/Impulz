@@ -1,26 +1,24 @@
 spring:
   application:
     name: server
-  web:
-    resources:
-      static-locations: classpath:/static/
-      add-mappings: true
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/impulz}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    driver-class-name: org.postgresql.Driver
+
   security:
     oauth2:
-      resourceserver:
+      resource-server:
         jwt:
-          issuer-uri: http://localhost:9090/realms/Impulz
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://localhost:9090/realms/Impulz/protocol/openid-connect/certs}
+
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
       enabled: true
-
-  datasource:
-    url: jdbc:postgresql://localhost:5435/impulz
-    username: root
-    password: root
-    driver-class-name: org.postgresql.Driver
 
   flyway:
     enabled: true
@@ -28,8 +26,8 @@ spring:
     locations: classpath:db/migration
 
 server:
-  url: http://localhost:8083
-  port: 8083
+  url: ${SERVER_URL:http://localhost:8083}
+  port: ${SERVER_PORT:8083}
   servlet:
     context-path: /api
 
@@ -38,19 +36,20 @@ logging:
     org.springframework.security: TRACE
 
 keycloak:
-  keycloakUrl: http://localhost:9090
-  realm: Impulz
-  clientId: ImpulzServer
-  clientSecret: PGI80PTF69TCx03xScxVm7JWNyowL6OD
-  admin-username: admin
-  admin-password: admin
+  keycloakUrl: ${KEYCLOAK_URL:http://localhost:9090}
+  realm: ${KEYCLOAK_REALM:Impulz}
+  clientId: ${KEYCLOAK_CLIENT_ID:ImpulzServer}
+  frontClientId: ${KEYCLOAK_FRONT_CLIENT_ID:ImpulzClient}
+  clientSecret: ${KEYCLOAK_CLIENT_SECRET:PGI80PTF69TCx03xScxVm7JWNyowL6OD}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
 
 aws:
   region: us-east-1
   s3:
-    bucket-name: impulz-bucket-1
-  accessKeyId: AKIAT7YEJYD37Q7ZO6EO
-  secretKey: 4MwqdCF38SZqPTVy79lQdtxtkZdia8uG1WhW0nwY
+    bucket-name: ${AWS_BUCKET:impulz-bucket-1}
+  accessKeyId: ${AWS_ACCESS_KEY:dummy}
+  secretKey: ${AWS_SECRET_KEY:dummy}
 
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
@@ -60,10 +59,10 @@ minio:
   region: us-east-1
 
 music:
-  base-url: https://impulz-bucket-1.s3.us-east-1.amazonaws.com/music/
+  base-url: ${MUSIC_BASE_URL:https://impulz-bucket-1.s3.us-east-1.amazonaws.com/music/}
 
 app:
   temp-dir: ${java.io.tmpdir}/audio_uploads
 
 jwt:
-  secret: wI0Fcd3rZPL+CQ6X5koM0dn8CKV2gA3VX0Z0M4cV2Rk=
+  secret: ${JWT_SECRET:wI0Fcd3rZPL+CQ6X5koM0dn8CKV2gA3VX0Z0M4cV2Rk=}

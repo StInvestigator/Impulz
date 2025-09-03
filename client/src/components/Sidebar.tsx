@@ -18,6 +18,7 @@ import MyPlaylistList from "./lists/MyPlaylistList.tsx";
 import { useTranslation } from 'react-i18next';
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import {memo} from "react";
+import { useLocation } from "react-router-dom";
 
 const buttons = [
     {
@@ -46,8 +47,8 @@ const buttons = [
 const Sidebar = memo(() => {
 
     const navigate = useAppNavigate()
-
     const { t } = useTranslation('sidebar')
+    const location = useLocation(); // получаем текущий путь
 
     return (
         <Box
@@ -85,13 +86,18 @@ const Sidebar = memo(() => {
                             <ListItemButton onClick={() => navigate(path)}
                                 sx={{
                                     transition: 'background-color 0.3s ease',
+                                    padding: "0 12px",
+                                    margin: location.pathname === path ? "0 0 20px 0" : "0 24px 20px 0",
+                                    borderRadius: location.pathname === path ? "10px 0 0 10px" : "10px",
+                                    gap: "24px",
+                                    backgroundColor: location.pathname === path ? 'white' : 'transparent',
                                     '&:hover': {
-                                        backgroundColor: '#C7C7D3',
+                                        backgroundColor: location.pathname === path ? 'white' : 'var(--orange-peel-20)',
                                     },
-                                    padding: "22px 12px"
+
                                 }}>
-                                <ListItemIcon>
-                                    <Box component="img" src={icon} />
+                                <ListItemIcon sx={{ minWidth: 50 }}>
+                                    <Box component="img" src={icon} sx={{ width: '50px', height: '50px' }}/>
                                 </ListItemIcon>
                                 <ListItemText primary={t(`${name}`)} disableTypography sx={{fontSize:"16px", fontWeight:600, color: "var(--orange-peel)" }} />
                             </ListItemButton>

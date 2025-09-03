@@ -44,10 +44,10 @@ const Navbar = memo(() => {
                     </Box>
                 </Box>
                 <Box sx={{
-                    width: "392px",
                     height: "30px",
                     display: "flex",
-                    justifyContent: "space-between"
+                    flexDirection: "row",
+                    gap: "24px",
                 }}>
                     <Box sx={{ position: 'relative' }}>
                         <Dropdown/>

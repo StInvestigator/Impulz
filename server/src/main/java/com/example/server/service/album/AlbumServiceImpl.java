@@ -51,4 +51,14 @@ public class AlbumServiceImpl implements AlbumService
     public Page<Album> findCollaborationsByAuthor(String authorId, Pageable pageable) {
         return albumRepository.findAlbumsByAuthorWithMultipleAuthors(authorId, pageable);
     }
+
+    @Override
+    public Page<Album> findByAuthorOrderByReleaseDateDesc(String authorId, Pageable pageable) {
+        return albumRepository.findByAuthors_IdOrderByReleaseDateDesc(authorId, pageable);
+    }
+
+    @Override
+    public Page<Album> findNewAlbumsByGenre(Long genreId, Pageable pageable) {
+        return albumRepository.findNewAlbumsByGenre(genreId,pageable);
+    }
 }

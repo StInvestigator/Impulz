@@ -100,4 +100,25 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
             nativeQuery = true
     )
     Page<Album> findAlbumsByAuthorWithMultipleAuthors(@Param("authorId") String authorId, Pageable pageable);
+
+    Page<Album> findByAuthors_IdOrderByReleaseDateDesc(String authorId, Pageable pageable);
+
+    @Query(
+            value = """
+        SELECT a.*
+        FROM albums a
+        JOIN tracks t ON t.album_id = a.id
+        JOIN track_genres tg ON tg.track_id = t.id AND tg.genre_id = :genreId
+        GROUP BY a.id
+        ORDER BY a.release_date DESC NULLS LAST
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT a.id)
+        FROM albums a
+        JOIN tracks t ON t.album_id = a.id
+        JOIN track_genres tg ON tg.track_id = t.id AND tg.genre_id = :genreId
+        """,
+            nativeQuery = true
+    )
+    Page<Album> findNewAlbumsByGenre(@Param("genreId") Long genreId, Pageable pageable);
 }

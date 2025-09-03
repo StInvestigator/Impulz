@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -34,4 +35,64 @@ public interface AuthorRepository extends JpaRepository<Author,String>
     )
     Page<Author> findTopAuthorsOfMonth(Pageable pageable);
 
+    @Query(
+            value = """
+        SELECT a.*, COUNT(DISTINCT tg2.genre_id) AS common_genres
+        FROM authors a
+        JOIN track_authors ta2 ON ta2.author_id = a.user_id
+        JOIN tracks t2 ON t2.id = ta2.track_id
+        JOIN track_genres tg2 ON tg2.track_id = t2.id
+        WHERE a.user_id <> :authorId
+          AND tg2.genre_id IN (
+            SELECT DISTINCT tg.genre_id
+            FROM track_authors ta
+            JOIN tracks t ON t.id = ta.track_id
+            JOIN track_genres tg ON tg.track_id = t.id
+            WHERE ta.author_id = :authorId
+          )
+        GROUP BY a.user_id
+        ORDER BY common_genres DESC
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT a.user_id)
+        FROM authors a
+        JOIN track_authors ta2 ON ta2.author_id = a.user_id
+        JOIN tracks t2 ON t2.id = ta2.track_id
+        JOIN track_genres tg2 ON tg2.track_id = t2.id
+        WHERE a.user_id <> :authorId
+          AND tg2.genre_id IN (
+            SELECT DISTINCT tg.genre_id
+            FROM track_authors ta
+            JOIN tracks t ON t.id = ta.track_id
+            JOIN track_genres tg ON tg.track_id = t.id
+            WHERE ta.author_id = :authorId
+          )
+        """,
+            nativeQuery = true
+    )
+    Page<Author> findSimilarBySharedGenres(@Param("authorId") String authorId, Pageable pageable);
+
+    @Query(
+            value = """
+        SELECT a.*
+        FROM authors a
+        JOIN track_authors ta    ON ta.author_id = a.user_id
+        JOIN tracks t            ON t.id = ta.track_id
+        JOIN track_genres tg     ON tg.track_id = t.id
+          AND tg.genre_id = :genreId
+        LEFT JOIN track_plays tp ON tp.track_id = t.id
+        GROUP BY a.user_id
+        ORDER BY COUNT(tp.id) DESC NULLS LAST
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT a.user_id)
+        FROM authors a
+        JOIN track_authors ta    ON ta.author_id = a.user_id
+        JOIN tracks t            ON t.id = ta.track_id
+        JOIN track_genres tg     ON tg.track_id = t.id
+          AND tg.genre_id = :genreId
+        """,
+            nativeQuery = true
+    )
+    Page<Author> findTopAuthorsByGenre(@Param("genreId") Long genreId, Pageable pageable);
 }

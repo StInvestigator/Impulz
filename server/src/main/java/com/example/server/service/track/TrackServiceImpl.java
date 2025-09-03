@@ -87,4 +87,9 @@ public class TrackServiceImpl implements TrackService
     public Page<Track> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable){
         return trackRepository.findTracksByAuthorWithMultipleAuthors(authorId,pageable);
     }
+
+    @Override
+    public Page<Track> findPopularTracksByGenre(Long genreId, Pageable pageable) {
+        return trackRepository.findByGenres_IdOrderByTotalPlaysDesc(genreId, pageable);
+    }
 }

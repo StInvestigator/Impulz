@@ -13,4 +13,6 @@ public interface AlbumService
     Page<Album> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable);
     Page<Album> findByAuthor(String authorId, Pageable pageable);
     Page<Album> findCollaborationsByAuthor(String authorId, Pageable pageable);
+    Page<Album> findByAuthorOrderByReleaseDateDesc(String authorId, Pageable pageable);
+    Page<Album> findNewAlbumsByGenre(Long genreId, Pageable pageable);
 }

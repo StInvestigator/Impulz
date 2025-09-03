@@ -26,7 +26,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String token = authHeader.replace("Bearer ", "");
+        String token = authHeader.replace("Bearer ", "").trim();
 
         try {
             Jwt jwt = jwtDecoder.decode(token);

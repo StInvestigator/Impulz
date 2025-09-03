@@ -1,6 +1,29 @@
 version: "3.8"
 
+
+
 services:
+  app:
+    build: ./server
+    container_name: app_server
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/impulz
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      KEYCLOAK_JWKS_URI: http://keycloak:8080/realms/Impulz/protocol/openid-connect/certs
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET_NAME: impulz-bucket-1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      minio:
+        condition: service_healthy
   minio:
     image: minio/minio
     container_name: impulz_minio

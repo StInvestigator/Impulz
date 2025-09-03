@@ -126,4 +126,6 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
 
     Page<Track> findByAuthorsOrderByTotalPlaysDesc(Author author, Pageable pageable);
+
+    Page<Track> findByGenres_IdOrderByTotalPlaysDesc(@Param("genreId") Long genreId, Pageable pageable);
 }

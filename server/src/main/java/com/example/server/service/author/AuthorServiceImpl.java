@@ -20,7 +20,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorFollowersRepository authorFollowersRepository;
 
     public Author getAuthorById(String id) {
-        return authorRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Author not found"));
+        return authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
     }
 
     public void createAuthor(Author author) {
@@ -35,6 +35,16 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Page<User> findFollowers(String authorId, Pageable pageable) {
         return authorFollowersRepository.findAllByAuthor(authorRepository.findById(authorId).orElseThrow(), pageable).map(AuthorFollower::getFollower);
+    }
+
+    @Override
+    public Page<Author> findSimilarBySharedGenres(String authorId, Pageable pageable) {
+        return authorRepository.findSimilarBySharedGenres(authorId, pageable);
+    }
+
+    @Override
+    public Page<Author> findTopAuthorsByGenre(Long genreId, Pageable pageable) {
+        return authorRepository.findTopAuthorsByGenre(genreId, pageable);
     }
 
     public Page<Author> findTopAuthorsOfMonth(Pageable pageable) {

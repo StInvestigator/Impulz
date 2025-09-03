@@ -53,14 +53,24 @@ public class AlbumController {
         }
     }
 
+    @GetMapping("/ByAuthor/Recent/{userId}")
+    public ResponseEntity<Page<AlbumSimpleDto>> getRecentByAuthor(@PathVariable String userId, Pageable pageable) {
+        try {
+            Page<Album> albums = albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable);
+            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/Recommendations/Today")
     public ResponseEntity<Page<AlbumSimpleDto>> getTodayRecommended(Pageable pageable) {
         try {
             Page<Album> albums = albumService.getRecommendedAlbumsToday(pageable);
             Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
             return ResponseEntity.ok(dtoPage);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -71,8 +81,18 @@ public class AlbumController {
             Page<Album> albums = albumService.findPopularAlbumsByUserRecentGenres(userId, pageable);
             Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
             return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        catch (Exception e){
+    }
+
+    @GetMapping("/ByGenre/Recent/{genreId}")
+    public ResponseEntity<Page<AlbumSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
+        try {
+            Page<Album> albums = albumService.findNewAlbumsByGenre(genreId, pageable);
+            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }

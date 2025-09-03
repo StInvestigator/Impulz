@@ -37,7 +37,7 @@ public class TrackController {
         return TrackDto.fromEntity(track);
     }
 
-    @GetMapping("/PopularByAuthor/{id}")
+    @GetMapping("/ByAuthor/Popular/{id}")
     public ResponseEntity<Page<TrackSimpleDto>> getPopularTracksByAuthor(@PathVariable String id, Pageable pageable) {
         try {
             Page<Track> tracks = trackService.findPopularTracksByAuthor(id, pageable);
@@ -95,4 +95,15 @@ public class TrackController {
         }
     }
 
+    @GetMapping("/ByGenre/Popular/{genreId}")
+    public ResponseEntity<Page<TrackSimpleDto>> getPopularByGenre(@PathVariable Long genreId,Pageable pageable){
+        try {
+            Page<Track> tracks = trackService.findPopularTracksByGenre(genreId,pageable);
+            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

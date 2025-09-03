@@ -21,14 +21,14 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
     TrackSimpleDto[],
     { authorId: string; page?: number; size?: number }
 >(
-    "tracks/PopularByAuthor",
+    "tracks/ByAuthor/Popular",
     async ({ authorId, page = 0, size = 20 }) => {
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
 
         const response = await $authApi.get(
-            `http://localhost:8083/api/tracks/PopularByAuthor/${authorId}?${params}`
+            `http://localhost:8083/api/tracks/ByAuthor/Popular/${authorId}?${params}`
         );
         return response.data.content;
     }

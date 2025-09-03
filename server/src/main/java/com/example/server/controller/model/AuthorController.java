@@ -43,7 +43,6 @@ public class AuthorController {
     @GetMapping("/Followers/{id}")
     public ResponseEntity<Page<UserSimpleDto>> getFollowers(@PathVariable String id, Pageable pageable) {
         try {
-
             Page<User> users = authorService.findFollowers(id, pageable);
             Page<UserSimpleDto> dtoPage = users.map(UserSimpleDto::fromEntity);
             return ResponseEntity.ok(dtoPage);
@@ -55,8 +54,27 @@ public class AuthorController {
     @GetMapping("/BestAuthorsOfMonth")
     public ResponseEntity<Page<AuthorSimpleDto>> findTopAuthorsOfMonth(Pageable pageable) {
         try {
-
             Page<Author> authors = authorService.findTopAuthorsOfMonth(pageable);
+            return ResponseEntity.ok(authors.map(AuthorSimpleDto::fromEntity));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/SimilarByGenres/{authorId}")
+    public ResponseEntity<Page<AuthorSimpleDto>> findSimilarAuthorsByGenres(@PathVariable String authorId, Pageable pageable) {
+        try {
+            Page<Author> authors = authorService.findSimilarBySharedGenres(authorId, pageable);
+            return ResponseEntity.ok(authors.map(AuthorSimpleDto::fromEntity));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/TopInGenre/{genreId}")
+    public ResponseEntity<Page<AuthorSimpleDto>> findTopInGenre(@PathVariable Long genreId, Pageable pageable) {
+        try {
+            Page<Author> authors = authorService.findTopAuthorsByGenre(genreId, pageable);
             return ResponseEntity.ok(authors.map(AuthorSimpleDto::fromEntity));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

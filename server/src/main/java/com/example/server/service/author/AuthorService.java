@@ -14,4 +14,6 @@ public interface AuthorService
     void createAuthor(Author author);
     void deleteAuthor(String authorId);
     Page<User> findFollowers(String authorId, Pageable pageable);
+    Page<Author> findSimilarBySharedGenres(String authorId, Pageable pageable);
+    Page<Author> findTopAuthorsByGenre(Long genreId, Pageable pageable);
 }

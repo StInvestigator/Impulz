@@ -53,7 +53,7 @@ public class AuthorController {
     }
 
     @GetMapping("/BestAuthorsOfMonth")
-    public ResponseEntity<Page<AuthorSimpleDto>> findTop20AuthorsOfMonth(Pageable pageable) {
+    public ResponseEntity<Page<AuthorSimpleDto>> findTopAuthorsOfMonth(Pageable pageable) {
         try {
 
             Page<Author> authors = authorService.findTopAuthorsOfMonth(pageable);

@@ -35,7 +35,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/TopPlaylistsByFavorites")
-    public ResponseEntity<Page<PlaylistSimpleDto>> findTop20PlaylistsByFavorites(Pageable pageable) {
+    public ResponseEntity<Page<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
         try {
             Page<Playlist> playlists = playlistService.findTopPlaylistsByFavorites(pageable);
             return ResponseEntity.ok(playlists.map(PlaylistSimpleDto::fromEntity));

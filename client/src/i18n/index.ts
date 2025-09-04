@@ -10,7 +10,7 @@ i18n
     .init({
         fallbackLng: 'uk',
         backend: {
-            loadPath: '/src/locales/{{lng}}/{{ns}}.json',
+            loadPath: '/locales/{{lng}}/{{ns}}.json',
         },
         ns: ['navbar', "sidebar", "main", "footer"],
         defaultNS: 'main',

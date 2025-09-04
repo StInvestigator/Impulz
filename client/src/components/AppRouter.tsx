@@ -1,4 +1,4 @@
-import {Routes, Route, Navigate} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
 import LibraryPage from '../pages/LibraryPage.tsx';
@@ -11,60 +11,32 @@ import PlaylistItemPage from "../pages/PlaylistItemPage.tsx";
 import FavoriteTracksPage from "../pages/FavoriteTracksPage.tsx";
 import UserProfilePage from "../pages/UserProfilePage.tsx";
 
-const pages = [
-    {
-        path: "/",
-        Component: MainPage,
-    },
-    {
-        path: "/library",
-        Component: LibraryPage,
-    },
-    {
-        path: "/hello",
-        Component: HelloPage,
-    },
-    {
-        path: "/category",
-        Component: CategoryPage,
-    },
-    {
-        path: "/author/:id",
-        Component: AuthorProfilePage,
-    },
-    {
-        path: "/user/:name",
-        Component: UserProfilePage,
-    },
-    {
-        path: "/all",
-        Component: AlbumColaborationPlaylistPage,
-    },
-    {
-        path: "/allAuthors",
-        Component: AuthorPage,
-    },
-    {
-        path: "/allTopSelections",
-        Component: TopSelectionsPage,
-    },
-    {
-        path: "/playlist/:name",
-        Component: PlaylistItemPage,
-    },
-    {
-        path: "/favoriteTracks",
-        Component: FavoriteTracksPage,
-    }
-]
+import ProtectedRoute from "./ProtectedRoute.tsx";
 
 const AppRouter = () => {
-
     return (
         <Routes>
-            {pages.map(({path, Component}) =>
-                <Route key={path} path={path} Component={Component}/>
-            )}
+            <Route path="/" element={<MainPage />} />
+            <Route path="/library" element={<LibraryPage />} />
+            <Route path="/hello" element={<HelloPage />} />
+            <Route path="/category" element={<CategoryPage />} />
+
+            <Route
+                path="/author/:id"
+                element={
+                    <ProtectedRoute>
+                        <AuthorProfilePage />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route path="/user/:name" element={<UserProfilePage />} />
+            <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
+            <Route path="/allAuthors" element={<AuthorPage />} />
+            <Route path="/allTopSelections" element={<TopSelectionsPage />} />
+            <Route path="/playlist/:name" element={<PlaylistItemPage />} />
+            <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
+
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

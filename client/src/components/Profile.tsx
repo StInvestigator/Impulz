@@ -1,15 +1,26 @@
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import playImage from "../assets/play.svg";
-import { type FC, useState } from "react";
+import {type FC, useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
+import type {AuthorDto} from "../models/AuthorDto.ts";
+import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
+import {fetchAuthorPlaysByMonth} from "../store/reducers/action-creators/author.ts";
 
 interface ProfileProps {
-  name: string | null;
+  author: AuthorDto;
   type: "user" | "author";
 }
 
-const Profile: FC<ProfileProps> = ({ name, type }) => {
+const Profile: FC<ProfileProps> = ({  author,type }) => {
   const [isSubscribe, setIsSubscribe] = useState(false);
+  const { playsByMonth } = useAppSelector(state => state.author);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if(author.id){
+      dispatch(fetchAuthorPlaysByMonth(author.id));
+    }
+  }, [dispatch,author.id]);
 
   const { t } = useTranslation("authorPage");
 
@@ -43,7 +54,7 @@ const Profile: FC<ProfileProps> = ({ name, type }) => {
             left={0}
             zIndex={2}
           >
-            <Typography variant={"h2"}>{name}</Typography>
+            <Typography variant={"h2"}>{author.name}</Typography>
           </Box>
 
           {/*Фотография автора*/}
@@ -132,7 +143,7 @@ const Profile: FC<ProfileProps> = ({ name, type }) => {
                     fontSize={"24px"}
                     fontFamily={'"Manrope", sans-serif'}
                   >
-                    123 555
+                    {author.followersCount}
                   </Typography>
                   <Typography
                     variant={"mainSbM"}
@@ -160,8 +171,9 @@ const Profile: FC<ProfileProps> = ({ name, type }) => {
                 variant={"h3"}
                 fontSize={"24px"}
                 fontFamily={'"Manrope", sans-serif'}
+                height={"24px"}
               >
-                123 555
+                {playsByMonth}
               </Typography>
               <Typography
                 variant={"mainSbM"}

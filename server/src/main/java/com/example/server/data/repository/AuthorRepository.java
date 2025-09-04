@@ -95,4 +95,16 @@ public interface AuthorRepository extends JpaRepository<Author,String>
             nativeQuery = true
     )
     Page<Author> findTopAuthorsByGenre(@Param("genreId") Long genreId, Pageable pageable);
+
+    @Query(
+            value = """
+            SELECT COUNT(tp.id)
+            FROM track_plays tp
+            JOIN track_authors ta ON ta.track_id = tp.track_id
+            WHERE ta.author_id = :authorId
+              AND tp.played_at >= CURRENT_DATE - INTERVAL '30 days'
+        """,
+            nativeQuery = true
+    )
+    Long countAuthorPlaysByMonth(@Param("authorId") String authorId);
 }

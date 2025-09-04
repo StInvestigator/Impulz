@@ -1,11 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAuthorDetails, fetchTopAuthorsByMonth } from "./action-creators/author.ts";
+import {
+    fetchAuthorDetails,
+    fetchAuthorPlaysByMonth,
+    fetchSimilarAuthorsByGenre,
+    fetchTopAuthorsByMonth
+} from "./action-creators/author.ts";
 import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
 
 interface AuthorState {
     topAuthors: AuthorSimpleDto[];
     currentAuthor: AuthorDto | null;
+    similarAuthors: AuthorSimpleDto[];
+    playsByMonth: number | null;
     isLoading: boolean;
     error: string | null;
 }
@@ -13,6 +20,8 @@ interface AuthorState {
 const initialState: AuthorState = {
     topAuthors: [],
     currentAuthor: null,
+    similarAuthors: [],
+    playsByMonth: null,
     isLoading: false,
     error: null,
 };
@@ -51,6 +60,32 @@ const authorSlice = createSlice({
             .addCase(fetchAuthorDetails.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузке информации об авторе";
+            })
+
+            .addCase(fetchSimilarAuthorsByGenre.pending,(state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchSimilarAuthorsByGenre.fulfilled,(state,action) =>{
+              state.isLoading = false;
+              state.similarAuthors = action.payload;
+              state.error = null;
+            })
+            .addCase(fetchSimilarAuthorsByGenre.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке похожих авторов";
+            })
+
+            .addCase(fetchAuthorPlaysByMonth.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchAuthorPlaysByMonth.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.playsByMonth = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchAuthorPlaysByMonth.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке количества прослушиваний";
             });
     },
 });

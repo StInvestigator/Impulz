@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,4 +81,14 @@ public class AuthorController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/getCountAuthorPlaysByMonth/{authorId}")
+    public ResponseEntity<Long> getCountAuthorPlaysByMonth(@PathVariable String authorId){
+        try {
+            return ResponseEntity.ok(authorService.countAuthorPlaysByMonth(authorId));
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

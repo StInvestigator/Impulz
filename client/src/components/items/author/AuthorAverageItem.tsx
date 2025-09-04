@@ -2,13 +2,14 @@ import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type { FC } from "react";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
+import {useNavigate} from "react-router-dom";
 
 interface AuthorItemProps {
   author: AuthorSimpleDto;
 }
 
 const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
-
+  const navigate = useNavigate();
   return (
     <Box
       width="100%"
@@ -20,7 +21,9 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
         bgcolor="gray"
         mx={"auto"}
         borderRadius={"50%"}
-        sx={{ width: "min(270px, 90%)", aspectRatio: "1 / 1" }}
+        sx={{ width: "min(270px, 90%)", aspectRatio: "1 / 1","&:hover": { cursor: "pointer" } }}
+        onClick={() => navigate(`/author/${author.id}`)}
+
       />
       <Box
         display="flex"

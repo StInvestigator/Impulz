@@ -2,6 +2,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect } from "react";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
+import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -11,6 +12,7 @@ interface TrackItemProps {
 const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
+    const { play } = usePlayTrack();
     useLayoutEffect(() => {
         if (cardRef.current) {
             setCardWidth(cardRef.current.getBoundingClientRect().width);
@@ -127,7 +129,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                     {formatDuration(track.durationSec || 0)}
                 </Typography>
 
-                <IconButton sx={{ padding: 0 }}>
+                <IconButton sx={{ padding: 0 }} onClick={() => play(track)}>
                     <Box
                         component="img"
                         src={playImage}

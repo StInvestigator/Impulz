@@ -3,9 +3,7 @@ import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
-import { useAppDispatch } from "../../../hooks/redux.ts";
-import { setTrackActive } from "../../../store/reducers/PlayerSlice.ts";
-import keycloak from "../../../keycloak.ts";
+import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -15,16 +13,7 @@ interface TrackItemProps {
 }
 
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
-    const dispatch = useAppDispatch()
-
-    const play = () => {
-        if(keycloak.authenticated){
-            dispatch(setTrackActive(track))
-        }
-        else {
-            keycloak.login();
-        }
-    }
+    const { play } = usePlayTrack();
 
     return (
         <Box
@@ -61,7 +50,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                             {track.album}
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0}} onClick={play}>
+                    <IconButton sx={{padding: 0}} onClick={() => play(track)}>
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

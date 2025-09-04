@@ -12,16 +12,8 @@ import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {useEffect} from "react";
 import {fetchAuthorCollaborations, fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
 import type {UserSimpleDto} from "../models/DTO/UserSimpleDto.ts";
-import {fetchAuthorDetails} from "../store/reducers/action-creators/author.ts";
+import {fetchAuthorDetails, fetchSimilarAuthorsByGenre} from "../store/reducers/action-creators/author.ts";
 import {fetchAlbumsByAuthor} from "../store/reducers/action-creators/album.ts";
-
-const authors = [
-    "Автор 1",
-    "Автор 2",
-    "Автор 3",
-    "Автор 4",
-    "Автор 5",
-]
 
 const users: UserSimpleDto[] = [
     {
@@ -50,23 +42,23 @@ const AuthorProfilePage = () => {
     const { popularTracks} = useAppSelector(state => state.track);
     const { currentAuthor } = useAppSelector(state => state.author);
     const { albums } = useAppSelector(state => state.album);
+    const { similarAuthors } = useAppSelector(state => state.author);
     // const { collaborationTracks } = useAppSelector(state => state.track);
 
     useEffect(() => {
         if (id) {
             dispatch(fetchAuthorDetails(id));
-            dispatch(fetchAlbumsByAuthor({authorId: id,page: 0,size: 20}));
+            dispatch(fetchAlbumsByAuthor({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 20 }));
-            dispatch(fetchAuthorCollaborations({authorId: id, page: 0, size: 20 }));
+            dispatch(fetchAuthorCollaborations({ authorId: id, page: 0, size: 20 }));
+            dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: 0, size: 20 }));
         }
     }, [dispatch, id]);
 
     return (
         <>
-            <Box component={"section"} height={"450px"} sx={{
-                backgroundColor: "#D9D9D9"
-            }}>
-                <Profile type="author" name={currentAuthor?.name ?? "Анонім"}/>
+            <Box component="section" height="450px" sx={{ backgroundColor: "#D9D9D9" }}>
+                {currentAuthor && <Profile type="author" author={currentAuthor} />}
             </Box>
 
             <Box component={"section"} mt={"60px"}>
@@ -150,7 +142,7 @@ const AuthorProfilePage = () => {
                         {t("other:button-watch-all")}
                     </Button>
                 </Box>
-                <AuthorList authors={authors}/>
+                <AuthorList authors={similarAuthors}/>
             </Box>
 
             <Box component={"section"} mt={"60px"}>

@@ -2,7 +2,7 @@ import {Box, Button, Typography} from "@mui/material";
 import Profile from "../components/Profile.tsx";
 import {useParams} from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
-import AlbumList from "../components/lists/AlbumList.tsx";
+// import AlbumList from "../components/lists/AlbumList.tsx";
 import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
@@ -17,13 +17,13 @@ const authors = [
     "Автор 5",
 ]
 
-const albums = [
-    "Альбом 1",
-    "Альбом 2",
-    "Альбом 3",
-    "Альбом 4",
-    "Альбом 5",
-]
+// const albums = [
+//     "Альбом 1",
+//     "Альбом 2",
+//     "Альбом 3",
+//     "Альбом 4",
+//     "Альбом 5",
+// ]
 
 const tracks: TrackSimpleDto[] = [
     {
@@ -98,7 +98,7 @@ const UserProfilePage = () => {
                         {t("other:button-watch-all")}
                     </Button>
                 </Box>
-                <AlbumList albums={albums}/>
+                {/* <AlbumList albums={albums}/> */}
             </Box>
 
             <Box component={"section"} mt={"60px"}>

@@ -50,7 +50,7 @@ const AuthorProfilePage = () => {
     const { popularTracks} = useAppSelector(state => state.track);
     const { currentAuthor } = useAppSelector(state => state.author);
     const { albums } = useAppSelector(state => state.album);
-    const { collaborationTracks } = useAppSelector(state => state.track);
+    // const { collaborationTracks } = useAppSelector(state => state.track);
 
     useEffect(() => {
         if (id) {

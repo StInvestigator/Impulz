@@ -3,7 +3,15 @@ version: "3.8"
 
 
 services:
-  app:
+  client:
+    build:
+      context: ./client
+    container_name: app_client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+  server:
     build: ./server
     container_name: app_server
     ports:
@@ -26,7 +34,7 @@ services:
         condition: service_healthy
   minio:
     image: minio/minio
-    container_name: impulz_minio
+    container_name: minio
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -44,7 +52,7 @@ services:
     restart: unless-stopped
   postgres:
     image: postgres:17.4
-    container_name: app_postgres
+    container_name: postgres
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
@@ -63,6 +71,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.0
+    container_name: keycloak
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak

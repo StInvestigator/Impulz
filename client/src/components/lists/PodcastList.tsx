@@ -1,5 +1,5 @@
 import {Box} from "@mui/material";
-import AlbumAverageItem from "../items/album/AlbumAverageItem.tsx";
+// import AlbumAverageItem from "../items/album/AlbumAverageItem.tsx";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
 import type {TrackSimpleDto} from "../../models/DTO/TrackSimpleDto.ts";
 
@@ -46,11 +46,11 @@ const PodcastList = () => {
             gridTemplateColumns: "repeat(5, 1fr)"
         }} gap={3}>
             {podcasts.map((podcast, index) =>
-                index % 2 === 0
-                    ?
+                // index % 2 === 0
+                    // ?
                     <TrackAverageItem key={index} track={podcast} itemHeight={260}/>
-                    :
-                    <AlbumAverageItem key={index} album={podcast.album} itemHeight={260}/>
+                    // :
+                    // <AlbumAverageItem key={index} album={podcast.album} itemHeight={260}/>
 
             )}
         </Box>

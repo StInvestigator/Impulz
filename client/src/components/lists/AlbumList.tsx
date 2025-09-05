@@ -10,11 +10,12 @@ interface AlbumListProps {
 const AlbumList:FC<AlbumListProps> = ({albums}) => {
 
     return (
-        <Box display={"flex"} sx={{
-            gridTemplateColumns: "repeat(5, 1fr)"
+        <Box display="grid" sx={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            justifyContent: "start",
         }} gap={3}>
             {albums.map(album =>
-                <AlbumAverageItem key={album.id} album={album} itemHeight={360} color={"light"}/>
+                <AlbumAverageItem key={album.id} album={album} itemHeight={360} itemWidth={360} color={"light"}/>
             )}
         </Box>
     );

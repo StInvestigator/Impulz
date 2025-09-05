@@ -3,17 +3,16 @@ import Profile from "../components/Profile.tsx";
 import {useParams} from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
 import AlbumList from "../components/lists/AlbumList.tsx";
-import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import UserList from "../components/lists/UserList.tsx";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {useEffect} from "react";
-import {fetchAuthorCollaborations, fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
+import {fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
 import type {UserSimpleDto} from "../models/DTO/UserSimpleDto.ts";
 import {fetchAuthorDetails, fetchSimilarAuthorsByGenre} from "../store/reducers/action-creators/author.ts";
-import {fetchAlbumsByAuthor} from "../store/reducers/action-creators/album.ts";
+import {fetchAlbumsByAuthor, fetchAuthorAlbumCollaborations} from "../store/reducers/action-creators/album.ts";
 
 const users: UserSimpleDto[] = [
     {
@@ -43,6 +42,7 @@ const AuthorProfilePage = () => {
     const { currentAuthor } = useAppSelector(state => state.author);
     const { albums } = useAppSelector(state => state.album);
     const { similarAuthors } = useAppSelector(state => state.author);
+    const { authorCollaborationsAlbums } = useAppSelector(state => state.album);
     // const { collaborationTracks } = useAppSelector(state => state.track);
 
     useEffect(() => {
@@ -50,8 +50,8 @@ const AuthorProfilePage = () => {
             dispatch(fetchAuthorDetails(id));
             dispatch(fetchAlbumsByAuthor({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 20 }));
-            dispatch(fetchAuthorCollaborations({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: 0, size: 20 }));
+            dispatch(fetchAuthorAlbumCollaborations({authorId: id, page: 0, size: 20 }))
         }
     }, [dispatch, id]);
 
@@ -122,7 +122,7 @@ const AuthorProfilePage = () => {
                         {t("other:button-watch-all")}
                     </Button>
                 </Box>
-                <PodcastList/>
+                <AlbumList albums={authorCollaborationsAlbums}/>
             </Box>
 
             <Box component={"section"} mt={"60px"}>

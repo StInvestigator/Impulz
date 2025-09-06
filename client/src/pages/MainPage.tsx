@@ -15,12 +15,12 @@ import { useEffect } from "react";
 import { fetchTopPlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
 import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";
-import { useAuthorsByKey } from "../hooks/modelByKey.ts";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
     const { topTracks, isLoading: tracksLoading, error: tracksError } = useAppSelector((state) => state.track);
-    const { authors, isLoading: authorsLoading, error: authorsError } = useAuthorsByKey("topAuthorsByMonth")
+    const { topAuthors, isLoading: authorsLoading, error: authorsError } = useAppSelector((state) => state.author);
+    // const { authors, isLoading: authorsLoading, error: authorsError } = useAuthorsByKey("topAuthorsByMonth")
     const { topPlaylists, isLoading: playlistsLoading, error: playlistsError } = useAppSelector((state) => state.playlist);
     const { topFiveGenres, isLoading: genresLoading, error: genresError } = useAppSelector((state) => state.genre);
 
@@ -32,8 +32,6 @@ const MainPage = () => {
         dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
         dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
         dispatch(fetchTopGenres({ page: 0, size: 5 }));
-
-        console.log(authors);
     }, [dispatch]);
 
     return (
@@ -44,7 +42,7 @@ const MainPage = () => {
                 <GenreList />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList authors={authors} isLoading={authorsLoading} error={authorsError} itemWidth={134} name={t("main:title-best-author-month")} />
+                <AuthorCarouselList authors={topAuthors} isLoading={authorsLoading} error={authorsError} itemWidth={134} name={t("main:title-best-author-month")} />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <PlaylistCarouselList playlists={topPlaylists} isLoading={playlistsLoading} error={playlistsError} itemWidth={134} name={t("main:title-listen-best-playlists")} />

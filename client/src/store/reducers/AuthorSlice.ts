@@ -9,6 +9,7 @@ import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
 
 interface AuthorState {
+    
     topAuthors: AuthorSimpleDto[];
     currentAuthor: AuthorDto | null;
     similarAuthors: AuthorSimpleDto[];

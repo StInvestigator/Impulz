@@ -4,9 +4,9 @@ import CircleImg from '../assets/category/Circle.svg';
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import { useAppDispatch } from '../hooks/redux.ts';
+import { useAppDispatch, useAppSelector } from '../hooks/redux.ts';
 import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author.ts';
-import { useAuthorsByKey } from '../hooks/modelByKey.ts';
+// import { useAuthorsByKey } from '../hooks/modelByKey.ts';
 
 
 // const authors: AuthorSimpleDto[] = [
@@ -39,7 +39,7 @@ import { useAuthorsByKey } from '../hooks/modelByKey.ts';
 
 const CategoryPage = () => {
     const dispatch = useAppDispatch();
-    const { authors: topAuthorsInGenre, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAuthorsByKey('topAuthorsInGenre');
+    const { topAuthors, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAppSelector(state => state.author);
 
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
@@ -79,7 +79,7 @@ const CategoryPage = () => {
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList isLoading={isLoadingTopAuthors} error={errorTopAuthors} authors={topAuthorsInGenre} itemWidth={134} name={t("title-best-author-genre")} />
+                <AuthorCarouselList isLoading={isLoadingTopAuthors} error={errorTopAuthors} authors={topAuthors} itemWidth={134} name={t("title-best-author-genre")} />
             </Box>
 
             {/*<Box component={"section"} mt={"60px"}>*/}

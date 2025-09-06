@@ -9,7 +9,6 @@ interface AlbumListProps {
 }
 
 const AuthorList: FC<AlbumListProps> = ({ authors = [] }) => {
-
     return (
         <Box display={"grid"} sx={{
             gridTemplateColumns: "repeat(5, 1fr)"

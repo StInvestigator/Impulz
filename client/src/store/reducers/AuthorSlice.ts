@@ -1,20 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAuthorDetails, fetchTopAuthorsByMonth } from "./action-creators/author.ts";
+import { fetchAuthorDetails, fetchTopAuthorsByMonth, fetchTopAuthorsInGenre } from "./action-creators/author.ts";
 import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
+import type { AuthorKeys } from "../../models/type/ModelKeys.ts";
 
 interface AuthorState {
-    topAuthors: AuthorSimpleDto[];
+    authorsByKey: Record<AuthorKeys, AuthorSimpleDto[]>;
     currentAuthor: AuthorDto | null;
-    isLoading: boolean;
-    error: string | null;
+    isLoading: Record<AuthorKeys, boolean>;
+    error: Record<AuthorKeys, string | null>;
+    currentAuthorLoading: boolean;
+    currentAuthorError: string | null;
 }
 
 const initialState: AuthorState = {
-    topAuthors: [],
     currentAuthor: null,
-    isLoading: false,
-    error: null,
+    authorsByKey: {
+        topAuthorsByMonth: [],
+        topAuthorsInGenre: [],
+    },
+    isLoading: {
+        topAuthorsByMonth: false,
+        topAuthorsInGenre: false,
+    },
+    error: {
+        topAuthorsByMonth: null,
+        topAuthorsInGenre: null,
+    },
+    currentAuthorLoading: false,
+    currentAuthorError: null,
 };
 
 const authorSlice = createSlice({
@@ -28,29 +42,42 @@ const authorSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchTopAuthorsByMonth.pending, (state) => {
-                state.isLoading = true;
+                state.isLoading.topAuthorsByMonth = true;
             })
             .addCase(fetchTopAuthorsByMonth.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.topAuthors = action.payload;
-                state.error = null;
+                state.isLoading.topAuthorsByMonth = false;
+                state.authorsByKey.topAuthorsByMonth = action.payload;
+                state.error.topAuthorsByMonth = null;
             })
             .addCase(fetchTopAuthorsByMonth.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.error.message || "Ошибка при загрузке авторов";
+                state.isLoading.topAuthorsByMonth = false;
+                state.error.topAuthorsByMonth = action.error.message || "Ошибка при загрузке авторов";
+            })
+
+            .addCase(fetchTopAuthorsInGenre.pending, (state) => {
+                state.isLoading.topAuthorsInGenre = true;
+            })
+            .addCase(fetchTopAuthorsInGenre.fulfilled, (state, action) => {
+                state.isLoading.topAuthorsInGenre = false;
+                state.authorsByKey.topAuthorsInGenre = action.payload;
+                state.error.topAuthorsInGenre = null;
+            })
+            .addCase(fetchTopAuthorsInGenre.rejected, (state, action) => {
+                state.isLoading.topAuthorsInGenre = false;
+                state.error.topAuthorsInGenre = action.error.message || "Ошибка при загрузке авторов";
             })
 
             .addCase(fetchAuthorDetails.pending, (state) => {
-                state.isLoading = true;
+                state.currentAuthorLoading = true;
             })
             .addCase(fetchAuthorDetails.fulfilled, (state, action) => {
-                state.isLoading = false;
+                state.currentAuthorLoading = false;
                 state.currentAuthor = action.payload;
-                state.error = null;
+                state.currentAuthorError = null;
             })
             .addCase(fetchAuthorDetails.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.error.message || "Ошибка при загрузке информации об авторе";
+                state.currentAuthorLoading = false;
+                state.currentAuthorError = action.error.message || "Ошибка при загрузке информации об авторе";
             });
     },
 });

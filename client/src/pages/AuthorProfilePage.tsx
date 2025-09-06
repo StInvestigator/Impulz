@@ -3,7 +3,6 @@ import Profile from "../components/Profile.tsx";
 import {useParams} from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
 import AlbumList from "../components/lists/AlbumList.tsx";
-import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
@@ -130,7 +129,7 @@ const AuthorProfilePage = () => {
                         {t("other:button-watch-all")}
                     </Button>
                 </Box>
-                <PodcastList/>
+                <AlbumList albums={albums}/>
             </Box>
 
             <Box component={"section"} mt={"60px"}>

@@ -2,11 +2,11 @@ import {Box} from "@mui/material";
 import AuthorAverageItem from "../items/author/AuthorAverageItem.tsx";
 import type {FC} from "react";
 
-interface AlbumListProps {
+interface AuthorListProps {
     authors: string[]
 }
 
-const AuthorList:FC<AlbumListProps> = ({authors}) => {
+const AuthorList:FC<AuthorListProps> = ({authors}) => {
 
     return (
         <Box display={"grid"} sx={{

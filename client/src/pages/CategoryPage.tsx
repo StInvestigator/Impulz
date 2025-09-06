@@ -3,41 +3,52 @@ import { Box } from "@mui/material";
 import CircleImg from '../assets/category/Circle.svg';
 import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import { useTranslation } from 'react-i18next';
-import type {AuthorSimpleDto} from "../models/DTO/AuthorSimpleDto.ts";
+import { useEffect } from 'react';
+import { useAppDispatch } from '../hooks/redux.ts';
+import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author.ts';
+import { useAuthorsByKey } from '../hooks/modelByKey.ts';
 
 
-const authors: AuthorSimpleDto[] = [
-    {
-        id: 1,
-        name: 'Автор 1',
-        imgUrl: 'https://via.placeholder.com/150x150?text=Author+1'
-    },
-    {
-        id: 2,
-        name: 'Автор 2',
-        imgUrl: 'https://via.placeholder.com/150x150?text=Author+2'
-    },
-    {
-        id: 3,
-        name: 'Автор 3',
-        imgUrl: 'https://via.placeholder.com/150x150?text=Author+3'
-    },
-    {
-        id: 4,
-        name: 'Автор 4',
-        imgUrl: 'https://via.placeholder.com/150x150?text=Author+4'
-    },
-    {
-        id: 5,
-        name: 'Автор 5',
-        imgUrl: 'https://via.placeholder.com/150x150?text=Author+5'
-    },
-];
+// const authors: AuthorSimpleDto[] = [
+//     {
+//         id: 1,
+//         name: 'Автор 1',
+//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+1'
+//     },
+//     {
+//         id: 2,
+//         name: 'Автор 2',
+//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+2'
+//     },
+//     {
+//         id: 3,
+//         name: 'Автор 3',
+//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+3'
+//     },
+//     {
+//         id: 4,
+//         name: 'Автор 4',
+//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+4'
+//     },
+//     {
+//         id: 5,
+//         name: 'Автор 5',
+//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+5'
+//     },
+// ];
 
 const CategoryPage = () => {
+    const dispatch = useAppDispatch();
+    const { authors: topAuthorsInGenre, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAuthorsByKey('topAuthorsInGenre');
+
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
     const { t } = useTranslation('category')
+
+    useEffect(() => {
+        dispatch(fetchTopAuthorsInGenre({genreId: 1}));
+    }, [dispatch]);
+
     return (
         <>
             <Box
@@ -68,7 +79,7 @@ const CategoryPage = () => {
             </Box>
 
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList isLoading={false} error={""} authors={authors} itemWidth={134} name={t("title-best-author-genre")} />
+                <AuthorCarouselList isLoading={isLoadingTopAuthors} error={errorTopAuthors} authors={topAuthorsInGenre} itemWidth={134} name={t("title-best-author-genre")} />
             </Box>
 
             {/*<Box component={"section"} mt={"60px"}>*/}

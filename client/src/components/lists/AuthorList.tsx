@@ -1,19 +1,20 @@
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
+// import AuthorAverageItem from "../items/author/AuthorAverageItem.tsx";
+import type { FC } from "react";
+import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
 import AuthorAverageItem from "../items/author/AuthorAverageItem.tsx";
-import type {FC} from "react";
 
-interface AuthorListProps {
-    authors: string[]
+interface AlbumListProps {
+    authors: AuthorSimpleDto[]
 }
 
-const AuthorList:FC<AuthorListProps> = ({authors}) => {
-
+const AuthorList: FC<AlbumListProps> = ({ authors = [] }) => {
     return (
         <Box display={"grid"} sx={{
             gridTemplateColumns: "repeat(5, 1fr)"
         }} gap={3}>
-            {authors.map((author, index) =>
-                <AuthorAverageItem key={index} author={author}/>
+            {authors.map((author) =>
+                <AuthorAverageItem key={author.id} author={author}/>
             )}
         </Box>
     );

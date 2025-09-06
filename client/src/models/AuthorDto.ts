@@ -2,7 +2,7 @@ import type { TrackSimpleDto } from "./DTO/TrackSimpleDto.ts";
 import type { AlbumSimpleDto } from "./DTO/AlbumSimpleDto.ts";
 
 export interface AuthorDto {
-  id: number;
+  id: string;
   name: string;
   bio: string;
   followersCount: number;

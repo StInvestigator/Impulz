@@ -1,34 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAuthorDetails, fetchTopAuthorsByMonth, fetchTopAuthorsInGenre } from "./action-creators/author.ts";
+import {
+    fetchAuthorDetails,
+    fetchAuthorPlaysByMonth,
+    fetchSimilarAuthorsByGenre,
+    fetchTopAuthorsByMonth
+} from "./action-creators/author.ts";
 import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
-import type { AuthorKeys } from "../../models/type/ModelKeys.ts";
 
 interface AuthorState {
-    authorsByKey: Record<AuthorKeys, AuthorSimpleDto[]>;
+    topAuthors: AuthorSimpleDto[];
     currentAuthor: AuthorDto | null;
-    isLoading: Record<AuthorKeys, boolean>;
-    error: Record<AuthorKeys, string | null>;
-    currentAuthorLoading: boolean;
-    currentAuthorError: string | null;
+    similarAuthors: AuthorSimpleDto[];
+    playsByMonth: number | null;
+    isLoading: boolean;
+    error: string | null;
 }
 
 const initialState: AuthorState = {
+    topAuthors: [],
     currentAuthor: null,
-    authorsByKey: {
-        topAuthorsByMonth: [],
-        topAuthorsInGenre: [],
-    },
-    isLoading: {
-        topAuthorsByMonth: false,
-        topAuthorsInGenre: false,
-    },
-    error: {
-        topAuthorsByMonth: null,
-        topAuthorsInGenre: null,
-    },
-    currentAuthorLoading: false,
-    currentAuthorError: null,
+    similarAuthors: [],
+    playsByMonth: null,
+    isLoading: false,
+    error: null,
 };
 
 const authorSlice = createSlice({
@@ -42,42 +37,55 @@ const authorSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchTopAuthorsByMonth.pending, (state) => {
-                state.isLoading.topAuthorsByMonth = true;
+                state.isLoading = true;
             })
             .addCase(fetchTopAuthorsByMonth.fulfilled, (state, action) => {
-                state.isLoading.topAuthorsByMonth = false;
-                state.authorsByKey.topAuthorsByMonth = action.payload;
-                state.error.topAuthorsByMonth = null;
+                state.isLoading = false;
+                state.topAuthors = action.payload;
+                state.error = null;
             })
             .addCase(fetchTopAuthorsByMonth.rejected, (state, action) => {
-                state.isLoading.topAuthorsByMonth = false;
-                state.error.topAuthorsByMonth = action.error.message || "Ошибка при загрузке авторов";
-            })
-
-            .addCase(fetchTopAuthorsInGenre.pending, (state) => {
-                state.isLoading.topAuthorsInGenre = true;
-            })
-            .addCase(fetchTopAuthorsInGenre.fulfilled, (state, action) => {
-                state.isLoading.topAuthorsInGenre = false;
-                state.authorsByKey.topAuthorsInGenre = action.payload;
-                state.error.topAuthorsInGenre = null;
-            })
-            .addCase(fetchTopAuthorsInGenre.rejected, (state, action) => {
-                state.isLoading.topAuthorsInGenre = false;
-                state.error.topAuthorsInGenre = action.error.message || "Ошибка при загрузке авторов";
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке авторов";
             })
 
             .addCase(fetchAuthorDetails.pending, (state) => {
-                state.currentAuthorLoading = true;
+                state.isLoading = true;
             })
             .addCase(fetchAuthorDetails.fulfilled, (state, action) => {
-                state.currentAuthorLoading = false;
+                state.isLoading = false;
                 state.currentAuthor = action.payload;
-                state.currentAuthorError = null;
+                state.error = null;
             })
             .addCase(fetchAuthorDetails.rejected, (state, action) => {
-                state.currentAuthorLoading = false;
-                state.currentAuthorError = action.error.message || "Ошибка при загрузке информации об авторе";
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке информации об авторе";
+            })
+
+            .addCase(fetchSimilarAuthorsByGenre.pending,(state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchSimilarAuthorsByGenre.fulfilled,(state,action) =>{
+              state.isLoading = false;
+              state.similarAuthors = action.payload;
+              state.error = null;
+            })
+            .addCase(fetchSimilarAuthorsByGenre.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке похожих авторов";
+            })
+
+            .addCase(fetchAuthorPlaysByMonth.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchAuthorPlaysByMonth.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.playsByMonth = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchAuthorPlaysByMonth.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке количества прослушиваний";
             });
     },
 });

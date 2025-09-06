@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {fetchTopTracksByWeek, fetchPopularTracksByAuthor, fetchAuthorCollaborations} from "./action-creators/tracks.ts";
+import {fetchTopTracksByWeek, fetchPopularTracksByAuthor, fetchAuthorTrackCollaborations} from "./action-creators/tracks.ts";
 import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackState {
@@ -50,15 +50,15 @@ const trackSlice = createSlice({
                 state.error = action.error.message || "Ошибка при загрузке популярных треков автора";
             })
 
-            .addCase(fetchAuthorCollaborations.pending, (state) => {
+            .addCase(fetchAuthorTrackCollaborations.pending, (state) => {
             state.isLoading = true;
             })
-            .addCase(fetchAuthorCollaborations.fulfilled, (state, action) => {
+            .addCase(fetchAuthorTrackCollaborations.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.collaborationTracks = action.payload;
                 state.error = null;
             })
-            .addCase(fetchAuthorCollaborations.rejected, (state, action) => {
+            .addCase(fetchAuthorTrackCollaborations.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузке коллабораций";
             });

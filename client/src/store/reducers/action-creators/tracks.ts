@@ -34,7 +34,7 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
     }
 );
 
-export const fetchAuthorCollaborations = createAsyncThunk<
+export const fetchAuthorTrackCollaborations = createAsyncThunk<
     TrackSimpleDto[],
     { authorId: string; page?: number; size?: number }
 >(

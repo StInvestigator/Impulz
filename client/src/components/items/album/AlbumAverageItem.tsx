@@ -6,10 +6,11 @@ import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
+    itemWidth: number;
     color?: "dark" | "light";
 }
 
-const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light"}) => {
+const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth, color = "light"}) => {
 
     
     return (
@@ -17,11 +18,12 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, color = "light
             sx={{
                 width: "100%",
             }}
+
         >
-            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative"}>
+            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} maxWidth={itemWidth} borderRadius={"10px 10px 0 0"} position={"relative"}>
 
             </Box>
-            <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
+            <Box display={"flex"} padding={"24px"} height={"88px"} maxWidth={itemWidth} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                     <Box display={"flex"} flexDirection={"column"}>
                         <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>

@@ -13,7 +13,7 @@ interface TrackItemProps {
 }
 
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
-    const { play } = usePlayTrack();
+    const { playSingle } = usePlayTrack();
 
     return (
         <Box
@@ -24,8 +24,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
         >
             <Box bgcolor="gray" width="100%" height={`${itemHeight}px`} borderRadius={"10px 10px 10px 10px"} position={"relative"}>
                 {
-                    isMedal
-                    &&
+                    isMedal &&
                     <Box component={"img"} position={"absolute"} right={10} top={10} src={medalImage} borderRadius={'50%'} width={"30px"}
                          height={"30px"}/>
                 }
@@ -50,7 +49,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                             {track.album}
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0}} onClick={() => play(track)}>
+                    <IconButton sx={{padding: 0}} onClick={() => playSingle(track)}>
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

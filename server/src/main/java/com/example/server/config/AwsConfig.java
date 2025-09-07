@@ -24,7 +24,7 @@ public class AwsConfig {
     @Value("${minio.secret-key}")
     private String secretKey;
 
-    @Value("${minio.region:us-east-1}")
+    @Value("${minio.region}")
     private String region;
 
     @Value("${minio.bucket-name}")

@@ -44,13 +44,6 @@ keycloak:
   admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
   admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
 
-aws:
-  region: us-east-1
-  s3:
-    bucket-name: ${AWS_BUCKET:impulz-bucket-1}
-  accessKeyId: ${AWS_ACCESS_KEY:dummy}
-  secretKey: ${AWS_SECRET_KEY:dummy}
-
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
   access-key: ${MINIO_ACCESS_KEY:minioadmin}

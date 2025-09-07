@@ -26,7 +26,7 @@ export const fetchAlbumsByAuthor = createAsyncThunk<
 
 export const fetchAlbumDetails = createAsyncThunk<
     AlbumDto,
-    string,
+    number,
     { rejectValue: string }
 >(
     "albums/fetchAlbumDetails",

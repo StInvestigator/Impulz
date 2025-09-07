@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Link } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect } from "react";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
@@ -12,7 +12,7 @@ interface TrackItemProps {
 const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
-    const { play } = usePlayTrack();
+    const { playSingle } = usePlayTrack();
     useLayoutEffect(() => {
         if (cardRef.current) {
             setCardWidth(cardRef.current.getBoundingClientRect().width);
@@ -86,13 +86,37 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                         >
                             {track.title || "Без названия"}
                         </Typography>
-                        <Typography
-                            variant="mainRM"
-                            noWrap
-                            maxWidth={"100%"}
-                        >
-                            {track.authors.join(", ") || "Неизвестный исполнитель"}
-                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
+                            {track.authors && track.authors.length > 0 ? (
+                                track.authors.map((author, authorIndex) => (
+                                    <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Link
+                                            href={`/author/${author.id}`}
+                                            underline="none"
+                                            sx={{
+                                                color: 'inherit',
+                                                '&:hover': {
+                                                    textDecoration: 'underline',
+                                                    color: '#1976d2',
+                                                    cursor: 'pointer',
+                                                },
+                                            }}
+                                        >
+                                            <Typography variant="mainRM" noWrap>
+                                                {author.name}
+                                            </Typography>
+                                        </Link>
+                                        {authorIndex < track.authors.length - 1 && (
+                                            <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
+                                        )}
+                                    </Box>
+                                ))
+                            ) : (
+                                <Typography variant="mainRM">
+                                    Неизвестный исполнитель
+                                </Typography>
+                            )}
+                        </Box>
                     </Box>
                 ) : (
                     <>
@@ -105,14 +129,43 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                             {track.title || "Без названия"}
                         </Typography>
 
-                        <Typography
-                            variant="mainRM"
-                            noWrap
-                            textAlign="center"
-                            sx={{ flexBasis: "20%", minWidth: 0 }}
-                        >
-                            {track.authors || "Неизвестный исполнитель"}
-                        </Typography>
+                        <Box sx={{
+                            flexBasis: "20%",
+                            minWidth: 0,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexWrap: 'nowrap'
+                        }}>
+                            {track.authors && track.authors.length > 0 ? (
+                                track.authors.map((author, authorIndex) => (
+                                    <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Link
+                                            href={`/author/${author.id}`}
+                                            underline="none"
+                                            sx={{
+                                                color: 'inherit',
+                                                '&:hover': {
+                                                    textDecoration: 'underline',
+                                                    color: '#1976d2',
+                                                    cursor: 'pointer',
+                                                },
+                                            }}
+                                        >
+                                            <Typography variant="mainRM" noWrap>
+                                                {author.name}
+                                            </Typography>
+                                        </Link>
+                                        {authorIndex < track.authors.length - 1 && (
+                                            <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
+                                        )}
+                                    </Box>
+                                ))
+                            ) : (
+                                <Typography variant="mainRM" noWrap textAlign="center">
+                                    Неизвестный исполнитель
+                                </Typography>
+                            )}
+                        </Box>
 
                         <Typography
                             variant="mainRM"
@@ -129,7 +182,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                     {formatDuration(track.durationSec || 0)}
                 </Typography>
 
-                <IconButton sx={{ padding: 0 }} onClick={() => play(track)}>
+                <IconButton sx={{ padding: 0 }} onClick={() => playSingle(track)}>
                     <Box
                         component="img"
                         src={playImage}

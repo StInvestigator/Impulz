@@ -2,9 +2,11 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import { Box, Grid, IconButton, Link } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume } from '../store/reducers/PlayerSlice';
+import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume, nextTrack, prevTrack } from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http/index.ts';
 import keycloak from "../keycloak.ts";
@@ -26,20 +28,13 @@ const playbackService = {
     },
 
     getStreamUrl: async (id: number): Promise<string> => {
-         const response = await $authApi.get(`/api/music/link/${id}`)
-         return response.data
+        const response = await $authApi.get(`/api/music/link/${id}`)
+        return response.data
     },
 };
 
-// const trackDataService = {
-//     getTrackDataById: async (id: number): Promise<TrackSimpleDto> => {
-//         const response = await $authApi.get(`/api/track/simpleDto/${id}`);
-//         return response.data;
-//     },
-// };
-
 const MusicPlayer: React.FC = () => {
-    const {active, pause, currentTime, duration, volume } = useAppSelector(state => state.player);
+    const { active, playlist, currentTrackIndex, pause, currentTime, duration, volume } = useAppSelector(state => state.player);
     const dispatch = useAppDispatch();
 
     const [streamUrl, setStreamUrl] = useState<string | null>(null);
@@ -99,18 +94,6 @@ const MusicPlayer: React.FC = () => {
             }
             objectUrlRef.current = url;
             setStreamUrl(url);
-            console.log('Stream URL:', url);
-
-            // try {
-            //     const trackInfo = await trackDataService.getTrackDataById(active.id);
-            //     if (!mounted) return;
-            //     dispatch(setTrackActive(trackInfo));
-            // } catch (err) {
-            //     console.error('Failed to get track data:', err);
-            //     if (mounted) setError('Не удалось получить данные трека');
-            // }
-
-            console.log(active)
 
             if (!audioRef.current) {
                 const audio = new Audio(url);
@@ -139,7 +122,7 @@ const MusicPlayer: React.FC = () => {
 
                 audio.onended = () => {
                     sendPlaybackStats();
-                    dispatch(pauseTrack());
+                    dispatch(nextTrack());
                 };
             } else {
                 audioRef.current.src = url;
@@ -193,6 +176,14 @@ const MusicPlayer: React.FC = () => {
         else dispatch(pauseTrack());
     };
 
+    const handleNext = () => {
+        dispatch(nextTrack());
+    };
+
+    const handlePrev = () => {
+        dispatch(prevTrack());
+    };
+
     const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVolume = Number(e.target.value);
         dispatch(setVolume(newVolume));
@@ -223,49 +214,74 @@ const MusicPlayer: React.FC = () => {
             boxSizing="border-box"
             sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
+            <IconButton aria-label="previous" onClick={handlePrev} disabled={playlist.length <= 1}>
+                <SkipPreviousIcon />
+            </IconButton>
+
             <IconButton aria-label="play-pause" onClick={togglePlay}>
                 {pause ? <PlayCircleIcon /> : <PauseCircleIcon />}
+            </IconButton>
+
+            <IconButton aria-label="next" onClick={handleNext} disabled={playlist.length <= 1}>
+                <SkipNextIcon />
             </IconButton>
 
             <Grid container direction="column" sx={{ width: 240, margin: '0 20px' }}>
                 <Box sx={{ fontWeight: 600 }}>{active.title ?? 'Unknown title'}</Box>
                 <Box sx={{ fontSize: 12, color: 'gray' }}>
-                    <Link
-                        href={"/"}
-                            underline="none"
-                            sx={{
-                            color: 'inherit',
-                            '&:hover': {
-                            textDecoration: 'underline',
-                            color: '#1976d2',
-                            cursor: 'pointer',
-                        },
-                        }}
-                            >
-                        {active.authors?.map(author => author).join(', ') ?? 'Unknown artist'}
-                    </Link>
+                    {active.authors && active.authors.length > 0 ? (
+                        active.authors.map((author, index) => (
+                            <React.Fragment key={author.id}>
+                                <Link
+                                    href={`/author/${author.id}`}
+                                    underline="none"
+                                    sx={{
+                                        color: 'inherit',
+                                        '&:hover': {
+                                            textDecoration: 'underline',
+                                            color: '#1976d2',
+                                            cursor: 'pointer',
+                                        },
+                                    }}
+                                >
+                                    {author.name}
+                                </Link>
+                                {index < active.authors.length - 1 && ', '}
+                            </React.Fragment>
+                        ))
+                    ) : (
+                        'Unknown artist'
+                    )}
                     <Box component="span" sx={{ mx: 1 }}>•</Box>
                     <Link
-                        href={"/"}
-                            underline="none"
-                            sx={{
+                        href="/"
+                        underline="none"
+                        sx={{
                             color: 'inherit',
                             '&:hover': {
-                            textDecoration: 'underline',
-                            color: '#1976d2',
-                            cursor: 'pointer',
-                        },
-                        }}>
+                                textDecoration: 'underline',
+                                color: '#1976d2',
+                                cursor: 'pointer',
+                            },
+                        }}
+                    >
                         {active.album ?? 'Unknown album'}
                     </Link>
-
-                    </Box>
+                </Box>
             </Grid>
 
             <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime} />
 
-            <VolumeUpIcon sx={{ marginLeft: 'auto', marginRight: 1 }} />
-            <TrackProgress left={volume} right={100} onChange={changeVolume} />
+            <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                <VolumeUpIcon sx={{ marginRight: 1 }} />
+                <TrackProgress left={volume} right={100} onChange={changeVolume} />
+            </Box>
+
+            {playlist.length > 1 && (
+                <Box sx={{ marginLeft: 2, fontSize: 12, color: 'gray' }}>
+                    {currentTrackIndex + 1} / {playlist.length}
+                </Box>
+            )}
         </Box>
     );
 };

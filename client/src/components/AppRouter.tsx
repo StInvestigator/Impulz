@@ -30,11 +30,19 @@ const AppRouter = () => {
                 }
             />
 
+            <Route
+                path="/playlist/:id"
+                element={
+                    <ProtectedRoute>
+                        <PlaylistItemPage />
+                    </ProtectedRoute>
+                }
+            />
+
             <Route path="/user/:name" element={<UserProfilePage />} />
             <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
             <Route path="/allAuthors" element={<AuthorPage />} />
             <Route path="/allTopSelections" element={<TopSelectionsPage />} />
-            <Route path="/playlist/:name" element={<PlaylistItemPage />} />
             <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />

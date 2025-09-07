@@ -20,6 +20,10 @@ public class JwtConfig {
     @Value("${keycloak.frontClientId}")
     private String keycloakClient;
 
+    @Value("${keycloak.clientId}")
+    private String keycloakServer;
+
+
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
@@ -29,7 +33,9 @@ public class JwtConfig {
         OAuth2TokenValidator<Jwt> audienceOrAzpValidator = jwt -> {
             List<String> aud = jwt.getAudience();
             String azp = jwt.getClaimAsString("azp");
-            boolean ok = (aud != null && aud.contains(keycloakClient)) || (azp != null && azp.equals(keycloakClient));
+            boolean ok = (aud != null && ( aud.contains(keycloakClient) || aud.contains(keycloakServer)) )
+                    || (azp != null && ( azp.equals(keycloakClient) || azp.equals(keycloakServer) ));
+
             if (ok) {
                 return OAuth2TokenValidatorResult.success();
             }

@@ -22,4 +22,5 @@ public interface TrackService
     Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable);
     Page<Track> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable);
     Page<Track> findPopularTracksByGenre(Long genreId, Pageable pageable);
+    Page<Track> findTracksByAlbum(Long albumId, Pageable pageable);
 }

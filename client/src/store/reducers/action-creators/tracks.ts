@@ -50,3 +50,20 @@ export const fetchAuthorTrackCollaborations = createAsyncThunk<
             return response.data.content;
     }
 );
+
+export const fetchTracksByAlbum = createAsyncThunk<
+    TrackSimpleDto[],
+    {albumId: number,page?: number,size?: number}
+>(
+    "tracks/fetchTracksByAlbum",
+    async({albumId,page = 0,size = 20}) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
+
+        const response = await $authApi.get(
+            `http://localhost:8083/api/tracks/ByAlbum/${albumId}?${params}`
+        );
+        return response.data.content;
+    }
+)

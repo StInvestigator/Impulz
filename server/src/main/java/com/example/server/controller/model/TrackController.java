@@ -106,4 +106,16 @@ public class TrackController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/ByAlbum/{albumId}")
+    public ResponseEntity<Page<TrackSimpleDto>> getTracksByAlbum(@PathVariable Long albumId,Pageable pageable){
+        try {
+            Page<Track> tracks = trackService.findTracksByAlbum(albumId,pageable);
+            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
+            return ResponseEntity.ok(dtoPage);
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

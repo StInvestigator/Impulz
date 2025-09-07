@@ -27,8 +27,9 @@ public class S3StorageServiceImpl implements S3StorageService {
     private final S3Client s3Client;
     private final S3Presigner presigner;
 
-    @Value("${aws.s3.bucket-name}")
+    @Value("${minio.bucket-name}")
     private String bucketName;
+
 
     public void uploadFile(File file, String key, String contentType) {
         try {

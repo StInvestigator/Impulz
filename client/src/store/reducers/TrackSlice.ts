@@ -1,11 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {fetchTopTracksByWeek, fetchPopularTracksByAuthor, fetchAuthorTrackCollaborations} from "./action-creators/tracks.ts";
+import {
+    fetchTopTracksByWeek,
+    fetchPopularTracksByAuthor,
+    fetchAuthorTrackCollaborations,
+    fetchTracksByAlbum
+} from "./action-creators/tracks.ts";
 import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
 
 interface TrackState {
     topTracks: TrackSimpleDto[];
     popularTracks: TrackSimpleDto[];
     collaborationTracks: TrackSimpleDto[];
+    tracksByAlbum: TrackSimpleDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -14,6 +20,7 @@ const initialState: TrackState = {
     topTracks: [],
     popularTracks: [],
     collaborationTracks: [],
+    tracksByAlbum: [],
     isLoading: false,
     error: null,
 };
@@ -61,6 +68,20 @@ const trackSlice = createSlice({
             .addCase(fetchAuthorTrackCollaborations.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузке коллабораций";
+            })
+
+            .addCase(fetchTracksByAlbum.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchTracksByAlbum.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.tracksByAlbum = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchTracksByAlbum.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузки треков альбома";
             });
     },
 });

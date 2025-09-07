@@ -1,5 +1,7 @@
 package com.example.server.dto.Track;
 
+import com.example.server.dto.Album.AlbumSimpleDto;
+import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.model.Album;
 import com.example.server.model.Author;
 import com.example.server.model.Track;
@@ -16,8 +18,9 @@ public class TrackSimpleDto
     private String title;
     private Long durationSec;
     private String imgUrl;
-    private Set<String> authors;
+    private Set<AuthorSimpleDto> authors;
     private String album;
+    private Long albumId;
 
     public static TrackSimpleDto fromEntity(Track track) {
         TrackSimpleDto dto = new TrackSimpleDto();
@@ -26,13 +29,12 @@ public class TrackSimpleDto
         dto.setId(track.getId());
         dto.setTitle(track.getTitle());
         dto.setAlbum(album.getTitle());
+        dto.setAlbumId(album.getId());
         dto.setImgUrl(album.getImageUrl());
         dto.setDurationSec(track.getDurationSec());
         dto.setAuthors(track.getAuthors().stream()
-                .map(Author::getUser)
-                .map(User::getUsername)
+                .map(AuthorSimpleDto::fromEntity)
                 .collect(Collectors.toSet()));
-
         return dto;
     }
 }

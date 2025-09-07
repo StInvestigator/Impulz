@@ -120,6 +120,9 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     )
     Page<Track> findTracksByAuthorWithMultipleAuthors(@Param("authorId") String authorId, Pageable pageable);
 
+    @Query("SELECT t FROM Track t WHERE t.album.id = :albumId")
+    Page<Track> findTracksByAlbum(@Param("albumId") Long albumId, Pageable pageable);
+
     @Modifying
     @Query("UPDATE Track t SET t.totalPlays = t.totalPlays + 1 WHERE t.id = :trackId")
     void incrementTotalPlays(@Param("trackId") Long trackId);
@@ -128,4 +131,5 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     Page<Track> findByAuthorsOrderByTotalPlaysDesc(Author author, Pageable pageable);
 
     Page<Track> findByGenres_IdOrderByTotalPlaysDesc(@Param("genreId") Long genreId, Pageable pageable);
+
 }

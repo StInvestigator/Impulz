@@ -12,6 +12,10 @@ import FavoriteTracksPage from "../pages/FavoriteTracksPage.tsx";
 import UserProfilePage from "../pages/UserProfilePage.tsx";
 
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import PopularTracksPage from "../pages/tracks_page/PopularTracksPage.tsx";
+import AlbumsInAuthorPage from "../pages/album_page/AlbumsInAuthorPage.tsx";
+import ColaborationInAuthorPage from "../pages/album_page/ColaborationInAuthorPage.tsx";
+import SimilarAuthorsPage from "../pages/authors_page/SimilarAuthorsPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -29,6 +33,11 @@ const AppRouter = () => {
                     </ProtectedRoute>
                 }
             />
+            <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
+            <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
+            <Route path="/author/:id/colaborations" element={<ColaborationInAuthorPage />} />
+            <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
+
 
             <Route
                 path="/playlist/:id"

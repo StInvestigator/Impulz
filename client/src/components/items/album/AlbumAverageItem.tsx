@@ -21,7 +21,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth, colo
             }}
 
         >
-            <Link href={`/`} style={{ textDecoration: 'none' }}>
+            <Link href={`/album/${album.id}"`} style={{ textDecoration: 'none' }}>
                 <Box
                     bgcolor="gray"
                     width="100%"

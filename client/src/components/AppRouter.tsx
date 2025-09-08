@@ -16,6 +16,7 @@ import PopularTracksPage from "../pages/tracks_page/PopularTracksPage.tsx";
 import AlbumsInAuthorPage from "../pages/album_page/AlbumsInAuthorPage.tsx";
 import ColaborationInAuthorPage from "../pages/album_page/ColaborationInAuthorPage.tsx";
 import SimilarAuthorsPage from "../pages/authors_page/SimilarAuthorsPage.tsx";
+import AlbumItemPage from "../pages/AlbumItemPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -44,6 +45,15 @@ const AppRouter = () => {
                 element={
                     <ProtectedRoute>
                         <PlaylistItemPage />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/album/:albumId"
+                element={
+                    <ProtectedRoute>
+                        <AlbumItemPage />
                     </ProtectedRoute>
                 }
             />

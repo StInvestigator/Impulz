@@ -4,22 +4,23 @@ import {Box, Stack, CircularProgress, Typography} from "@mui/material";
 import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
-import {fetchPlaylistDetails} from "../store/reducers/action-creators/playlist.ts";
+import {fetchAlbumDetails} from "../store/reducers/action-creators/album.ts";
 import {useParams} from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
 
-const PlaylistItemPage = () => {
+const AlbumItemPage = () => {
     const [page, setPage] = useState(1);
-    const { playlistId } = useParams<{ playlistId: string }>();
+    const { albumId } = useParams<{ albumId: string }>();
     const dispatch = useAppDispatch();
-    const { currentPlaylist, isLoading, error } = useAppSelector(state => state.playlist);
-    const { keycloak } = useKeycloak();
+    const { currentAlbum, isLoading, error } = useAppSelector(state => state.album);
 
     useEffect(() => {
-        if (playlistId) {
-            dispatch(fetchPlaylistDetails(playlistId));
+        if (albumId) {
+            const id = parseInt(albumId, 10);
+            if (!isNaN(id)) {
+                dispatch(fetchAlbumDetails(id));
+            }
         }
-    }, [dispatch, playlistId]);
+    }, [dispatch, albumId]);
 
     if (isLoading) {
         return (
@@ -37,17 +38,13 @@ const PlaylistItemPage = () => {
         );
     }
 
-    if (!currentPlaylist) {
+    if (!currentAlbum) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography>Плейлист не знайдено</Typography>
+                <Typography>Альбом не знайдено</Typography>
             </Box>
         );
     }
-
-    // Проверяем, является ли текущий пользователь владельцем плейлиста
-    const currentUserId = keycloak.tokenParsed?.sub;
-    const isOwner = currentPlaylist.owner.id === currentUserId;
 
     const formatDuration = (totalSeconds: number): string => {
         const hours = Math.floor(totalSeconds / 3600);
@@ -60,33 +57,34 @@ const PlaylistItemPage = () => {
         return `${minutes} хв ${seconds} с`;
     };
 
-    const totalDuration = currentPlaylist.tracks.reduce((acc, track) => acc + track.durationSec, 0);
+    const totalDuration = currentAlbum.tracks.reduce((acc, track) => acc + track.durationSec, 0);
 
     return (
         <>
             <Box component={"section"}>
                 <Cover
-                    type={isOwner ? "myPlaylist" : currentPlaylist.isPublic ? "publicPlaylist" : "privatePlaylist"}
-                    title={currentPlaylist.title}
-                    authorName={currentPlaylist.owner.name}
-                    trackCount={currentPlaylist.tracks.length}
+                    type={"album"}
+                    title={currentAlbum.title}
+                    authorName={currentAlbum.authors.map(a => a.name).join(", ")}
+                    year={currentAlbum.releaseDate ? new Date(currentAlbum.releaseDate).getFullYear() : undefined}
+                    trackCount={currentAlbum.tracks.length}
                     duration={formatDuration(totalDuration)}
                 />
             </Box>
             <Box component={"section"} marginTop={"60px"}>
                 <Stack spacing={3}>
-                    <TrackList tracks={currentPlaylist.tracks}/>
+                    <TrackList tracks={currentAlbum.tracks}/>
                 </Stack>
             </Box>
             <Box component={"section"} marginTop={"60px"}>
                 <MyPagination
                     currentPage={page}
                     onPageChange={setPage}
-                    totalPages={Math.ceil(currentPlaylist.tracks.length / 20)}
+                    totalPages={Math.ceil(currentAlbum.tracks.length / 20)}
                 />
             </Box>
         </>
     );
 };
 
-export default PlaylistItemPage;
+export default AlbumItemPage;

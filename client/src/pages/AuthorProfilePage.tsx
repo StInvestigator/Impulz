@@ -66,7 +66,7 @@ const AuthorProfilePage = () => {
                     <Typography variant={"h2"} fontSize={"36px"}>
                         {t("authorPage:title-popular-tracks")}
                     </Typography>
-                    <Button sx={{
+                    <Button onClick={() => route(`/author/${id}/popularTracks`)} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",
@@ -90,7 +90,7 @@ const AuthorProfilePage = () => {
                     <Typography variant={"h2"} fontSize={"24px"}>
                         {t("authorPage:title-albums")}
                     </Typography>
-                    <Button sx={{
+                    <Button onClick={() => route(`/author/${id}/albums`)} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",
@@ -110,7 +110,7 @@ const AuthorProfilePage = () => {
                     <Typography variant={"h2"} fontSize={"24px"}>
                         {t("authorPage:title-collaborations")}
                     </Typography>
-                    <Button sx={{
+                    <Button onClick={() => route(`/author/${id}/colaborations`)} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",
@@ -130,7 +130,7 @@ const AuthorProfilePage = () => {
                     <Typography variant={"h2"} fontSize={"24px"}>
                         {t("authorPage:title-similar-author")}
                     </Typography>
-                    <Button onClick={() => route("/allAuthors")} sx={{
+                    <Button onClick={() => route(`/author/${id}/similarAuthors`)} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",

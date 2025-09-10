@@ -3,8 +3,6 @@ import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 import axios from "axios";
 import { $authApi } from "../../../http";
 import type { AuthorDto } from "../../../models/AuthorDto.ts";
-// import { useAppDispatch } from "../../../hooks/redux.ts";
-// import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
     { page?: number; size?: number }
@@ -76,6 +74,58 @@ export const fetchAuthorPlaysByMonth = createAsyncThunk<number, string>(
             `http://localhost:8083/api/authors/getCountAuthorPlaysByMonth/${authorId}`
         );
         return response.data;
+    }
+);
+
+// store/reducers/action-creators/author.ts
+export const subscribeToAuthor = createAsyncThunk<
+    boolean,
+    string,
+    { rejectValue: string }
+>(
+    "author/subscribe",
+    async (authorId, { rejectWithValue }) => {
+        try {
+            await $authApi.post(`http://localhost:8083/api/authors/${authorId}/subscribe`);
+            return true;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue("Не удалось подписаться на автора");
+        }
+    }
+);
+
+export const unsubscribeFromAuthor = createAsyncThunk<
+    boolean,
+    string,
+    { rejectValue: string }
+>(
+    "author/unsubscribe",
+    async (authorId, { rejectWithValue }) => {
+        try {
+            await $authApi.delete(`http://localhost:8083/api/authors/${authorId}/unsubscribe`);
+            return false;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue("Не удалось отписаться от автора");
+        }
+    }
+);
+
+export const checkSubscriptionStatus = createAsyncThunk<
+    boolean,
+    string,
+    { rejectValue: string }
+>(
+    "author/checkSubscription",
+    async (authorId, { rejectWithValue }) => {
+        try {
+            const response = await $authApi.get(`http://localhost:8083/api/authors/${authorId}/subscription-status`);
+            return response.data.isSubscribed;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue("Не удалось проверить статус подписки");
+        }
     }
 );
 

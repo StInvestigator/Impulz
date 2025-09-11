@@ -31,7 +31,8 @@ const Profile: FC<ProfileProps> = ({  author,type }) => {
         justifyContent={"center"}
         alignItems={"center"}
         position={"relative"}
-        height={"100%"}
+        height={"450px"}
+        sx={{ backgroundColor: "#D9D9D9" }}
       >
         <Box
           display={"flex"}

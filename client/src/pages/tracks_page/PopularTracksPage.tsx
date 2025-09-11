@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material";
 import TrackList from "../../components/lists/TrackList";
 import MyPagination from "../../components/MyPagination";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchPopularTracksByAuthor } from "../../store/reducers/action-creators/tracks";
 
 export default function FavoriteTracksPage() {
-    const [page, setPage] = useState(1);
+    const {currentPage, totalPages} = useAppSelector(state => state.page);
     const {id} = useParams<{ id:string }>();
 
     const dispatch = useAppDispatch();
@@ -15,10 +15,10 @@ export default function FavoriteTracksPage() {
 
     useEffect(() => {
         if (id){
-            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: page - 1, size: 20 }));
+            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: currentPage - 1, size: 20 }));
         }
         console.log(popularTracks);
-    }, [dispatch, page]);
+    }, [dispatch, currentPage]);
 
     return (
         <>
@@ -31,7 +31,7 @@ export default function FavoriteTracksPage() {
                 </Stack>
             </Box>
             <Box component={"section"} marginTop={"60px"}>
-                <MyPagination totalPages={30} currentPage={page} onPageChange={setPage}/>
+                <MyPagination totalPages={totalPages} currentPage={currentPage}/>
             </Box>
         </>
     );

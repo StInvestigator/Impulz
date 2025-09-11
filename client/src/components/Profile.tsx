@@ -50,9 +50,24 @@ const Profile: FC<ProfileProps> = ({
   };
 
   return (
-      <Box display="flex" justifyContent="center" alignItems="center" position="relative" height="100%">
-        <Box display="flex" justifyContent="center" alignItems="center" position="relative" height="100%" width="700px">
-          {/* Имя автора */}
+    <>
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        position={"relative"}
+        height={"450px"}
+        sx={{ backgroundColor: "#D9D9D9" }}
+      >
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          position={"relative"}
+          height={"100%"}
+          width={"700px"}
+        >
+          {/*Имя автора*/}
           <Box
               display="flex"
               justifyContent="center"

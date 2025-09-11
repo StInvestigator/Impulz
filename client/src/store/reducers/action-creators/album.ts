@@ -3,7 +3,7 @@ import type {AlbumSimpleDto} from "../../../models/DTO/AlbumSimpleDto.ts";
 import {$authApi} from "../../../http";
 import type {AlbumDto} from "../../../models/AlbumDto.ts";
 // import { useAppDispatch } from "../../../hooks/redux.ts";
-// import { setTotalPages } from "../PageSlice.ts";
+import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchAlbumsByAuthor = createAsyncThunk<
     AlbumSimpleDto[],
@@ -13,13 +13,12 @@ export const fetchAlbumsByAuthor = createAsyncThunk<
     'albums/albumsByAuthor',
     async ({ authorId, page = 0, size = 20 }, { rejectWithValue }) => {
         try {
-            // const dispatch = useAppDispatch();
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await $authApi.get(`http://localhost:8083/api/albums/ByAuthor/${authorId}?${params}`)
-            // dispatch(setTotalPages(response.data.totalPages))
+            setTotalPages(response.data.totalPages)
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -55,13 +54,12 @@ export const fetchAuthorAlbumCollaborations = createAsyncThunk<
     "albums/fetchAuthorCollaborations",
     async ({ authorId, page = 0, size = 20 }, { rejectWithValue }) => {
         try {
-            // const dispatch = useAppDispatch();
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await $authApi.get(`http://localhost:8083/api/albums/ByAuthor/Collaborations/${authorId}?${params}`);
-            // dispatch(setTotalPages(response.data.totalPages))
+            setTotalPages(response.data.totalPages)
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {

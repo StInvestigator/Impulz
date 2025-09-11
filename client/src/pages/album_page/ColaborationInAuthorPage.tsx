@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import Box from "@mui/material/Box";
@@ -8,7 +8,7 @@ import { fetchAuthorAlbumCollaborations } from "../../store/reducers/action-crea
 
 
 const ColaborationInAuthorPage = () => {
-    const [page, setPage] = useState(1);
+    const {currentPage, totalPages} = useAppSelector(state => state.page);
     const {id} = useParams<{ id:string }>();
 
     const dispatch = useAppDispatch();
@@ -16,9 +16,9 @@ const ColaborationInAuthorPage = () => {
 
     useEffect(() => {
         if (id){
-            dispatch(fetchAuthorAlbumCollaborations({ authorId: id, page: page - 1, size: 20 }));
+            dispatch(fetchAuthorAlbumCollaborations({ authorId: id, page: currentPage - 1, size: 20 }));
         }
-    }, [dispatch, page]);
+    }, [dispatch, currentPage]);
 
     return (
         <>
@@ -27,7 +27,7 @@ const ColaborationInAuthorPage = () => {
                 <AlbumList albums={authorCollaborationsAlbums}/>
             </Box>
             <Box component={"section"} marginTop={"60px"}>
-                <MyPagination totalPages={30} currentPage={page} onPageChange={setPage}/>
+                <MyPagination totalPages={totalPages} currentPage={currentPage}/>
             </Box>
         </>
     );

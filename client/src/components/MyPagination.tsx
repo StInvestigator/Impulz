@@ -1,10 +1,11 @@
 import React from 'react';
 import { Pagination, PaginationItem, Typography } from '@mui/material';
+import { useAppDispatch } from '../hooks/redux';
+import { setCurrentPage } from '../store/reducers/PageSlice';
 
 interface CustomPaginationProps {
     currentPage: number;
     totalPages: number;
-    onPageChange: (page: number) => void;
 }
 
 function CustomPrevious() {
@@ -39,14 +40,16 @@ function CustomLast() {
     );
 }
 
-const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages }) => {
+    const dispatch = useAppDispatch();
+    
     return (
         <Pagination
             count={totalPages}
             page={currentPage}
             showFirstButton
             showLastButton
-            onChange={(_, page) => onPageChange(page)}
+            onChange={(_, page) => dispatch(setCurrentPage(page))}
             renderItem={(item) => (
                 <PaginationItem
                     {...item}

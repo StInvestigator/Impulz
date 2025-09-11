@@ -3,6 +3,8 @@ import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 import axios from "axios";
 import { $authApi } from "../../../http";
 import type { AuthorDto } from "../../../models/AuthorDto.ts";
+// import { useAppDispatch } from "../../../hooks/redux.ts";
+import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
     { page?: number; size?: number }
@@ -17,7 +19,7 @@ export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
         const response = await axios.get(
             `http://localhost:8083/api/authors/BestAuthorsOfMonth?${params}`
         );
-        // dispatch(setTotalPages(response.data.totalPages))
+        setTotalPages(response.data.totalPages)
         return response.data.content;
     }
 );
@@ -35,7 +37,7 @@ export const fetchTopAuthorsInGenre = createAsyncThunk<AuthorSimpleDto[],
         const response = await $authApi.get(
             `http://localhost:8083/api/authors/TopInGenre/${genreId}?${params}`
         );
-        // dispatch(setTotalPages(response.data.totalPages))
+        setTotalPages(response.data.totalPages)
         return response.data.content;
     }
 );
@@ -62,7 +64,7 @@ export const fetchSimilarAuthorsByGenre = createAsyncThunk<AuthorSimpleDto[],
             const response = await $authApi.get(
                 `http://localhost:8083/api/authors/SimilarByGenres/${authorId}?${params}`
             );
-            // dispatch(setTotalPages(response.data.totalPages))
+            setTotalPages(response.data.totalPages)
             return response.data.content;
     }
 )

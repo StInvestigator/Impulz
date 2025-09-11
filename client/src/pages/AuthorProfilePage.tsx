@@ -80,7 +80,7 @@ const AuthorProfilePage = () => {
 
     return (
         <>
-            <Box component="section" height="450px" sx={{ backgroundColor: "#D9D9D9" }}>
+            <Box component="section" height="450px" >
                 {currentAuthor && (
                     <Profile
                         type="author"

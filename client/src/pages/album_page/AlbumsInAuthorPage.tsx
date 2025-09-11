@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import Box from "@mui/material/Box";
@@ -8,8 +8,7 @@ import { fetchAlbumsByAuthor } from "../../store/reducers/action-creators/album"
 
 
 const AlbumsInAuthorPage = () => {
-    // const {currentPage, totalPages} = useAppSelector(state => state.page);
-    const [page, setPage] = useState(1);
+    const {currentPage, totalPages} = useAppSelector(state => state.page);
     const {id} = useParams<{ id:string }>();
 
     const dispatch = useAppDispatch();
@@ -17,9 +16,9 @@ const AlbumsInAuthorPage = () => {
 
     useEffect(() => {
         if (id){
-            dispatch(fetchAlbumsByAuthor({ authorId: id, page: page - 1, size: 20 }));
+            dispatch(fetchAlbumsByAuthor({ authorId: id, page: currentPage - 1, size: 20 }));
         }
-    }, [dispatch, page]);
+    }, [dispatch, currentPage]);
 
     return (
         <>
@@ -28,7 +27,7 @@ const AlbumsInAuthorPage = () => {
                 <AlbumList albums={albums}/>
             </Box>
             <Box component={"section"} marginTop={"60px"}>
-                <MyPagination totalPages={30} currentPage={page} onPageChange={setPage}/>
+                <MyPagination totalPages={totalPages} currentPage={currentPage}/>
             </Box>
         </>
     );

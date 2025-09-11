@@ -3,7 +3,10 @@ import {
     fetchAuthorDetails,
     fetchAuthorPlaysByMonth,
     fetchSimilarAuthorsByGenre,
-    fetchTopAuthorsByMonth
+    fetchTopAuthorsByMonth,
+    subscribeToAuthor,
+    unsubscribeFromAuthor,
+    checkSubscriptionStatus
 } from "./action-creators/author.ts";
 import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
@@ -16,6 +19,10 @@ interface AuthorState {
     playsByMonth: number | null;
     isLoading: boolean;
     error: string | null;
+
+    subscriptionStatus: { [key: string]: boolean };
+    subscriptionLoading: boolean;
+    subscriptionError: string | null;
 }
 
 const initialState: AuthorState = {
@@ -25,6 +32,10 @@ const initialState: AuthorState = {
     playsByMonth: null,
     isLoading: false,
     error: null,
+
+    subscriptionStatus: {},
+    subscriptionLoading: false,
+    subscriptionError: null
 };
 
 const authorSlice = createSlice({
@@ -87,6 +98,39 @@ const authorSlice = createSlice({
             .addCase(fetchAuthorPlaysByMonth.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузке количества прослушиваний";
+            })
+
+            .addCase(subscribeToAuthor.pending, (state) => {
+                state.subscriptionLoading = true;
+                state.subscriptionError = null;
+            })
+            .addCase(subscribeToAuthor.fulfilled, (state, action) => {
+                state.subscriptionLoading = false;
+                state.subscriptionStatus[action.meta.arg] = true;
+            })
+            .addCase(subscribeToAuthor.rejected, (state, action) => {
+                state.subscriptionLoading = false;
+                state.subscriptionError = action.payload || "Ошибка подписки";
+            })
+
+            .addCase(unsubscribeFromAuthor.pending, (state) => {
+                state.subscriptionLoading = true;
+                state.subscriptionError = null;
+            })
+            .addCase(unsubscribeFromAuthor.fulfilled, (state, action) => {
+                state.subscriptionLoading = false;
+                state.subscriptionStatus[action.meta.arg] = false;
+            })
+            .addCase(unsubscribeFromAuthor.rejected, (state, action) => {
+                state.subscriptionLoading = false;
+                state.subscriptionError = action.payload || "Ошибка отписки";
+            })
+
+            .addCase(checkSubscriptionStatus.fulfilled, (state, action) => {
+                state.subscriptionStatus[action.meta.arg] = action.payload;
+            })
+            .addCase(checkSubscriptionStatus.rejected, (state, action) => {
+                state.subscriptionError = action.payload || "Ошибка проверки подписки";
             });
     },
 });

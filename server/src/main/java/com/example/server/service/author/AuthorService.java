@@ -18,4 +18,7 @@ public interface AuthorService
     Page<Author> findSimilarBySharedGenres(String authorId, Pageable pageable);
     Page<Author> findTopAuthorsByGenre(Long genreId, Pageable pageable);
     Long countAuthorPlaysByMonth(String authorId);
+    void subscribeToAuthor(String userId, String authorId);
+    void unsubscribeFromAuthor(String userId, String authorId);
+    boolean isUserSubscribed(String userId, String authorId);
 }

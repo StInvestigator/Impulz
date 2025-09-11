@@ -14,13 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -91,4 +91,40 @@ public class AuthorController {
         }
     }
 
+
+    @PostMapping("/{authorId}/subscribe")
+    public ResponseEntity<?> subscribeToAuthor(@PathVariable String authorId, Principal principal) {
+        try {
+            String userId = principal.getName();
+            authorService.subscribeToAuthor(userId, authorId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/{authorId}/unsubscribe")
+    public ResponseEntity<?> unsubscribeFromAuthor(@PathVariable String authorId, Principal principal) {
+        try {
+            String userId = principal.getName();
+            authorService.unsubscribeFromAuthor(userId, authorId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{authorId}/subscription-status")
+    public ResponseEntity<Map<String, Boolean>> checkSubscriptionStatus(
+            @PathVariable String authorId,
+            Principal principal
+    ) {
+        try {
+            String userId = principal.getName();
+            boolean isSubscribed = authorService.isUserSubscribed(userId, authorId);
+            return ResponseEntity.ok(Map.of("isSubscribed", isSubscribed));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

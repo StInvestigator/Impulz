@@ -11,7 +11,11 @@ import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {useEffect} from "react";
 import {fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
 import type {UserSimpleDto} from "../models/DTO/UserSimpleDto.ts";
-import {fetchAuthorDetails, fetchSimilarAuthorsByGenre} from "../store/reducers/action-creators/author.ts";
+import {
+    checkSubscriptionStatus,
+    fetchAuthorDetails,
+    fetchSimilarAuthorsByGenre, subscribeToAuthor, unsubscribeFromAuthor
+} from "../store/reducers/action-creators/author.ts";
 import {fetchAlbumsByAuthor, fetchAuthorAlbumCollaborations} from "../store/reducers/action-creators/album.ts";
 
 const users: UserSimpleDto[] = [
@@ -32,6 +36,7 @@ const users: UserSimpleDto[] = [
     }
 ]
 
+
 const AuthorProfilePage = () => {
     const dispatch = useAppDispatch();
     const {id} = useParams<{ id:string }>();
@@ -43,7 +48,9 @@ const AuthorProfilePage = () => {
     const { albums } = useAppSelector(state => state.album);
     const { similarAuthors } = useAppSelector(state => state.author);
     const { authorCollaborationsAlbums } = useAppSelector(state => state.album);
-    // const { collaborationTracks } = useAppSelector(state => state.track);
+    const { subscriptionStatus, subscriptionLoading } = useAppSelector(state => state.author);
+
+    const isSubscribed = id ? subscriptionStatus[id] : false;
 
     useEffect(() => {
         if (id) {
@@ -51,14 +58,38 @@ const AuthorProfilePage = () => {
             dispatch(fetchAlbumsByAuthor({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: 0, size: 20 }));
-            dispatch(fetchAuthorAlbumCollaborations({authorId: id, page: 0, size: 20 }))
+            dispatch(fetchAuthorAlbumCollaborations({authorId: id, page: 0, size: 20 }));
+
+            dispatch(checkSubscriptionStatus(id));
         }
     }, [dispatch, id]);
 
+    const handleSubscription = async () => {
+        if (!id) return;
+
+        try {
+            if (isSubscribed) {
+                await dispatch(unsubscribeFromAuthor(id)).unwrap();
+            } else {
+                await dispatch(subscribeToAuthor(id)).unwrap();
+            }
+        } catch (error) {
+            console.error("Ошибка подписки:", error);
+        }
+    };
+
     return (
         <>
-            <Box component="section">
-                {currentAuthor && <Profile type="author" author={currentAuthor} />}
+            <Box component="section" height="450px" >
+                {currentAuthor && (
+                    <Profile
+                        type="author"
+                        author={currentAuthor}
+                        onSubscriptionChange={handleSubscription}
+                        isSubscribed={isSubscribed}
+                        subscriptionLoading={subscriptionLoading}
+                    />
+                )}
             </Box>
 
             <Box component={"section"} mt={"60px"}>

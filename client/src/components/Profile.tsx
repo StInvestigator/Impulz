@@ -192,6 +192,7 @@ const Profile: FC<ProfileProps> = ({
           </Box>
         </Box>
       </Box>
+    </>
   );
 };
 

@@ -36,7 +36,6 @@ const users: UserSimpleDto[] = [
     }
 ]
 
-
 const AuthorProfilePage = () => {
     const dispatch = useAppDispatch();
     const {id} = useParams<{ id:string }>();
@@ -138,26 +137,28 @@ const AuthorProfilePage = () => {
                 <AlbumList albums={albums}/>
             </Box>
 
-            <Box component={"section"} mt={"60px"}>
-                <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-                        {t("authorPage:title-collaborations")}
-                    </Typography>
-                    <Button onClick={() => route(`/author/${id}/colaborations`)} sx={{
-                        height: "32px",
-                        border: "1px solid black",
-                        borderRadius: "10px",
-                        backgroundColor: "var(--dark-purple)",
-                        color: "var(--columbia-blue)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        textTransform: "none"
-                    }}>
-                        {t("other:button-watch-all")}
-                    </Button>
+            {authorCollaborationsAlbums && authorCollaborationsAlbums.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+                            {t("authorPage:title-collaborations")}
+                        </Typography>
+                        <Button onClick={() => route(`/author/${id}/colaborations`)} sx={{
+                            height: "32px",
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            textTransform: "none"
+                        }}>
+                            {t("other:button-watch-all")}
+                        </Button>
+                    </Box>
+                    <AlbumList albums={authorCollaborationsAlbums}/>
                 </Box>
-                <AlbumList albums={authorCollaborationsAlbums}/>
-            </Box>
+            )}
 
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>

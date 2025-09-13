@@ -1,7 +1,7 @@
 import {
     Box,
     Button,
-    Divider, IconButton,
+    Divider,
     List,
     ListItem,
     ListItemButton,
@@ -12,7 +12,6 @@ import mainImg from "../assets/sidebar/main.svg"
 import libraryImg from "../assets/sidebar/library.svg"
 import downloadImg from "../assets/sidebar/download.svg"
 import subscriptionImg from "../assets/sidebar/subscription.svg"
-import link from "../assets/sidebar/link.svg"
 import createPlaylistImg from "../assets/sidebar/createPlaylist.svg"
 import MyPlaylistList from "./lists/MyPlaylistList.tsx";
 import { useTranslation } from 'react-i18next';
@@ -48,7 +47,7 @@ const Sidebar = memo(() => {
 
     const navigate = useAppNavigate()
     const { t } = useTranslation('sidebar')
-    const location = useLocation(); // получаем текущий путь
+    const location = useLocation();
 
     return (
         <Box
@@ -64,27 +63,15 @@ const Sidebar = memo(() => {
         >
             <Box sx={{ paddingLeft: "24px" }}>
 
-                <Box sx={{ display: 'flex' }}>
-                    <IconButton
-                        onClick={() => navigate('/')}
-                        sx={{
-                            margin: '20px 20px 20px auto',
-                            border: 'none',
-                            width: '20px',
-                            height: '20px',
-                            cursor: 'pointer',
-                            padding: 0,
-                        }}
-                    >
-                        <Box component={"img"} src={link}/>
-                    </IconButton>
-                </Box>
 
-                <List disablePadding>
+
+                <List disablePadding sx={{marginTop:"50px"}}>
                     {buttons.map(({ name, icon, path }) => (
                         <ListItem key={name} disablePadding>
-                            <ListItemButton onClick={() => navigate(path)}
+                            <ListItemButton
+                                onClick={() => navigate(path)}
                                 sx={{
+                                    height: "60px",
                                     transition: 'background-color 0.3s ease',
                                     padding: "0 12px",
                                     margin: location.pathname === path ? "0 0 20px 0" : "0 24px 20px 0",
@@ -94,17 +81,28 @@ const Sidebar = memo(() => {
                                     '&:hover': {
                                         backgroundColor: location.pathname === path ? 'white' : 'var(--orange-peel-20)',
                                     },
-
-                                }}>
+                                    '&:active': {
+                                        backgroundColor: location.pathname === path ? 'white' : 'var(--orange-peel-20)',
+                                    },
+                                    '&.Mui-focusVisible': {
+                                        backgroundColor: 'transparent',
+                                    }
+                                }}
+                                disableRipple
+                            >
                                 <ListItemIcon sx={{ minWidth: 50 }}>
                                     <Box component="img" src={icon} sx={{ width: '50px', height: '50px' }}/>
                                 </ListItemIcon>
-                                <ListItemText primary={t(`${name}`)} disableTypography sx={{fontSize:"16px", fontWeight:600, color: "var(--orange-peel)" }} />
+                                <ListItemText
+                                    primary={t(`${name}`)}
+                                    disableTypography
+                                    sx={{fontSize:"16px", fontWeight:600, color: "var(--orange-peel)" }}
+                                />
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
-                <Divider sx={{ backgroundColor: 'var(--columbia-blue)', height: '1px', marginTop: "24px" }} />
+                <Divider sx={{ backgroundColor: 'var(--columbia-blue)', height: '0.1px', width: '270px', marginTop: "24px" }} />
                 <Button sx={{
                     margin: "30px 53px 60px",
                     height: "32px",

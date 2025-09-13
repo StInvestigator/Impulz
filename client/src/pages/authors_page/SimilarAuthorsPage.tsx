@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
 import { fetchSimilarAuthorsByGenre } from "../../store/reducers/action-creators/author.ts";
 import { useParams } from "react-router-dom";
 import AuthorList from "../../components/lists/AuthorList.tsx";
+import {useTranslation} from "react-i18next";
 
 
 
@@ -12,6 +13,7 @@ const SimilarAuthorsPage = () => {
 
     const {currentPage, totalPages} = useAppSelector(state => state.page);
     const {id} = useParams<{ id:string }>();
+    const {t} = useTranslation("authorPage");
 
     const dispatch = useAppDispatch();
     const { similarAuthors } = useAppSelector(state => state.author);
@@ -23,15 +25,19 @@ const SimilarAuthorsPage = () => {
         console.log(similarAuthors);
     }, [dispatch, currentPage]);
 
+    const shouldShowPagination = totalPages > 1;
+
     return (
         <>
-            <h2>Схожі виконавці</h2>
+            <h2>{t("title-similar-author")}</h2>
             <Box component={"section"} marginTop={"20px"} >
                 <AuthorList authors={similarAuthors}/>
             </Box>
-            <Box component={"section"} marginTop={"60px"}>
-                <MyPagination totalPages={totalPages} currentPage={currentPage}/>
-            </Box>
+            {shouldShowPagination && (
+                <Box component={"section"} marginTop={"60px"}>
+                    <MyPagination totalPages={totalPages} currentPage={currentPage}/>
+                </Box>
+            )}
         </>
     );
 };

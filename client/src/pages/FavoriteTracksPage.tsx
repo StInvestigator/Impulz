@@ -1,30 +1,44 @@
 import { Box, Stack, Typography } from "@mui/material";
 import TrackList from "../components/lists/TrackList";
 import MyPagination from "../components/MyPagination";
-import { useState } from "react";
 import type {TrackSimpleDto} from "../models/DTO/TrackSimpleDto.ts";
+import {useAppSelector} from "../hooks/redux.ts";
 
 const favoriteTracks: TrackSimpleDto[] = [
     {
         id: 1,
         title: "Назва треку 1",
-        album: "123",
-        authors: ["Автор 1"],
+        album: "Альбом 1",
+        albumId: 1,
+        authors: [
+            {
+                id: 1,
+                name: "Автор 1",
+                imgUrl: ""
+            }
+        ],
         durationSec: 180,
         imgUrl: ""
     },
     {
         id: 2,
         title: "Назва треку 2",
-        album: "123",
-        authors: ["Автор 2"],
+        album: "Альбом 2",
+        albumId: 2,
+        authors: [
+            {
+                id: 2,
+                name: "Автор 2",
+                imgUrl: ""
+            }
+        ],
         durationSec: 210,
         imgUrl: ""
     }
 ];
 
 export default function FavoriteTracksPage() {
-    const [page, setPage] = useState(1)
+    const { currentPage } = useAppSelector(state => state.page);
 
     return (
         <>
@@ -37,7 +51,7 @@ export default function FavoriteTracksPage() {
                 </Stack>
             </Box>
             <Box component={"section"} marginTop={"60px"}>
-                <MyPagination currentPage={page} onPageChange={setPage} totalPages={30}/>
+                <MyPagination currentPage={currentPage} totalPages={30}/>
             </Box>
         </>
     );

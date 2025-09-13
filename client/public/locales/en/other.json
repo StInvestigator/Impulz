@@ -3,5 +3,9 @@
   "title-playlist": "Playlist",
   "title-song": "song(s)",
   "title-author": "Author",
-  "title-album": "Album"
+  "title-album": "Album",
+  "pagination-next": "Next",
+  "pagination-previous": "Previous",
+  "pagination-end": "Last",
+  "pagination-start": "First"
 }

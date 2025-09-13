@@ -36,7 +36,6 @@ const users: UserSimpleDto[] = [
     }
 ]
 
-
 const AuthorProfilePage = () => {
     const dispatch = useAppDispatch();
     const {id} = useParams<{ id:string }>();
@@ -94,7 +93,7 @@ const AuthorProfilePage = () => {
 
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"36px"}>
+                    <Typography variant={"h2"} fontSize={"36px"} color="var(--indigo-dye)">
                         {t("authorPage:title-popular-tracks")}
                     </Typography>
                     <Button onClick={() => route(`/author/${id}/popularTracks`)} sx={{
@@ -103,7 +102,8 @@ const AuthorProfilePage = () => {
                         borderRadius: "10px",
                         fontSize: "12px",
                         fontWeight: 600,
-                        color: "black",
+                        backgroundColor: "var(--dark-purple)",
+                        color: "var(--columbia-blue)",
                         textTransform: "none"
                     }}>
                         {t("other:button-watch-all")}
@@ -118,16 +118,17 @@ const AuthorProfilePage = () => {
 
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"}>
+                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                         {t("authorPage:title-albums")}
                     </Typography>
                     <Button onClick={() => route(`/author/${id}/albums`)} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",
+                        backgroundColor: "var(--dark-purple)",
+                        color: "var(--columbia-blue)",
                         fontSize: "12px",
                         fontWeight: 600,
-                        color: "black",
                         textTransform: "none"
                     }}>
                         {t("other:button-watch-all")}
@@ -136,19 +137,20 @@ const AuthorProfilePage = () => {
                 <AlbumList albums={albums}/>
             </Box>
 
-            {authorCollaborationsAlbums.length > 0 && (
+            {authorCollaborationsAlbums && authorCollaborationsAlbums.length > 0 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h2"} fontSize={"24px"}>
+                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                             {t("authorPage:title-collaborations")}
                         </Typography>
                         <Button onClick={() => route(`/author/${id}/colaborations`)} sx={{
                             height: "32px",
                             border: "1px solid black",
                             borderRadius: "10px",
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
                             fontSize: "12px",
                             fontWeight: 600,
-                            color: "black",
                             textTransform: "none"
                         }}>
                             {t("other:button-watch-all")}
@@ -160,16 +162,17 @@ const AuthorProfilePage = () => {
 
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"}>
+                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                         {t("authorPage:title-similar-author")}
                     </Typography>
                     <Button onClick={() => route(`/author/${id}/similarAuthors`)} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",
+                        backgroundColor: "var(--dark-purple)",
+                        color: "var(--columbia-blue)",
                         fontSize: "12px",
                         fontWeight: 600,
-                        color: "black",
                         textTransform: "none"
                     }}>
                         {t("other:button-watch-all")}
@@ -180,16 +183,17 @@ const AuthorProfilePage = () => {
 
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"}>
+                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                         {t("authorPage:title-subscribers")}
                     </Typography>
                     <Button onClick={() => route("/allAuthors")} sx={{
                         height: "32px",
                         border: "1px solid black",
                         borderRadius: "10px",
+                        backgroundColor: "var(--dark-purple)",
+                        color: "var(--columbia-blue)",
                         fontSize: "12px",
                         fontWeight: 600,
-                        color: "black",
                         textTransform: "none"
                     }}>
                         {t("other:button-watch-all")}

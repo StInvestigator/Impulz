@@ -11,14 +11,14 @@ export const fetchAlbumsByAuthor = createAsyncThunk<
     { rejectValue: string }
 >(
     'albums/albumsByAuthor',
-    async ({ authorId, page = 0, size = 20 }, { rejectWithValue }) => {
+    async ({ authorId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await $authApi.get(`http://localhost:8083/api/albums/ByAuthor/${authorId}?${params}`)
-            setTotalPages(response.data.totalPages)
+            dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -52,14 +52,14 @@ export const fetchAuthorAlbumCollaborations = createAsyncThunk<
     {rejectValue: string}
 >(
     "albums/fetchAuthorCollaborations",
-    async ({ authorId, page = 0, size = 20 }, { rejectWithValue }) => {
+    async ({ authorId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await $authApi.get(`http://localhost:8083/api/albums/ByAuthor/Collaborations/${authorId}?${params}`);
-            setTotalPages(response.data.totalPages)
+            dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {

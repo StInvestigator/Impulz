@@ -1,5 +1,5 @@
 import MyPagination from "../components/MyPagination.tsx";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {Box, Stack, CircularProgress, Typography} from "@mui/material";
 import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
@@ -8,7 +8,7 @@ import {fetchAlbumDetails} from "../store/reducers/action-creators/album.ts";
 import {useParams} from "react-router-dom";
 
 const AlbumItemPage = () => {
-    const [page, setPage] = useState(1);
+    const { currentPage } = useAppSelector(state => state.page);
     const { albumId } = useParams<{ albumId: string }>();
     const dispatch = useAppDispatch();
     const { currentAlbum, isLoading, error } = useAppSelector(state => state.album);
@@ -78,8 +78,7 @@ const AlbumItemPage = () => {
             </Box>
             <Box component={"section"} marginTop={"60px"}>
                 <MyPagination
-                    currentPage={page}
-                    onPageChange={setPage}
+                    currentPage={currentPage}
                     totalPages={Math.ceil(currentAlbum.tracks.length / 20)}
                 />
             </Box>

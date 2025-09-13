@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import LanguageIcon from "@mui/icons-material/Language";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
 import i18n from "i18next";
 
 type LangOption = {
@@ -16,87 +16,124 @@ const options: LangOption[] = [
 const STORAGE_KEY = "lang";
 
 export default function Dropdown() {
-  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCode, setSelectedCode] = useState(() => {
     return localStorage.getItem(STORAGE_KEY) || i18n.language || "uk";
   });
 
-  const ref = useRef<HTMLDivElement>(null);
+  const open = Boolean(anchorEl);
+  const selectedLabel = options.find((opt) => opt.code === selectedCode)?.label || options[0].label;
 
-  const selectedLabel =
-    options.find((opt) => opt.code === selectedCode)?.label || options[0].label;
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleSelect = (code: string) => {
     setSelectedCode(code);
     i18n.changeLanguage(code);
     localStorage.setItem(STORAGE_KEY, code);
-    setOpen(false);
+    handleClose();
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <Box ref={ref} sx={{ position: "relative", display: "inline-block" }}>
-      <Button
-        onClick={() => setOpen(!open)}
-        sx={{
-          fontFamily: "Work Sans, sans-serif",
-          cursor: "pointer",
-          backgroundColor: "var(--columbia-blue)",
-          color: "var(--dark-purple)",
-          textTransform: "none",
-        }}
-      >
-        <LanguageIcon
-          sx={{ marginRight: "6px", width: "20px", height: "20px" }}
-        />
-        <Typography variant={"mainSbL"} textTransform={"none"}>
-          {selectedLabel}
-        </Typography>
-      </Button>
-
-      {open && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            marginTop: "4px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-            zIndex: 10,
-          }}
+      <Box>
+        <Button
+            onClick={handleClick}
+            sx={{
+              fontFamily: "Work Sans, sans-serif",
+              cursor: "pointer",
+              backgroundColor: "var(--columbia-blue)",
+              color: "var(--dark-purple)",
+              textTransform: "none",
+              minWidth: "120px",
+              justifyContent: "flex-start",
+              borderRadius: "10px",
+            }}
         >
-          {options.map((option) => (
-            <Box
-              key={option.code}
-              onClick={() => handleSelect(option.code)}
+          <LanguageIcon
+              sx={{ marginRight: "6px", width: "20px", height: "20px" }}
+          />
+          <Typography
+              variant={"mainSbL"}
+              textTransform={"none"}
               sx={{
-                padding: "8px 12px",
-                cursor: "pointer",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                backgroundColor: "var(--columbia-blue)",
-                color: "var(--dark-purple)",
-                "&:hover": {
-                  backgroundColor: "white",
-                  color: "var(--dark-purple)",
-                },
+                flex: 1,
+                textAlign: "left"
               }}
-            >
-              <Typography variant={"mainSbL"} textTransform={"none"}>
-                {option.label}
-              </Typography>
-            </Box>
+          >
+            {selectedLabel}
+          </Typography>
+        </Button>
+
+        <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'language-button',
+              sx: {
+                backgroundColor: "var(--columbia-blue)",
+                padding: 0,
+                borderRadius: "12px",
+                overflow: "hidden",
+              }
+            }}
+            PaperProps={{
+              sx: {
+                boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                minWidth: "120px",
+                borderRadius: "12px",
+                overflow: "hidden",
+              }
+            }}
+            anchorOrigin={{
+              horizontal: 'right',
+              vertical: 'bottom'
+            }}
+            transformOrigin={{
+              horizontal: 'right',
+              vertical: 'top'
+            }}
+        >
+          {options.map((option, index) => (
+              <MenuItem
+                  key={option.code}
+                  onClick={() => handleSelect(option.code)}
+                  selected={option.code === selectedCode}
+                  sx={{
+                    color: "var(--dark-purple)",
+                    "&:hover": {
+                      backgroundColor: "white",
+                    },
+                    "&.Mui-selected": {
+                      backgroundColor: "rgba(255, 255, 255, 0.5)",
+                      "&:hover": {
+                        backgroundColor: "white",
+                      }
+                    },
+                    ...(index === 0 && {
+                      borderTopLeftRadius: "12px",
+                      borderTopRightRadius: "12px",
+                    }),
+                    ...(index === options.length - 1 && {
+                      borderBottomLeftRadius: "12px",
+                      borderBottomRightRadius: "12px",
+                    }),
+                  }}
+              >
+                <Typography variant={"mainSbL"} textTransform={"none"}>
+                  {option.label}
+                </Typography>
+              </MenuItem>
           ))}
-        </Box>
-      )}
-    </Box>
+        </Menu>
+      </Box>
   );
 }

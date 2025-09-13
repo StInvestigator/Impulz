@@ -1,5 +1,5 @@
 import MyPagination from "../components/MyPagination.tsx";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {Box, Stack, CircularProgress, Typography} from "@mui/material";
 import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
@@ -9,7 +9,7 @@ import {useParams} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 
 const PlaylistItemPage = () => {
-    const [page, setPage] = useState(1);
+    const { currentPage } = useAppSelector(state => state.page);
     const { playlistId } = useParams<{ playlistId: string }>();
     const dispatch = useAppDispatch();
     const { currentPlaylist, isLoading, error } = useAppSelector(state => state.playlist);
@@ -45,7 +45,6 @@ const PlaylistItemPage = () => {
         );
     }
 
-    // Проверяем, является ли текущий пользователь владельцем плейлиста
     const currentUserId = keycloak.tokenParsed?.sub;
     const isOwner = currentPlaylist.owner.id === currentUserId;
 
@@ -80,8 +79,7 @@ const PlaylistItemPage = () => {
             </Box>
             <Box component={"section"} marginTop={"60px"}>
                 <MyPagination
-                    currentPage={page}
-                    onPageChange={setPage}
+                    currentPage={currentPage}
                     totalPages={Math.ceil(currentPlaylist.tracks.length / 20)}
                 />
             </Box>

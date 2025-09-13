@@ -1,51 +1,47 @@
 import {Box, Button, Typography} from "@mui/material";
-import Profile from "../components/Profile.tsx";
-import {useParams} from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
-// import AlbumList from "../components/lists/AlbumList.tsx";
 import PodcastList from "../components/lists/PodcastList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
+import type {AuthorSimpleDto} from "../models/DTO/AuthorSimpleDto.ts";
 import type {TrackSimpleDto} from "../models/DTO/TrackSimpleDto.ts";
 
-const authors = [
-    "Автор 1",
-    "Автор 2",
-    "Автор 3",
-    "Автор 4",
-    "Автор 5",
-]
-
-// const albums = [
-//     "Альбом 1",
-//     "Альбом 2",
-//     "Альбом 3",
-//     "Альбом 4",
-//     "Альбом 5",
-// ]
+const authors: AuthorSimpleDto[] = [
+    {
+        id: 1,
+        name: "Автор 1",
+        imgUrl: ""
+    },
+    {
+        id: 2,
+        name: "Автор 2",
+        imgUrl: ""
+    },
+];
 
 const tracks: TrackSimpleDto[] = [
     {
         id: 1,
         title: "Назва треку 1",
-        album: "123",
-        authors: ["Автор 1"],
+        album: "Альбом 1",
+        albumId: 1,
+        authors: [authors[0]],
         durationSec: 180,
         imgUrl: ""
     },
     {
         id: 2,
         title: "Назва треку 2",
-        album: "123",
-        authors: ["Автор 2"],
+        album: "Альбом 2",
+        albumId: 2,
+        authors: [authors[1]],
         durationSec: 210,
         imgUrl: ""
     }
 ];
 
 const UserProfilePage = () => {
-    const {name} = useParams<{name: string}>();
     const route = useAppNavigate();
     const { t } = useTranslation(["authorPage", "other"]);
 
@@ -54,7 +50,7 @@ const UserProfilePage = () => {
             <Box component={"section"} height={"450px"} sx={{
                 backgroundColor: "#D9D9D9"
             }}>
-                <Profile type="user" name={name ?? "Анонім"}/>
+                {/*  <Profile type="user" author={authors}/> */ }
             </Box>
 
             <Box component={"section"} mt={"60px"}>

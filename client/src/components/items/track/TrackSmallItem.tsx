@@ -166,15 +166,26 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                                 </Typography>
                             )}
                         </Box>
-
-                        <Typography
-                            variant="mainRM"
-                            noWrap
-                            textAlign="center"
-                            sx={{ flexBasis: "20%", minWidth: 0 }}
-                        >
-                            {track.album || "Без альбома"}
-                        </Typography>
+                        <Link
+                            href={`/album/${track.albumId}`}
+                            underline="none"
+                            sx={{
+                                color: 'inherit',
+                                '&:hover': {
+                                    textDecoration: 'underline',
+                                    color: '#1976d2',
+                                    cursor: 'pointer',
+                                },
+                            }}>
+                            <Typography
+                                variant="mainRM"
+                                noWrap
+                                textAlign="center"
+                                sx={{ flexBasis: "20%", minWidth: 0 }}
+                            >
+                                {track.album}
+                            </Typography>
+                        </Link>
                     </>
                 )}
 

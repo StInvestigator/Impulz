@@ -5,11 +5,13 @@ import Box from "@mui/material/Box";
 import MyPagination from "../../components/MyPagination";
 import AlbumList from "../../components/lists/AlbumList";
 import { fetchAuthorAlbumCollaborations } from "../../store/reducers/action-creators/album";
+import {useTranslation} from "react-i18next";
 
 
 const ColaborationInAuthorPage = () => {
     const {currentPage, totalPages} = useAppSelector(state => state.page);
     const {id} = useParams<{ id:string }>();
+    const {t} = useTranslation("authorPage");
 
     const dispatch = useAppDispatch();
     const { authorCollaborationsAlbums } = useAppSelector(state => state.album);
@@ -20,15 +22,19 @@ const ColaborationInAuthorPage = () => {
         }
     }, [dispatch, currentPage]);
 
+    const shouldShowPagination = totalPages > 1;
+
     return (
         <>
-            <h2>Колаборації автора</h2>
+            <h2>{t("title-author-collaborations")}</h2>
             <Box component={"section"} marginTop={"20px"} >
                 <AlbumList albums={authorCollaborationsAlbums}/>
             </Box>
-            <Box component={"section"} marginTop={"60px"}>
-                <MyPagination totalPages={totalPages} currentPage={currentPage}/>
-            </Box>
+            {shouldShowPagination && (
+                <Box component={"section"} marginTop={"60px"}>
+                    <MyPagination totalPages={totalPages} currentPage={currentPage}/>
+                </Box>
+            )}
         </>
     );
 }

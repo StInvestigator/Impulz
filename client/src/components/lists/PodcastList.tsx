@@ -2,41 +2,42 @@ import {Box} from "@mui/material";
 // import AlbumAverageItem from "../items/album/AlbumAverageItem.tsx";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
 import type {TrackSimpleDto} from "../../models/DTO/TrackSimpleDto.ts";
+import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
+
+const authors: AuthorSimpleDto[] = [
+    {
+        id: 1,
+        name: "Автор 1",
+        imgUrl: ""
+    },
+    {
+        id: 2,
+        name: "Автор 2",
+        imgUrl: ""
+    },
+];
+
 
 const podcasts: TrackSimpleDto[] = [
     {
         id: 1,
-        title: "Трек 1",
-        durationSec: 240,
-        imgUrl: "",
-        authors: ["Автор 1", "Автор 2"],
-        album: "Альбом 1"
+        title: "Назва треку 1",
+        album: "Альбом 1",
+        albumId: 1,
+        authors: [authors[0]],
+        durationSec: 180,
+        imgUrl: ""
     },
     {
         id: 2,
-        title: "Трек 2",
-        durationSec: 180,
-        imgUrl: "",
-        authors: ["Автор 3"],
-        album: "Альбом 2"
-    },
-    {
-        id: 3,
-        title: "Трек 3",
-        durationSec: 300,
-        imgUrl: "",
-        authors: ["Автор 4", "Автор 5"],
-        album: "Альбом 3"
-    },
-    {
-        id: 4,
-        title: "Трек 4",
+        title: "Назва треку 2",
+        album: "Альбом 2",
+        albumId: 2,
+        authors: [authors[1]],
         durationSec: 210,
-        imgUrl: "",
-        authors: ["Автор 6"],
-        album: "Альбом 4"
+        imgUrl: ""
     }
-]
+];
 
 
 const PodcastList = () => {

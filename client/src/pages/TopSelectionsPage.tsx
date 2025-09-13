@@ -1,10 +1,10 @@
 import {Box} from "@mui/material";
 import MyPagination from "../components/MyPagination.tsx";
-import {useState} from "react";
 import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
+import {useAppSelector} from "../hooks/redux.ts";
 
 const TopSelectionsPage = () => {
-    const [page, setPage] = useState(1)
+    const { currentPage } = useAppSelector(state => state.page);
 
     return (
         <>
@@ -13,7 +13,7 @@ const TopSelectionsPage = () => {
                 <TopSelectionsList/>
             </Box>
             <Box component={"section"} marginTop={"60px"}>
-                <MyPagination totalPages={30} currentPage={page} onPageChange={setPage}/>
+                <MyPagination totalPages={30} currentPage={currentPage}/>
             </Box>
         </>
     );

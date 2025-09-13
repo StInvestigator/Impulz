@@ -3,21 +3,22 @@ import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
 import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+// import testImage from "../../../assets/test-image.png"; <-- тестова картинка для альбома
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
     itemWidth: number;
-    color?: "dark" | "light";
 }
 
-const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth, color = "light"}) => {
+const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => {
     const { playPlaylist } = usePlayTrack();
     
     return (
         <Box
             sx={{
                 width: "100%",
+                position: "relative",
             }}
 
         >
@@ -25,21 +26,28 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth, colo
                 <Box
                     bgcolor="gray"
                     width="100%"
-                    height={`${itemHeight - 88}px`}
+                    height={`${itemHeight}px`}
                     maxWidth={itemWidth}
                     borderRadius={"10px 10px 0 0"}
                     position={"relative"}
+                    sx={{
+                        backgroundImage: `url(${album.imageUrl || ""})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}
                 >
 
                 </Box>
             </Link>
-            <Box display={"flex"} padding={"24px"} height={"88px"} maxWidth={itemWidth} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
+            <Box display={"flex"} padding={"24px"} position={"absolute"} bottom={0} height={"88px"} width={"100%"} maxWidth={itemWidth} boxSizing={"border-box"} borderRadius={"0 0 10px 10px"} sx={{
+                background: "var(--gradient-plashka-purple)",
+            }}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
                     <Box display={"flex"} flexDirection={"column"}>
-                        <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
+                        <Typography variant={"mainSbL"} gutterBottom color={"var(--orange-peel)"}>
                             {album.title}
                         </Typography>
-                        <Typography variant={"mainRM"} sx={{ color: "black"}}>
+                        <Typography variant={"mainRM"} color={"var(--columbia-blue)"}>
                             {album.authors?.map(author => author.name).join(", ") || "Unknown"}
                         </Typography>
                     </Box>

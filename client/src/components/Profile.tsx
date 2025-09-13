@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { AuthorDto } from "../models/AuthorDto";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { fetchAuthorPlaysByMonth } from "../store/reducers/action-creators/author";
+import bgCoverImg from "../assets/bg-cover.svg";
 
 interface ProfileProps {
   author: AuthorDto;
@@ -57,13 +58,15 @@ const Profile: FC<ProfileProps> = ({
         alignItems={"center"}
         position={"relative"}
         height={"450px"}
-        sx={{ backgroundColor: "#D9D9D9" }}
+        sx={{ backgroundColor: "var(--dark-purple)" }}
       >
+        <Box component={"img"} src={bgCoverImg} position={"absolute"} top={0} left={0} width={"100%"} height={"100%"} />
+        {/* Контейнер для фото и имени автора */}
         <Box
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
-          position={"relative"}
+          position={"relative"} 
           height={"100%"}
           width={"700px"}
         >
@@ -72,8 +75,10 @@ const Profile: FC<ProfileProps> = ({
               display="flex"
               justifyContent="center"
               alignItems="center"
-              bgcolor="white"
+              bgcolor="var(--columbia-blue)"
               borderRadius="50%"
+              border="10px solid #FF990099"
+              boxSizing="border-box"
               height="400px"
               width="400px"
               position="absolute"
@@ -86,15 +91,19 @@ const Profile: FC<ProfileProps> = ({
           {/* Фотография автора */}
           <Box
               display="flex"
+              bgcolor="var(--dark-purple)"
               justifyContent="center"
               alignItems="center"
-              bgcolor="gray"
               borderRadius="50%"
+              border="5px solid #FF990099"
               height="400px"
               width="400px"
               position="absolute"
               left={300}
               zIndex={1}
+              sx={{
+                // backgroundImage: `url(${author.photoUrl})`, <-- здесь нужно передать фото автора
+              }}
           >
             <IconButton sx={{ padding: 0 }}>
               <Box component="img" src={playImage} borderRadius="50%" width="80px" height="80px" />
@@ -127,9 +136,9 @@ const Profile: FC<ProfileProps> = ({
                     disabled={subscriptionLoading}
                     sx={{
                       minWidth: "175px",
-                      borderRadius: "10px",
+                      borderRadius: "50px",
                       marginLeft: "auto",
-                      backgroundColor: isSubscribed ? "#716060" : "white",
+                      backgroundColor: isSubscribed ? "#716060" : "var(--orange-peel)",
                       color: isSubscribed ? "white" : "black",
                       textTransform: "none",
                       padding: "12px",
@@ -148,21 +157,21 @@ const Profile: FC<ProfileProps> = ({
                 </Button>
 
                 <Box
-                    bgcolor="#716060"
+                    bgcolor="var(--columbia-blue)"
                     boxSizing="border-box"
                     padding="6px 12px"
                     borderRadius="10px"
                     marginLeft="auto"
-                    width="60%"
+                    width="40%"
                     display="flex"
                     justifyContent="flex-end"
                     alignItems="center"
                 >
-                  <Box textAlign="center" color="white">
-                    <Typography variant="h3" fontSize="24px" fontFamily={'"Manrope", sans-serif'}>
+                  <Box textAlign="center">
+                    <Typography variant="h3">
                       {followers}
                     </Typography>
-                    <Typography variant="mainSbM" fontFamily={'"Manrope", sans-serif'}>
+                    <Typography variant="mainSbM" fontWeight={700}>
                       {t("title-subscribers")}
                     </Typography>
                   </Box>
@@ -171,17 +180,17 @@ const Profile: FC<ProfileProps> = ({
           )}
 
           <Box
-              bgcolor="#716060"
+              bgcolor="var(--columbia-blue)"
               padding="6px 12px"
               boxSizing="border-box"
               borderRadius="10px"
               marginLeft="auto"
-              width="61%"
+              width="40%"
               display="flex"
               justifyContent="flex-end"
               alignItems="center"
           >
-            <Box textAlign="center" color="white">
+            <Box textAlign="center">
               <Typography variant="h3" fontSize="24px" fontFamily={'"Manrope", sans-serif'} height="24px">
                 {playsByMonth}
               </Typography>

@@ -16,7 +16,7 @@ const AlbumsInAuthorPage = () => {
 
     useEffect(() => {
         if (id){
-            dispatch(fetchAlbumsByAuthor({ authorId: id, page: currentPage - 1, size: 20 }));
+            dispatch(fetchAlbumsByAuthor({ authorId: id, page: currentPage - 1, size: 1 }));
         }
     }, [dispatch, currentPage]);
 

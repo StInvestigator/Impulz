@@ -15,7 +15,7 @@ export default function FavoriteTracksPage() {
 
     useEffect(() => {
         if (id){
-            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: currentPage - 1, size: 20 }));
+            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: currentPage - 1, size: 1 }));
         }
         console.log(popularTracks);
     }, [dispatch, currentPage]);

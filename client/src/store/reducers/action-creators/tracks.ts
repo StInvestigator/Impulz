@@ -9,14 +9,13 @@ export const fetchTopTracksByWeek = createAsyncThunk<TrackSimpleDto[],
     { page?: number; size?: number }
 >(
     "tracks/MostListenedTracksOfWeek",
-    async ({ page = 0, size = 20 }) => {
-        // const dispatch = useAppDispatch();
+    async ({ page = 0, size = 20 }, { dispatch }) => {
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
 
         const response = await axios.get(`http://localhost:8083/api/tracks/MostListenedTracksOfWeek?${params}`);
-        setTotalPages(response.data.totalPages)
+        dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
     }
 );
@@ -26,7 +25,7 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
     { authorId: string; page?: number; size?: number }
 >(
     "tracks/ByAuthor/Popular",
-    async ({ authorId, page = 0, size = 20 }) => {
+    async ({ authorId, page = 0, size = 20 }, { dispatch }) => {
         // const dispatch = useAppDispatch();
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page.toString());
@@ -35,7 +34,7 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
         const response = await $authApi.get(
             `http://localhost:8083/api/tracks/ByAuthor/Popular/${authorId}?${params}`
         );
-        setTotalPages(response.data.totalPages)
+        dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
     }
 );
@@ -45,17 +44,16 @@ export const fetchAuthorTrackCollaborations = createAsyncThunk<
     { authorId: string; page?: number; size?: number }
 >(
     "tracks/fetchAuthorCollaborations",
-    async ({ authorId, page = 0, size = 20 }) => {
-            // const dispatch = useAppDispatch();
-            const params = new URLSearchParams();
-            if (page !== undefined) params.append('page', page.toString());
-            if (size !== undefined) params.append('size', size.toString());
+    async ({ authorId, page = 0, size = 20 }, { dispatch }) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
 
-            const response = await $authApi.get(
-                `http://localhost:8083/api/tracks/ByAuthor/Collaborations/${authorId}?${params}`
-            );
-            setTotalPages(response.data.totalPages)
-            return response.data.content;
+        const response = await $authApi.get(
+            `http://localhost:8083/api/tracks/ByAuthor/Collaborations/${authorId}?${params}`
+        );
+        dispatch(setTotalPages(response.data.totalPages))
+        return response.data.content;
     }
 );
 

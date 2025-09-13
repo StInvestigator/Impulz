@@ -10,7 +10,7 @@ export const fetchTopGenres = createAsyncThunk<
     { rejectValue: string }
 >(
     'genres/TopGenres',
-    async ({ page = 0, size = 5 }, { rejectWithValue }) => {
+    async ({ page = 0, size = 5 }, { rejectWithValue, dispatch }) => {
         try {
             // const dispatch = useAppDispatch();
             const params = new URLSearchParams();
@@ -18,7 +18,7 @@ export const fetchTopGenres = createAsyncThunk<
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await axios.get(`http://localhost:8083/api/genres/TopGenres?${params}`)
-            setTotalPages(response.data.totalPages)
+            dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {

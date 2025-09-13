@@ -30,9 +30,11 @@ const UserAverageItem: FC<UserItemProps> = ({user}) => {
         boxSizing={"border-box"}
         alignItems="center"
         width={"100%"}
-        bgcolor={"#B9B9B9"}
         marginTop={"10px"}
         borderRadius={"10px"}
+        sx={{
+          background: "var(--gradient-oranges)",
+        }}
       >
         <Box display={"flex"} flexDirection={"column"}>
           <Typography variant={"mainSbL"} display={"flex"} alignItems={"center"}>

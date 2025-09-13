@@ -15,7 +15,7 @@ const AlbumList:FC<AlbumListProps> = ({albums}) => {
             justifyContent: "start",
         }} gap={3}>
             {albums.map(album =>
-                <AlbumAverageItem key={album.id} album={album} itemHeight={360} itemWidth={360} color={"light"}/>
+                <AlbumAverageItem key={album.id} album={album} itemHeight={360} itemWidth={360}/>
             )}
         </Box>
     );

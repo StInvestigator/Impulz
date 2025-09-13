@@ -29,7 +29,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
         <Box
             ref={cardRef}
             display="flex"
-            height="60px"
+            height= {cardWidth <= 800 ? "80px" : "60px"}
             width="100%"
             borderRadius="10px"
             overflow="hidden"
@@ -39,87 +39,101 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                bgcolor="black"
+                bgcolor="var(--columbia-blue)"
                 width="80px"
                 flexShrink={0}
             >
-                <Typography variant="h2" color="white">
+                <Typography variant="h2">
                     {index !== undefined ? index + 1 : '#'}
                 </Typography>
             </Box>
 
             {/* Обложка + остальной контент */}
             <Box
-                bgcolor="#D9D9D9"
+                bgcolor="var(--orange-peel-20)"
                 width="100%"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
                 px="24px"
             >
-                {/* Обложка трека */}
-                <Box
-                    bgcolor="#6F5E5E"
-                    height="60px"
-                    width="60px"
-                    borderRadius="4px"
-                    flexShrink={0}
-                    sx={{
-                        backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                    }}
-                />
-
                 {cardWidth <= 800 ? (
-                    <Box
-                        overflow="hidden"
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        sx={{ flexBasis: "60%", minWidth: 0 }}
-                    >
-                        <Typography
-                            variant="mainSbL"
-                            noWrap
-                            maxWidth={"100%"}
+                    <>
+                        {/* Обложка трека */}
+                        <Box
+                            bgcolor="grey"
+                            height="60px"
+                            width="60px"
+                            borderRadius="4px"
+                            flexShrink={0}
+                            sx={{
+                                backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center'
+                            }}
+                        />
+                        <Box
+                            overflow="hidden"
+                            display="flex"
+                            flexDirection="column"
+                            justifyContent="center"
+                            sx={{ flexBasis: "60%", minWidth: 0 }}
                         >
-                            {track.title || "Без названия"}
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
-                            {track.authors && track.authors.length > 0 ? (
-                                track.authors.map((author, authorIndex) => (
-                                    <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Link
-                                            href={`/author/${author.id}`}
-                                            underline="none"
-                                            sx={{
-                                                color: 'inherit',
-                                                '&:hover': {
-                                                    textDecoration: 'underline',
-                                                    color: '#1976d2',
-                                                    cursor: 'pointer',
-                                                },
-                                            }}
-                                        >
-                                            <Typography variant="mainRM" noWrap>
-                                                {author.name}
-                                            </Typography>
-                                        </Link>
-                                        {authorIndex < track.authors.length - 1 && (
-                                            <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
-                                        )}
-                                    </Box>
-                                ))
-                            ) : (
-                                <Typography variant="mainRM">
-                                    Неизвестный исполнитель
-                                </Typography>
-                            )}
+                            <Typography
+                                variant="mainSbL"
+                                noWrap
+                                maxWidth={"100%"}
+                            >
+                                {track.title || "Без названия"}
+                            </Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
+                                {track.authors && track.authors.length > 0 ? (
+                                    track.authors.map((author, authorIndex) => (
+                                        <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <Link
+                                                href={`/author/${author.id}`}
+                                                underline="none"
+                                                sx={{
+                                                    color: 'inherit',
+                                                    '&:hover': {
+                                                        textDecoration: 'underline',
+                                                        color: '#1976d2',
+                                                        cursor: 'pointer',
+                                                    },
+                                                }}
+                                            >
+                                                <Typography variant="mainRM" noWrap>
+                                                    {author.name}
+                                                </Typography>
+                                            </Link>
+                                            {authorIndex < track.authors.length - 1 && (
+                                                <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
+                                            )}
+                                        </Box>
+                                    ))
+                                ) : (
+                                    <Typography variant="mainRM">
+                                        Неизвестный исполнитель
+                                    </Typography>
+                                )}
+                            </Box>
                         </Box>
-                    </Box>
+                    </>
                 ) : (
                     <>
+                        {/* Обложка трека */}
+                        <Box
+                            bgcolor="grey"
+                            height="60px"
+                            width="60px"
+                            borderRadius="4px"
+                            flexShrink={0}
+                            sx={{
+                                backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center'
+                            }}
+                        />
                         <Typography
                             variant="mainSbL"
                             noWrap

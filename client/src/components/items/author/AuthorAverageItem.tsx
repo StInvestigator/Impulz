@@ -14,8 +14,10 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
     <Box
       width="100%"
       boxSizing={"border-box"}
-      bgcolor={"#B9B9B9"}
       borderRadius={"1000px 1000px 0 0"}
+      sx={{
+        background: "var(--gradient-pink)",
+      }}
     >
       <Box
         bgcolor="gray"

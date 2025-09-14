@@ -31,7 +31,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => 
                     borderRadius={"10px 10px 0 0"}
                     position={"relative"}
                     sx={{
-                        backgroundImage: `url(${album.imageUrl || ""})`,
+                        backgroundImage: `url(${album.imgUrl || ""})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}

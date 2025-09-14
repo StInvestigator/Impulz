@@ -4,12 +4,13 @@ import React from 'react';
 interface TrackProgressProps {
     left: number;
     right: number;
-    onChange: (e:never) => void
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    disabled?: boolean;
 }
 
 const TrackProgress: React.FC<TrackProgressProps> =
     ({
-         left, right, onChange
+         left, right, onChange, disabled = false
      }) => {
         return (
             <Box style={{display: 'flex'}}>
@@ -20,6 +21,8 @@ const TrackProgress: React.FC<TrackProgressProps> =
                     max={right}
                     value={left}
                     onChange={onChange}
+                    disabled={disabled}
+                    style={{ opacity: disabled ? 0.5 : 1 }}
                 />
                 <Box>{left} / {right}</Box>
             </Box>

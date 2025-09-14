@@ -29,4 +29,6 @@ public class TrackPlay {
     @Column(name = "played_at", nullable = false)
     private OffsetDateTime playedAt;
 
+    @Column(name = "session_id", unique = true, length = 50)
+    private String sessionId;
 }

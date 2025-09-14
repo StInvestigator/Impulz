@@ -1,5 +1,5 @@
 import type {FC} from "react";
-import {Box, IconButton, Typography} from "@mui/material";
+import {Box, IconButton, Link, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
@@ -46,7 +46,20 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                             {track.title}
                         </Typography>
                         <Typography variant={"mainRM"} sx={{ color: "black"}}>
-                            {track.album}
+                            <Link
+                                onDragStart={(e) => e.preventDefault()}
+                                href={`/album/${track.albumId}"`}
+                                underline="none"
+                                  sx={{
+                                      color: 'inherit',
+                                      '&:hover': {
+                                          textDecoration: 'underline',
+                                          color: '#1976d2',
+                                          cursor: 'pointer',
+                                      },
+                                  }}>
+                                {track.album}
+                            </Link>
                         </Typography>
                     </Box>
                     <IconButton sx={{padding: 0}} onClick={() => playSingle(track)}>

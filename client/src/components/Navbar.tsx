@@ -1,5 +1,7 @@
 import {AppBar, Box, Button, OutlinedInput, Toolbar, IconButton, Typography} from "@mui/material";
-import frame from '../assets/logo.svg'
+import LogoIcon from '../assets/logo.svg'
+import ProfileIcon from "../assets/profile_icon.svg"
+import SearchIcon from "../assets/searchIcon.svg"
 import {useTranslation} from "react-i18next";
 import Dropdown from "./Dropdown.tsx";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
@@ -21,8 +23,8 @@ const Navbar = memo(() => {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <IconButton onClick={() => navigate("/")}>
-                        <Box component="img" src={frame} alt="Impulz"/>
+                    <IconButton disableRipple={true} onClick={() => navigate("/")}>
+                        <Box  component="img" src={LogoIcon} alt="Impulz"/>
                     </IconButton>
                     <Box component="form" sx={{width: "450px", display: "flex", position: "relative"}}>
                         <OutlinedInput
@@ -61,7 +63,7 @@ const Navbar = memo(() => {
                             disableRipple
                             // onClick={}
                         >
-                            <img height={45} width={35} src={"searchIcon.svg"} alt={""}/>
+                            <Box height={45} width={30} component="img" src={SearchIcon}/>
                         </IconButton>
                     </Box>
                 </Box>
@@ -100,13 +102,11 @@ const Navbar = memo(() => {
                         keycloak.authenticated &&
                         <>
                             <LogoutButton/>
-                            <IconButton href={"/"}>
-                                <img
-                                    src="/client/src/assets/profile_icon.svg"
-                                    alt="Profile"
-                                    width={36}
-                                    height={36}
-                                />
+                            <IconButton
+                                disableRipple={true}
+                                onDragStart={(e) => e.preventDefault()}
+                                href={"/"}>
+                                <Box height={35} width={35} component="img" src={ProfileIcon} alt="Profile"/>
                             </IconButton>
                         </>
                     }

@@ -229,7 +229,7 @@ const MusicPlayer: React.FC = () => {
         return () => {
             mounted = false;
         };
-    }, [active, dispatch, sendPlaybackStats, isLastTrack, volume]);
+    }, [active, dispatch, sendPlaybackStats, isLastTrack]);
 
     useEffect(() => {
         if (audioRef.current) {

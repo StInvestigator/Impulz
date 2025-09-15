@@ -107,7 +107,7 @@ const LibraryGrid = () => {
                     >
                         <CirclesCard image={elem.imageUrl} align={elem.align} borderRadius={elem.borderRadius} center={center}>
                             <Box
-                                sx={{ backgroundColor: '#FFF', padding: '12px', borderRadius: '10px' }}
+                                sx={{ color: 'var(--orange-peel)', padding: '12px', borderRadius: '10px' }}
                             >
                                 {elem.title}
                             </Box>

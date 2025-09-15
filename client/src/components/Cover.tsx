@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../assets/play.svg";
 import pushPinImage from "../assets/pushPin.svg"
+import bgCoverImg from "../assets/bg-cover.svg";
 
 interface CoverProps {
     type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album"; // Добавьте "privatePlaylist"
@@ -22,13 +23,17 @@ const Cover: FC<CoverProps> = ({
                                }) => {
     return (
         <Box
-            bgcolor={"#D9D9D9"}
             width={"100%"}
             height={"450px"}
             padding={"50px"}
             boxSizing={"border-box"}
+            position={"relative"}
+            sx={{ 
+                backgroundColor: "var(--dark-purple)",
+            }}
         >
-            <Box display={"flex"} alignItems={"center"}>
+            <Box component={"img"} src={bgCoverImg} position={"absolute"} top={0} left={0} width={"100%"} height={"100%"} />
+            <Box display={"flex"} alignItems={"center"} zIndex={2} position={"relative"} height={"100%"}>
                 <Box
                     width={"350px"}
                     height={"350px"}
@@ -49,7 +54,7 @@ const Cover: FC<CoverProps> = ({
                     </IconButton>
                 </Box>
                 <Box flex={1} marginLeft={"100px"} marginTop={"auto"} display={"flex"} flexDirection={"column"} gap={3}>
-                    <Typography variant={"mainSbL"} fontSize={"24px"}>
+                    <Typography variant={"mainSbL"} fontSize={"24px"} color="var(--columbia-blue)">
                         {type === "myPlaylist" && "Мій плейлист"}
                         {type === "publicPlaylist" && "Публічний плейлист"}
                         {type === "privatePlaylist" && "Приватний плейлист"} {/* Добавьте эту строку */}
@@ -65,11 +70,12 @@ const Cover: FC<CoverProps> = ({
                             textOverflow: "ellipsis",
                             wordBreak: "break-word",
                             whiteSpace: "normal",
+                            color: "var(--orange-peel)"
                         }}
                     >
                         {title}
                     </Typography>
-                    <Box display={"flex"} height={"52px"} justifyContent={"flex-start"} alignItems={"center"} gap={1}>
+                    <Box display={"flex"} height={"52px"} justifyContent={"flex-start"} alignItems={"center"} gap={1} color={"var(--columbia-blue)"}>
                         <Box bgcolor={"#D3A8A8"} width={"52px"} height={"52px"} borderRadius={"50%"}/>
                         <Box component="img" src={pushPinImage} width={"20px"} height={"20px"}/>
                         <Typography variant={"mainSbL"} fontSize={"32px"} noWrap sx={{ flexBasis: "50%", minWidth: 0 }}>

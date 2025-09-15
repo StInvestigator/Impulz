@@ -78,11 +78,14 @@ const Sidebar = memo(() => {
                                     borderRadius: location.pathname === path ? "10px 0 0 10px" : "10px",
                                     gap: "24px",
                                     backgroundColor: location.pathname === path ? 'white' : 'transparent',
+                                    color: location.pathname === path ? "var(--berkeley-blue)" : "var(--orange-peel)",
                                     '&:hover': {
                                         backgroundColor: location.pathname === path ? 'white' : 'var(--orange-peel-20)',
+                                        color: location.pathname === path ? "var(--berkeley-blue)" : "var(--orange-peel)"
                                     },
                                     '&:active': {
                                         backgroundColor: location.pathname === path ? 'white' : 'var(--orange-peel-20)',
+                                        color: location.pathname === path ? "var(--berkeley-blue)" : "var(--orange-peel)"
                                     },
                                     '&.Mui-focusVisible': {
                                         backgroundColor: 'transparent',
@@ -96,7 +99,7 @@ const Sidebar = memo(() => {
                                 <ListItemText
                                     primary={t(`${name}`)}
                                     disableTypography
-                                    sx={{fontSize:"16px", fontWeight:600, color: "var(--orange-peel)" }}
+                                    sx={{fontSize:"16px", fontWeight:600 }}
                                 />
                             </ListItemButton>
                         </ListItem>

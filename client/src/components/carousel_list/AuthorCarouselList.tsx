@@ -35,6 +35,7 @@ const AuthorCarouselList: FC<AuthorListProps> = ({
           variant={"h3"}
           count_items={authors.length}
           bgColor={"var(--dark-purple)"}
+          textColor={"var(--deep-sky-blue)"}
         >
           {authors.map((author, index) => (
             <AuthorSmallItem key={index} author={author} itemWidth={itemWidth} />

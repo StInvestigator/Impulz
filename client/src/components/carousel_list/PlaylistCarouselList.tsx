@@ -35,6 +35,7 @@ const PlaylistCarouselList: FC<PlaylistListProps> = ({
           gap={24}
           count_items={playlists.length}
           bgColor={"var(--dark-purple)"}
+          textColor={"var(--deep-sky-blue)"}
         >
           {playlists.map((playlist, index) => (
             <PublicPlaylistSmallItem

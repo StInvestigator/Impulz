@@ -70,9 +70,10 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
                     {title}
                 </Typography>
                 <Button sx={{
-                    border: `1px solid ${textColor || 'var(--deep-sky-blue)'}`, 
+                    backgroundColor: textColor !== "var(--dark-purple)" ? "none" : 'var(--dark-purple)', // Фон кнопки совпадает с фоном карусели
+                    border: `1px solid ${textColor !== "var(--dark-purple)" ? textColor : 'none'}`, 
                     borderRadius: "10px", // Скругление углов
-                    color: textColor || 'var(--deep-sky-blue)', // Цвет текста
+                    color: textColor !== "var(--dark-purple)" ? textColor : 'var(--columbia-blue)', // Цвет текста
                     textTransform: "none", // Без изменения регистра текста
                     padding: "8px 12px",
                 }}>

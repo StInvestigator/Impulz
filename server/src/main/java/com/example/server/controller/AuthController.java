@@ -31,6 +31,7 @@ public class AuthController {
         try {
             Jwt jwt = jwtDecoder.decode(token);
             log.info("Processing login for user: {}", jwt.getSubject());
+            keycloakSyncServiceImpl.syncUserFromKeycloak(jwt);
             return ResponseEntity.ok().build();
 
         } catch (Exception e) {

@@ -88,7 +88,7 @@ VALUES
 -- album 1 (Adele)
 (1, 1, 'Strangers By Nature', 182, 'music/Adele-StrangersByNature.mp3', 1200,
  now() - interval '390 days'),
-(2, 1, 'Easy On Me', 224, 'music/Adele_Easy_On_Me.mp3   ', 5400, now() - interval '389 days'),
+(2, 1, 'Easy On Me', 224, 'music/Adele_Easy_On_Me.mp3', 5400, now() - interval '389 days'),
 (3, 1, 'My Little Love', 389, 'music/Adele-MyLittleLove.mp3', 980,
  now() - interval '388 days'),
 -- album 2 (The Weeknd)

@@ -52,7 +52,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                     {playlist.title}
                 </Typography>
                 <Typography variant="mainRM">
-                    {t("title-album")} &middot; {playlist.owner?.name || "Unknown"}
+                    {t("title-playlist")} &middot; {playlist.owner?.name || "Unknown"}
                 </Typography>
             </Box>
         </Box>

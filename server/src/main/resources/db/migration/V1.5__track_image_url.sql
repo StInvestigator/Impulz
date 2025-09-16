@@ -1,0 +1,2 @@
+ALTER TABLE tracks
+ADD COLUMN image_url TEXT;

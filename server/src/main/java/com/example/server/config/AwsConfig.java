@@ -15,25 +15,21 @@ import java.net.URI;
 @Configuration
 public class AwsConfig {
 
-    @Value("${minio.endpoint}")
-    private String minioEndpoint;
-
-    @Value("${minio.access-key}")
+    @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("${minio.secret-key}")
+    @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
 
-    @Value("${minio.region}")
+    @Value("${cloud.aws.region.static}")
     private String region;
 
-    @Value("${minio.bucket-name}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .endpointOverride(URI.create(minioEndpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)
                 ))
@@ -47,7 +43,6 @@ public class AwsConfig {
     @Bean
     public S3Presigner s3Presigner() {
         return S3Presigner.builder()
-                .endpointOverride(URI.create(minioEndpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)
                 ))

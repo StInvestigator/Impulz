@@ -42,6 +42,9 @@ public class Track {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @Column(name = "image_url")
+    private String imageURl;
+
     @ManyToMany
     @JoinTable(
             name = "track_authors",

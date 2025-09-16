@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -33,7 +34,7 @@ public class MusicServiceImpl implements MusicService{
 
     @Transactional(rollbackFor = Exception.class)
     public Track uploadMusic(MultipartFile file, Track track) {
-        String key = S3_MUSIC_PREFIX + track.getTitle();
+        String key = S3_MUSIC_PREFIX + UUID.randomUUID() + "_" + track.getTitle().replaceAll("[^a-zA-Z0-9._-]", "_");
         File tempFile = null;
 
         if (s3StorageService.fileExists(key)) {
@@ -68,21 +69,9 @@ public class MusicServiceImpl implements MusicService{
         }
     }
 
-    public String getStreamUrl(String fileUrl) {
-        if (fileUrl != null && !fileUrl.trim().isEmpty()) {
-            return s3StorageService.generatePresignedUrl(
-                    fileUrl,
-                    Duration.ofHours(4)
-            );
-        } else {
-            return null;
-        }
-    }
-
     public boolean isMusicExists(String key) {
         return s3StorageService.fileExists(key);
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteMusic(String fileName) {

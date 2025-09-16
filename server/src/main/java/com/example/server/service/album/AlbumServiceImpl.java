@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -44,7 +46,7 @@ public class AlbumServiceImpl implements AlbumService
 
     @Override
     public Page<Album> findByAuthor(String authorId, Pageable pageable) {
-        return albumRepository.findByAuthors(authorService.getAuthorById(authorId), pageable);
+        return albumRepository.findByAuthorsContainingAndReleaseDateLessThanEqual(authorService.getAuthorById(authorId), OffsetDateTime.now(), pageable);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class AlbumServiceImpl implements AlbumService
 
     @Override
     public Page<Album> findByAuthorOrderByReleaseDateDesc(String authorId, Pageable pageable) {
-        return albumRepository.findByAuthors_IdOrderByReleaseDateDesc(authorId, pageable);
+        return albumRepository.findByAuthors_IdAndReleaseDateLessThanEqualOrderByReleaseDateDesc(authorId, OffsetDateTime.now(), pageable);
     }
 
     @Override

@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public interface AlbumRepository extends JpaRepository<Album,Long>
 {
@@ -19,7 +20,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
         FROM albums a
         JOIN tracks t ON t.album_id = a.id
         JOIN track_plays tp ON tp.track_id = t.id
-        WHERE tp.played_at >= CURRENT_DATE - INTERVAL '30 days'
+        WHERE tp.played_at >= CURRENT_DATE - INTERVAL '30 days' AND a.release_date <= CURRENT_DATE
         GROUP BY a.id
         ORDER BY COUNT(tp.id) DESC
         """,
@@ -28,7 +29,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
         FROM albums a
         JOIN tracks t ON t.album_id = a.id
         JOIN track_plays tp ON tp.track_id = t.id
-        WHERE tp.played_at >= CURRENT_DATE - INTERVAL '30 days'
+        WHERE tp.played_at >= CURRENT_DATE - INTERVAL '30 days' AND a.release_date <= CURRENT_DATE
         """,
             nativeQuery = true
     )
@@ -37,10 +38,10 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
     @Query(
             value = """
         WITH user_recent_genres AS (
-            SELECT DISTINCT tg.genre_id, MAX(tp.played_at) as last_played
+            SELECT tg.genre_id, MAX(tp.played_at) as last_played
             FROM track_plays tp
             JOIN track_genres tg ON tg.track_id = tp.track_id
-            WHERE tp.user_id = :userId
+            WHERE tp.user_id = :userId 
             GROUP BY tg.genre_id
             ORDER BY last_played DESC
             LIMIT 5
@@ -50,7 +51,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
             FROM albums a
             JOIN tracks t ON t.album_id = a.id
             JOIN track_genres tg ON tg.track_id = t.id
-            WHERE tg.genre_id IN (SELECT genre_id FROM user_recent_genres)
+            WHERE tg.genre_id IN (SELECT genre_id FROM user_recent_genres) AND a.release_date <= CURRENT_DATE
             GROUP BY a.id
         )
         SELECT a.*
@@ -61,7 +62,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
         """,
             countQuery = """
         WITH user_recent_genres AS (
-            SELECT DISTINCT tg.genre_id, MAX(tp.played_at) as last_played
+            SELECT tg.genre_id, MAX(tp.played_at) as last_played
             FROM track_plays tp
             JOIN track_genres tg ON tg.track_id = tp.track_id
             WHERE tp.user_id = :userId
@@ -74,7 +75,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
             FROM albums a
             JOIN tracks t ON t.album_id = a.id
             JOIN track_genres tg ON tg.track_id = t.id
-            WHERE tg.genre_id IN (SELECT genre_id FROM user_recent_genres)
+            WHERE tg.genre_id IN (SELECT genre_id FROM user_recent_genres) AND a.release_date <= CURRENT_DATE
             GROUP BY a.id
         )
         SELECT COUNT(DISTINCT a.id)
@@ -85,30 +86,32 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
     )
     Page<Album> findPopularAlbumsByUserRecentGenres(@Param("userId") String userId, Pageable pageable);
 
-    Page<Album> findByAuthors(Author author, Pageable pageable);
+    Page<Album> findByAuthorsContainingAndReleaseDateLessThanEqual(Author author, OffsetDateTime date, Pageable pageable);
 
     @Query(
             value = "SELECT al.* FROM albums al " +
                     "JOIN album_authors aa ON al.id = aa.album_id " +
-                    "WHERE aa.author_id = :authorId " +
+                    "WHERE aa.author_id = :authorId AND al.release_date <= CURRENT_DATE " +
                     "AND al.id IN ( " +
                     "  SELECT album_id FROM album_authors GROUP BY album_id HAVING COUNT(author_id) > 1" +
                     ")",
-            countQuery = "SELECT COUNT(*) FROM ( " +
-                    "  SELECT album_id FROM album_authors GROUP BY album_id HAVING COUNT(author_id) > 1" +
-                    ") t JOIN albums al2 ON al2.id = t.album_id JOIN album_authors aa2 ON al2.id = aa2.album_id WHERE aa2.author_id = :authorId",
+            countQuery = "SELECT COUNT(DISTINCT al2.id) FROM albums al2 " +
+                    "JOIN album_authors aa2 ON al2.id = aa2.album_id " +
+                    "WHERE aa2.author_id = :authorId AND al2.id IN (SELECT album_id FROM album_authors GROUP BY album_id HAVING COUNT(author_id) > 1)",
             nativeQuery = true
     )
     Page<Album> findAlbumsByAuthorWithMultipleAuthors(@Param("authorId") String authorId, Pageable pageable);
 
-    Page<Album> findByAuthors_IdOrderByReleaseDateDesc(String authorId, Pageable pageable);
+    Page<Album> findByAuthors_IdAndReleaseDateLessThanEqualOrderByReleaseDateDesc(String authorId, OffsetDateTime date, Pageable pageable);
 
     @Query(
             value = """
         SELECT a.*
         FROM albums a
         JOIN tracks t ON t.album_id = a.id
-        JOIN track_genres tg ON tg.track_id = t.id AND tg.genre_id = :genreId
+        JOIN track_genres tg ON tg.track_id = t.id
+        WHERE tg.genre_id = :genreId
+          AND a.release_date <= CURRENT_DATE
         GROUP BY a.id
         ORDER BY a.release_date DESC NULLS LAST
         """,
@@ -116,7 +119,9 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
         SELECT COUNT(DISTINCT a.id)
         FROM albums a
         JOIN tracks t ON t.album_id = a.id
-        JOIN track_genres tg ON tg.track_id = t.id AND tg.genre_id = :genreId
+        JOIN track_genres tg ON tg.track_id = t.id
+        WHERE tg.genre_id = :genreId
+          AND a.release_date <= CURRENT_DATE
         """,
             nativeQuery = true
     )

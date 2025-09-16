@@ -1,6 +1,7 @@
 package com.example.server.service.s3;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -20,16 +21,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class S3StorageServiceImpl implements S3StorageService {
 
     private final S3Client s3Client;
-    private final S3Presigner presigner;
 
-    @Value("${minio.bucket-name}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    public void uploadFromMultipart(MultipartFile file, String key) {
+        try {
+            PutObjectRequest req = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .contentType(file.getContentType() != null ? file.getContentType() : "application/octet-stream")
+                    .contentLength(file.getSize())
+                    .build();
+
+            s3Client.putObject(req, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+        } catch (
+                SdkException e) {
+            throw new RuntimeException("S3 upload failed: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void uploadFile(File file, String key, String contentType) {
         try {
@@ -37,31 +55,12 @@ public class S3StorageServiceImpl implements S3StorageService {
                     PutObjectRequest.builder()
                             .bucket(bucketName)
                             .key(key)
-                            .contentType(contentType)
+                            .contentType(contentType != null ? contentType : "application/octet-stream")
                             .build(),
                     RequestBody.fromFile(file)
             );
         } catch (SdkException e) {
             throw new RuntimeException("S3 upload failed: " + e.getMessage(), e);
-        }
-    }
-
-    public String generatePresignedUrl(String key, Duration duration) {
-        try {
-            var getObjectRequest = GetObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .build();
-
-            return presigner.presignGetObject(
-                    GetObjectPresignRequest.builder()
-                            .signatureDuration(duration)
-                            .getObjectRequest(getObjectRequest)
-                            .build()
-            ).url().toString();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate presigned URL: " + e.getMessage(), e);
         }
     }
 
@@ -112,7 +111,7 @@ public class S3StorageServiceImpl implements S3StorageService {
             GetObjectRequest rangeRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
-                    .range(range)
+                    .range(actRange)
                     .build();
 
             return s3Client.getObject(rangeRequest);

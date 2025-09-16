@@ -59,3 +59,13 @@ app:
 
 jwt:
   secret: ${JWT_SECRET:wI0Fcd3rZPL+CQ6X5koM0dn8CKV2gA3VX0Z0M4cV2Rk=}
+
+cloud:
+  aws:
+    s3:
+      bucket: impulz-bucket-1
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ${AWS_REGION:us-east-1}

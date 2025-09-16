@@ -19,14 +19,38 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
         <Box
             sx={{
                 width: itemWidth || "100%",
+                height: `${itemHeight}px`,
                 position: "relative",
+                display: "flex",
+                flexDirection: "column"
             }}
         >
-            <Box bgcolor="gray" width="100%" height={`${itemHeight}px`} borderRadius={"10px 10px 10px 10px"} position={"relative"}>
+            <Box
+                sx={{
+                    backgroundImage: `url(${track.imgUrl})`,
+                    backgroundColor: '',
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    width: "100%",
+                    height: `${itemHeight}px`,
+                    borderRadius: "10px 10px 10px 10px",
+                    position: "relative",
+                    flexShrink: 0
+                }}
+            >
                 {
                     isMedal &&
-                    <Box component={"img"} position={"absolute"} right={10} top={10} src={medalImage} borderRadius={'50%'} width={"30px"}
-                         height={"30px"}/>
+                    <Box
+                        component="img"
+                        color={"white"}
+                        position={"absolute"}
+                        right={10}
+                        top={10}
+                        src={medalImage}
+                        borderRadius={'50%'}
+                        width={"30px"}
+                        height={"30px"}
+                    />
                 }
             </Box>
             <Box
@@ -35,34 +59,55 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                 width={"100%"}
                 height={"88px"}
                 boxSizing={"border-box"}
-                bgcolor={"var(--orange-peel-20)"}
-                borderRadius={"0 0 10px 10px"}
+                sx={{
+                    background: 'rgba(255, 165, 0, 0.15)',
+                    backdropFilter: 'blur(4px) saturate(120%)',
+                    borderRadius: "0 0 10px 10px",
+                    border: '1px solid rgba(255, 255, 255, 0.125)',
+                }}
                 position={"absolute"}
                 bottom={0}
+                flexShrink={0}
             >
                 <Box display="flex" alignItems="center" width={"100%"}>
-                    <Box display="flex" flexDirection="column" flexGrow={1}>
-                        <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
+                    <Box display="flex" flexDirection="column" flexGrow={1} minWidth={0}>
+                        <Typography
+                            variant={"mainSbL"}
+                            gutterBottom
+                            sx={{
+                                color: "var(--orange-peel)",
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                        >
                             {track.title}
                         </Typography>
-                        <Typography variant={"mainRM"} sx={{ color: "black"}}>
+                        <Typography
+                            variant={"mainRM"}
+                            sx={{
+                                color: "black",
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                        >
                             <Link
                                 onDragStart={(e) => e.preventDefault()}
                                 href={`/album/${track.albumId}"`}
                                 underline="none"
-                                  sx={{
-                                      color: 'inherit',
-                                      '&:hover': {
-                                          textDecoration: 'underline',
-                                          color: '#1976d2',
-                                          cursor: 'pointer',
-                                      },
-                                  }}>
+                                sx={{
+                                    color: "var(--orange-peel)",
+                                    '&:hover': {
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer',
+                                    },
+                                }}>
                                 {track.album}
                             </Link>
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0}} onClick={() => playSingle(track)}>
+                    <IconButton sx={{padding: 0, flexShrink: 0}} onClick={() => playSingle(track)}>
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

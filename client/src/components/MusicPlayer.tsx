@@ -4,7 +4,7 @@ import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import { Box, Grid, IconButton, Link, Typography } from '@mui/material';
+import {Box, CircularProgress, Grid, IconButton, Link, Typography} from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume, nextTrack, prevTrack } from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
@@ -177,8 +177,7 @@ const MusicPlayer: React.FC = () => {
 
                 audio.onpause = () => {
                     dispatch(pauseTrack());
-
-               };
+                };
 
                 audio.onerror = (e) => {
                     if (!mounted || !isMountedRef.current) return;
@@ -253,6 +252,8 @@ const MusicPlayer: React.FC = () => {
     }, [pause]);
 
     const togglePlay = () => {
+        if (loading) return;
+
         if (pause) {
             dispatch(playTrack());
         } else {
@@ -311,9 +312,15 @@ const MusicPlayer: React.FC = () => {
                 <SkipPreviousIcon />
             </IconButton>
 
-            <IconButton aria-label="play-pause" onClick={togglePlay}>
-                {pause ? <PlayCircleIcon /> : <PauseCircleIcon />}
-            </IconButton>
+            {loading ? (
+                <Box sx={{ padding: '8px' }}>
+                    <CircularProgress size={24} />
+                </Box>
+            ) : (
+                <IconButton aria-label="play-pause" onClick={togglePlay}>
+                    {pause ? <PlayCircleIcon /> : <PauseCircleIcon />}
+                </IconButton>
+            )}
 
             <IconButton
                 aria-label="next"

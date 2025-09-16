@@ -257,26 +257,26 @@ VALUES (1, 0, 15000, '[Intro] piano motif and hush'),
 
 -- 10) PLAYLISTS (10) — оставлены как пользовательские подборки
 INSERT INTO playlists (id, owner_id, title, is_public, image_url, created_at)
-VALUES (1, '11111111-1111-4111-8111-111111111111', 'Adele Essentials', true, 'https://example.com/playlists/adele.jpg',
-        now() - interval '200 days'),
+VALUES (1, '11111111-1111-4111-8111-111111111111', 'Adele Essentials', true,
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/adele_essentials_playlist_image.png',now() - interval '200 days'),
        (2, '22222222-2222-4222-8222-222222222222', 'Night Drive Hits', true,
-        'https://example.com/playlists/night_drive.jpg', now() - interval '180 days'),
-       (3, '33333333-3333-4333-8333-333333333333', 'Blue Jazz', false, 'https://example.com/playlists/blue_jazz.jpg',
-        now() - interval '170 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/night_drive_playlist_image.png', now() - interval '180 days'),
+       (3, '33333333-3333-4333-8333-333333333333', 'Blue Jazz', false,
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/blue_jazz_playlist_image.png',now() - interval '170 days'),
        (4, '44444444-4444-4444-8444-444444444444', 'Rock Classics', true,
-        'https://example.com/playlists/rock_classics.jpg', now() - interval '160 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/rock_classic_playlist_image.png', now() - interval '160 days'),
        (5, '55555555-5555-4555-8555-555555555555', 'Piano Evenings', false,
-        'https://example.com/playlists/piano_evenings.jpg', now() - interval '150 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/piano_evenings_playlist_image.png', now() - interval '150 days'),
        (6, '66666666-6666-4666-8666-666666666666', 'Hip-Hop Essentials', true,
-        'https://example.com/playlists/hiphop_essentials.jpg', now() - interval '140 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/hip-hop_playlist_image.png', now() - interval '140 days'),
        (7, '77777777-7777-4777-8777-777777777777', 'Folk Favorites', false,
-        'https://example.com/playlists/folk_favorites.jpg', now() - interval '130 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/folk_playlist_image.png', now() - interval '130 days'),
        (8, '88888888-8888-4888-8888-888888888888', 'Metal Anthems', true,
-        'https://example.com/playlists/metal_anthems.jpg', now() - interval '120 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/metal_anthems_playlist_image.png', now() - interval '120 days'),
        (9, '99999999-9999-4999-8999-999999999999', 'Ambient Spaces', true,
-        'https://example.com/playlists/ambient_spaces.jpg', now() - interval '110 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ambient_spaces_playlist_image.png', now() - interval '110 days'),
        (10, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Reggae Roots', true,
-        'https://example.com/playlists/reggae_roots.jpg', now() - interval '100 days');
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/raggae_roots_playlist_image.png', now() - interval '100 days');
 
 -- 11) PLAYLIST_TRACKS (каждый плейлист содержит 3 трека)
 INSERT INTO playlist_tracks (playlist_id, track_id)

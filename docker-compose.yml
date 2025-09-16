@@ -19,6 +19,8 @@ services:
       - "8083:8083"
     env_file:
       - ./server/.env
+    volumes:
+      - ./server/src/main/resources/db/migration:/app/db/migration
     depends_on:
       postgres:
         condition: service_healthy

@@ -177,7 +177,8 @@ const MusicPlayer: React.FC = () => {
 
                 audio.onpause = () => {
                     dispatch(pauseTrack());
-                };
+
+               };
 
                 audio.onerror = (e) => {
                     if (!mounted || !isMountedRef.current) return;

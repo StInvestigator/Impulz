@@ -115,7 +115,7 @@ const Sidebar = memo(() => {
                     fontWeight: 400,
                     color: "var(--columbia-blue)",
                     padding: "6px 12px",
-                    textTransform: "none"
+                    textTransform: "none",
                 }}>
                     <Box component="img" src={createPlaylistImg} color={"var(--columbia-blue)"} style={{ paddingRight: "10px" }} />
                     {t("button-create-playlist")}

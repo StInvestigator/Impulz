@@ -22,10 +22,14 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                 onClick={() => setActive(!active)}
                 sx={{
                     gap: 1,
+                    borderRadius: '15px',
                     transition: 'color 0.3s',
                     padding: "22px 12px",
                     color: active ? 'var(--berkeley-blue)' : (hover ? 'var(--deep-sky-blue)' : 'var(--columbia-blue)'),
                     '&:hover': {
+                        backgroundColor: 'white',
+                        opacity: '0.7',
+                        transition: 'background-color 0.3s ease',
                         color: 'var(--deep-sky-blue)',
                         '& .MuiTypography-root': {
                             color: 'var(--deep-sky-blue)',

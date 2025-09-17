@@ -17,6 +17,7 @@ const GenreList = () => {
             justifyContent="space-between"
             bgcolor="var(--columbia-blue)"
             width="100%"
+            height="410px"
             padding="24px"
             boxSizing="border-box"
             borderRadius={"10px"}

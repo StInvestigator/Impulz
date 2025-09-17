@@ -28,7 +28,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => 
                     width="100%"
                     height={`${itemHeight}px`}
                     maxWidth={itemWidth}
-                    borderRadius={"10px 10px 0 0"}
+                    borderRadius={"10px"}
                     position={"relative"}
                     sx={{
                         backgroundImage: `url(${album.imgUrl || ""})`,
@@ -39,9 +39,20 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => 
 
                 </Box>
             </Link>
-            <Box display={"flex"} padding={"24px"} position={"absolute"} bottom={0} height={"88px"} width={"100%"} maxWidth={itemWidth} boxSizing={"border-box"} borderRadius={"0 0 10px 10px"} sx={{
-                background: "var(--gradient-plashka-purple)",
-            }}>
+            <Box
+                display={"flex"}
+                padding={"24px"}
+                position={"absolute"}
+                bottom={0}
+                height={"88px"}
+                width={"100%"}
+                maxWidth={itemWidth}
+                boxSizing={"border-box"}
+                borderRadius={"0 0 10px 10px"}
+                sx={{
+                    background: "var(--gradient-plashka-purple)",
+                }}
+            >
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
                     <Box display={"flex"} flexDirection={"column"}>
                         <Typography variant={"mainSbL"} gutterBottom color={"var(--orange-peel)"}>

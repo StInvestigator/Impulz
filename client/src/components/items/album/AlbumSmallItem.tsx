@@ -24,6 +24,9 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                 flexShrink: 0,
                 cursor: "pointer",
                 transition: 'background-color 0.3s ease',
+                backgroundImage: `url(${album.imgUrl || ""})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 // "&:hover": {
                 //     backgroundColor: "gray"
                 // }

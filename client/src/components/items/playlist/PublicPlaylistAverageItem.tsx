@@ -22,7 +22,9 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}
             <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative"}>
 
             </Box>
-            <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} bgcolor={"#B9B9B9"} borderRadius={"0 0 10px 10px"}>
+            <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} borderRadius={"0 0 10px 10px"} sx={{
+                background: "var(--gradient-plashka-purple)",
+            }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
                     <Box display={"flex"} flexDirection={"column"}>
                         <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>

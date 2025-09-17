@@ -27,7 +27,7 @@ const GenreList = () => {
             <Box width="60%" display="flex" flexDirection="column" gap={2} height="100%">
                 <Box
                     component={Link}
-                    to={`/genres/${genres.genre1.id}`}
+                    to={`/library`}
                     sx={{
                         position: 'relative',
                         flex: 1,

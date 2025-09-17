@@ -1,14 +1,14 @@
-import {type FC} from "react";
-import {Box, IconButton, Typography} from "@mui/material";
+import { type FC } from "react";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import {useNavigate} from "react-router-dom";
-import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 
 interface AuthorItemProps {
-    author: AuthorSimpleDto;
-    itemWidth: number;
-    color?: "dark" | "light";
+  author: AuthorSimpleDto;
+  itemWidth: number;
+  color?: "dark" | "light";
 }
 
 const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth, color = "light"}) => {

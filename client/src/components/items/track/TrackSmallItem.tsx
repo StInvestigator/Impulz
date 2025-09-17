@@ -183,8 +183,11 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                         <Link
                             href={`/album/${track.albumId}`}
                             underline="none"
+                            textAlign="center"
                             sx={{
                                 color: 'inherit',
+                                flexBasis: "20%", 
+                                minWidth: 0,
                                 '&:hover': {
                                     textDecoration: 'underline',
                                     color: '#1976d2',
@@ -195,7 +198,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                                 variant="mainRM"
                                 noWrap
                                 textAlign="center"
-                                sx={{ flexBasis: "20%", minWidth: 0 }}
                             >
                                 {track.album}
                             </Typography>

@@ -17,6 +17,9 @@ import AlbumsInAuthorPage from "../pages/album_page/AlbumsInAuthorPage.tsx";
 import ColaborationInAuthorPage from "../pages/album_page/ColaborationInAuthorPage.tsx";
 import SimilarAuthorsPage from "../pages/authors_page/SimilarAuthorsPage.tsx";
 import AlbumItemPage from "../pages/AlbumItemPage.tsx";
+import HitsWeekPage from "../pages/tracks_page/HitsWeekPage.tsx";
+import BestAuthorsMonthPage from "../pages/authors_page/BestAuthorsMonthPage.tsx";
+import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -25,6 +28,9 @@ const AppRouter = () => {
             <Route path="/library" element={<LibraryPage />} />
             <Route path="/hello" element={<HelloPage />} />
             <Route path="/category" element={<CategoryPage />} />
+            <Route path="/hitsWeek" element={<HitsWeekPage />} />
+            <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
+            <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
 
             <Route
                 path="/author/:id"

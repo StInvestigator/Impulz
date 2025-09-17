@@ -10,6 +10,7 @@ interface PlaylistListProps {
   error: string | null;
   itemWidth: number;
   name: string;
+  url: string;
 }
 
 const PlaylistCarouselList: FC<PlaylistListProps> = ({
@@ -18,6 +19,7 @@ const PlaylistCarouselList: FC<PlaylistListProps> = ({
   name,
   isLoading,
   error,
+  url,
 }) => {
   return (
     <>
@@ -36,6 +38,7 @@ const PlaylistCarouselList: FC<PlaylistListProps> = ({
           count_items={playlists.length}
           bgColor={"var(--dark-purple)"}
           textColor={"var(--deep-sky-blue)"}
+          url={url}
         >
           {playlists.map((playlist, index) => (
             <PublicPlaylistSmallItem

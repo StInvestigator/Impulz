@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 import axios from "axios";
 import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
+import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopPlaylistsByWeek = createAsyncThunk<
     PlaylistSimpleDto[],
@@ -9,13 +10,14 @@ export const fetchTopPlaylistsByWeek = createAsyncThunk<
     { rejectValue: string }
 >(
     'playlists/TopPlaylistsByFavorites',
-    async ({ page = 0, size = 20 }, { rejectWithValue }) => {
+    async ({ page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await axios.get(`http://localhost:8083/api/playlists/TopPlaylistsByFavorites?${params}`)
+            dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {

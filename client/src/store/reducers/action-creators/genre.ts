@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { GenreSimpleDto } from "../../../models/DTO/GenreSimpleDto";
-import axios from "axios";
-// import { useAppDispatch } from "../../../hooks/redux";
 import { setTotalPages } from "../PageSlice";
+import {$api} from "../../../http";
 
 export const fetchTopGenres = createAsyncThunk<
     GenreSimpleDto[],
@@ -17,7 +16,7 @@ export const fetchTopGenres = createAsyncThunk<
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
-            const response = await axios.get(`http://localhost:8083/api/genres/TopGenres?${params}`)
+            const response = await $api.get(`/genres/TopGenres?${params}`)
             dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

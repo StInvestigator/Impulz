@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
-import axios from "axios";
 import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
+import {$api} from "../../../http";
 
 export const fetchTopPlaylistsByWeek = createAsyncThunk<
     PlaylistSimpleDto[],
@@ -15,7 +15,7 @@ export const fetchTopPlaylistsByWeek = createAsyncThunk<
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
-            const response = await axios.get(`http://localhost:8083/api/playlists/TopPlaylistsByFavorites?${params}`)
+            const response = await $api.get(`/playlists/TopPlaylistsByFavorites?${params}`)
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -32,8 +32,8 @@ export const fetchPlaylistDetails = createAsyncThunk<
     "playlists/fetchPlaylistDetails",
     async (playlistId, { rejectWithValue }) => {
         try {
-            const response = await axios.get(
-                `http://localhost:8083/api/playlists/Dto/${playlistId}`
+            const response = await $api.get(
+                `/playlists/Dto/${playlistId}`
             );
             return response.data;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

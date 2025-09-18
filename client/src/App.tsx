@@ -48,7 +48,7 @@ const SecuredContent = () => {
 
   const sendTokenToBackend = async() => {
     try {
-      const response = await $authApi.post("/api/login-success");
+      const response = await $authApi.post("/login-success");
       console.log("user synced successfully: ",response.data);
     }
     catch (error){

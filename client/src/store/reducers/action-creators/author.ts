@@ -1,9 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
-import axios from "axios";
-import { $authApi } from "../../../http";
+import {$api, $authApi} from "../../../http";
 import type { AuthorDto } from "../../../models/AuthorDto.ts";
-// import { useAppDispatch } from "../../../hooks/redux.ts";
 import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
@@ -15,8 +13,8 @@ export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
 
-        const response = await axios.get(
-            `http://localhost:8083/api/authors/BestAuthorsOfMonth?${params}`
+        const response = await $api.get(
+            `/authors/BestAuthorsOfMonth?${params}`
         );
         dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
@@ -33,7 +31,7 @@ export const fetchTopAuthorsInGenre = createAsyncThunk<AuthorSimpleDto[],
         if (size !== undefined) params.append('size', size.toString());
 
         const response = await $authApi.get(
-            `http://localhost:8083/api/authors/TopInGenre/${genreId}?${params}`
+            `/authors/TopInGenre/${genreId}?${params}`
         );
         dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
@@ -44,7 +42,7 @@ export const fetchAuthorDetails = createAsyncThunk<AuthorDto, string>(
     "author/fetchAuthorDetails",
     async (authorId) => {
         const response = await $authApi.get(
-            `http://localhost:8083/api/authors/Dto/${authorId}`
+            `/authors/Dto/${authorId}`
         );
         return response.data;
     }

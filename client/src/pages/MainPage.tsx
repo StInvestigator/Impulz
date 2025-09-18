@@ -38,14 +38,14 @@ const MainPage = () => {
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"} />
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                <TrackBigCarouselList tracks={topTracks} isLoading={tracksLoading} error={tracksError} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} />
+                <TrackBigCarouselList tracks={topTracks} isLoading={tracksLoading} error={tracksError} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} url={"/hitsWeek"} />
                 <GenreList />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList authors={topAuthors} isLoading={authorsLoading} error={authorsError} itemWidth={134} name={t("main:title-best-author-month")} />
+                <AuthorCarouselList authors={topAuthors} isLoading={authorsLoading} error={authorsError} itemWidth={134} name={t("main:title-best-author-month")} url={"/bestAuthorsMonth"} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <PlaylistCarouselList playlists={topPlaylists} isLoading={playlistsLoading} error={playlistsError} itemWidth={134} name={t("main:title-listen-best-playlists")} />
+                <PlaylistCarouselList playlists={topPlaylists} isLoading={playlistsLoading} error={playlistsError} itemWidth={134} name={t("main:title-listen-best-playlists")} url={"/bestPlaylistsWeek"} />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />

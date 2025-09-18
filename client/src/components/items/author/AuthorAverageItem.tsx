@@ -23,7 +23,14 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
         bgcolor="gray"
         mx={"auto"}
         borderRadius={"50%"}
-        sx={{ width: "min(270px, 90%)", aspectRatio: "1 / 1","&:hover": { cursor: "pointer" } }}
+        sx={{ 
+          width: "min(270px, 90%)", 
+          aspectRatio: "1 / 1",
+          backgroundImage: `url(${author.imgUrl || ""})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          "&:hover": { cursor: "pointer" } 
+        }}
         onClick={() => navigate(`/author/${author.id}`)}
 
       />

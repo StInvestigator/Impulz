@@ -3,6 +3,7 @@ import arrowLeftImg from "../assets/arrow/arrowLeft.svg"
 import arrowRightImg from "../assets/arrow/arrowRight.svg"
 import {type ReactNode, type FC, useRef, useState, useEffect, Children} from "react";
 import { useTranslation } from 'react-i18next';
+import { useAppNavigate } from '../hooks/useAppNavigate';
 
 
 interface ListCarouselProps {
@@ -13,12 +14,14 @@ interface ListCarouselProps {
     gap: number;
     count_items: number;
     children: ReactNode;
+    url: string;
 }
 
-const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor, gap ,count_items, children }) => {
+const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor, gap ,count_items, children, url }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const firstItemRef = useRef<HTMLDivElement>(null);
 
+    const route = useAppNavigate();
     const [offset, setOffset] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
     const [itemWidth, setItemWidth] = useState(0); // динамически вычисляется
@@ -69,13 +72,14 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
                 <Typography variant={variant} color={textColor || 'var(--deep-sky-blue)'}>
                     {title}
                 </Typography>
-                <Button sx={{
+                <Button onClick={() => route(url)} sx={{
                     backgroundColor: textColor !== "var(--dark-purple)" ? "none" : 'var(--dark-purple)', // Фон кнопки совпадает с фоном карусели
                     border: `1px solid ${textColor !== "var(--dark-purple)" ? textColor : 'none'}`, 
                     borderRadius: "10px", // Скругление углов
                     color: textColor !== "var(--dark-purple)" ? textColor : 'var(--columbia-blue)', // Цвет текста
                     textTransform: "none", // Без изменения регистра текста
                     padding: "8px 12px",
+                    
                 }}>
                     <Typography variant={"mainSbS"}>
                         {t("button-watch-all")}

@@ -10,6 +10,7 @@ interface AuthorListProps {
   error: string | null;
   itemWidth: number;
   name: string;
+  url: string;  
 }
 
 const AuthorCarouselList: FC<AuthorListProps> = ({
@@ -18,6 +19,7 @@ const AuthorCarouselList: FC<AuthorListProps> = ({
   name,
   isLoading,
   error,
+  url,
 }) => {
   return (
     <>
@@ -36,6 +38,7 @@ const AuthorCarouselList: FC<AuthorListProps> = ({
           count_items={authors.length}
           bgColor={"var(--dark-purple)"}
           textColor={"var(--deep-sky-blue)"}
+          url={url}
         >
           {authors.map((author, index) => (
             <AuthorSmallItem key={index} author={author} itemWidth={itemWidth} />

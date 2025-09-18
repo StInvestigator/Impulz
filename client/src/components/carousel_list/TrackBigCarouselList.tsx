@@ -12,6 +12,7 @@ interface TrackListProps {
   variant: TypographyProps["variant"];
   itemWidth: number;
   itemHeight: number;
+  url: string;
 }
 
 const TrackBigCarouselList: FC<TrackListProps> = ({
@@ -22,6 +23,7 @@ const TrackBigCarouselList: FC<TrackListProps> = ({
   itemHeight,
   title,
   variant,
+  url,
 }) => {
 
   return (
@@ -41,6 +43,7 @@ const TrackBigCarouselList: FC<TrackListProps> = ({
           title={title}
           bgColor={"var(--dark-purple)"}
           textColor={"var(--orange-peel)"}
+          url={url}
         >
           {tracks.map((track, index) => (
             <TrackAverageItem

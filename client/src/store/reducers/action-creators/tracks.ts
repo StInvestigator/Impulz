@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import type { TrackSimpleDto } from "../../../models/DTO/TrackSimpleDto.ts";
-import { $authApi } from "../../../http";
-// import { useAppDispatch } from "../../../hooks/redux.ts";
+import {$api, $authApi} from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopTracksByWeek = createAsyncThunk<TrackSimpleDto[],
@@ -14,7 +12,7 @@ export const fetchTopTracksByWeek = createAsyncThunk<TrackSimpleDto[],
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
 
-        const response = await axios.get(`http://localhost:8083/api/tracks/MostListenedTracksOfWeek?${params}`);
+        const response = await $api.get(`/tracks/MostListenedTracksOfWeek?${params}`);
         dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
     }
@@ -32,7 +30,7 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
         if (size !== undefined) params.append('size', size.toString());
 
         const response = await $authApi.get(
-            `http://localhost:8083/api/tracks/ByAuthor/Popular/${authorId}?${params}`
+            `/tracks/ByAuthor/Popular/${authorId}?${params}`
         );
         dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
@@ -50,7 +48,7 @@ export const fetchAuthorTrackCollaborations = createAsyncThunk<
         if (size !== undefined) params.append('size', size.toString());
 
         const response = await $authApi.get(
-            `http://localhost:8083/api/tracks/ByAuthor/Collaborations/${authorId}?${params}`
+            `/tracks/ByAuthor/Collaborations/${authorId}?${params}`
         );
         dispatch(setTotalPages(response.data.totalPages))
         return response.data.content;
@@ -68,7 +66,7 @@ export const fetchTracksByAlbum = createAsyncThunk<
         if (size !== undefined) params.append('size', size.toString());
 
         const response = await $authApi.get(
-            `http://localhost:8083/api/tracks/ByAlbum/${albumId}?${params}`
+            `/tracks/ByAlbum/${albumId}?${params}`
         );
         return response.data.content;
     }

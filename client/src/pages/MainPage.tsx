@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { fetchTopPlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
 import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";
+import MixedRecommendationsCarouselList from "../components/carousel_list/MixedRecommendationsCarouselList.tsx";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
@@ -51,7 +52,10 @@ const MainPage = () => {
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={playlistsLoading} error={playlistsError} />
+                <MixedRecommendationsCarouselList
+                    itemWidth={134}
+                    name={t("main:title-recommendation-today")}
+                />
             </Box>
             <Box component={"section"} mt={"60px"}>
                 <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} />

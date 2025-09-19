@@ -11,7 +11,6 @@ export const fetchTopGenres = createAsyncThunk<
     'genres/TopGenres',
     async ({ page = 0, size = 5 }, { rejectWithValue, dispatch }) => {
         try {
-            // const dispatch = useAppDispatch();
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());

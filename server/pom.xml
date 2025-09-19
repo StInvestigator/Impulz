@@ -75,12 +75,25 @@
         </dependency>
 
         <!-- Oauth2 -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
-        <!-- Other -->
+        <!-- Redis -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -88,6 +101,8 @@
             <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
+
+        <!-- S3 -->
 
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -121,12 +136,14 @@
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
         </dependency>
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>

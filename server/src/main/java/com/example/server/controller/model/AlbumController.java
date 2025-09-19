@@ -33,67 +33,31 @@ public class AlbumController {
 
     @GetMapping("/ByAuthor/{id}")
     public ResponseEntity<Page<AlbumSimpleDto>> getAlbumsByAuthor(@PathVariable String id, Pageable pageable) {
-        try {
-            Page<Album> albums = albumService.findByAuthor(id, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(albumService.findByAuthor(id, pageable));
     }
 
     @GetMapping("/ByAuthor/Collaborations/{id}")
     public ResponseEntity<Page<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
-        try {
-            Page<Album> albums = albumService.findCollaborationsByAuthor(id, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(albumService.findCollaborationsByAuthor(id, pageable));
     }
 
     @GetMapping("/ByAuthor/Recent/{userId}")
     public ResponseEntity<Page<AlbumSimpleDto>> getRecentByAuthor(@PathVariable String userId, Pageable pageable) {
-        try {
-            Page<Album> albums = albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable));
     }
 
     @GetMapping("/Recommendations/Today")
     public ResponseEntity<Page<AlbumSimpleDto>> getTodayRecommended(Pageable pageable) {
-        try {
-            Page<Album> albums = albumService.getRecommendedAlbumsToday(pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(albumService.getRecommendedAlbumsToday(pageable));
     }
 
     @GetMapping("/Recommendations/PersonalByGenres/{userId}")
     public ResponseEntity<Page<AlbumSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
-        try {
-            Page<Album> albums = albumService.findPopularAlbumsByUserRecentGenres(userId, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(albumService.findPopularAlbumsByUserRecentGenres(userId, pageable));
     }
 
     @GetMapping("/ByGenre/Recent/{genreId}")
     public ResponseEntity<Page<AlbumSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
-        try {
-            Page<Album> albums = albumService.findNewAlbumsByGenre(genreId, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(albumService.findNewAlbumsByGenre(genreId, pageable));
     }
 }

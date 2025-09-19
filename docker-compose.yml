@@ -1,7 +1,5 @@
 version: "3.8"
 
-
-
 services:
   client:
     build:
@@ -25,6 +23,8 @@ services:
       postgres:
         condition: service_healthy
       keycloak:
+        condition: service_started
+      redis:
         condition: service_started
 
   postgres:
@@ -74,5 +74,15 @@ services:
       - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: [ "redis-server", "--save", "60", "1", "--appendonly", "yes" ]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
 volumes:
   postgres_data:
+  redis-data:

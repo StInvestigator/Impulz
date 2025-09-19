@@ -33,7 +33,7 @@ const playbackService = {
     },
 
     getStreamUrl: async (id: number): Promise<string> => {
-        const response = await $authApi.get(`/api/music/link/${id}`)
+        const response = await $authApi.get(`/music/link/${id}`)
         return response.data
     },
 };

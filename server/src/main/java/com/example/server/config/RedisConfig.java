@@ -17,8 +17,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 import java.time.Duration;
+
+import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @Configuration
 @EnableCaching
@@ -30,21 +33,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public ObjectMapper redisObjectMapper() {
-        ObjectMapper om = new ObjectMapper();
-        om.registerModule(new JavaTimeModule());
-        om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance,
-                ObjectMapper.DefaultTyping.NON_FINAL,
-                JsonTypeInfo.As.PROPERTY);
-        return om;
-    }
-
-    @Bean
-    public GenericJackson2JsonRedisSerializer jacksonSerializer(ObjectMapper redisObjectMapper) {
-        return new GenericJackson2JsonRedisSerializer(redisObjectMapper);
+    public GenericJackson2JsonRedisSerializer jacksonSerializer() {
+        return new GenericJackson2JsonRedisSerializer();
     }
 
     @Bean

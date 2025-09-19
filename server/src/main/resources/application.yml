@@ -46,6 +46,7 @@ logging:
     org.springframework.cache: DEBUG
     org.springframework.data.redis.cache: DEBUG
     org.springframework.security: TRACE
+    org.springframework.expression: DEBUG
 
 keycloak:
   keycloakUrl: ${KEYCLOAK_URL:http://localhost:9090}

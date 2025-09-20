@@ -1,5 +1,9 @@
 package com.example.server.service.author;
 
+import com.example.server.dto.Author.AuthorDto;
+import com.example.server.dto.Author.AuthorSimpleDto;
+import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.Author;
 import com.example.server.model.User;
 import org.springframework.data.domain.Page;
@@ -11,12 +15,14 @@ import java.util.List;
 public interface AuthorService
 {
     Author getAuthorById(String id);
-    Page<Author> findTopAuthorsOfMonth(Pageable pageable);
+    AuthorDto getAuthorDtoById(String id);
+    AuthorSimpleDto getAuthorSimpleDtoById(String id);
     void createAuthor(Author author);
     void deleteAuthor(String authorId);
-    Page<User> findFollowers(String authorId, Pageable pageable);
-    Page<Author> findSimilarBySharedGenres(String authorId, Pageable pageable);
-    Page<Author> findTopAuthorsByGenre(Long genreId, Pageable pageable);
+    PageDto<UserSimpleDto> findFollowers(String authorId, Pageable pageable);
+    PageDto<AuthorSimpleDto> findTopAuthorsOfMonth(Pageable pageable);
+    PageDto<AuthorSimpleDto> findSimilarBySharedGenres(String authorId, Pageable pageable);
+    PageDto<AuthorSimpleDto> findTopAuthorsByGenre(Long genreId, Pageable pageable);
     Long countAuthorPlaysByMonth(String authorId);
     void subscribeToAuthor(String userId, String authorId);
     void unsubscribeFromAuthor(String userId, String authorId);

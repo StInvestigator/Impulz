@@ -2,8 +2,10 @@ package com.example.server.controller.model;
 
 import com.example.server.dto.Album.AlbumDto;
 import com.example.server.dto.Album.AlbumSimpleDto;
+import com.example.server.dto.Page.PageDto;
 import com.example.server.model.Album;
 import com.example.server.service.album.AlbumService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,79 +23,78 @@ public class AlbumController {
 
     @GetMapping("/simpleDto/{id}")
     public AlbumSimpleDto getAlbumSimpleDto(@PathVariable Long id) {
-        Album album = albumService.getAlbumById(id);
-        return AlbumSimpleDto.fromEntity(album);
+        return albumService.getAlbumSimpleDtoById(id);
     }
 
     @GetMapping("/Dto/{id}")
     public AlbumDto getAlbumDto(@PathVariable Long id) {
-        Album album = albumService.getAlbumById(id);
-        return AlbumDto.fromEntity(album);
+        return albumService.getAlbumDtoById(id);
     }
 
     @GetMapping("/ByAuthor/{id}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getAlbumsByAuthor(@PathVariable String id, Pageable pageable) {
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getAlbumsByAuthor(@PathVariable String id, Pageable pageable) {
         try {
-            Page<Album> albums = albumService.findByAuthor(id, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(albumService.findByAuthor(id, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/ByAuthor/Collaborations/{id}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
         try {
-            Page<Album> albums = albumService.findCollaborationsByAuthor(id, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(albumService.findCollaborationsByAuthor(id, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/ByAuthor/Recent/{userId}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getRecentByAuthor(@PathVariable String userId, Pageable pageable) {
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getRecentByAuthor(@PathVariable String userId, Pageable pageable) {
         try {
-            Page<Album> albums = albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/Recommendations/Today")
-    public ResponseEntity<Page<AlbumSimpleDto>> getTodayRecommended(Pageable pageable) {
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getTodayRecommended(Pageable pageable) {
         try {
-            Page<Album> albums = albumService.getRecommendedAlbumsToday(pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(albumService.getRecommendedAlbumsToday(pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/Recommendations/PersonalByGenres/{userId}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
         try {
-            Page<Album> albums = albumService.findPopularAlbumsByUserRecentGenres(userId, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(albumService.findPopularAlbumsByUserRecentGenres(userId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/ByGenre/Recent/{genreId}")
-    public ResponseEntity<Page<AlbumSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
         try {
-            Page<Album> albums = albumService.findNewAlbumsByGenre(genreId, pageable);
-            Page<AlbumSimpleDto> dtoPage = albums.map(AlbumSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(albumService.findNewAlbumsByGenre(genreId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
+
 }

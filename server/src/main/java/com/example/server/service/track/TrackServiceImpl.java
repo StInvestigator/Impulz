@@ -4,11 +4,16 @@ import com.example.server.data.repository.AlbumRepository;
 import com.example.server.data.repository.AuthorRepository;
 import com.example.server.data.repository.GenreRepository;
 import com.example.server.data.repository.TrackRepository;
+import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.Track.TrackDto;
+import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.model.Author;
 import com.example.server.model.Genre;
 import com.example.server.model.Track;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -21,8 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TrackServiceImpl implements TrackService
-{
+public class TrackServiceImpl implements TrackService {
     private final TrackRepository trackRepository;
     private final AlbumRepository albumRepository;
     private final AuthorRepository authorRepository;
@@ -32,11 +36,25 @@ public class TrackServiceImpl implements TrackService
         return trackRepository.findById(id).orElseThrow();
     }
 
-    public void createTrack(Track track){
+    public TrackDto getTrackDtoById(Long id) {
+        return TrackDto.fromEntity(trackRepository.findById(id).orElseThrow());
+    }
+
+    public TrackSimpleDto getTrackSimpleDtoById(Long id) {
+        return TrackSimpleDto.fromEntity(trackRepository.findById(id).orElseThrow());
+    }
+
+    @CacheEvict(cacheNames = {
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors"
+    }, allEntries = true)
+    public void createTrack(Track track) {
         trackRepository.save(track);
     }
 
-    public Track createTrack(String title, Long albumId, List<String> authorIds,List<Long> genreIds){
+    @CacheEvict(cacheNames = {
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors"
+    }, allEntries = true)
+    public Track createTrack(String title, Long albumId, List<String> authorIds, List<Long> genreIds) {
         Track track = new Track();
         track.setTitle(title);
         track.setLikes(0L);
@@ -46,12 +64,12 @@ public class TrackServiceImpl implements TrackService
         track.setAlbum(albumRepository.findById(albumId)
                 .orElseThrow(() -> new RuntimeException("Album not found with id: " + albumId)));
 
-        if(authorIds != null && !authorIds.isEmpty()){
+        if (authorIds != null && !authorIds.isEmpty()) {
             Set<Author> authors = new HashSet<>(authorRepository.findAllById(authorIds));
             track.setAuthors(authors);
         }
 
-        if(genreIds != null & !genreIds.isEmpty()){
+        if (genreIds != null & !genreIds.isEmpty()) {
             Set<Genre> genres = new HashSet<>(genreRepository.findAllById(genreIds));
             track.setGenres(genres);
         }
@@ -59,7 +77,10 @@ public class TrackServiceImpl implements TrackService
         return track;
     }
 
-    public void deleteTrack(Track track){
+    @CacheEvict(cacheNames = {"track.findMostPlayedTracksThisWeek", "track.getRecommendedTracksToday",
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors",
+            "track.findPopularTracksByGenre", "track.findTracksByAlbum"}, allEntries = true)
+    public void deleteTrack(Track track) {
         trackRepository.delete(track);
     }
 
@@ -67,32 +88,77 @@ public class TrackServiceImpl implements TrackService
         return trackRepository.findTrackByFileUrl(fileUrl);
     }
 
-    public Page<Track> findMostPlayedTracksThisWeek(Pageable pageable) {
-        return trackRepository.findMostPlayedTracksThisWeek(pageable);
+    @Cacheable(value = "track.findMostPlayedTracksThisWeek",
+            key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    public PageDto<TrackSimpleDto> findMostPlayedTracksThisWeek(Pageable pageable) {
+        return new PageDto<>(trackRepository
+                .findMostPlayedTracksThisWeek(pageable)
+                .map(TrackSimpleDto::fromEntity));
     }
 
-    public Page<Track> getRecommendedTracksToday(Pageable pageable) {
-        return trackRepository.findRecommendedTracksToday(pageable);
+    @Cacheable(value = "track.getRecommendedTracksToday",
+            key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<TrackSimpleDto> getRecommendedTracksToday(Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findRecommendedTracksToday(pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
     }
 
-    public Page<Track> findPopularTrackByUserRecentGenres(String userId, Pageable pageable){
-        return trackRepository.findPopularTrackByUserRecentGenres(userId, pageable);
+    @Override
+    public PageDto<TrackSimpleDto> findPopularTrackByUserRecentGenres(String userId, Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findPopularTrackByUserRecentGenres(userId, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
     }
 
-    public Page<Track> findPopularTracksByAuthor(String authorId, Pageable pageable) throws RuntimeException {
-        Author author = authorRepository.findById(authorId).orElseThrow(() -> new RuntimeException("Author not found with id: " + authorId));
-        return trackRepository.findByAuthorsOrderByTotalPlaysDesc(author, pageable);
+    @Cacheable(value = "track.findPopularTracksByAuthor",
+            key = "#authorId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<TrackSimpleDto> findPopularTracksByAuthor(String authorId, Pageable pageable) {
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("Author not found with id: " + authorId));
+        return new PageDto<>(
+                trackRepository
+                        .findByAuthorsOrderByTotalPlaysDesc(author, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
     }
 
-    public Page<Track> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable){
-        return trackRepository.findTracksByAuthorWithMultipleAuthors(authorId,pageable);
+    @Cacheable(value = "track.findTracksByAuthorWithMultipleAuthors",
+            key = "#authorId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<TrackSimpleDto> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findTracksByAuthorWithMultipleAuthors(authorId, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
     }
 
-    public Page<Track> findPopularTracksByGenre(Long genreId, Pageable pageable) {
-        return trackRepository.findByGenres_IdOrderByTotalPlaysDesc(genreId, pageable);
+    @Cacheable(value = "track.findPopularTracksByGenre",
+            key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<TrackSimpleDto> findPopularTracksByGenre(Long genreId, Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findByGenres_IdOrderByTotalPlaysDesc(genreId, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
     }
 
-    public Page<Track> findTracksByAlbum(Long albumId, Pageable pageable){
-        return trackRepository.findTracksByAlbum(albumId,pageable);
+    @Cacheable(value = "track.findTracksByAlbum",
+            key = "#albumId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<TrackSimpleDto> findTracksByAlbum(Long albumId, Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findTracksByAlbum(albumId, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
     }
 }

@@ -1,10 +1,12 @@
 package com.example.server.controller.model;
 
 import com.example.server.data.repository.PlaylistRepository;
+import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.model.Playlist;
 import com.example.server.service.playlist.PlaylistService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,23 +26,23 @@ public class PlaylistController {
 
     @GetMapping("/simpleDto/{id}")
     public PlaylistSimpleDto getPlaylistSimpleDto(@PathVariable Long id){
-        Playlist playlist = playlistService.getPlaylistsById(id);
-        return PlaylistSimpleDto.fromEntity(playlist);
+        return playlistService.getPlaylistSimpleDtoById(id);
     }
 
     @GetMapping("/Dto/{id}")
     public PlaylistDto getPlaylistDto(@PathVariable Long id){
-        Playlist playlist = playlistService.getPlaylistsById(id);
-        return PlaylistDto.fromEntity(playlist);
+        return playlistService.getPlaylistDtoById(id);
     }
 
     @GetMapping("/TopPlaylistsByFavorites")
-    public ResponseEntity<Page<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
+    public ResponseEntity<PageDto<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
         try {
-            Page<Playlist> playlists = playlistService.findTopPlaylistsByFavorites(pageable);
-            return ResponseEntity.ok(playlists.map(PlaylistSimpleDto::fromEntity));
-        } catch (Exception e) {
+            return ResponseEntity.ok(playlistService.findTopPlaylistsByFavorites(pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
+
 }

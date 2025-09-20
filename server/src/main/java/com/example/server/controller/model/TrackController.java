@@ -2,12 +2,14 @@ package com.example.server.controller.model;
 
 import com.example.server.data.repository.TrackRepository;
 import com.example.server.dto.Album.AlbumSimpleDto;
+import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Track.TrackDto;
 import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.model.Album;
 import com.example.server.model.Track;
 import com.example.server.service.music.MusicServiceImpl;
 import com.example.server.service.track.TrackService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,95 +29,89 @@ public class TrackController {
 
     @GetMapping("/simpleDto/{id}")
     public TrackSimpleDto getSimpleTrackDto(@PathVariable Long id) {
-        Track track = trackService.getTrackById(id);
-        return TrackSimpleDto.fromEntity(track);
+        return trackService.getTrackSimpleDtoById(id);
     }
 
     @GetMapping("/Dto/{id}")
     public TrackDto getTrackDto(@PathVariable Long id) {
-        Track track = trackService.getTrackById(id);
-        return TrackDto.fromEntity(track);
+        return trackService.getTrackDtoById(id);
     }
 
     @GetMapping("/ByAuthor/Popular/{id}")
-    public ResponseEntity<Page<TrackSimpleDto>> getPopularTracksByAuthor(@PathVariable String id, Pageable pageable) {
+    public ResponseEntity<PageDto<TrackSimpleDto>> getPopularTracksByAuthor(@PathVariable String id, Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.findPopularTracksByAuthor(id, pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(trackService.findPopularTracksByAuthor(id, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/Recommendations/Today")
-    public ResponseEntity<Page<TrackSimpleDto>> getTodayRecommended(Pageable pageable) {
+    public ResponseEntity<PageDto<TrackSimpleDto>> getTodayRecommended(Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.getRecommendedTracksToday(pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        } catch (Exception e) {
+            return ResponseEntity.ok(trackService.getRecommendedTracksToday(pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/Recommendations/PersonalByGenres/{userId}")
-    public ResponseEntity<Page<TrackSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
+    public ResponseEntity<PageDto<TrackSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.findPopularTrackByUserRecentGenres(userId, pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        }
-        catch (Exception e) {
+            return ResponseEntity.ok(trackService.findPopularTrackByUserRecentGenres(userId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/MostListenedTracksOfWeek")
-    public ResponseEntity<Page<TrackSimpleDto>> getMostListenedTracksByWeek(Pageable pageable) {
+    public ResponseEntity<PageDto<TrackSimpleDto>> getMostListenedTracksByWeek(Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.findMostPlayedTracksThisWeek(pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        }
-        catch (Exception e) {
+            return ResponseEntity.ok(trackService.findMostPlayedTracksThisWeek(pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/ByAuthor/Collaborations/{id}")
-    public ResponseEntity<Page<TrackSimpleDto>> getCollaborationsByAuthor(@PathVariable String id,Pageable pageable){
+    public ResponseEntity<PageDto<TrackSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.findTracksByAuthorWithMultipleAuthors(id,pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        }
-        catch (Exception e){
+            return ResponseEntity.ok(trackService.findTracksByAuthorWithMultipleAuthors(id, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/ByGenre/Popular/{genreId}")
-    public ResponseEntity<Page<TrackSimpleDto>> getPopularByGenre(@PathVariable Long genreId,Pageable pageable){
+    public ResponseEntity<PageDto<TrackSimpleDto>> getPopularByGenre(@PathVariable Long genreId, Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.findPopularTracksByGenre(genreId,pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        }
-        catch (Exception e){
+            return ResponseEntity.ok(trackService.findPopularTracksByGenre(genreId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/ByAlbum/{albumId}")
-    public ResponseEntity<Page<TrackSimpleDto>> getTracksByAlbum(@PathVariable Long albumId,Pageable pageable){
+    public ResponseEntity<PageDto<TrackSimpleDto>> getTracksByAlbum(@PathVariable Long albumId, Pageable pageable) {
         try {
-            Page<Track> tracks = trackService.findTracksByAlbum(albumId,pageable);
-            Page<TrackSimpleDto> dtoPage = tracks.map(TrackSimpleDto::fromEntity);
-            return ResponseEntity.ok(dtoPage);
-        }
-        catch (Exception e){
+            return ResponseEntity.ok(trackService.findTracksByAlbum(albumId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
+
 }

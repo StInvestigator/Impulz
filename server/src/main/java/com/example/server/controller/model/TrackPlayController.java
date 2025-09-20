@@ -2,6 +2,7 @@ package com.example.server.controller.model;
 
 import com.example.server.dto.TrackPlay.PlaybackRequest;
 import com.example.server.service.track_play.TrackPlayServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,26 @@ public class TrackPlayController
 
     @PostMapping("/playback")
     public ResponseEntity<Void> recordPlayback(@Valid @RequestBody PlaybackRequest request) {
-        trackPlayServiceImpl.recordPlayback(request);
-        return ResponseEntity.ok().build();
+        try {
+            trackPlayServiceImpl.recordPlayback(request);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/{trackId}/weekly-plays")
     public ResponseEntity<Long> getWeeklyPlays(@PathVariable Long trackId) {
-        Long playsCount = trackPlayServiceImpl.getWeeklyPlaysCount(trackId);
-        return ResponseEntity.ok(playsCount);
+        try {
+            Long playsCount = trackPlayServiceImpl.getWeeklyPlaysCount(trackId);
+            return ResponseEntity.ok(playsCount);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
 }

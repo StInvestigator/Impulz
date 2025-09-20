@@ -14,6 +14,4 @@ public interface TrackPlayRepository extends JpaRepository<TrackPlay, Long> {
 
     @Query(value = "SELECT COUNT(*) FROM track_plays WHERE track_id = :trackId AND played_at >= NOW() - INTERVAL '7 days'", nativeQuery = true)
     long countWeeklyPlaysByTrackIdNative(@Param("trackId") Long trackId);
-
-    Optional<TrackPlay> findBySessionId(String sessionId);
 }

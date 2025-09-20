@@ -9,6 +9,7 @@ import com.example.server.model.TrackPlay;
 import com.example.server.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -98,12 +99,7 @@ public class TrackPlayServiceImpl implements TrackPlayService {
     }
 
     public Long getWeeklyPlaysCount(Long trackId) {
-        try {
-            return trackPlayRepository.countWeeklyPlaysByTrackIdNative(trackId);
-        } catch (Exception e) {
-            log.error("Ошибка при получении счетчика прослушиваний для трека {}", trackId, e);
-            return 0L;
-        }
+        return trackPlayRepository.countWeeklyPlaysByTrackIdNative(trackId);
     }
 
     @Scheduled(fixedRate = 6 * 60 * 60 * 1000)

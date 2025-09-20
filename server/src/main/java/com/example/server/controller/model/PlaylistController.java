@@ -1,6 +1,7 @@
 package com.example.server.controller.model;
 
 import com.example.server.data.repository.PlaylistRepository;
+import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.model.Playlist;
@@ -24,23 +25,16 @@ public class PlaylistController {
 
     @GetMapping("/simpleDto/{id}")
     public PlaylistSimpleDto getPlaylistSimpleDto(@PathVariable Long id){
-        Playlist playlist = playlistService.getPlaylistsById(id);
-        return PlaylistSimpleDto.fromEntity(playlist);
+        return playlistService.getPlaylistSimpleDtoById(id);
     }
 
     @GetMapping("/Dto/{id}")
     public PlaylistDto getPlaylistDto(@PathVariable Long id){
-        Playlist playlist = playlistService.getPlaylistsById(id);
-        return PlaylistDto.fromEntity(playlist);
+        return playlistService.getPlaylistDtoById(id);
     }
 
     @GetMapping("/TopPlaylistsByFavorites")
-    public ResponseEntity<Page<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
-        try {
-            Page<Playlist> playlists = playlistService.findTopPlaylistsByFavorites(pageable);
-            return ResponseEntity.ok(playlists.map(PlaylistSimpleDto::fromEntity));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<PageDto<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
+        return ResponseEntity.ok(playlistService.findTopPlaylistsByFavorites(pageable));
     }
 }

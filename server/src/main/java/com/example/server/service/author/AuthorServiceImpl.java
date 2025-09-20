@@ -3,12 +3,18 @@ package com.example.server.service.author;
 import com.example.server.data.repository.AuthorFollowersRepository;
 import com.example.server.data.repository.AuthorRepository;
 import com.example.server.data.repository.UserRepository;
+import com.example.server.dto.Author.AuthorDto;
+import com.example.server.dto.Author.AuthorSimpleDto;
+import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.Author;
 import com.example.server.model.User;
 import com.example.server.model.id.AuthorFollower;
 import com.example.server.model.key.AuthorFollowerKey;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -24,39 +30,71 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorFollowersRepository authorFollowersRepository;
     private final UserRepository userRepository;
 
-    public Author getAuthorById(String id) {
-        return authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
+    public AuthorDto getAuthorDtoById(String id) {
+        return AuthorDto.fromEntity(authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found")));
+    }
+
+    public AuthorSimpleDto getAuthorSimpleDtoById(String id) {
+        return AuthorSimpleDto.fromEntity(authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found")));
     }
 
     public void createAuthor(Author author) {
         authorRepository.save(author);
     }
 
+    @CacheEvict(cacheNames = {"author.findFollowers", "author.findSimilarBySharedGenres",
+            "author.findTopAuthorsByGenre", "author.findTopAuthorsOfMonth",
+            "author.findTopAuthorsOfMonth"}, allEntries = true)
     @Override
     public void deleteAuthor(String authorId) {
         authorRepository.deleteById(authorId);
     }
 
+    @Cacheable(value = "author.findFollowers",
+            key = "#authorId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     @Override
-    public Page<User> findFollowers(String authorId, Pageable pageable) {
-        return authorFollowersRepository.findAllByAuthor(authorRepository.findById(authorId).orElseThrow(), pageable).map(AuthorFollower::getFollower);
+    public PageDto<UserSimpleDto> findFollowers(String authorId, Pageable pageable) {
+        return new PageDto<>(authorFollowersRepository
+                .findAllByAuthor(authorRepository.findById(authorId).orElseThrow(), pageable)
+                .map(AuthorFollower::getFollower).map(UserSimpleDto::fromEntity));
     }
 
+    @Cacheable(value = "author.findSimilarBySharedGenres",
+            key = "#authorId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     @Override
-    public Page<Author> findSimilarBySharedGenres(String authorId, Pageable pageable) {
-        return authorRepository.findSimilarBySharedGenres(authorId, pageable);
+    public PageDto<AuthorSimpleDto> findSimilarBySharedGenres(String authorId, Pageable pageable) {
+        return new PageDto<>(
+                authorRepository
+                        .findSimilarBySharedGenres(authorId, pageable)
+                        .map(AuthorSimpleDto::fromEntity)
+        );
     }
 
+    @Cacheable(value = "author.findTopAuthorsByGenre",
+            key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     @Override
-    public Page<Author> findTopAuthorsByGenre(Long genreId, Pageable pageable) {
-        return authorRepository.findTopAuthorsByGenre(genreId, pageable);
+    public PageDto<AuthorSimpleDto> findTopAuthorsByGenre(Long genreId, Pageable pageable) {
+        return new PageDto<>(
+                authorRepository
+                        .findTopAuthorsByGenre(genreId, pageable)
+                        .map(AuthorSimpleDto::fromEntity)
+        );
     }
 
-    public Page<Author> findTopAuthorsOfMonth(Pageable pageable) {
-        return authorRepository.findTopAuthorsOfMonth(pageable);
+    @Cacheable(value = "author.findTopAuthorsOfMonth",
+            key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<AuthorSimpleDto> findTopAuthorsOfMonth(Pageable pageable) {
+        return new PageDto<>(
+                authorRepository
+                        .findTopAuthorsOfMonth(pageable)
+                        .map(AuthorSimpleDto::fromEntity)
+        );
     }
 
-    public Long countAuthorPlaysByMonth(String authorId){
+    @Cacheable(value = "author.findTopAuthorsOfMonth",
+            key = "#authorId")
+    public Long countAuthorPlaysByMonth(String authorId) {
         return authorRepository.countAuthorPlaysByMonth(authorId);
     }
 

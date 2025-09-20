@@ -54,7 +54,7 @@ public class RedisConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory cf,
                                           GenericJackson2JsonRedisSerializer jacksonSerializer) {
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30)) // default TTL
+                .entryTtl(Duration.ofMinutes(10)) // default TTL
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jacksonSerializer));
 

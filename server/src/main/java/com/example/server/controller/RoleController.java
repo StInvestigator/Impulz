@@ -35,11 +35,6 @@ public class RoleController
         return keycloak.realm(realm).roles().list();
     }
 
-    @GetMapping("/healthcheck")
-    public ResponseEntity<String> test(){
-        return ResponseEntity.ok("Working!");
-    }
-
     @PostMapping("/user/{userId}/role/{roleName}")
     public ResponseEntity<String> addRoleToUser(
             @PathVariable String userId,

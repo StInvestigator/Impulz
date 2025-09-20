@@ -48,7 +48,7 @@ public class MusicController {
             @RequestParam Long albumId,
             @RequestParam List<String> authorIds,
             @RequestParam List<Long> genreIds
-    ) throws IOException {
+    ) {
         try {
             Track track = trackService.createTrack(title, albumId, authorIds, genreIds);
 
@@ -61,7 +61,6 @@ public class MusicController {
 
     @GetMapping("/link/{id}")
     public ResponseEntity<String> getLink(@PathVariable Long id) {
-
         String token = Jwts.builder()
                 .setSubject("stream:" + id)
                 .setExpiration(new Date(System.currentTimeMillis() + 14_400_000))

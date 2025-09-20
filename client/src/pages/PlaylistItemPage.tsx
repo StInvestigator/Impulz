@@ -70,6 +70,7 @@ const PlaylistItemPage = () => {
                     authorName={currentPlaylist.owner.name}
                     trackCount={currentPlaylist.tracks.length}
                     duration={formatDuration(totalDuration)}
+                    imgUrl={currentPlaylist.imageUrl}
                 />
             </Box>
             <Box component={"section"} marginTop={"60px"}>

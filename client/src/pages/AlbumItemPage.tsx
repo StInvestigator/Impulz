@@ -69,6 +69,7 @@ const AlbumItemPage = () => {
                     year={currentAlbum.releaseDate ? new Date(currentAlbum.releaseDate).getFullYear() : undefined}
                     trackCount={currentAlbum.tracks.length}
                     duration={formatDuration(totalDuration)}
+                    imgUrl={currentAlbum.imgUrl}
                 />
             </Box>
             <Box component={"section"} marginTop={"60px"}>

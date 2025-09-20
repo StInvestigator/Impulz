@@ -28,8 +28,7 @@ spring:
   data:
     redis:
       host: ${REDIS_HOST:localhost}
-      port: 6379
-      timeout: 60000
+      port: ${REDIS_PORT:6379}
   cache:
     type: redis
 
@@ -44,9 +43,10 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.cache: DEBUG
-    org.springframework.data.redis.cache: DEBUG
     org.springframework.security: TRACE
     org.springframework.expression: DEBUG
+    org.springframework.cache.interceptor: TRACE
+    org.springframework.data.redis: DEBUG
 
 keycloak:
   keycloakUrl: ${KEYCLOAK_URL:http://localhost:9090}

@@ -10,10 +10,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
@@ -28,8 +30,11 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 public class RedisConfig {
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+    public LettuceConnectionFactory redisConnectionFactory(Environment env) {
+        String host = env.getProperty("REDIS_HOST", env.getProperty("spring.data.redis.host", "localhost"));
+        int port = Integer.parseInt(env.getProperty("REDIS_PORT", env.getProperty("spring.data.redis.port", "6379")));
+        RedisStandaloneConfiguration cfg = new RedisStandaloneConfiguration(host, port);
+        return new LettuceConnectionFactory(cfg);
     }
 
     @Bean

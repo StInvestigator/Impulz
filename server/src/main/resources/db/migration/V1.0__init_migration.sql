@@ -94,18 +94,6 @@ CREATE TABLE track_plays (
                              played_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
-CREATE MATERIALIZED VIEW author_monthly_plays AS
-SELECT
-    ta.author_id,
-    date_trunc('month', p.played_at) AS month,
-  COUNT(*) AS plays_count
-FROM
-    track_plays p
-    JOIN track_authors ta ON ta.track_id = p.track_id
-GROUP BY
-    ta.author_id,
-    date_trunc('month', p.played_at);
-
 CREATE FUNCTION increment_track_plays() RETURNS TRIGGER AS $$
 BEGIN
 UPDATE tracks

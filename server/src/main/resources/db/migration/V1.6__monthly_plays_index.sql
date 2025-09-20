@@ -1,4 +1,5 @@
-REFRESH MATERIALIZED VIEW author_monthly_plays;
+CREATE INDEX IF NOT EXISTS idx_track_authors_author_id_track_id
+    ON track_authors (author_id, track_id);
 
-CREATE UNIQUE INDEX idx_author_monthly_index
-    ON author_monthly_plays (author_id, month);
+CREATE INDEX IF NOT EXISTS idx_track_plays_played_at_track_id
+    ON track_plays (played_at, track_id);

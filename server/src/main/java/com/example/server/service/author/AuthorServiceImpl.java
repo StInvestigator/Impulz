@@ -30,6 +30,10 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorFollowersRepository authorFollowersRepository;
     private final UserRepository userRepository;
 
+    public Author getAuthorById(String id) {
+        return authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
+    }
+
     public AuthorDto getAuthorDtoById(String id) {
         return AuthorDto.fromEntity(authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found")));
     }
@@ -92,8 +96,6 @@ public class AuthorServiceImpl implements AuthorService {
         );
     }
 
-    @Cacheable(value = "author.findTopAuthorsOfMonth",
-            key = "#authorId")
     public Long countAuthorPlaysByMonth(String authorId) {
         return authorRepository.countAuthorPlaysByMonth(authorId);
     }

@@ -10,6 +10,7 @@ import com.example.server.model.Author;
 import com.example.server.model.Track;
 import com.example.server.model.User;
 import com.example.server.service.author.AuthorService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,33 +43,58 @@ public class AuthorController {
 
     @GetMapping("/Followers/{id}")
     public ResponseEntity<PageDto<UserSimpleDto>> getFollowers(@PathVariable String id, Pageable pageable) {
-        return ResponseEntity.ok( authorService.findFollowers(id, pageable));
+        try {
+            return ResponseEntity.ok(authorService.findFollowers(id, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/BestAuthorsOfMonth")
     public ResponseEntity<PageDto<AuthorSimpleDto>> findTopAuthorsOfMonth(Pageable pageable) {
-        return ResponseEntity.ok( authorService.findTopAuthorsOfMonth(pageable));
+        try {
+            return ResponseEntity.ok(authorService.findTopAuthorsOfMonth(pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/SimilarByGenres/{authorId}")
     public ResponseEntity<PageDto<AuthorSimpleDto>> findSimilarAuthorsByGenres(@PathVariable String authorId, Pageable pageable) {
-           return ResponseEntity.ok( authorService.findSimilarBySharedGenres(authorId, pageable));
+        try {
+            return ResponseEntity.ok(authorService.findSimilarBySharedGenres(authorId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/TopInGenre/{genreId}")
     public ResponseEntity<PageDto<AuthorSimpleDto>> findTopInGenre(@PathVariable Long genreId, Pageable pageable) {
-            return ResponseEntity.ok(authorService.findTopAuthorsByGenre(genreId, pageable));
-    }
-
-    @GetMapping("/getCountAuthorPlaysByMonth/{authorId}")
-    public ResponseEntity<Long> getCountAuthorPlaysByMonth(@PathVariable String authorId){
         try {
-            return ResponseEntity.ok(authorService.countAuthorPlaysByMonth(authorId));
-        } catch (Exception e){
+            return ResponseEntity.ok(authorService.findTopAuthorsByGenre(genreId, pageable));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
+    @GetMapping("/getCountAuthorPlaysByMonth/{authorId}")
+    public ResponseEntity<Long> getCountAuthorPlaysByMonth(@PathVariable String authorId) {
+        try {
+            return ResponseEntity.ok(authorService.countAuthorPlaysByMonth(authorId));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
     @PostMapping("/{authorId}/subscribe")
     public ResponseEntity<?> subscribeToAuthor(@PathVariable String authorId, Principal principal) {
@@ -76,8 +102,10 @@ public class AuthorController {
             String userId = principal.getName();
             authorService.subscribeToAuthor(userId, authorId);
             return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -87,8 +115,10 @@ public class AuthorController {
             String userId = principal.getName();
             authorService.unsubscribeFromAuthor(userId, authorId);
             return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -101,8 +131,11 @@ public class AuthorController {
             String userId = principal.getName();
             boolean isSubscribed = authorService.isUserSubscribed(userId, authorId);
             return ResponseEntity.ok(Map.of("isSubscribed", isSubscribed));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
+
 }

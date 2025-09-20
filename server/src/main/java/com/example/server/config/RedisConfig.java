@@ -34,7 +34,15 @@ public class RedisConfig {
 
     @Bean
     public GenericJackson2JsonRedisSerializer jacksonSerializer() {
-        return new GenericJackson2JsonRedisSerializer();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.activateDefaultTyping(
+                LaissezFaireSubTypeValidator.instance,
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                JsonTypeInfo.As.PROPERTY
+        );
+        return new GenericJackson2JsonRedisSerializer(mapper);
     }
 
     @Bean

@@ -5,6 +5,7 @@ import com.example.server.dto.Genre.GenreSimpleDto;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.model.Genre;
 import com.example.server.service.genre.GenreService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,13 @@ public class GenreController {
 
     @GetMapping("/TopGenres")
     public ResponseEntity<PageDto<GenreSimpleDto>> TopGenres(Pageable pageable) {
-        return ResponseEntity.ok(genreService.findTopGenres(pageable));
+        try {
+            return ResponseEntity.ok(genreService.findTopGenres(pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
 }

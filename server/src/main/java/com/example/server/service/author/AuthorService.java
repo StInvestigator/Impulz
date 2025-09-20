@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface AuthorService
 {
+    Author getAuthorById(String id);
     AuthorDto getAuthorDtoById(String id);
     AuthorSimpleDto getAuthorSimpleDtoById(String id);
     void createAuthor(Author author);

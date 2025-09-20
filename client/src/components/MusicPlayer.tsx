@@ -26,7 +26,7 @@ const generateSessionId = () => {
 const playbackService = {
     sendPlaybackStats: async (stats: PlaybackStats): Promise<void> => {
         try {
-            await $authApi.post('/api/tracks/playback', stats);
+            await $authApi.post('/tracks/playback', stats);
         } catch (error) {
             console.error('Ошибка отправки статистики прослушивания:', error);
         }

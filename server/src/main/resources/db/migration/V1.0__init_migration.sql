@@ -106,8 +106,6 @@ GROUP BY
     ta.author_id,
     date_trunc('month', p.played_at);
 
-CREATE INDEX idx_author_monthly ON author_monthly_plays (author_id, month);
-
 CREATE FUNCTION increment_track_plays() RETURNS TRIGGER AS $$
 BEGIN
 UPDATE tracks
@@ -164,16 +162,3 @@ CREATE TABLE user_favorite_albums (
                                       added_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                                       PRIMARY KEY (user_id, album_id)
 );
-
-CREATE MATERIALIZED VIEW user_quick_access AS
-SELECT
-    u.keycloak_id      AS user_id,
-    fp.playlist_id     AS favorite_playlist,
-    fa.album_id        AS favorite_album,
-    fp.added_at        AS playlist_added,
-    fa.added_at        AS album_added
-FROM users u
-         LEFT JOIN user_favorite_playlists fp ON fp.user_id = u.keycloak_id
-         LEFT JOIN user_favorite_albums    fa ON fa.user_id = u.keycloak_id;
-
-CREATE INDEX idx_quick_access_user ON user_quick_access (user_id);

@@ -5,6 +5,7 @@ import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.model.Album;
 import com.example.server.service.album.AlbumService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,31 +33,68 @@ public class AlbumController {
 
     @GetMapping("/ByAuthor/{id}")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getAlbumsByAuthor(@PathVariable String id, Pageable pageable) {
-        return ResponseEntity.ok(albumService.findByAuthor(id, pageable));
+        try {
+            return ResponseEntity.ok(albumService.findByAuthor(id, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/ByAuthor/Collaborations/{id}")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
-        return ResponseEntity.ok(albumService.findCollaborationsByAuthor(id, pageable));
+        try {
+            return ResponseEntity.ok(albumService.findCollaborationsByAuthor(id, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/ByAuthor/Recent/{userId}")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getRecentByAuthor(@PathVariable String userId, Pageable pageable) {
-        return ResponseEntity.ok(albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable));
+        try {
+            return ResponseEntity.ok(albumService.findByAuthorOrderByReleaseDateDesc(userId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/Recommendations/Today")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getTodayRecommended(Pageable pageable) {
-        return ResponseEntity.ok(albumService.getRecommendedAlbumsToday(pageable));
+        try {
+            return ResponseEntity.ok(albumService.getRecommendedAlbumsToday(pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/Recommendations/PersonalByGenres/{userId}")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getPersonalRecommended(@PathVariable String userId, Pageable pageable) {
-        return ResponseEntity.ok(albumService.findPopularAlbumsByUserRecentGenres(userId, pageable));
+        try {
+            return ResponseEntity.ok(albumService.findPopularAlbumsByUserRecentGenres(userId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/ByGenre/Recent/{genreId}")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
-        return ResponseEntity.ok(albumService.findNewAlbumsByGenre(genreId, pageable));
+        try {
+            return ResponseEntity.ok(albumService.findNewAlbumsByGenre(genreId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
 }

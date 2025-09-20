@@ -6,6 +6,7 @@ import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.model.Playlist;
 import com.example.server.service.playlist.PlaylistService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,13 @@ public class PlaylistController {
 
     @GetMapping("/TopPlaylistsByFavorites")
     public ResponseEntity<PageDto<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
-        return ResponseEntity.ok(playlistService.findTopPlaylistsByFavorites(pageable));
+        try {
+            return ResponseEntity.ok(playlistService.findTopPlaylistsByFavorites(pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
 }

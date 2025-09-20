@@ -7,7 +7,7 @@ interface PageState {
 }
 
 const initialState: PageState = {
-    currentPage: 0,
+    currentPage: 1,
     totalPages: 1,
 };
 

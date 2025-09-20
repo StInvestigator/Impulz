@@ -47,7 +47,7 @@ const AppRouter = () => {
 
 
             <Route
-                path="/playlist/:id"
+                path="/playlist/:playlistId"
                 element={
                     <ProtectedRoute>
                         <PlaylistItemPage />

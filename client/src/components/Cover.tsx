@@ -11,6 +11,7 @@ interface CoverProps {
     year?: number;
     trackCount?: number;
     duration?: string;
+    imgUrl?: string;
 }
 
 const Cover: FC<CoverProps> = ({
@@ -19,7 +20,8 @@ const Cover: FC<CoverProps> = ({
                                    authorName,
                                    year,
                                    trackCount,
-                                   duration
+                                   duration,
+                                   imgUrl
                                }) => {
     return (
         <Box
@@ -42,6 +44,11 @@ const Cover: FC<CoverProps> = ({
                     justifyContent={"center"}
                     alignItems={"center"}
                     flexShrink={0}
+                    sx={{
+                        backgroundImage: `url(${imgUrl ? imgUrl : ""})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}
                 >
                     <IconButton sx={{ padding: 0 }}>
                         <Box

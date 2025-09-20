@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
-import {$api} from "../../../http";
+import {$api, $authApi} from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopPlaylistsByWeek = createAsyncThunk<
@@ -34,7 +34,7 @@ export const fetchPlaylistDetails = createAsyncThunk<
     "playlists/fetchPlaylistDetails",
     async (playlistId, { rejectWithValue }) => {
         try {
-            const response = await $api.get(
+            const response = await $authApi.get(
                 `/playlists/Dto/${playlistId}`
             );
             return response.data;

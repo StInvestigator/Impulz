@@ -19,7 +19,11 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}
                 width: "100%",
             }}
         >
-            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative"}>
+            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative" } sx={{
+                backgroundImage: `url(${playlist.imgUrl || ""})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}>
 
             </Box>
             <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} borderRadius={"0 0 10px 10px"} sx={{

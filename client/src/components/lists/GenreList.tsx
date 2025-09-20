@@ -1,4 +1,4 @@
-import {Box, Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import GenreSpirale01 from "/src/assets/genre/genre_spirale_01.svg";
 import GenreSpirale02 from "/src/assets/genre/genre_spirale_02.svg";
@@ -64,7 +64,7 @@ const GenreList = () => {
 
                 <Box
                     component={Link}
-                    to={`/genres/${genres.genre2.id}`}
+                    to={`/library`}
                     sx={{
                         position: 'relative',
                         flex: 1,
@@ -104,7 +104,7 @@ const GenreList = () => {
             {/* Правая колонка */}
             <Box
                 component={Link}
-                to={`/genres/${genres.genre3.id}`}
+                to={`/library`}
                 sx={{
                     position: 'relative',
                     height: '100%',

@@ -24,10 +24,9 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
     const route = useAppNavigate();
     const [offset, setOffset] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
-    const [itemWidth, setItemWidth] = useState(0); // динамически вычисляется
+    const [itemWidth, setItemWidth] = useState(0);
     const { t } = useTranslation('other')
 
-    // Измеряем ширину контейнера и одного элемента
     useEffect(() => {
         const updateSizes = () => {
             if (containerRef.current) {
@@ -73,11 +72,11 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
                     {title}
                 </Typography>
                 <Button onClick={() => route(url)} sx={{
-                    backgroundColor: textColor !== "var(--dark-purple)" ? "none" : 'var(--dark-purple)', // Фон кнопки совпадает с фоном карусели
+                    backgroundColor: textColor !== "var(--dark-purple)" ? "none" : 'var(--dark-purple)',
                     border: `1px solid ${textColor !== "var(--dark-purple)" ? textColor : 'none'}`, 
-                    borderRadius: "10px", // Скругление углов
-                    color: textColor !== "var(--dark-purple)" ? textColor : 'var(--columbia-blue)', // Цвет текста
-                    textTransform: "none", // Без изменения регистра текста
+                    borderRadius: "10px",
+                    color: textColor !== "var(--dark-purple)" ? textColor : 'var(--columbia-blue)',
+                    textTransform: "none",
                     padding: "8px 12px",
                     
                 }}>

@@ -87,21 +87,35 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                     <Box component="span" sx={{ fontSize: '20px', lineHeight: 1 }}>
                         &middot;
                     </Box>
-                    <Link sx={{
-                        color: 'inherit',
-                        textDecoration: 'none',
-                        '&:hover': {
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                        },
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis'
                     }}>
-                        <Box>
-                            {album.authors.map(author => author.name).join(", ") || "Unknown"}
-                        </Box>
-                    </Link>
+                        {album.authors.map((author, index) => (
+                            <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Link
+                                    href={`/author/${author.id}`}
+                                    sx={{
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                        '&:hover': {
+                                            textDecoration: 'underline',
+                                            cursor: 'pointer',
+                                        }
+                                    }}
+                                >
+                                    {author.name}
+                                </Link>
+                                {index < album.authors.length - 1 && (
+                                    <Box component="span" sx={{ mx: '4px' }}>,</Box>
+                                )}
+                            </Box>
+                        ))}
+                        {album.authors.length === 0 && "Unknown"}
+                    </Box>
                 </Typography>
             </Box>
         </Box>

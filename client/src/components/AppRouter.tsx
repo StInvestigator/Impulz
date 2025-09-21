@@ -42,7 +42,7 @@ const AppRouter = () => {
             />
             <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
             <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
-            <Route path="/author/:id/colaborations" element={<ColaborationInAuthorPage />} />
+            <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
             <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
 
 

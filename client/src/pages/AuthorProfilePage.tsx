@@ -143,7 +143,7 @@ const AuthorProfilePage = () => {
                         <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                             {t("authorPage:title-collaborations")}
                         </Typography>
-                        <Button onClick={() => route(`/author/${id}/colaborations`)} sx={{
+                        <Button onClick={() => route(`/author/${id}/collaborations`)} sx={{
                             height: "32px",
                             border: "1px solid black",
                             borderRadius: "10px",

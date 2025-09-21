@@ -51,6 +51,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                         bottom: 16,
                         right: 16
                     }}
+                    disableRipple={true}
                 >
                     <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                          height={"30px"}/>

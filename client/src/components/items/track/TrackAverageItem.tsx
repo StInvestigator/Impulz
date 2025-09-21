@@ -107,7 +107,11 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                             </Link>
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0, flexShrink: 0}} onClick={() => playSingle(track)}>
+                    <IconButton
+                        sx={{padding: 0, flexShrink: 0}}
+                        onClick={() => playSingle(track)}
+                        disableRipple={true}
+                    >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

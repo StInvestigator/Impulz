@@ -46,11 +46,11 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
           <Typography variant={"mainSbL"} gutterBottom>
             {author.name}
           </Typography>
-          {/* <Typography variant={"mainRM"}>
-            {t("title-album")} &middot; {author.}
-          </Typography> */}
         </Box>
-        <IconButton sx={{ padding: 0 }}>
+        <IconButton
+            sx={{ padding: 0 }}
+            disableRipple={true}
+        >
           <Box
             component={"img"}
             src={playImage}

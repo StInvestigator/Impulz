@@ -15,24 +15,42 @@ import { useEffect } from "react";
 import { fetchTopPlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
 import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";
+import {fetchAlbumTodayRecommendations, fetchPersonalAlbumsByGenre} from "../store/reducers/action-creators/album.ts";
+import {useKeycloak} from "@react-keycloak/web";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
     const { topTracks, isLoading: tracksLoading, error: tracksError } = useAppSelector((state) => state.track);
     const { topAuthors, isLoading: authorsLoading, error: authorsError } = useAppSelector((state) => state.author);
-    // const { authors, isLoading: authorsLoading, error: authorsError } = useAuthorsByKey("topAuthorsByMonth")
     const { topPlaylists, isLoading: playlistsLoading, error: playlistsError } = useAppSelector((state) => state.playlist);
     const { topFiveGenres, isLoading: genresLoading, error: genresError } = useAppSelector((state) => state.genre);
-
+    const {
+        albumTodayRecommendations,
+        albumPersonalRecommendationsByGenre,
+        isLoading: albumLoading,
+        error: albumError
+    } = useAppSelector((state) => state.album);
     const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
+
+    const { keycloak } = useKeycloak();
+    const isAuthenticated = keycloak.authenticated;
+
+
+    const userId = isAuthenticated ? keycloak.tokenParsed?.sub : null;
 
     useEffect(() => {
         dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
         dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
         dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
         dispatch(fetchTopGenres({ page: 0, size: 5 }));
-    }, [dispatch]);
+        dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 5 }));
+
+        if (isAuthenticated && userId) {
+            dispatch(fetchPersonalAlbumsByGenre({ userId, page: 0, size: 5 }));
+        }
+    }, [dispatch, isAuthenticated, userId]);
+
 
     return (
         <>
@@ -51,11 +69,15 @@ const MainPage = () => {
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={playlistsLoading} error={playlistsError} />
+                <MediaSmallCarouselList medias={albumTodayRecommendations} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={albumLoading} error={albumError} url={"/"}/>
             </Box>
-            <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList medias={topPlaylists} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} />
-            </Box>
+            {isAuthenticated && albumPersonalRecommendationsByGenre.length > 0 &&
+                (
+                    <Box component={"section"} mt={"60px"}>
+                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} url={"/"}/>
+                    </Box>
+                )
+            }
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>
                     <Typography variant={"h1"} fontSize={"36px"} fontWeight={700}>

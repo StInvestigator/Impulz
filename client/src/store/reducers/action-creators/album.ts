@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import type {AlbumSimpleDto} from "../../../models/DTO/AlbumSimpleDto.ts";
-import {$authApi} from "../../../http";
+import {$api, $authApi} from "../../../http";
 import type {AlbumDto} from "../../../models/AlbumDto.ts";
 // import { useAppDispatch } from "../../../hooks/redux.ts";
 import { setTotalPages } from "../PageSlice.ts";
@@ -59,6 +59,50 @@ export const fetchAuthorAlbumCollaborations = createAsyncThunk<
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await $authApi.get(`/albums/ByAuthor/Collaborations/${authorId}?${params}`);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue(`Не удалось загрузить альбомы`);
+        }
+    }
+)
+
+export const fetchAlbumTodayRecommendations = createAsyncThunk<
+    AlbumSimpleDto[],
+    {page?: number; size?: number},
+    {rejectValue: string}
+>(
+    "albums/fetchAlbumTodayRecommendations",
+    async ({ page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
+        try {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $api.get(`/albums/Recommendations/Today?${params}`);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue(`Не удалось загрузить альбомы`);
+        }
+    }
+)
+
+export const fetchPersonalAlbumsByGenre = createAsyncThunk<
+    AlbumSimpleDto[],
+    {userId: string,page?:number; size? :number},
+    {rejectValue: string}
+>(
+    "albums/fetchPersonalAlbumsByGenre",
+    async ({ userId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
+        try {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $api.get(`/albums/Recommendations/PersonalByGenres/${userId}?${params}`);
             dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

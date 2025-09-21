@@ -50,7 +50,10 @@ const Cover: FC<CoverProps> = ({
                         backgroundPosition: 'center',
                     }}
                 >
-                    <IconButton sx={{ padding: 0 }}>
+                    <IconButton
+                        sx={{ padding: 0 }}
+                        disableRipple={true}
+                    >
                         <Box
                             component={"img"}
                             src={playImage}

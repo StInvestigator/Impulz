@@ -51,6 +51,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         }
                     }}
+                    disableRipple={true}
                 >
                     <Box
                         component={"img"}

@@ -64,9 +64,12 @@ const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages
             showFirstButton
             showLastButton
             onChange={handlePageChange}
+            // Это работает но mui считает это ошибкой :/ (disableRipple)
             renderItem={(item) => (
                 <PaginationItem
                     {...item}
+                    component="div"
+                    disableRipple
                     slots={{
                         previous: CustomPrevious,
                         next: CustomNext,
@@ -79,11 +82,11 @@ const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages
                         item.type === 'last' && safeCurrentPage === safeTotalPages}
                     sx={{
                         transition: 'all 0.2s ease',
-                        minWidth: '45px',
-                        height: '45px',
+                        minWidth: '36px',
+                        height: '36px',
                         '&:hover': {
-                            minWidth: '36px',
-                            height: '36px',
+                            minWidth: '45px',
+                            height: '45px',
                             backgroundColor: 'var(--berkeley-blue)',
                             color: 'white',
                         },

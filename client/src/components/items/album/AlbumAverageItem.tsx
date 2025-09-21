@@ -3,8 +3,6 @@ import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
 import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
-// import testImage from "../../../assets/test-image.png"; <-- тестова картинка для альбома
-
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
@@ -62,7 +60,11 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => 
                             {album.authors?.map(author => author.name).join(", ") || "Unknown"}
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0}} onClick={() => playPlaylist(album.tracks || [])}>
+                    <IconButton
+                        sx={{padding: 0}}
+                        onClick={() => playPlaylist(album.tracks || [])}
+                        disableRipple={true}
+                    >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

@@ -13,6 +13,7 @@ public class AuthorDto
 {
     private String id;
     private String name;
+    private String imgUrl;
     private String bio;
     private Long followersCount;
     private Set<TrackSimpleDto> tracks;
@@ -22,6 +23,7 @@ public class AuthorDto
         AuthorDto dto = new AuthorDto();
         dto.setId(author.getId());
         dto.setName(author.getUser().getUsername());
+        dto.setImgUrl(author.getUser().getAvatarUrl());
         dto.setBio(author.getBio());
         dto.setFollowersCount(author.getFollowersCount());
         dto.setAlbums(author.getAlbums().stream()

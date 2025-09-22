@@ -209,7 +209,11 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                     {formatDuration(track.durationSec || 0)}
                 </Typography>
 
-                <IconButton sx={{ padding: 0 }} onClick={() => playSingle(track)}>
+                <IconButton
+                    sx={{ padding: 0 }}
+                    onClick={() => playSingle(track)}
+                    disableRipple={true}
+                >
                     <Box
                         component="img"
                         src={playImage}

@@ -15,6 +15,7 @@ interface TracklistListProps {
   isLoading: boolean;
   error: string | null;
   name: string;
+  url: string;
 }
 
 const MediaSmallCarouselList: FC<TracklistListProps> = ({
@@ -23,6 +24,7 @@ const MediaSmallCarouselList: FC<TracklistListProps> = ({
   name,
   isLoading,
   error,
+  url
 }) => {
   return (
     <>
@@ -41,6 +43,7 @@ const MediaSmallCarouselList: FC<TracklistListProps> = ({
           count_items={medias.length}
           bgColor="var(--gradient-purple-rose)"
           textColor="var(--dark-purple)"
+          url={url}
         >
           {
             medias

@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {fetchAlbumDetails, fetchAlbumsByAuthor, fetchAuthorAlbumCollaborations} from "./action-creators/album.ts";
+import {
+    fetchAlbumDetails,
+    fetchAlbumsByAuthor,
+    fetchAlbumTodayRecommendations,
+    fetchAuthorAlbumCollaborations, fetchPersonalAlbumsByGenre
+} from "./action-creators/album.ts";
 import type { AlbumSimpleDto } from "../../models/DTO/AlbumSimpleDto.ts";
 import type {AlbumDto} from "../../models/AlbumDto.ts";
 
@@ -7,6 +12,8 @@ interface AlbumState {
     albums: AlbumSimpleDto[];
     currentAlbum: AlbumDto | null;
     authorCollaborationsAlbums: AlbumSimpleDto[];
+    albumTodayRecommendations: AlbumSimpleDto[];
+    albumPersonalRecommendationsByGenre: AlbumSimpleDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -15,6 +22,8 @@ const initialState: AlbumState = {
     albums: [],
     currentAlbum: null,
     authorCollaborationsAlbums: [],
+    albumTodayRecommendations: [],
+    albumPersonalRecommendationsByGenre: [],
     isLoading: false,
     error: null,
 };
@@ -69,6 +78,34 @@ const albumSlice = createSlice({
             .addCase(fetchAuthorAlbumCollaborations.rejected,(state,action) =>{
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке альбомов-коллабораций автора";
+            })
+
+            .addCase(fetchAlbumTodayRecommendations.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchAlbumTodayRecommendations.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.albumTodayRecommendations = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchAlbumTodayRecommendations.rejected,(state,action)=>{
+               state.isLoading = false;
+               state.error = action.payload || "Ошибка при загрузке альбомов-рекомендаций";
+            })
+
+            .addCase(fetchPersonalAlbumsByGenre.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchPersonalAlbumsByGenre.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.albumPersonalRecommendationsByGenre = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchPersonalAlbumsByGenre.rejected,(state,action)=>{
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке персональных альбомов-рекомендаций";
             });
     },
 });

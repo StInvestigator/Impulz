@@ -38,7 +38,10 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}
                             {t("title-album")} &middot; {playlist.owner.name || "Unknown"}
                         </Typography>
                     </Box>
-                    <IconButton sx={{padding: 0}}>
+                    <IconButton
+                        sx={{padding: 0}}
+                        disableRipple={true}
+                    >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                              height={"30px"}/>
                     </IconButton>

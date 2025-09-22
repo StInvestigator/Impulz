@@ -26,10 +26,8 @@ const Profile: FC<ProfileProps> = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation("authorPage");
 
-  // локальное состояние подписчиков
   const [followers, setFollowers] = useState(author.followersCount);
 
-  // при изменении самого автора (например, пришёл новый с API) синхронизируем локальный стейт
   useEffect(() => {
     setFollowers(author.followersCount);
   }, [author.followersCount]);
@@ -44,7 +42,6 @@ const Profile: FC<ProfileProps> = ({
     if (onSubscriptionChange) {
       onSubscriptionChange();
     }
-    // обновляем локально
     setFollowers((prev) =>
         isSubscribed ? Math.max(prev - 1, 0) : prev + 1
     );
@@ -102,7 +99,10 @@ const Profile: FC<ProfileProps> = ({
               left={300}
               zIndex={1}
               sx={{
-                // backgroundImage: `url(${author.photoUrl})`, <-- здесь нужно передать фото автора
+                backgroundImage: `url(${author.imgUrl})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover"
               }}
           >
             <IconButton sx={{ padding: 0 }}>

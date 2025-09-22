@@ -1,4 +1,4 @@
-import {Box, IconButton, Link, Typography} from "@mui/material";
+import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
 import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
@@ -51,6 +51,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                         bottom: 16,
                         right: 16
                     }}
+                    disableRipple={true}
                 >
                     <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                          height={"30px"}/>
@@ -76,15 +77,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                         &middot;
                     </Box>
                     <Box>
-                        <Link sx={{
-                            color: "var(--orange-peel)",
-                            '&:hover': {
-                                textDecoration: 'underline',
-                                cursor: 'pointer',
-                            },
-                        }}>
-                            {playlist.owner?.name || "Unknown"}
-                        </Link>
+                        {playlist.owner?.name || "Unknown"}
                     </Box>
                 </Typography>
             </Box>

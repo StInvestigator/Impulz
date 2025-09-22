@@ -52,6 +52,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({author, itemWidth, color = "light
                         bottom: 8,
                         right: 8,
                     }}
+                    disableRipple={true}
                 >
                     <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
                          height={"30px"}/>

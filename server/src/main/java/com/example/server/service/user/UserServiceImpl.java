@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public User getUserById(String id) {

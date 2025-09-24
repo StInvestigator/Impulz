@@ -14,7 +14,7 @@ CREATE TABLE authors (
 );
 
 CREATE TABLE albums (
-                        id SERIAL PRIMARY KEY,
+                        id BIGSERIAL PRIMARY KEY,
                         title VARCHAR(200) NOT NULL,
                         release_date DATE,
                         image_url TEXT,
@@ -22,7 +22,7 @@ CREATE TABLE albums (
 );
 
 CREATE TABLE tracks (
-                        id SERIAL PRIMARY KEY,
+                        id BIGSERIAL PRIMARY KEY,
                         album_id BIGINT REFERENCES albums (id) ON DELETE SET NULL,
                         title VARCHAR(200) NOT NULL,
                         duration_sec INT NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE tracks (
 );
 
 CREATE TABLE genres (
-                        id SERIAL PRIMARY KEY,
+                        id BIGSERIAL PRIMARY KEY,
                         name VARCHAR(50) UNIQUE NOT NULL
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE track_genres (
 );
 
 CREATE TABLE subtitles (
-                           id SERIAL PRIMARY KEY,
+                           id BIGSERIAL PRIMARY KEY,
                            track_id BIGINT REFERENCES tracks (id) ON DELETE CASCADE,
                            start_time_ms INT NOT NULL,
                            end_time_ms INT NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE album_authors (
 );
 
 CREATE TABLE playlists (
-                           id SERIAL PRIMARY KEY,
+                           id BIGSERIAL PRIMARY KEY,
                            owner_id VARCHAR(36) REFERENCES users (keycloak_id) ON DELETE CASCADE,
                            title VARCHAR(200) NOT NULL,
                            is_public BOOLEAN DEFAULT FALSE,

@@ -1,8 +1,8 @@
 import { Box, IconButton, Typography, Link } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import { type FC, useRef, useState, useLayoutEffect } from "react";
-import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
-import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+import { type FC, useRef, useState, useLayoutEffect, useCallback } from "react";
+import type { TrackSimpleDto } from "../../../models/DTO/TrackSimpleDto.ts";
+import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -13,26 +13,46 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
+
+    const handlePlay = useCallback(() => {
+        playSingle(track);
+    }, [playSingle, track]);
+
     useLayoutEffect(() => {
-        if (cardRef.current) {
-            setCardWidth(cardRef.current.getBoundingClientRect().width);
-        }
+        const updateCardWidth = () => {
+            if (cardRef.current) {
+                setCardWidth(cardRef.current.getBoundingClientRect().width);
+            }
+        };
+
+        updateCardWidth();
+
+        window.addEventListener('resize', updateCardWidth);
+        return () => window.removeEventListener('resize', updateCardWidth);
     }, []);
 
-    const formatDuration = (seconds: number) => {
+    const formatDuration = useCallback((seconds: number) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-    };
+    }, []);
+
+    const isMobileLayout = cardWidth <= 800;
 
     return (
         <Box
             ref={cardRef}
             display="flex"
-            height= {cardWidth <= 800 ? "80px" : "60px"}
+            height={isMobileLayout ? "80px" : "60px"}
             width="100%"
             borderRadius="10px"
             overflow="hidden"
+            sx={{
+                transition: 'height 0.2s ease-in-out',
+                '&:hover': {
+                    bgcolor: 'rgba(0, 0, 0, 0.04)',
+                }
+            }}
         >
             {/* Номер */}
             <Box
@@ -43,12 +63,12 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                 width="80px"
                 flexShrink={0}
             >
-                <Typography variant="h2">
+                <Typography variant="h2" component="span">
                     {index !== undefined ? index + 1 : '#'}
                 </Typography>
             </Box>
 
-            {/* Обложка + остальной контент */}
+            {/* Основной контент */}
             <Box
                 bgcolor="var(--orange-peel-20)"
                 width="100%"
@@ -56,173 +76,123 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                 justifyContent="space-between"
                 alignItems="center"
                 px="24px"
+                gap={2}
             >
-                {cardWidth <= 800 ? (
-                    <>
-                        {/* Обложка трека */}
-                        <Box
-                            bgcolor="grey"
-                            height="60px"
-                            width="60px"
-                            borderRadius="4px"
-                            flexShrink={0}
-                            sx={{
-                                backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }}
-                        />
-                        <Box
-                            overflow="hidden"
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="center"
-                            sx={{ flexBasis: "60%", minWidth: 0 }}
-                        >
-                            <Typography
-                                variant="mainSbL"
-                                noWrap
-                                maxWidth={"100%"}
-                            >
-                                {track.title || "Без названия"}
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
-                                {track.authors && track.authors.length > 0 ? (
-                                    track.authors.map((author, authorIndex) => (
-                                        <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
-                                            <Link
-                                                href={`/author/${author.id}`}
-                                                underline="none"
-                                                sx={{
-                                                    color: 'inherit',
-                                                    '&:hover': {
-                                                        textDecoration: 'underline',
-                                                        color: '#1976d2',
-                                                        cursor: 'pointer',
-                                                    },
-                                                }}
-                                            >
-                                                <Typography variant="mainRM" noWrap>
-                                                    {author.name}
-                                                </Typography>
-                                            </Link>
-                                            {authorIndex < track.authors.length - 1 && (
-                                                <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
-                                            )}
-                                        </Box>
-                                    ))
-                                ) : (
-                                    <Typography variant="mainRM">
-                                        Неизвестный исполнитель
-                                    </Typography>
-                                )}
-                            </Box>
-                        </Box>
-                    </>
-                ) : (
-                    <>
-                        {/* Обложка трека */}
-                        <Box
-                            bgcolor="grey"
-                            height="60px"
-                            width="60px"
-                            borderRadius="4px"
-                            flexShrink={0}
-                            sx={{
-                                backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }}
-                        />
-                        <Typography
-                            variant="mainSbL"
-                            noWrap
-                            textAlign="center"
-                            sx={{ flexBasis: "20%", minWidth: 0 }}
-                        >
-                            {track.title || "Без названия"}
-                        </Typography>
+                {/* Обложка трека */}
+                <Box
+                    bgcolor="grey"
+                    height="60px"
+                    width="60px"
+                    borderRadius="4px"
+                    flexShrink={0}
+                    sx={{
+                        backgroundImage: track.imgUrl ? `url(${track.imgUrl})` : 'none',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                    }}
+                />
 
-                        <Box sx={{
-                            flexBasis: "20%",
-                            minWidth: 0,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            flexWrap: 'nowrap'
-                        }}>
-                            {track.authors && track.authors.length > 0 ? (
-                                track.authors.map((author, authorIndex) => (
-                                    <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Link
-                                            href={`/author/${author.id}`}
-                                            underline="none"
-                                            sx={{
-                                                color: 'inherit',
-                                                '&:hover': {
-                                                    textDecoration: 'underline',
-                                                    color: '#1976d2',
-                                                    cursor: 'pointer',
-                                                },
-                                            }}
-                                        >
-                                            <Typography variant="mainRM" noWrap>
-                                                {author.name}
-                                            </Typography>
-                                        </Link>
-                                        {authorIndex < track.authors.length - 1 && (
-                                            <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
-                                        )}
-                                    </Box>
-                                ))
-                            ) : (
-                                <Typography variant="mainRM" noWrap textAlign="center">
-                                    Неизвестный исполнитель
-                                </Typography>
-                            )}
-                        </Box>
-                        <Link
-                            href={`/album/${track.albumId}`}
-                            underline="none"
-                            textAlign="center"
-                            sx={{
-                                color: 'inherit',
-                                flexBasis: "20%", 
-                                minWidth: 0,
-                                '&:hover': {
-                                    textDecoration: 'underline',
-                                    color: '#1976d2',
-                                    cursor: 'pointer',
-                                },
-                            }}>
-                            <Typography
-                                variant="mainRM"
-                                noWrap
-                                textAlign="center"
-                            >
-                                {track.album}
-                            </Typography>
-                        </Link>
-                    </>
+                {isMobileLayout ? (
+                    <MobileLayout track={track} />
+                ) : (
+                    <DesktopLayout track={track} />
                 )}
 
-                <Typography variant="mainSbL" flexShrink={0}>
-                    {formatDuration(track.durationSec || 0)}
-                </Typography>
+                {/* Длительность и кнопка воспроизведения */}
+                <Box display="flex" alignItems="center" gap={2} flexShrink={0}>
+                    <Typography variant="mainSbL">
+                        {formatDuration(track.durationSec || 0)}
+                    </Typography>
 
-                <IconButton
-                    sx={{ padding: 0 }}
-                    onClick={() => playSingle(track)}
-                    disableRipple={true}
-                >
-                    <Box
-                        component="img"
-                        src={playImage}
-                        borderRadius="50%"
-                        width="40px"
-                        height="40px"
-                    />
-                </IconButton>
+                    <IconButton
+                        sx={{ padding: 0, '&:hover': { transform: 'scale(1.1)' } }}
+                        onClick={handlePlay}
+                        disableRipple={false}
+                    >
+                        <Box
+                            component="img"
+                            src={playImage}
+                            borderRadius="50%"
+                            width="40px"
+                            height="40px"
+                            sx={{ transition: 'transform 0.2s' }}
+                        />
+                    </IconButton>
+                </Box>
             </Box>
+        </Box>
+    );
+};
+
+const MobileLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
+    <Box overflow="hidden" display="flex" flexDirection="column" sx={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="mainSbL" noWrap>
+            {track.title || "Без названия"}
+        </Typography>
+        <AuthorLinks authors={track.authors} />
+    </Box>
+);
+
+const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
+    <>
+        <Typography variant="mainSbL" noWrap sx={{ flex: 1, minWidth: 0, textAlign: 'center' }}>
+            {track.title || "Без названия"}
+        </Typography>
+
+        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'center' }}>
+            <AuthorLinks authors={track.authors} />
+        </Box>
+
+        <Link
+            href={`/album/${track.albumId}`}
+            underline="none"
+            sx={{
+                flex: 1,
+                minWidth: 0,
+                color: 'inherit',
+                '&:hover': { textDecoration: 'underline', color: '#1976d2' },
+            }}
+        >
+            <Typography variant="mainRM" noWrap textAlign="center">
+                {track.album || "Неизвестный альбом"}
+            </Typography>
+        </Link>
+    </>
+);
+
+const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) => {
+    if (!authors || authors.length === 0) {
+        return (
+            <Typography variant="mainRM">
+                Неизвестный исполнитель
+            </Typography>
+        );
+    }
+
+    return (
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
+            {authors.map((author, index) => (
+                <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Link
+                        href={`/author/${author.id}`}
+                        underline="none"
+                        sx={{
+                            color: 'inherit',
+                            '&:hover': {
+                                textDecoration: 'underline',
+                                color: '#1976d2',
+                            },
+                        }}
+                    >
+                        <Typography variant="mainRM" noWrap>
+                            {author.name}
+                        </Typography>
+                    </Link>
+                    {index < authors.length - 1 && (
+                        <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
+                    )}
+                </Box>
+            ))}
         </Box>
     );
 };

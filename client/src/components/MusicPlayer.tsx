@@ -4,12 +4,29 @@ import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import {Box, CircularProgress, Grid, IconButton, Link, Typography} from '@mui/material';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
+import { Box, CircularProgress, Grid, IconButton, Link, Typography, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { pauseTrack, playTrack, setCurrentTime, setDuration, setVolume, nextTrack, prevTrack } from '../store/reducers/PlayerSlice';
+import {
+    pauseTrack,
+    playTrack,
+    setCurrentTime,
+    setDuration,
+    setVolume,
+    nextTrack,
+    prevTrack,
+    updateSourcePage,
+    addToPlaylist,
+    setSourceHasMore,
+    setPlaybackMode,
+} from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http';
-import keycloak from "../keycloak.ts";
+import keycloak from '../keycloak.ts';
+import { fetchPopularTracksByAuthor, fetchTracksByAlbum } from '../store/reducers/action-creators/tracks.ts';
+import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
+import { usePlayTrack } from '../hooks/usePlayTrack'; // Добавляем импорт хука
 
 interface PlaybackStats {
     trackId: number;
@@ -19,9 +36,7 @@ interface PlaybackStats {
     sessionId: string;
 }
 
-const generateSessionId = () => {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-};
+const generateSessionId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const playbackService = {
     sendPlaybackStats: async (stats: PlaybackStats): Promise<void> => {
@@ -33,14 +48,30 @@ const playbackService = {
     },
 
     getStreamUrl: async (id: number): Promise<string> => {
-        const response = await $authApi.get(`/music/link/${id}`)
-        return response.data
+        const response = await $authApi.get(`/music/link/${id}`);
+        return response.data;
     },
 };
 
 const MusicPlayer: React.FC = () => {
-    const { active, playlist, pause, currentTime, duration, volume, currentTrackIndex } = useAppSelector(state => state.player);
+    const {
+        active,
+        playlist,
+        pause,
+        currentTime,
+        duration,
+        volume,
+        currentTrackIndex,
+        source,
+        playbackMode,
+        bufferTracks
+    } = useAppSelector((state) => state.player);
+
     const dispatch = useAppDispatch();
+
+    const { useAutoBuffer,appendBufferToPlaylist, loadNextPageToBuffer  } = usePlayTrack();
+    useAutoBuffer();
+
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -59,27 +90,33 @@ const MusicPlayer: React.FC = () => {
         const savedVolume = localStorage.getItem('playerVolume');
         if (savedVolume) {
             const volumeValue = parseInt(savedVolume, 10);
-            if (!isNaN(volumeValue) && volumeValue >= 0 && volumeValue <= 100) {
-                dispatch(setVolume(volumeValue));
-            }
+            if (!isNaN(volumeValue)) dispatch(setVolume(volumeValue));
+        }
+
+        const savedMode = localStorage.getItem('playerPlaybackMode') as "replace" | "append";
+        if (savedMode && (savedMode === "replace" || savedMode === "append")) {
+            dispatch(setPlaybackMode(savedMode));
         }
     }, [dispatch]);
 
     const sendPlaybackStats = useCallback(async () => {
-        if (hasSentPlayback.current) return;
-        if (!keycloak?.authenticated) return;
-        if (!active) return;
+        if (hasSentPlayback.current || !active || !keycloak?.authenticated) return;
 
         const audio = audioRef.current;
         if (!audio) return;
 
-        const userId = keycloak.tokenParsed?.sub || keycloak?.subject || keycloak.idTokenParsed?.sub || 'unknown-user';
+        const userId =
+            keycloak.tokenParsed?.sub ||
+            keycloak?.subject ||
+            keycloak.idTokenParsed?.sub ||
+            'unknown-user';
+
         const stats: PlaybackStats = {
             trackId: active.id,
             currentTime: Math.min(audio.currentTime, duration),
             duration,
             userId,
-            sessionId: sessionIdRef.current
+            sessionId: sessionIdRef.current,
         };
 
         try {
@@ -92,7 +129,6 @@ const MusicPlayer: React.FC = () => {
 
     useEffect(() => {
         isMountedRef.current = true;
-
         return () => {
             isMountedRef.current = false;
             if (audioRef.current) {
@@ -138,6 +174,7 @@ const MusicPlayer: React.FC = () => {
 
                 if (audioRef.current) {
                     audioRef.current.pause();
+                    audioRef.current.src = '';
                     audioRef.current.onloadedmetadata = null;
                     audioRef.current.oncanplay = null;
                     audioRef.current.ontimeupdate = null;
@@ -145,14 +182,11 @@ const MusicPlayer: React.FC = () => {
                     audioRef.current.onerror = null;
                 }
 
-                if (objectUrlRef.current) {
-                    URL.revokeObjectURL(objectUrlRef.current);
-                }
+                if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
 
                 objectUrlRef.current = url;
-
                 const audio = new Audio();
-                audio.volume = Math.max(0, Math.min(1, volume / 100));
+                audio.volume = volume / 100;
                 audioRef.current = audio;
 
                 audio.onloadedmetadata = () => {
@@ -163,21 +197,15 @@ const MusicPlayer: React.FC = () => {
                 audio.oncanplay = () => {
                     if (!mounted || !isMountedRef.current) return;
                     setLoading(false);
-
-                    audio.play().catch(err => {
+                    audio.play().catch((err) => {
                         console.error('Ошибка автовоспроизведения:', err);
                         setError('Ошибка воспроизведения аудио');
                         dispatch(pauseTrack());
                     });
                 };
 
-                audio.onplay = () => {
-                    dispatch(playTrack());
-                };
-
-                audio.onpause = () => {
-                    dispatch(pauseTrack());
-                };
+                audio.onplay = () => dispatch(playTrack());
+                audio.onpause = () => dispatch(pauseTrack());
 
                 audio.onerror = (e) => {
                     if (!mounted || !isMountedRef.current) return;
@@ -197,25 +225,91 @@ const MusicPlayer: React.FC = () => {
                     }
                     lastTimeRef.current = cur;
 
-                    if (listenedTimeRef.current >= 30) {
-                        sendPlaybackStats();
-                    }
+                    if (listenedTimeRef.current >= 30) sendPlaybackStats();
                 };
 
-                audio.onended = () => {
-                    if (!mounted || !isMountedRef.current) return;
-                    sendPlaybackStats();
+                audio.onended = async () => {
+                    const isLastTrack = currentTrackIndex >= playlist.length - 1;
+
+                    console.log('🔚 Трек завершен:', {
+                        isLastTrack,
+                        currentTrackIndex,
+                        playlistLength: playlist.length,
+                        hasMore: source?.hasMore,
+                        bufferTracksCount: bufferTracks.length
+                    });
 
                     if (!isLastTrack) {
                         dispatch(nextTrack());
+                        return;
+                    }
+
+                    // Пытаемся использовать буфер
+                    const bufferAppended = appendBufferToPlaylist();
+
+                    if (bufferAppended) {
+                        console.log('✅ Буфер перемещен, переходим к следующему треку');
+                        dispatch(nextTrack());
+
+                        if (source?.hasMore) {
+                            console.log('🔄 Запускаем загрузку следующей страницы буфера');
+                            setTimeout(() => loadNextPageToBuffer(), 500);
+                        }
+                    } else if (source?.hasMore) {
+                        console.log('⚠️ Буфер пуст, загружаем следующую страницу напрямую');
+
+                        let fetchResult: any;
+                        const nextPage = (source.page || 0) + 1;
+
+                        try {
+                            switch (source.type) {
+                                case "author":
+                                    fetchResult = await dispatch(fetchPopularTracksByAuthor({
+                                        authorId: source.id.toString(),
+                                        page: nextPage,
+                                        size: source.size
+                                    }));
+                                    break;
+                                case "album":
+                                    fetchResult = await dispatch(fetchTracksByAlbum({
+                                        albumId: source.id,
+                                        page: nextPage,
+                                        size: source.size
+                                    }));
+                                    break;
+                                default:
+                                    dispatch(pauseTrack());
+                                    return;
+                            }
+
+                            const newTracks: TrackSimpleDto[] = fetchResult.payload ?? [];
+                            if (newTracks.length > 0) {
+                                console.log('✅ Загружены новые треки:', newTracks.length);
+                                dispatch(addToPlaylist(newTracks));
+                                dispatch(updateSourcePage());
+                                dispatch(nextTrack());
+
+                                if (newTracks.length < source.size) {
+                                    dispatch(setSourceHasMore(false));
+                                }
+                            } else {
+                                console.log('❌ Нет новых треков, останавливаем воспроизведение');
+                                dispatch(setSourceHasMore(false));
+                                dispatch(pauseTrack());
+                            }
+                        } catch (error) {
+                            console.error('❌ Ошибка загрузки треков:', error);
+                            dispatch(setSourceHasMore(false));
+                            dispatch(pauseTrack());
+                        }
                     } else {
+                        console.log('⏹️ Больше нет треков, останавливаем воспроизведение');
                         dispatch(pauseTrack());
                     }
                 };
 
                 audio.src = url;
                 audio.load();
-
             } catch (err) {
                 if (!mounted || !isMountedRef.current) return;
                 console.error('Load stream error:', err);
@@ -225,52 +319,87 @@ const MusicPlayer: React.FC = () => {
         };
 
         loadStream();
-
-        return () => {
-            mounted = false;
-        };
-    }, [active, dispatch, sendPlaybackStats, isLastTrack]);
+        return () => { mounted = false; };
+    }, [active, dispatch, sendPlaybackStats, volume, playlist, currentTrackIndex, source, appendBufferToPlaylist, loadNextPageToBuffer]); // Добавляем зависимости
 
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
-        }
+        if (audioRef.current) audioRef.current.volume = volume / 100;
     }, [volume]);
 
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        if (pause && !audio.paused) {
-            audio.pause();
-        } else if (!pause && audio.paused && audio.readyState >= 2) {
-            audio.play().catch(err => {
-                console.error('Play error:', err);
-                setError('Ошибка воспроизведения');
-            });
-        }
+        if (pause && !audio.paused) audio.pause();
+        else if (!pause && audio.paused && audio.readyState >= 2) audio.play().catch(err => {
+            console.error('Play error:', err);
+            setError('Ошибка воспроизведения');
+        });
     }, [pause]);
 
     const togglePlay = () => {
         if (loading) return;
-
-        if (pause) {
-            dispatch(playTrack());
-        } else {
-            dispatch(pauseTrack());
-        }
+        if (pause) dispatch(playTrack());
+        else dispatch(pauseTrack());
     };
 
-    const handleNext = () => {
+    const togglePlaybackMode = () => {
+        const newMode = playbackMode === "replace" ? "append" : "replace";
+        dispatch(setPlaybackMode(newMode));
+        localStorage.setItem('playerPlaybackMode', newMode);
+    };
+
+    const handleNext = async () => {
         if (!isLastTrack) {
             dispatch(nextTrack());
+        } else {
+            // Используем функцию из хука usePlayTrack
+            const bufferAppended = appendBufferToPlaylist();
+
+            if (bufferAppended) {
+                dispatch(nextTrack());
+                if (source?.hasMore) {
+                    setTimeout(() => loadNextPageToBuffer(), 500); // Используем функцию из хука
+                }
+            } else if (source?.hasMore) {
+                const nextPage = (source.page ?? 0) + 1;
+                let fetchResult: any;
+
+                switch (source.type) {
+                    case "author":
+                        fetchResult = await dispatch(fetchPopularTracksByAuthor({
+                            authorId: source.id.toString(),
+                            page: nextPage,
+                            size: source.size
+                        }));
+                        break;
+                    case "album":
+                        fetchResult = await dispatch(fetchTracksByAlbum({
+                            albumId: source.id,
+                            page: nextPage,
+                            size: source.size
+                        }));
+                        break;
+                    default:
+                        return;
+                }
+
+                const newTracks: TrackSimpleDto[] = fetchResult.payload ?? [];
+                if (newTracks.length > 0) {
+                    dispatch(addToPlaylist(newTracks));
+                    dispatch(updateSourcePage());
+                    dispatch(nextTrack());
+                } else {
+                    dispatch(setSourceHasMore(false));
+                }
+            } else {
+                dispatch(pauseTrack());
+            }
         }
     };
 
     const handlePrev = () => {
-        if (!isFirstTrack) {
-            dispatch(prevTrack());
-        }
+        if (!isFirstTrack) dispatch(prevTrack());
     };
 
     const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -287,9 +416,7 @@ const MusicPlayer: React.FC = () => {
         lastTimeRef.current = newTime;
     };
 
-    if (!active) {
-        return null;
-    }
+    if (!active) return null;
 
     return (
         <Box
@@ -304,11 +431,7 @@ const MusicPlayer: React.FC = () => {
             boxSizing="border-box"
             sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
-            <IconButton
-                aria-label="previous"
-                onClick={handlePrev}
-                disabled={isFirstTrack || playlist.length <= 1}
-            >
+            <IconButton aria-label="previous" onClick={handlePrev} disabled={isFirstTrack}>
                 <SkipPreviousIcon />
             </IconButton>
 
@@ -322,75 +445,47 @@ const MusicPlayer: React.FC = () => {
                 </IconButton>
             )}
 
-            <IconButton
-                aria-label="next"
-                onClick={handleNext}
-                disabled={isLastTrack || playlist.length <= 1}
-            >
+            <IconButton aria-label="next" onClick={handleNext} disabled={isLastTrack && !source?.hasMore}>
                 <SkipNextIcon />
             </IconButton>
+
+            <Tooltip title={playbackMode === "replace" ? "Режим замены" : "Режим добавления в очередь"}>
+                <IconButton onClick={togglePlaybackMode} color={playbackMode === "append" ? "primary" : "default"}>
+                    {playbackMode === "replace" ? <PlaylistPlayIcon /> : <PlaylistAddIcon />}
+                </IconButton>
+            </Tooltip>
 
             <Grid container direction="column" sx={{ width: 240, margin: '0 20px' }}>
                 <Box sx={{ fontWeight: 600 }}>{active.title ?? 'Unknown title'}</Box>
                 <Box sx={{ fontSize: 12, color: 'gray' }}>
-                    {active.authors && active.authors.length > 0 ? (
-                        active.authors.map((author, index) => (
-                            <React.Fragment key={author.id}>
-                                <Link
-                                    href={`/author/${author.id}`}
-                                    underline="none"
-                                    sx={{
-                                        color: 'inherit',
-                                        '&:hover': {
-                                            textDecoration: 'underline',
-                                            color: '#1976d2',
-                                            cursor: 'pointer',
-                                        },
-                                    }}
-                                >
-                                    {author.name}
-                                </Link>
-                                {index < active.authors.length - 1 && ', '}
-                            </React.Fragment>
-                        ))
-                    ) : (
-                        'Unknown artist'
-                    )}
+                    {active.authors?.map((author, index) => (
+                        <React.Fragment key={author.id}>
+                            <Link href={`/author/${author.id}`} underline="none"
+                                  sx={{ color: 'inherit', '&:hover': { textDecoration: 'underline', color: '#1976d2', cursor: 'pointer' } }}>
+                                {author.name}
+                            </Link>
+                            {index < active.authors.length - 1 && ', '}
+                        </React.Fragment>
+                    )) || 'Unknown artist'}
                     <Box component="span" sx={{ mx: 1 }}>•</Box>
-                    <Link
-                        href={`/album/${active.albumId}`}
-                        underline="none"
-                        sx={{
-                            color: 'inherit',
-                            '&:hover': {
-                                textDecoration: 'underline',
-                                color: '#1976d2',
-                                cursor: 'pointer',
-                            },
-                        }}
-                    >
+                    <Link href={`/album/${active.albumId}`} underline="none"
+                          sx={{ color: 'inherit', '&:hover': { textDecoration: 'underline', color: '#1976d2', cursor: 'pointer' } }}>
                         {active.album ?? 'Unknown album'}
                     </Link>
                 </Box>
+                <Box sx={{ fontSize: 10, color: 'darkgray' }}>
+                    {currentTrackIndex + 1} из {playlist.length} в очереди
+                </Box>
             </Grid>
 
-            <TrackProgress
-                left={currentTime}
-                right={duration}
-                onChange={changeCurrentTime}
-                disabled={loading}
-            />
+            <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime} disabled={loading} />
 
             <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
                 <VolumeUpIcon sx={{ marginRight: 1 }} />
                 <TrackProgress left={volume} right={100} onChange={changeVolume} />
             </Box>
 
-            {error && (
-                <Typography variant="body2" color="error" sx={{ ml: 2 }}>
-                    {error}
-                </Typography>
-            )}
+            {error && <Typography variant="body2" color="error" sx={{ ml: 2 }}>{error}</Typography>}
         </Box>
     );
 };

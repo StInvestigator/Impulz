@@ -22,7 +22,6 @@ export const usePlayTrack = () => {
     const { keycloak } = useKeycloak();
     const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading } = useAppSelector((state) => state.player);
 
-    // Исправление: предоставляем начальное значение
     const currentFetchFnRef = useRef<((page: number, size: number) => Promise<TrackSimpleDto[]>) | null>(null);
 
     const requireAuth = () => {
@@ -55,15 +54,6 @@ export const usePlayTrack = () => {
 
     const loadNextPageToBuffer = useCallback(async (): Promise<boolean> => {
         if (!source || !currentFetchFnRef.current || isBufferLoading) {
-            console.log('❌ Загрузка буфера отменена:', {
-                source: !!source,
-                fetchFn: !!currentFetchFnRef.current,
-                isBufferLoading
-            });
-
-            if (source && !currentFetchFnRef.current) {
-                console.log('⚠️ FetchFn не установлен, но source есть. Возможно, нужно подождать...');
-            }
             return false;
         }
 
@@ -82,24 +72,17 @@ export const usePlayTrack = () => {
 
             console.log('📥 Буфер: загружены треки', {
                 page: nextPage,
-                loadedTracks: newTracks.length,
-                trackIds: newTracks.map(t => t.id)
+                loadedTracks: newTracks.length
             });
 
             if (newTracks.length > 0) {
-                console.log('💾 Диспатчим setBufferTracks...');
                 dispatch(setBufferTracks(newTracks));
-
-                // Вместо store.getState() используем другой подход
-                console.log('✅ setBufferTracks вызван с', newTracks.length, 'треками');
 
                 const hasMore = newTracks.length === source.size;
                 dispatch(setSourceHasMore(hasMore));
-                console.log('🔮 Установлен hasMore:', hasMore);
 
                 return true;
             } else {
-                console.log('📭 Нет новых треков для буфера');
                 dispatch(setSourceHasMore(false));
                 return false;
             }
@@ -132,9 +115,7 @@ export const usePlayTrack = () => {
     ) => {
         if (!requireAuth()) return;
 
-        // СНАЧАЛА устанавливаем fetchFn
         currentFetchFnRef.current = fetchPageFn;
-        console.log('✅ Установлен currentFetchFnRef');
 
         const source: PlayerSource = {
             ...sourceConfig,
@@ -142,7 +123,6 @@ export const usePlayTrack = () => {
             hasMore: true
         };
 
-        // ПОТОМ устанавливаем источник и треки
         dispatch(setSourceWithBuffer({
             source,
             initialTracks,
@@ -150,15 +130,28 @@ export const usePlayTrack = () => {
             startIndex
         }));
 
-        console.log('🎵 Источник и плейлист установлены');
+
+        setTimeout(async () => {
+            try {
+                dispatch(setBufferLoading(true));
+                const bufferTracksResult = await fetchPageFn(1, sourceConfig.size);
+
+                if (bufferTracksResult.length > 0) {
+                    dispatch(setBufferTracks(bufferTracksResult));
+                    dispatch(setSourceHasMore(bufferTracksResult.length === sourceConfig.size));
+                } else {
+                    dispatch(setSourceHasMore(false));
+                }
+            } catch (error) {
+                console.error('Фоновая загрузка буфера:', error);
+                dispatch(setSourceHasMore(false));
+            } finally {
+                dispatch(setBufferLoading(false));
+            }
+        }, 1000);
     };
 
     const useAutoBuffer = () => {
-        // Эффект для отслеживания изменений буфера
-        useEffect(() => {
-            console.log('🟦 Буфер изменился:', bufferTracks.length, 'треков');
-        }, [bufferTracks.length]);
-
         useEffect(() => {
             if (currentTrackIndex === -1 || playlist.length === 0) return;
 
@@ -171,41 +164,34 @@ export const usePlayTrack = () => {
                 hasMore: source?.hasMore,
                 isBufferLoading,
                 bufferTracksCount: bufferTracks.length,
-                fetchFnSet: !!currentFetchFnRef.current
+                sourceType: source?.type,
+                sourcePage: source?.page
             });
 
             const shouldLoadBuffer = tracksLeft <= 2 &&
                 source?.hasMore &&
                 !isBufferLoading &&
-                bufferTracks.length === 0 &&
-                !!currentFetchFnRef.current;
+                bufferTracks.length === 0;
 
             const shouldAppendBuffer = tracksLeft === 0 && bufferTracks.length > 0;
 
             console.log('🔍 Автобуферизация - решения:', {
                 shouldLoadBuffer,
-                shouldAppendBuffer,
-                bufferNotEmpty: bufferTracks.length > 0,
-                fetchFnAvailable: !!currentFetchFnRef.current
+                shouldAppendBuffer
             });
 
             if (shouldLoadBuffer) {
                 console.log('🚀 Автобуферизация: загружаем следующую страницу в буфер');
-                // Добавляем небольшую задержку для надежности
-                setTimeout(() => {
-                    loadNextPageToBuffer().then(success => {
-                        console.log('📤 Загрузка буфера завершена, успех:', success);
-                    });
-                }, 100);
+                loadNextPageToBuffer();
             }
 
             if (shouldAppendBuffer) {
                 console.log('🔄 Автобуферизация: перемещаем буфер в плейлист');
-                if (bufferTracks.length > 0) {
-                    const appended = appendBufferToPlaylist();
-                    console.log('📤 Результат перемещения буфера:', appended);
-                } else {
-                    console.log('❌ Буфер пустой, нечего перемещать');
+                const appended = appendBufferToPlaylist();
+
+                if (appended && source?.hasMore) {
+                    console.log('📥 Автобуферизация: запускаем загрузку следующей страницы');
+                    setTimeout(() => loadNextPageToBuffer(), 300);
                 }
             }
         }, [currentTrackIndex, playlist.length, bufferTracks.length, source?.hasMore, isBufferLoading, loadNextPageToBuffer, appendBufferToPlaylist]);
@@ -216,7 +202,7 @@ export const usePlayTrack = () => {
         authorName: string,
         fetchTracksFn: (page: number, size: number) => Promise<TrackSimpleDto[]>,
         initialTracks: TrackSimpleDto[] = [],
-        pageSize: number = 3 // Убедитесь, что здесь 3
+        pageSize: number = 3
     ) => {
         console.log('🎵 Начинаем воспроизведение автора:', {
             authorId,

@@ -1,5 +1,5 @@
 import {Box, Button, Typography} from "@mui/material";
-import Profile from "../components/Profile.tsx";
+import AuthorProfile from "../components/profiles/AuthorProfile.tsx";
 import {useParams} from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
 import AlbumList from "../components/lists/AlbumList.tsx";
@@ -81,8 +81,7 @@ const AuthorProfilePage = () => {
         <>
             <Box component="section" height="450px" >
                 {currentAuthor && (
-                    <Profile
-                        type="author"
+                    <AuthorProfile
                         author={currentAuthor}
                         onSubscriptionChange={handleSubscription}
                         isSubscribed={isSubscribed}

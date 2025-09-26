@@ -14,6 +14,9 @@ import keycloak from "./keycloak";
 import { useEffect } from "react";
 import MusicPlayer from './components/MusicPlayer.tsx';
 import {$authApi} from "./http";
+import { useAppDispatch } from './hooks/redux.ts';
+import { fetchUserDetails } from './store/reducers/action-creators/user.ts';
+import { setProfile } from './store/reducers/ProfileSlice.ts';
 
 function App() {
   return (
@@ -35,6 +38,20 @@ const SecuredContent = () => {
   const { keycloak, initialized } = useKeycloak();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  
+  useEffect(() => {
+      if (keycloak.subject) {
+          dispatch(fetchUserDetails(keycloak.subject))
+              .unwrap()
+              .then((user) => {
+                  dispatch(setProfile(user));
+              })
+              .catch((error) => {
+                  console.error('Failed to fetch user details:', error);
+              });
+      }
+  }, [keycloak.subject]);
 
   useEffect(() => {
     if (initialized && location.hash.includes('state=')) {

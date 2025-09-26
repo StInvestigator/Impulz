@@ -3,10 +3,10 @@ import playImage from "../../../assets/play.svg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux.ts";
-import { fetchPopularTracksByAuthor } from "../../../store/reducers/action-creators/tracks.ts";
+import { useAppSelector } from "../../../hooks/redux.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import type {FC} from "react";
+import {fetchAuthorTracksPaged} from "../../../store/reducers/action-creators/player.ts";
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -17,7 +17,6 @@ interface AuthorItemProps {
 const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "light" }) => {
     const navigate = useNavigate();
     const { t } = useTranslation('other');
-    const dispatch = useAppDispatch();
     const { playAuthorPopularTracks } = usePlayTrack();
     const popularTracks = useAppSelector(state => state.track.popularTracks);
 
@@ -36,22 +35,12 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
 
                 if (cachedTracks.length > 0) {
                     console.log('Используем кэшированные треки:', cachedTracks.length);
-                    return cachedTracks;
+                    return { tracks: cachedTracks, totalPages: 1 };
                 }
             }
 
-            const result = await dispatch(fetchPopularTracksByAuthor({
-                authorId: author.id.toString(),
-                page,
-                size
-            }));
-
-            if (fetchPopularTracksByAuthor.fulfilled.match(result)) {
-                console.log('Загружены треки с сервера:', result.payload.length);
-                return result.payload;
-            }
-
-            return [];
+            const result = await fetchAuthorTracksPaged(author.id, page, size);
+            return result;
         };
 
         const initialTracks = popularTracks
@@ -68,6 +57,8 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
             pageSize
         );
     };
+
+
 
     return (
         <Box

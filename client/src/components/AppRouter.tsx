@@ -20,17 +20,25 @@ import AlbumItemPage from "../pages/AlbumItemPage.tsx";
 import HitsWeekPage from "../pages/tracks_page/HitsWeekPage.tsx";
 import BestAuthorsMonthPage from "../pages/authors_page/BestAuthorsMonthPage.tsx";
 import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPage.tsx";
+import MyProfilePage from "../pages/MyProfilePage.tsx";
 
 const AppRouter = () => {
     return (
         <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/profile" element={<MyProfilePage/>}/>
             <Route path="/library" element={<LibraryPage />} />
             <Route path="/hello" element={<HelloPage />} />
             <Route path="/category" element={<CategoryPage />} />
             <Route path="/hitsWeek" element={<HitsWeekPage />} />
             <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
             <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
+
+            <Route
+                path="/profile" 
+                element={
+                        <MyProfilePage/>
+                }/>
 
             <Route
                 path="/author/:id"
@@ -64,7 +72,7 @@ const AppRouter = () => {
                 }
             />
 
-            <Route path="/user/:name" element={<UserProfilePage />} />
+            <Route path="/user/:id" element={<UserProfilePage />} />
             <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
             <Route path="/allAuthors" element={<AuthorPage />} />
             <Route path="/allTopSelections" element={<TopSelectionsPage />} />

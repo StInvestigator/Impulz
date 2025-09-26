@@ -1,23 +1,22 @@
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import playImage from "../assets/play.svg";
+import playImage from "../../assets/play.svg";
 import {type FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { AuthorDto } from "../models/AuthorDto";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { fetchAuthorPlaysByMonth } from "../store/reducers/action-creators/author";
-import bgCoverImg from "../assets/bg-cover.svg";
+import type { AuthorDto } from "../../models/AuthorDto";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { fetchAuthorPlaysByMonth } from "../../store/reducers/action-creators/author";
+import bgCoverImg from "../../assets/bg-cover.svg";
+import keycloak from "../../keycloak";
 
-interface ProfileProps {
+interface AuthorProfileProps {
   author: AuthorDto;
-  type: "user" | "author";
   onSubscriptionChange?: () => void;
   isSubscribed?: boolean;
   subscriptionLoading?: boolean;
 }
 
-const Profile: FC<ProfileProps> = ({
+const AuthorProfile: FC<AuthorProfileProps> = ({
                                      author,
-                                     type,
                                      onSubscriptionChange,
                                      isSubscribed = false,
                                      subscriptionLoading = false,
@@ -122,62 +121,61 @@ const Profile: FC<ProfileProps> = ({
             bottom={28}
             zIndex={0}
         >
-          {type === "author" && (
-              <Box
-                  height="100%"
-                  marginRight={4}
-                  display="flex"
-                  justifyContent="flex-end"
-                  flexDirection="column"
-                  gap="16px"
-              >
-                <Button
-                    onClick={handleSubscriptionClick}
-                    disabled={subscriptionLoading}
-                    sx={{
-                      minWidth: "175px",
-                      borderRadius: "50px",
-                      marginLeft: "auto",
-                      backgroundColor: isSubscribed ? "#716060" : "var(--orange-peel)",
-                      color: isSubscribed ? "white" : "black",
-                      textTransform: "none",
-                      padding: "12px",
-                      "&:hover": {
-                        backgroundColor: isSubscribed ? "#5a4d4d" : "#f0f0f0",
-                      },
-                    }}
-                >
-                  <Typography variant="h3" lineHeight="24px" fontFamily={'"Manrope", sans-serif'}>
-                    {subscriptionLoading
-                        ? t("button-loading")
-                        : isSubscribed
-                            ? t("button-unsubscribe")
-                            : t("button-subscribe")}
-                  </Typography>
-                </Button>
+          <Box
+              height="100%"
+              marginRight={4}
+              display="flex"
+              justifyContent="flex-end"
+              flexDirection="column"
+              gap="16px"
+          >
+            {keycloak.subject !== author.id && <Button
+                onClick={handleSubscriptionClick}
+                disabled={subscriptionLoading}
+                sx={{
+                  minWidth: "175px",
+                  borderRadius: "50px",
+                  marginLeft: "auto",
+                  backgroundColor: isSubscribed ? "#716060" : "var(--orange-peel)",
+                  color: isSubscribed ? "white" : "black",
+                  textTransform: "none",
+                  padding: "12px",
+                  "&:hover": {
+                    backgroundColor: isSubscribed ? "#5a4d4d" : "#f0f0f0",
+                  },
+                }}
+            >
+              <Typography variant="h3" lineHeight="24px" fontFamily={'"Manrope", sans-serif'}>
+                {subscriptionLoading
+                    ? t("button-loading")
+                    : isSubscribed
+                        ? t("button-unsubscribe")
+                        : t("button-subscribe")}
+              </Typography>
+            </Button>
+            }
 
-                <Box
-                    bgcolor="var(--columbia-blue)"
-                    boxSizing="border-box"
-                    padding="6px 12px"
-                    borderRadius="10px"
-                    marginLeft="auto"
-                    width="40%"
-                    display="flex"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                >
-                  <Box textAlign="center">
-                    <Typography variant="h3">
-                      {followers}
-                    </Typography>
-                    <Typography variant="mainSbM" fontWeight={700}>
-                      {t("title-subscribers")}
-                    </Typography>
-                  </Box>
-                </Box>
+            <Box
+                bgcolor="var(--columbia-blue)"
+                boxSizing="border-box"
+                padding="6px 12px"
+                borderRadius="10px"
+                marginLeft="auto"
+                width="40%"
+                display="flex"
+                justifyContent="flex-end"
+                alignItems="center"
+            >
+              <Box textAlign="center">
+                <Typography variant="h3">
+                  {followers}
+                </Typography>
+                <Typography variant="mainSbM" fontWeight={700}>
+                  {t("title-subscribers")}
+                </Typography>
               </Box>
-          )}
+            </Box>
+          </Box>
 
           <Box
               bgcolor="var(--columbia-blue)"
@@ -205,4 +203,4 @@ const Profile: FC<ProfileProps> = ({
   );
 };
 
-export default Profile;
+export default AuthorProfile;

@@ -6,9 +6,9 @@ export interface UserDto {
   id: string;
   username: string;
   email: string;
-  imgUrl: string;
+  imgUrl?: string;
   subscriptionsCount: number;
   favoriteAlbums: AlbumSimpleDto[];
   favoritePlaylists: PlaylistSimpleDto[];
-  author: AuthorDto;
+  authorDto?: AuthorDto;
 }

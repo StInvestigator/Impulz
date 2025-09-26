@@ -1,18 +1,27 @@
-import {AppBar, Box, Button, OutlinedInput, Toolbar, IconButton, Typography} from "@mui/material";
+import {AppBar, Box, Button, OutlinedInput, Toolbar, IconButton, Typography, Menu, MenuItem} from "@mui/material";
 import LogoIcon from '../assets/logo.svg'
 import ProfileIcon from "../assets/profile_icon.svg"
 import SearchIcon from "../assets/searchIcon.svg"
 import {useTranslation} from "react-i18next";
 import Dropdown from "./Dropdown.tsx";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
-import {memo} from "react";
+import {memo, useState} from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import LogoutButton from "./LogoutButton";
 
 const Navbar = memo(() => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const { keycloak } = useKeycloak();
     const { t } = useTranslation("navbar")
     const navigate = useAppNavigate()
+
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <AppBar sx={{backgroundColor: "var(--columbia-blue)", zIndex: (theme) => theme.zIndex.drawer + 3}}>
@@ -105,9 +114,28 @@ const Navbar = memo(() => {
                             <IconButton
                                 disableRipple={true}
                                 onDragStart={(e) => e.preventDefault()}
-                                href={"/"}>
+                                onClick={handleMenu}
+                            >
                                 <Box height={35} width={35} component="img" src={ProfileIcon} alt="Profile"/>
                             </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                            </Menu>
                         </>
                     }
                 </Box>

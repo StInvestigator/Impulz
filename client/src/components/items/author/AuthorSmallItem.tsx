@@ -24,24 +24,22 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
     const handlePlayClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const pageSize = 3; // Устанавливаем размер страницы = 3
+        const pageSize = 3;
 
         const fetchTracksPage = async (page: number, size: number) => {
-            console.log(`📥 Загрузка страницы ${page}, размер: ${size}`);
+            console.log(`Загрузка страницы ${page}, размер: ${size}`);
 
-            // Для первой страницы проверяем кэш
             if (page === 0) {
                 const cachedTracks = popularTracks
                     .filter(t => t.authors.some(a => a.id === author.id))
                     .slice(0, size);
 
                 if (cachedTracks.length > 0) {
-                    console.log('✅ Используем кэшированные треки:', cachedTracks.length);
+                    console.log('Используем кэшированные треки:', cachedTracks.length);
                     return cachedTracks;
                 }
             }
 
-            // Загружаем с сервера
             const result = await dispatch(fetchPopularTracksByAuthor({
                 authorId: author.id.toString(),
                 page,
@@ -49,26 +47,25 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
             }));
 
             if (fetchPopularTracksByAuthor.fulfilled.match(result)) {
-                console.log('✅ Загружены треки с сервера:', result.payload.length);
+                console.log('Загружены треки с сервера:', result.payload.length);
                 return result.payload;
             }
 
             return [];
         };
 
-        // Берем начальные треки из кэша (максимум 3)
         const initialTracks = popularTracks
             .filter(t => t.authors.some(a => a.id === author.id))
             .slice(0, pageSize);
 
-        console.log('🎵 Начальные треки:', initialTracks.length);
+        console.log('Начальные треки:', initialTracks.length);
 
         await playAuthorPopularTracks(
             author.id,
             author.name,
             fetchTracksPage,
             initialTracks,
-            pageSize // Передаем размер страницы
+            pageSize
         );
     };
 

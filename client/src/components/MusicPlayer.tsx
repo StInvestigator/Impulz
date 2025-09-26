@@ -26,7 +26,7 @@ import { $authApi } from '../http';
 import keycloak from '../keycloak.ts';
 import { fetchPopularTracksByAuthor, fetchTracksByAlbum } from '../store/reducers/action-creators/tracks.ts';
 import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
-import { usePlayTrack } from '../hooks/usePlayTrack'; // Добавляем импорт хука
+import { usePlayTrack } from '../hooks/usePlayTrack';
 
 interface PlaybackStats {
     trackId: number;
@@ -231,7 +231,7 @@ const MusicPlayer: React.FC = () => {
                 audio.onended = async () => {
                     const isLastTrack = currentTrackIndex >= playlist.length - 1;
 
-                    console.log('🔚 Трек завершен:', {
+                    console.log('Трек завершен:', {
                         isLastTrack,
                         currentTrackIndex,
                         playlistLength: playlist.length,
@@ -244,19 +244,18 @@ const MusicPlayer: React.FC = () => {
                         return;
                     }
 
-                    // Пытаемся использовать буфер
                     const bufferAppended = appendBufferToPlaylist();
 
                     if (bufferAppended) {
-                        console.log('✅ Буфер перемещен, переходим к следующему треку');
+                        console.log('Буфер перемещен, переходим к следующему треку');
                         dispatch(nextTrack());
 
                         if (source?.hasMore) {
-                            console.log('🔄 Запускаем загрузку следующей страницы буфера');
+                            console.log('Запускаем загрузку следующей страницы буфера');
                             setTimeout(() => loadNextPageToBuffer(), 500);
                         }
                     } else if (source?.hasMore) {
-                        console.log('⚠️ Буфер пуст, загружаем следующую страницу напрямую');
+                        console.log('Буфер пуст, загружаем следующую страницу напрямую');
 
                         let fetchResult: any;
                         const nextPage = (source.page || 0) + 1;
@@ -284,7 +283,7 @@ const MusicPlayer: React.FC = () => {
 
                             const newTracks: TrackSimpleDto[] = fetchResult.payload ?? [];
                             if (newTracks.length > 0) {
-                                console.log('✅ Загружены новые треки:', newTracks.length);
+                                console.log('Загружены новые треки:', newTracks.length);
                                 dispatch(addToPlaylist(newTracks));
                                 dispatch(updateSourcePage());
                                 dispatch(nextTrack());
@@ -293,17 +292,17 @@ const MusicPlayer: React.FC = () => {
                                     dispatch(setSourceHasMore(false));
                                 }
                             } else {
-                                console.log('❌ Нет новых треков, останавливаем воспроизведение');
+                                console.log('Нет новых треков, останавливаем воспроизведение');
                                 dispatch(setSourceHasMore(false));
                                 dispatch(pauseTrack());
                             }
                         } catch (error) {
-                            console.error('❌ Ошибка загрузки треков:', error);
+                            console.error('Ошибка загрузки треков:', error);
                             dispatch(setSourceHasMore(false));
                             dispatch(pauseTrack());
                         }
                     } else {
-                        console.log('⏹️ Больше нет треков, останавливаем воспроизведение');
+                        console.log('Больше нет треков, останавливаем воспроизведение');
                         dispatch(pauseTrack());
                     }
                 };
@@ -320,7 +319,7 @@ const MusicPlayer: React.FC = () => {
 
         loadStream();
         return () => { mounted = false; };
-    }, [active, dispatch, sendPlaybackStats, volume, playlist, currentTrackIndex, source, appendBufferToPlaylist, loadNextPageToBuffer]); // Добавляем зависимости
+    }, [active, dispatch, sendPlaybackStats, volume, playlist, currentTrackIndex, source, appendBufferToPlaylist, loadNextPageToBuffer]);
 
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = volume / 100;
@@ -353,13 +352,12 @@ const MusicPlayer: React.FC = () => {
         if (!isLastTrack) {
             dispatch(nextTrack());
         } else {
-            // Используем функцию из хука usePlayTrack
             const bufferAppended = appendBufferToPlaylist();
 
             if (bufferAppended) {
                 dispatch(nextTrack());
                 if (source?.hasMore) {
-                    setTimeout(() => loadNextPageToBuffer(), 500); // Используем функцию из хука
+                    setTimeout(() => loadNextPageToBuffer(), 500);
                 }
             } else if (source?.hasMore) {
                 const nextPage = (source.page ?? 0) + 1;

@@ -17,6 +17,10 @@ import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
 
+let sharedFetchFn: ((page: number, size: number) => Promise<TrackSimpleDto[]>) | null = null;
+let sharedFetchSource: { type: PlayerSource['type']; id: number } | null = null;
+const pendingPageRef = { current: null as number | null };
+
 export const usePlayTrack = () => {
     const dispatch = useAppDispatch();
     const { keycloak } = useKeycloak();
@@ -31,6 +35,18 @@ export const usePlayTrack = () => {
         }
         return true;
     };
+
+    const callWithTimeout = useCallback(<T,>(p: Promise<T>, ms = 10000): Promise<T> => {
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        const timeout = new Promise<never>((_, rej) => {
+            timer = setTimeout(() => rej(new Error(`fetch timeout ${ms}ms`)), ms);
+        });
+        return Promise.race([p, timeout]).finally(() => {
+            if (timer !== null) {
+                clearTimeout(timer);
+            }
+        }) as Promise<T>;
+    }, []);
 
     const playSingle = (track: TrackSimpleDto, mode?: "replace" | "append" | "insertNext") => {
         if (!requireAuth()) return;
@@ -53,51 +69,79 @@ export const usePlayTrack = () => {
     };
 
     const loadNextPageToBuffer = useCallback(async (): Promise<boolean> => {
-        if (!source || !currentFetchFnRef.current || isBufferLoading) {
+        console.log('loadNextPageToBuffer invoked - pre-guard check', {
+            sourcePresent: Boolean(source),
+            fetchFnPresent: Boolean(sharedFetchFn),
+            sharedFetchSource,
+            isBufferLoading,
+            sourcePage: source?.page,
+            sourceSize: source?.size,
+            pendingPage: pendingPageRef.current
+        });
+
+        if (!source || !sharedFetchFn || !sharedFetchSource || source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id || isBufferLoading) {
+            console.log('loadNextPageToBuffer aborted by guard', {
+                source: source ? { page: source.page, size: source.size, id: source.id, type: source.type } : null,
+                sharedFetchSource,
+                isBufferLoading
+            });
             return false;
         }
 
         const nextPage = source.page + 1;
 
-        console.log('🔄 Загрузка следующей страницы в буфер:', {
+        if (nextPage >= source.totalPages) {
+            dispatch(setSourceHasMore(false));
+            return false;
+        }
+
+        if (pendingPageRef.current === nextPage) {
+            console.log('loadNextPageToBuffer: page already pending, skipping', { nextPage });
+            return false;
+        }
+        pendingPageRef.current = nextPage;
+
+        console.log('Загрузка следующей страницы в буфер (before dispatch setBufferLoading):', {
             currentPage: source.page,
-            nextPage: nextPage,
+            nextPage,
             pageSize: source.size
         });
 
         dispatch(setBufferLoading(true));
 
         try {
-            const newTracks = await currentFetchFnRef.current(nextPage, source.size);
+            const newTracks = await callWithTimeout(sharedFetchFn(nextPage, source.size), 10000);
 
-            console.log('📥 Буфер: загружены треки', {
+            console.log('Буфер: загружены треки (from loadNextPageToBuffer)', {
                 page: nextPage,
-                loadedTracks: newTracks.length
+                loadedTracks: Array.isArray(newTracks) ? newTracks.length : typeof newTracks,
+                sample0: Array.isArray(newTracks) && newTracks[0] ? { id: newTracks[0].id, title: newTracks[0].title } : undefined
             });
 
-            if (newTracks.length > 0) {
+            if (Array.isArray(newTracks) && newTracks.length > 0) {
                 dispatch(setBufferTracks(newTracks));
-
                 const hasMore = newTracks.length === source.size;
                 dispatch(setSourceHasMore(hasMore));
-
                 return true;
             } else {
                 dispatch(setSourceHasMore(false));
                 return false;
             }
         } catch (error) {
-            console.error('❌ Ошибка загрузки буфера:', error);
+            console.error('Ошибка загрузки буфера (loadNextPageToBuffer):', error);
             dispatch(setSourceHasMore(false));
             return false;
         } finally {
+            pendingPageRef.current = null;
             dispatch(setBufferLoading(false));
+            console.log('loadNextPageToBuffer finished (finally) - bufferLoading set to false');
         }
-    }, [source, isBufferLoading, dispatch]);
+    }, [source, isBufferLoading, dispatch, callWithTimeout]);
+
 
     const appendBufferToPlaylist = useCallback((): boolean => {
         if (bufferTracks.length > 0) {
-            console.log('📤 Перемещение треков из буфера в плейлист:', bufferTracks.length);
+            console.log('Перемещение треков из буфера в плейлист:', bufferTracks.length);
             dispatch(appendToPlaylist(bufferTracks));
             dispatch(setBufferTracks([]));
             dispatch(updateSourcePage());
@@ -109,47 +153,38 @@ export const usePlayTrack = () => {
 
     const playWithBuffering = async (
         initialTracks: TrackSimpleDto[],
-        sourceConfig: Omit<PlayerSource, 'page' | 'hasMore'> & { name?: string },
+        sourceConfig: Omit<PlayerSource, 'page' | 'hasMore' | 'totalPages'> & {
+            name?: string;
+            totalPages?: number;
+        },
         fetchPageFn: (page: number, size: number) => Promise<TrackSimpleDto[]>,
         startIndex: number = 0
     ) => {
         if (!requireAuth()) return;
 
         currentFetchFnRef.current = fetchPageFn;
+        sharedFetchFn = fetchPageFn;
+        sharedFetchSource = { type: sourceConfig.type, id: sourceConfig.id };
 
-        const source: PlayerSource = {
+        const newSource: PlayerSource = {
             ...sourceConfig,
             page: 0,
-            hasMore: true
+            hasMore: true,
+            totalPages: sourceConfig.totalPages ?? Infinity
         };
 
         dispatch(setSourceWithBuffer({
-            source,
+            source: newSource,
             initialTracks,
             bufferTracks: [],
             startIndex
         }));
 
-
-        setTimeout(async () => {
-            try {
-                dispatch(setBufferLoading(true));
-                const bufferTracksResult = await fetchPageFn(1, sourceConfig.size);
-
-                if (bufferTracksResult.length > 0) {
-                    dispatch(setBufferTracks(bufferTracksResult));
-                    dispatch(setSourceHasMore(bufferTracksResult.length === sourceConfig.size));
-                } else {
-                    dispatch(setSourceHasMore(false));
-                }
-            } catch (error) {
-                console.error('Фоновая загрузка буфера:', error);
-                dispatch(setSourceHasMore(false));
-            } finally {
-                dispatch(setBufferLoading(false));
-            }
-        }, 1000);
+        setTimeout(() => {
+            void loadNextPageToBuffer();
+        }, 0);
     };
+
 
     const useAutoBuffer = () => {
         useEffect(() => {
@@ -157,7 +192,7 @@ export const usePlayTrack = () => {
 
             const tracksLeft = playlist.length - currentTrackIndex - 1;
 
-            console.log('🔍 Автобуферизация - проверка условий:', {
+            console.log('Автобуферизация - проверка условий:', {
                 currentTrackIndex,
                 playlistLength: playlist.length,
                 tracksLeft,
@@ -168,30 +203,33 @@ export const usePlayTrack = () => {
                 sourcePage: source?.page
             });
 
-            const shouldLoadBuffer = tracksLeft <= 2 &&
+            const BUFFER_AHEAD = 1;
+            const shouldLoadBuffer = tracksLeft <= BUFFER_AHEAD &&
                 source?.hasMore &&
                 !isBufferLoading &&
                 bufferTracks.length === 0;
 
             const shouldAppendBuffer = tracksLeft === 0 && bufferTracks.length > 0;
 
-            console.log('🔍 Автобуферизация - решения:', {
+            console.log('Автобуферизация - решения:', {
                 shouldLoadBuffer,
                 shouldAppendBuffer
             });
 
             if (shouldLoadBuffer) {
-                console.log('🚀 Автобуферизация: загружаем следующую страницу в буфер');
-                loadNextPageToBuffer();
+                console.log('Автобуферизация: загружаем следующую страницу в буфер');
+                void loadNextPageToBuffer();
             }
 
             if (shouldAppendBuffer) {
-                console.log('🔄 Автобуферизация: перемещаем буфер в плейлист');
+                console.log('Автобуферизация: перемещаем буфер в плейлист');
                 const appended = appendBufferToPlaylist();
 
                 if (appended && source?.hasMore) {
-                    console.log('📥 Автобуферизация: запускаем загрузку следующей страницы');
-                    setTimeout(() => loadNextPageToBuffer(), 300);
+                    console.log('Автобуферизация: запускаем загрузку следующей страницы');
+                    setTimeout(() => {
+                        void loadNextPageToBuffer();
+                    }, 300);
                 }
             }
         }, [currentTrackIndex, playlist.length, bufferTracks.length, source?.hasMore, isBufferLoading, loadNextPageToBuffer, appendBufferToPlaylist]);
@@ -204,7 +242,7 @@ export const usePlayTrack = () => {
         initialTracks: TrackSimpleDto[] = [],
         pageSize: number = 3
     ) => {
-        console.log('🎵 Начинаем воспроизведение автора:', {
+        console.log('Начинаем воспроизведение автора:', {
             authorId,
             authorName,
             initialTracks: initialTracks.length,
@@ -220,7 +258,7 @@ export const usePlayTrack = () => {
                 type: 'author',
                 id: authorId,
                 name: authorName,
-                size: pageSize
+                size: pageSize,
             }, fetchTracksFn);
         }
     };
@@ -243,6 +281,26 @@ export const usePlayTrack = () => {
             size: pageSize
         }, fetchTracksFn);
     };
+
+    useEffect(() => {
+        if (!source) {
+            sharedFetchFn = null;
+            sharedFetchSource = null;
+        } else if (sharedFetchSource && (source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id)) {
+            sharedFetchFn = null;
+            sharedFetchSource = null;
+        }
+    }, [source]);
+
+    useEffect(() => {
+        return () => {
+            if (currentFetchFnRef.current && sharedFetchFn === currentFetchFnRef.current) {
+                sharedFetchFn = null;
+                sharedFetchSource = null;
+            }
+            currentFetchFnRef.current = null;
+        };
+    }, []);
 
     return {
         playSingle,

@@ -2,13 +2,13 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
 
 export interface PlayerSource {
-    type: "author" | "album" | "genre" | "playlist";
+    type: "author" | "album" | "playlist";
     id: number;
     name?: string;
     page: number;
     size: number;
     hasMore: boolean;
-    totalTracks?: number;
+    totalPages: number;
 }
 
 interface PlayerState {
@@ -66,7 +66,7 @@ const playerSlice = createSlice({
 
         setPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             state.playlist = action.payload;
-            state.bufferTracks = []; // Очищаем буфер при новой установке плейлиста
+            state.bufferTracks = [];
             state.currentTrackIndex = action.payload.length > 0 ? 0 : -1;
             state.active = action.payload[0] || null;
             state.duration = 0;
@@ -214,7 +214,7 @@ const playerSlice = createSlice({
 
             state.source = source;
             state.playlist = initialTracks;
-            state.bufferTracks = []; // Очищаем буфер
+            state.bufferTracks = [];
 
             if (initialTracks.length > 0) {
                 const safeIndex = Math.max(0, Math.min(startIndex, initialTracks.length - 1));

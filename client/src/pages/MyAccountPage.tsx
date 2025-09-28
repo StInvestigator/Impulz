@@ -1,8 +1,34 @@
 import {Box, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
+import {fetchUserDetails} from "../store/reducers/action-creators/user.ts";
+import keycloak from "../keycloak.ts";
+import {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "../store/store.ts";
+import SettingSmallItem from "../components/SettingSmallItem.tsx";
 
 function MyAccountPage() {
     const { t } = useTranslation("other");
+    const dispatch = useDispatch<AppDispatch>();
+    const { userDetail, loading, error } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+        const userId = keycloak.tokenParsed?.sub || keycloak.subject;
+        if (userId) {
+            dispatch(fetchUserDetails(userId));
+        } else {
+            console.error("User ID not found in Keycloak");
+        }
+    }, [dispatch]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
 
     return (
         <Box
@@ -19,8 +45,7 @@ function MyAccountPage() {
                 alignItems="center"
                 sx={{
                     backgroundColor: "var(--dark-purple)",
-                    height: "250px",
-                    width: "765px"
+
                 }}
             >
                 <Box
@@ -73,7 +98,7 @@ function MyAccountPage() {
                                 marginBottom: "-50px"
                             }}
                         >
-                            Ваш заголовок над двумя колонками
+                            {userDetail?.username}
                         </Typography>
 
                         {/* Левая колонка */}
@@ -119,18 +144,31 @@ function MyAccountPage() {
                             }}
                         >
                             <Typography>
-                                Текст справа 1
+                                {userDetail?.email}
                             </Typography>
                             <Typography>
-                                Текст справа 2
+                                -
                             </Typography>
                             <Typography>
-                                Текст справа 3
+                                -
                             </Typography>
                             <Typography>
-                                Текст справа 4
+                                -
                             </Typography>
                         </Box>
+
+                        {/*<Box*/}
+                        {/*    sx={{*/}
+                        {/*        height: "52px",*/}
+                        {/*        width: "144px",*/}
+                        {/*        backgroundColor: "var(--orange-peel)",*/}
+                        {/*        borderRadius: "50px",*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    <Typography>*/}
+
+                        {/*    </Typography>*/}
+                        {/*</Box>*/}
                     </Box>
 
                 </Box>
@@ -154,14 +192,18 @@ function MyAccountPage() {
                 borderRadius="16px"
                 padding="24px"
                 display="flex"
-                justifyContent="center"
+                flexDirection="column"
+                justifyContent="flex-start"
                 alignItems="center"
+                gap="16px"
                 sx={{
                     backgroundColor: "var(--orange-peel-20)",
                     height: "190px",
                 }}
             >
-                Нижний левый
+                <SettingSmallItem text={"123"} imgSrc={"./src/assets/PersonalInfoIcon.png"}/>
+                <SettingSmallItem text={"123"} imgSrc={"./src/assets/PersonalInfoIcon.png"}/>
+                <SettingSmallItem text={"123"} imgSrc={"./src/assets/PersonalInfoIcon.png"}/>
             </Box>
 
             <Box

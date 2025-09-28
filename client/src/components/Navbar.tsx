@@ -70,7 +70,6 @@ const Navbar = memo(() => {
                                 },
                             }}
                             disableRipple
-                            // onClick={}
                         >
                             <Box height={45} width={30} component="img" src={SearchIcon}/>
                         </IconButton>
@@ -134,7 +133,7 @@ const Navbar = memo(() => {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                                <MenuItem onClick={() => navigate("/account")}>My account</MenuItem>
                             </Menu>
                         </>
                     }

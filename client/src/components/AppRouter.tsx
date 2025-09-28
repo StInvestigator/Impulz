@@ -21,12 +21,14 @@ import HitsWeekPage from "../pages/tracks_page/HitsWeekPage.tsx";
 import BestAuthorsMonthPage from "../pages/authors_page/BestAuthorsMonthPage.tsx";
 import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPage.tsx";
 import MyProfilePage from "../pages/MyProfilePage.tsx";
+import MyAccountPage from "../pages/MyAccountPage.tsx";
 
 const AppRouter = () => {
     return (
         <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/profile" element={<MyProfilePage/>}/>
+            <Route path="/account" element={<MyAccountPage/>}/>
             <Route path="/library" element={<LibraryPage />} />
             <Route path="/hello" element={<HelloPage />} />
             <Route path="/category" element={<CategoryPage />} />

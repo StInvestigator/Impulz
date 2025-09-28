@@ -7,5 +7,9 @@
   "pagination-next": "Next",
   "pagination-previous": "Previous",
   "pagination-end": "Last",
-  "pagination-start": "First"
+  "pagination-start": "First",
+  "country": "Country",
+  "sex": "Sex",
+  "dd.mm.yyyy": "DD.MM.YYYY",
+  "email": "Email"
 }

@@ -7,6 +7,7 @@ import { useAppSelector } from "../../../hooks/redux.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import type {FC} from "react";
 import {fetchAuthorTracksPaged} from "../../../store/reducers/action-creators/player.ts";
+import keycloak from "../../../keycloak.ts";
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -22,6 +23,9 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
 
     const handlePlayClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
+        if(!keycloak.authenticated){
+            await keycloak.login();
+        }
 
         const pageSize = 3;
 

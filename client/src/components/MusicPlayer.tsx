@@ -6,7 +6,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
-import { Box, CircularProgress, Grid, IconButton, Link, Typography, Tooltip } from '@mui/material';
+import { Box, CircularProgress, Grid, IconButton, Typography, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import {
     pauseTrack,
@@ -27,6 +27,7 @@ import keycloak from '../keycloak.ts';
 import { fetchPopularTracksByAuthor, fetchTracksByAlbum } from '../store/reducers/action-creators/tracks.ts';
 import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
 import { usePlayTrack } from '../hooks/usePlayTrack';
+import { useNavigate } from "react-router-dom";
 
 interface PlaybackStats {
     trackId: number;
@@ -69,7 +70,7 @@ const MusicPlayer: React.FC = () => {
 
     const dispatch = useAppDispatch();
 
-    const { useAutoBuffer,appendBufferToPlaylist, loadNextPageToBuffer  } = usePlayTrack();
+    const { useAutoBuffer, appendBufferToPlaylist, loadNextPageToBuffer } = usePlayTrack();
     useAutoBuffer();
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -82,6 +83,7 @@ const MusicPlayer: React.FC = () => {
     const listenedTimeRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
     const isMountedRef = useRef<boolean>(true);
+    const route = useNavigate();
 
     const isLastTrack = currentTrackIndex >= playlist.length - 1;
     const isFirstTrack = currentTrackIndex <= 0;
@@ -257,10 +259,11 @@ const MusicPlayer: React.FC = () => {
                     } else if (source?.hasMore) {
                         console.log('Буфер пуст, загружаем следующую страницу напрямую');
 
-                        let fetchResult: any;
                         const nextPage = (source.page || 0) + 1;
 
                         try {
+                            let fetchResult;
+
                             switch (source.type) {
                                 case "author":
                                     fetchResult = await dispatch(fetchPopularTracksByAuthor({
@@ -281,7 +284,10 @@ const MusicPlayer: React.FC = () => {
                                     return;
                             }
 
-                            const newTracks: TrackSimpleDto[] = fetchResult.payload ?? [];
+                            // Типизируем результат
+                            const payload = (fetchResult as { payload?: TrackSimpleDto[] })?.payload;
+                            const newTracks: TrackSimpleDto[] = payload ?? [];
+
                             if (newTracks.length > 0) {
                                 console.log('Загружены новые треки:', newTracks.length);
                                 dispatch(addToPlaylist(newTracks));
@@ -319,7 +325,7 @@ const MusicPlayer: React.FC = () => {
 
         loadStream();
         return () => { mounted = false; };
-    }, [active, dispatch, sendPlaybackStats, volume, playlist, currentTrackIndex, source, appendBufferToPlaylist, loadNextPageToBuffer]);
+    }, [active, dispatch, sendPlaybackStats, playlist, currentTrackIndex, source, appendBufferToPlaylist, loadNextPageToBuffer]);
 
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = volume / 100;
@@ -361,7 +367,7 @@ const MusicPlayer: React.FC = () => {
                 }
             } else if (source?.hasMore) {
                 const nextPage = (source.page ?? 0) + 1;
-                let fetchResult: any;
+                let fetchResult;
 
                 switch (source.type) {
                     case "author":
@@ -382,7 +388,9 @@ const MusicPlayer: React.FC = () => {
                         return;
                 }
 
-                const newTracks: TrackSimpleDto[] = fetchResult.payload ?? [];
+                const payload = (fetchResult as { payload?: TrackSimpleDto[] })?.payload;
+                const newTracks: TrackSimpleDto[] = payload ?? [];
+
                 if (newTracks.length > 0) {
                     dispatch(addToPlaylist(newTracks));
                     dispatch(updateSourcePage());
@@ -455,21 +463,50 @@ const MusicPlayer: React.FC = () => {
 
             <Grid container direction="column" sx={{ width: 240, margin: '0 20px' }}>
                 <Box sx={{ fontWeight: 600 }}>{active.title ?? 'Unknown title'}</Box>
-                <Box sx={{ fontSize: 12, color: 'gray' }}>
+                <Box sx={{
+                    fontSize: 12,
+                    color: 'gray',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    whiteSpace: 'nowrap'
+                }}>
                     {active.authors?.map((author, index) => (
                         <React.Fragment key={author.id}>
-                            <Link href={`/author/${author.id}`} underline="none"
-                                  sx={{ color: 'inherit', '&:hover': { textDecoration: 'underline', color: '#1976d2', cursor: 'pointer' } }}>
+                            <Typography
+                                onClick={() => route(`/author/${author.id}`)}
+                                sx={{
+                                    color: 'inherit',
+                                    fontSize: "11px",
+                                    whiteSpace: 'nowrap',
+                                    '&:hover': {
+                                        textDecoration: 'underline',
+                                        color: '#1976d2',
+                                        cursor: 'pointer'
+                                    }
+                                }}
+                            >
                                 {author.name}
-                            </Link>
+                            </Typography>
                             {index < active.authors.length - 1 && ', '}
                         </React.Fragment>
                     )) || 'Unknown artist'}
                     <Box component="span" sx={{ mx: 1 }}>•</Box>
-                    <Link href={`/album/${active.albumId}`} underline="none"
-                          sx={{ color: 'inherit', '&:hover': { textDecoration: 'underline', color: '#1976d2', cursor: 'pointer' } }}>
+                    <Typography
+                        onClick={() => route(`/album/${active.albumId}`)}
+                        sx={{
+                            color: 'inherit',
+                            fontSize: "11px",
+                            whiteSpace: 'nowrap',
+                            '&:hover': {
+                                textDecoration: 'underline',
+                                color: '#1976d2',
+                                cursor: 'pointer'
+                            }
+                        }}
+                    >
                         {active.album ?? 'Unknown album'}
-                    </Link>
+                    </Typography>
                 </Box>
                 <Box sx={{ fontSize: 10, color: 'darkgray' }}>
                     {currentTrackIndex + 1} из {playlist.length} в очереди

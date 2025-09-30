@@ -1,10 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
 import { Box } from "@mui/material";
 import CircleImg from '../assets/category/Circle.svg';
-import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
-import { useTranslation } from 'react-i18next';
+// import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
+// import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks/redux.ts';
+import { useAppDispatch } from '../hooks/redux.ts';
 import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author.ts';
 // import { useAuthorsByKey } from '../hooks/modelByKey.ts';
 
@@ -39,11 +39,11 @@ import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author
 
 const CategoryPage = () => {
     const dispatch = useAppDispatch();
-    const { topAuthors, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAppSelector(state => state.author);
+    //const { topAuthors, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAppSelector(state => state.author);
 
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
-    const { t } = useTranslation('category')
+    //const { t } = useTranslation('category')
 
     useEffect(() => {
         dispatch(fetchTopAuthorsInGenre({genreId: 1}));
@@ -78,9 +78,9 @@ const CategoryPage = () => {
                 </Box>
             </Box>
 
-            <Box component={"section"} mt={"60px"}>
+            {/* <Box component={"section"} mt={"60px"}>
                 <AuthorCarouselList isLoading={isLoadingTopAuthors} error={errorTopAuthors} authors={topAuthors} itemWidth={134} name={t("title-best-author-genre")} />
-            </Box>
+            </Box> */}
 
             {/*<Box component={"section"} mt={"60px"}>*/}
             {/*    <MediaSmallCarouselList medias={tracks} itemWidth={134} name={t("title-best-song-genre")} />*/}

@@ -51,7 +51,7 @@ const SecuredContent = () => {
                   console.error('Failed to fetch user details:', error);
               });
       }
-  }, [keycloak.subject]);
+  }, [keycloak.subject, dispatch]);
 
   useEffect(() => {
     if (initialized && location.hash.includes('state=')) {

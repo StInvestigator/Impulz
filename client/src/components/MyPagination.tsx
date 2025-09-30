@@ -69,7 +69,6 @@ const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages
                 <PaginationItem
                     {...item}
                     component="div"
-                    disableRipple
                     slots={{
                         previous: CustomPrevious,
                         next: CustomNext,

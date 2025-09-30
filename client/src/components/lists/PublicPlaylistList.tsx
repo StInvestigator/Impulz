@@ -1,4 +1,3 @@
-import React from 'react'
 import type { PlaylistSimpleDto } from '../../models/DTO/PlaylistSimpleDto';
 import PublicPlaylistAverageItem from '../items/playlist/PublicPlaylistAverageItem';
 

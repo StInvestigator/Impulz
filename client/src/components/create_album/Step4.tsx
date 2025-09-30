@@ -1,0 +1,82 @@
+import { Box, OutlinedInput, Typography } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+
+const Step4 = () => {
+  return (
+    <Box>
+      <Typography
+        variant="h3"
+        color="var(--orange-peel)"
+        display={"flex"}
+        justifyContent={"center"}
+        mt={2}
+      >
+        Додайте трек, назву, співвиконавців і жанр
+      </Typography>
+      <Box
+        display={"flex"}
+        justifyContent={"space-around"}
+        color={"white"}
+        mt={2}
+      >
+        <Box display={"flex"}>
+          <CheckIcon
+            sx={{
+              width: "20px",
+              height: "20px",
+              color: "var(--orange-peel)",
+            }}
+          />
+          <Typography
+            variant="mainRL"
+            display={"flex"}
+            justifyContent={"center"}
+          >
+            вкажіть заплановану дату публікації
+          </Typography>
+        </Box>
+        <Box display={"flex"}>
+          <CheckIcon
+            sx={{
+              width: "20px",
+              height: "20px",
+              color: "var(--orange-peel)",
+            }}
+          />
+          <Typography
+            variant="mainRL"
+            display={"flex"}
+            justifyContent={"center"}
+          >
+            релізи проходять модерацію
+          </Typography>
+        </Box>
+      </Box>
+      <Box mt={3} display={"flex"} justifyContent={"center"}>
+        <OutlinedInput
+            placeholder={"Введіть дату публікації"}
+            type="date"
+            sx={{
+                width: "231px",
+                height: "44px",
+                backgroundColor: "#FFFFFF",
+                borderRadius: "15px",
+                color: "#6B7280",
+                fontFamily: 'Work Sans, sans-serif',
+                fontSize: "16px",
+                fontWeight: 400,
+                '& .MuiInputBase-input::placeholder': {
+                    color: '#6B7280',
+                    opacity: 1,
+                },
+                "& .MuiOutlinedInput-input": {
+                    padding: "0px 12px" // внутренние отступы для текста
+                }
+            }}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export default Step4;

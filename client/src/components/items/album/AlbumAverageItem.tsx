@@ -2,7 +2,7 @@ import {Box, IconButton, Link, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
 import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
-import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+// import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
@@ -10,7 +10,7 @@ interface AlbumItemProps {
 }
 
 const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => {
-    const { playPlaylist } = usePlayTrack();
+    // const { playPlaylist } = usePlayTrack();
     
     return (
         <Box
@@ -62,7 +62,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => 
                     </Box>
                     <IconButton
                         sx={{padding: 0}}
-                        onClick={() => playPlaylist(album.tracks || [])}
+                        // onClick={() => playPlaylist(album.tracks || [])}
                         disableRipple={true}
                     >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}

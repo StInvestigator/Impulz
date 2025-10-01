@@ -6,6 +6,7 @@ import MyStepper from "../components/ui/MyStepper";
 import Step1 from "../components/create_album/Step1";
 import Step2 from "../components/create_album/Step2";
 import Step3 from "../components/create_album/Step3";
+import Step4 from "../components/create_album/Step4";
 
 function MyProfilePage() {
   const [open, setOpen] = useState(false);
@@ -28,6 +29,7 @@ function MyProfilePage() {
         {activeStep === 1 && <Step1 />}
         {activeStep === 2 && <Step2 />}
         {activeStep === 3 && <Step3 />}
+        {activeStep === 4 && <Step4 />}
         <Box
           display={"grid"}
           sx={{

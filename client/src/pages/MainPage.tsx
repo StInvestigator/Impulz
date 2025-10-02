@@ -44,10 +44,10 @@ const MainPage = () => {
         dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
         dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
         dispatch(fetchTopGenres({ page: 0, size: 5 }));
-        dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 5 }));
+        dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 20 }));
 
         if (isAuthenticated && userId) {
-            dispatch(fetchPersonalAlbumsByGenre({ userId, page: 0, size: 5 }));
+            dispatch(fetchPersonalAlbumsByGenre({ userId, page: 0, size: 20 }));
         }
     }, [dispatch, isAuthenticated, userId]);
 
@@ -69,12 +69,12 @@ const MainPage = () => {
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList medias={albumTodayRecommendations} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={albumLoading} error={albumError} url={"/"}/>
+                <MediaSmallCarouselList medias={albumTodayRecommendations} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={albumLoading} error={albumError} url={"/albumTodayRecommendations"}/>
             </Box>
             {isAuthenticated && albumPersonalRecommendationsByGenre.length > 0 &&
                 (
                     <Box component={"section"} mt={"60px"}>
-                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} url={"/"}/>
+                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} url={"/personalAlbumRecommendations"}/>
                     </Box>
                 )
             }

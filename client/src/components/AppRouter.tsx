@@ -21,6 +21,8 @@ import HitsWeekPage from "../pages/tracks_page/HitsWeekPage.tsx";
 import BestAuthorsMonthPage from "../pages/authors_page/BestAuthorsMonthPage.tsx";
 import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPage.tsx";
 import MyProfilePage from "../pages/MyProfilePage.tsx";
+import AlbumTodayRecommendationsPage from "../pages/album_page/AlbumTodayRecommendationsPage.tsx";
+import AlbumPersonalRecommendationsPage from "../pages/album_page/AlbumPersonalRecommendationsPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -33,9 +35,11 @@ const AppRouter = () => {
             <Route path="/hitsWeek" element={<HitsWeekPage />} />
             <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
             <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
+            <Route path="/albumTodayRecommendations" element={<AlbumTodayRecommendationsPage />} />
+            <Route path="/personalAlbumRecommendations" element={<AlbumPersonalRecommendationsPage />} />
 
             <Route
-                path="/profile" 
+                path="/profile"
                 element={
                         <MyProfilePage/>
                 }/>

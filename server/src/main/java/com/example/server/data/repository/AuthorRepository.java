@@ -109,4 +109,6 @@ public interface AuthorRepository extends JpaRepository<Author, String> {
             nativeQuery = true
     )
     Long countAuthorPlaysByMonth(@Param("authorId") String authorId);
+
+    List<Author> findAllByUserUsernameContainingIgnoreCase(String name);
 }

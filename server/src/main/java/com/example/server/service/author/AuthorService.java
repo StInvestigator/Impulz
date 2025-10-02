@@ -27,4 +27,5 @@ public interface AuthorService
     void subscribeToAuthor(String userId, String authorId);
     void unsubscribeFromAuthor(String userId, String authorId);
     boolean isUserSubscribed(String userId, String authorId);
+    List<AuthorSimpleDto> findByNameLike(String name);
 }

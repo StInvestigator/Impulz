@@ -146,4 +146,16 @@ public class AuthorController {
         }
     }
 
+    @GetMapping("/byNameLike/{name}")
+    public ResponseEntity<List<AuthorSimpleDto>> findAuthorsByNameLike(@PathVariable String name) {
+        try {
+            return ResponseEntity.ok(authorService.findByNameLike(name));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }

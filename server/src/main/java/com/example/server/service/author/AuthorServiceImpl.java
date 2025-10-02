@@ -136,4 +136,9 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorFollowerKey id = new AuthorFollowerKey(authorId, userId);
         return authorFollowersRepository.existsById(id);
     }
+
+    @Override
+    public List<AuthorSimpleDto> findByNameLike(String name) {
+        return authorRepository.findAllByUserUsernameContainingIgnoreCase(name).stream().map(AuthorSimpleDto::fromEntity).toList();
+    }
 }

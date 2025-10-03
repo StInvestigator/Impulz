@@ -3,7 +3,10 @@ import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
 import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
-import type {FC} from "react";
+import React, {type FC} from "react";
+import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+import {useAppDispatch} from "../../../hooks/redux.ts";
+import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
 
 interface PlaylistItemProps {
     playlist: PlaylistSimpleDto;
@@ -15,6 +18,23 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
 
     const { t } = useTranslation('other')
     const route = useAppNavigate()
+    const { playTrackList } = usePlayTrack();
+    const dispatch = useAppDispatch();
+
+
+    const handlePlayPlaylist = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const result = await dispatch(fetchTracksByAlbum({
+            albumId: playlist.id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByAlbum.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
+    }
 
     return (
         <Box
@@ -43,7 +63,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
             >
                 <IconButton
                     onClick={(e) => {
-                        e.stopPropagation()
+                        handlePlayPlaylist(e)
                     }}
                     sx={{
                         padding: 0,

@@ -30,8 +30,8 @@ export const usePlayTrack = () => {
     const currentFetchFnRef = useRef<((page: number, size: number) => Promise<TrackSimpleDto[]>) | null>(null);
 
     const requireAuth = () => {
-        if (!keycloak?.authenticated) {
-            keycloak?.login();
+        if (!keycloak.authenticated) {
+            keycloak.login();
             return false;
         }
         return true;
@@ -67,6 +67,14 @@ export const usePlayTrack = () => {
         }
     };
 
+    const playTrackList = (tracks: TrackSimpleDto[], startIndex: number = 0) => {
+        if (!requireAuth()) return;
+
+        dispatch(setPlaylist(tracks));
+        dispatch(setCurrentTrack(startIndex));
+    };
+
+
     const loadNextPageToBuffer = useCallback(
         async (
             sourceOverride?: PlayerSource,
@@ -74,16 +82,6 @@ export const usePlayTrack = () => {
         ): Promise<boolean> => {
             const actualSource = sourceOverride ?? source;
             const actualFetchFn = fetchFnOverride ?? sharedFetchFn;
-
-            console.log("loadNextPageToBuffer invoked - pre-guard check", {
-                actualSourcePresent: Boolean(actualSource),
-                fetchFnPresent: Boolean(actualFetchFn),
-                sharedFetchSource,
-                isBufferLoading,
-                sourcePage: actualSource?.page,
-                sourceSize: actualSource?.size,
-                pendingPage: pendingPageRef.current,
-            });
 
             if (
                 !actualSource ||
@@ -93,13 +91,6 @@ export const usePlayTrack = () => {
                 actualSource.id !== sharedFetchSource.id ||
                 isBufferLoading
             ) {
-                console.log("loadNextPageToBuffer aborted by guard", {
-                    actualSource: actualSource
-                        ? { page: actualSource.page, size: actualSource.size, id: actualSource.id, type: actualSource.type }
-                        : null,
-                    sharedFetchSource,
-                    isBufferLoading,
-                });
                 return false;
             }
 
@@ -111,25 +102,13 @@ export const usePlayTrack = () => {
             }
 
             if (pendingPageRef.current === nextPage) {
-                console.log("loadNextPageToBuffer: page already pending, skipping", { nextPage });
                 return false;
             }
 
             pendingPageRef.current = nextPage;
-            console.log("Загрузка следующей страницы в буфер (before dispatch setBufferLoading):", {
-                currentPage: actualSource.page,
-                nextPage,
-                pageSize: actualSource.size,
-            });
-
             dispatch(setBufferLoading(true));
             try {
                 const newTracks = await callWithTimeout(actualFetchFn(nextPage, actualSource.size), 10000);
-                console.log("Буфер: загружены треки (from loadNextPageToBuffer)", {
-                    page: nextPage,
-                    loadedTracks: Array.isArray(newTracks) ? newTracks.length : typeof newTracks,
-                    sample0: Array.isArray(newTracks) && newTracks[0] ? { id: newTracks[0].id, title: newTracks[0].title } : undefined,
-                });
 
                 if (Array.isArray(newTracks) && newTracks.length > 0) {
                     dispatch(setBufferTracks(newTracks));
@@ -144,13 +123,12 @@ export const usePlayTrack = () => {
                     return false;
                 }
             } catch (error) {
-                console.error("Ошибка загрузки буфера (loadNextPageToBuffer):", error);
+                console.error("Ошибка загрузки буфера:", error);
                 dispatch(setSourceHasMore(false));
                 return false;
             } finally {
                 pendingPageRef.current = null;
                 dispatch(setBufferLoading(false));
-                console.log("loadNextPageToBuffer finished (finally) - bufferLoading set to false");
             }
         },
         [source, isBufferLoading, dispatch, callWithTimeout]
@@ -158,7 +136,6 @@ export const usePlayTrack = () => {
 
     const appendBufferToPlaylist = useCallback((): boolean => {
         if (bufferTracks.length > 0) {
-            console.log("Перемещение треков из буфера в плейлист:", bufferTracks.length);
             dispatch(appendToPlaylist(bufferTracks));
             dispatch(setBufferTracks([]));
             dispatch(updateSourcePage());
@@ -195,33 +172,17 @@ export const usePlayTrack = () => {
             if (currentTrackIndex === -1 || playlist.length === 0) return;
 
             const tracksLeft = playlist.length - currentTrackIndex - 1;
-            console.log("Автобуферизация - проверка условий:", {
-                currentTrackIndex,
-                playlistLength: playlist.length,
-                tracksLeft,
-                hasMore: source?.hasMore,
-                isBufferLoading,
-                bufferTracksCount: bufferTracks.length,
-                sourceType: source?.type,
-                sourcePage: source?.page,
-            });
-
             const BUFFER_AHEAD = 1;
             const shouldLoadBuffer =
                 tracksLeft <= BUFFER_AHEAD && source?.hasMore && !isBufferLoading && bufferTracks.length === 0;
             const shouldAppendBuffer = tracksLeft === 0 && bufferTracks.length > 0;
 
-            console.log("Автобуферизация - решения:", { shouldLoadBuffer, shouldAppendBuffer });
-
             if (shouldLoadBuffer) {
-                console.log("Автобуферизация: загружаем следующую страницу в буфер");
                 void loadNextPageToBuffer();
             }
             if (shouldAppendBuffer) {
-                console.log("Автобуферизация: перемещаем буфер в плейлист");
                 const appended = appendBufferToPlaylist();
                 if (appended && source?.hasMore) {
-                    console.log("Автобуферизация: запускаем загрузку следующей страницы");
                     setTimeout(() => {
                         void loadNextPageToBuffer();
                     }, 300);
@@ -245,7 +206,7 @@ export const usePlayTrack = () => {
         initialTracks: TrackSimpleDto[] = [],
         pageSize: number = 3
     ) => {
-        console.log("Начинаем воспроизведение автора:", { authorId, authorName, initialTracks: initialTracks.length, pageSize });
+        if (!requireAuth()) return;
 
         let totalPages = Infinity;
         const first = await fetchTracksFn(0, pageSize);
@@ -274,6 +235,8 @@ export const usePlayTrack = () => {
         initialTracks: TrackSimpleDto[] = [],
         pageSize: number = 20
     ) => {
+        if (!requireAuth()) return;
+
         if (initialTracks.length === 0) {
             initialTracks = await fetchTracksFn(0, pageSize);
         }
@@ -302,6 +265,7 @@ export const usePlayTrack = () => {
 
     return {
         playSingle,
+        playTrackList,
         playWithBuffering,
         loadNextPageToBuffer,
         appendBufferToPlaylist,

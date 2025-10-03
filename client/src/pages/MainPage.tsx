@@ -50,8 +50,7 @@ const MainPage = () => {
             dispatch(fetchPersonalAlbumsByGenre({ userId, page: 0, size: 20 }));
         }
     }, [dispatch, isAuthenticated, userId]);
-
-
+    
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"} />

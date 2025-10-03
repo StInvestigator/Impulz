@@ -1,8 +1,11 @@
 import {Box, IconButton, Link, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import {type FC} from "react";
+import React, {type FC} from "react";
 import { useTranslation } from 'react-i18next';
 import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
+import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+import {useAppDispatch} from "../../../hooks/redux.ts";
+import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -13,6 +16,23 @@ interface AlbumItemProps {
 const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"}) => {
 
     const { t } = useTranslation('other')
+    const { playTrackList } = usePlayTrack();
+    const dispatch = useAppDispatch();
+
+
+    const handlePlayPlaylist = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const result = await dispatch(fetchTracksByAlbum({
+            albumId: album.id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByAlbum.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
+    }
 
     return (
         <Box
@@ -39,7 +59,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                 {/* Кнопка play поверх изображения */}
                 <IconButton
                     onClick={(e) => {
-                        e.stopPropagation()
+                        handlePlayPlaylist(e)
                     }}
                     sx={{
                         padding: 0,

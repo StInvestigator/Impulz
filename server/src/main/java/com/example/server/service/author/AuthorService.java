@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface AuthorService
 {
@@ -28,4 +29,6 @@ public interface AuthorService
     void unsubscribeFromAuthor(String userId, String authorId);
     boolean isUserSubscribed(String userId, String authorId);
     List<AuthorSimpleDto> findByNameLike(String name);
+    List<Author> getAuthorsByIds(Set<String> ids);
+    List<Author> getAuthorsByIds(List<String> ids);
 }

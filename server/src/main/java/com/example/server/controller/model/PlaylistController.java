@@ -12,12 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -48,4 +47,17 @@ public class PlaylistController {
         }
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createPlaylist(@RequestPart("userId") String userId,
+                                            @RequestPart("title") String title,
+                                            @RequestPart("isPublic") String isPublic,
+                                            @RequestPart(value = "img", required = false) MultipartFile image) {
+        try {
+            playlistService.create(title, userId, Objects.equals(isPublic.toLowerCase(), "true"), image);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

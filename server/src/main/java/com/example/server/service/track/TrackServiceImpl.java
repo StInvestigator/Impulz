@@ -5,11 +5,19 @@ import com.example.server.data.repository.AuthorRepository;
 import com.example.server.data.repository.GenreRepository;
 import com.example.server.data.repository.TrackRepository;
 import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.Track.TrackCreationDto;
 import com.example.server.dto.Track.TrackDto;
 import com.example.server.dto.Track.TrackSimpleDto;
+import com.example.server.model.Album;
 import com.example.server.model.Author;
 import com.example.server.model.Genre;
 import com.example.server.model.Track;
+import com.example.server.service.album.AlbumService;
+import com.example.server.service.author.AuthorService;
+import com.example.server.service.author.AuthorServiceImpl;
+import com.example.server.service.genre.GenreService;
+import com.example.server.service.image.ImageService;
+import com.example.server.service.music.MusicService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -28,9 +37,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TrackServiceImpl implements TrackService {
     private final TrackRepository trackRepository;
-    private final AlbumRepository albumRepository;
-    private final AuthorRepository authorRepository;
-    private final GenreRepository genreRepository;
+    private final AuthorService authorService;
+    private final GenreService genreService;
+    private final MusicService musicService;
+    private final ImageService imageService;
 
     public Track getTrackById(Long id) {
         return trackRepository.findById(id).orElseThrow();
@@ -44,48 +54,11 @@ public class TrackServiceImpl implements TrackService {
         return TrackSimpleDto.fromEntity(trackRepository.findById(id).orElseThrow());
     }
 
-    @CacheEvict(cacheNames = {
-            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors"
-    }, allEntries = true)
-    public void createTrack(Track track) {
-        trackRepository.save(track);
-    }
-
-    @CacheEvict(cacheNames = {
-            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors"
-    }, allEntries = true)
-    public Track createTrack(String title, Long albumId, List<String> authorIds, List<Long> genreIds) {
-        Track track = new Track();
-        track.setTitle(title);
-        track.setLikes(0L);
-        track.setTotalPlays(0L);
-        track.setCreatedAt(OffsetDateTime.now());
-
-        track.setAlbum(albumRepository.findById(albumId)
-                .orElseThrow(() -> new RuntimeException("Album not found with id: " + albumId)));
-
-        if (authorIds != null && !authorIds.isEmpty()) {
-            Set<Author> authors = new HashSet<>(authorRepository.findAllById(authorIds));
-            track.setAuthors(authors);
-        }
-
-        if (genreIds != null & !genreIds.isEmpty()) {
-            Set<Genre> genres = new HashSet<>(genreRepository.findAllById(genreIds));
-            track.setGenres(genres);
-        }
-
-        return track;
-    }
-
     @CacheEvict(cacheNames = {"track.findMostPlayedTracksThisWeek", "track.getRecommendedTracksToday",
             "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors",
             "track.findPopularTracksByGenre", "track.findTracksByAlbum"}, allEntries = true)
     public void deleteTrack(Track track) {
         trackRepository.delete(track);
-    }
-
-    public Track findTrackByFileUrl(String fileUrl) {
-        return trackRepository.findTrackByFileUrl(fileUrl);
     }
 
     @Cacheable(value = "track.findMostPlayedTracksThisWeek",
@@ -120,8 +93,7 @@ public class TrackServiceImpl implements TrackService {
             key = "#authorId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     @Override
     public PageDto<TrackSimpleDto> findPopularTracksByAuthor(String authorId, Pageable pageable) {
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + authorId));
+        Author author = authorService.getAuthorById(authorId);
         return new PageDto<>(
                 trackRepository
                         .findByAuthorsOrderByTotalPlaysDesc(author, pageable)
@@ -160,5 +132,41 @@ public class TrackServiceImpl implements TrackService {
                         .findTracksByAlbum(albumId, pageable)
                         .map(TrackSimpleDto::fromEntity)
         );
+    }
+
+    @Override
+    @CacheEvict(cacheNames = {
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors"
+    }, allEntries = true)
+    public Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album) {
+        Track entity = new Track();
+        entity.setImageURl(cover != null ? imageService.uploadImage(cover, creationDto.getTitle()): null);
+        entity.setTitle(creationDto.getTitle());
+        entity.setGenres(new HashSet<>(genreService.getGenresByIds(creationDto.getGenreIds())));
+        entity.setAuthors(new HashSet<>(authorService.getAuthorsByIds(creationDto.getAuthorIds())));
+        entity.setAlbum(album);
+        entity.setCreatedAt(OffsetDateTime.now());
+        entity.setLikes(0L);
+        entity.setTotalPlays(0L);
+        musicService.uploadMusic(file, entity);
+        return entity;
+    }
+
+    @Override
+    public List<Track> uploadTracks(List<TrackCreationDto> creationDtos, List<MultipartFile> covers, List<MultipartFile> files, Album album) {
+        List<Track> tracks = new ArrayList<>();
+        creationDtos.forEach(trackCreationDto -> {
+            tracks.add(uploadTrack(trackCreationDto,
+                    covers.stream()
+                            .filter(c-> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
+                            .findAny()
+                            .orElse(null),
+                    files.stream()
+                            .filter(c-> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientFileName()))
+                            .findAny()
+                            .orElseThrow(),
+                    album));
+        });
+        return tracks;
     }
 }

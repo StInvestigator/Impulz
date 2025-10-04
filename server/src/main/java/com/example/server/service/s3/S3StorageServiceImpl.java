@@ -114,7 +114,10 @@ public class S3StorageServiceImpl implements S3StorageService {
                     .range(actRange)
                     .build();
 
-            return s3Client.getObject(rangeRequest);
+            log.info("Requesting music from S3");
+            var res = s3Client.getObject(rangeRequest);
+            log.info("Response came, send to front");
+            return res;
         } else {
             GetObjectRequest fullRequest = GetObjectRequest.builder()
                     .bucket(bucketName)

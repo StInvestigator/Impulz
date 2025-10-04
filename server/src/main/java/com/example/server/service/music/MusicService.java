@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 public interface MusicService
 {
-    Track uploadMusic(MultipartFile file,Track track) throws IOException;
+    Track uploadMusic(MultipartFile file,Track track);
     boolean isMusicExists(String key);
     void deleteMusic(String fileName);
     HeadObjectResponse getHeadObjectResponse(String key);

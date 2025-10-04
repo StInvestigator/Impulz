@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface GenreService
 {
@@ -14,4 +15,6 @@ public interface GenreService
     void createGenre(Genre genre);
     void deleteGenre(Genre genre);
     PageDto<GenreSimpleDto> findTopGenres(Pageable pageable);
+    List<Genre> getGenresByIds(Set<Long> ids);
+    List<Genre> getGenresByIds(List<Long> ids);
 }

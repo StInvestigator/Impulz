@@ -17,6 +17,7 @@ import {$authApi} from "./http";
 import { useAppDispatch } from './hooks/redux.ts';
 import { fetchUserDetails } from './store/reducers/action-creators/user.ts';
 import { setProfile } from './store/reducers/ProfileSlice.ts';
+import './assets/fonts/fonts.css'
 
 function App() {
   return (

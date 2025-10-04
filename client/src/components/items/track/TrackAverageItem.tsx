@@ -1,9 +1,10 @@
 import type {FC} from "react";
-import {Box, IconButton, Link, Typography} from "@mui/material";
+import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
 import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -14,6 +15,7 @@ interface TrackItemProps {
 
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
     const { playSingle } = usePlayTrack();
+    const route = useNavigate();
 
     return (
         <Box
@@ -92,10 +94,8 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                                 textOverflow: 'ellipsis'
                             }}
                         >
-                            <Link
-                                onDragStart={(e) => e.preventDefault()}
-                                href={`/album/${track.albumId}"`}
-                                underline="none"
+                            <Typography
+                                onClick={() => route(`/album/${track.albumId}`)}
                                 sx={{
                                     color: "var(--orange-peel)",
                                     '&:hover': {
@@ -104,7 +104,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                                     },
                                 }}>
                                 {track.album}
-                            </Link>
+                            </Typography>
                         </Typography>
                     </Box>
                     <IconButton

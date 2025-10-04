@@ -3,5 +3,10 @@
   "button-library": "Бібліотека",
   "button-download": "Завантажити",
   "button-subscribe": "Підписка",
-  "button-create-playlist": "Створити плейлист"
+  "button-create-playlist": "Створити плейлист",
+  "title-playlist-name": "Назва плейлиста",
+  "title-proper-rights-image-notification": "Переконайтеся у наявності належних прав на використання зображення",
+  "title-public": "Публічний",
+  "title-private": "Приватний",
+  "title-save": "Зберегти"
 }

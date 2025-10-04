@@ -10,15 +10,20 @@ import com.example.server.model.Playlist;
 import com.example.server.model.Track;
 import com.example.server.model.id.PlaylistTrack;
 import com.example.server.model.key.PlaylistTrackKey;
+import com.example.server.service.image.ImageService;
 import com.example.server.service.track.TrackService;
+import com.example.server.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +32,11 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
     private final TrackService trackService;
+    private final UserService userService;
+    private final ImageService imageService;
+
+    @Value("${app.default-playlist-img-ulr}")
+    private String defaultPlaylistImgUrl;
 
     public PlaylistDto getPlaylistDtoById(Long id) {
         return PlaylistDto.fromEntity(playlistRepository.findById(id).orElseThrow());
@@ -70,5 +80,17 @@ public class PlaylistServiceImpl implements PlaylistService {
         entry.setPosition(position);
 
         playlistTrackRepository.save(entry);
+    }
+
+    @Override
+    public Playlist create(String title, String uid, Boolean isPublic, MultipartFile img) {
+        Playlist entity = new Playlist();
+        entity.setImageUrl(img != null ? imageService.uploadImage(img, title) : defaultPlaylistImgUrl);
+        entity.setTitle(title);
+        entity.setCreatedAt(OffsetDateTime.now());
+        entity.setOwner(userService.getUserById(uid));
+        entity.setIsPublic(isPublic);
+        playlistRepository.save(entity);
+        return entity;
     }
 }

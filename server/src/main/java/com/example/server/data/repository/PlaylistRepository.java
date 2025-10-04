@@ -15,11 +15,13 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
         SELECT p.*, COUNT(ufp.user_id) AS favorite_count
         FROM playlists p
         LEFT JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
+        WHERE p.is_public = true
         GROUP BY p.id
         ORDER BY COUNT(ufp.user_id) DESC
         """,
             countQuery = """
         SELECT COUNT(*) FROM playlists
+        WHERE is_public = true
         """,
             nativeQuery = true
     )

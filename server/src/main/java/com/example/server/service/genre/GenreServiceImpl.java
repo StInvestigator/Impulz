@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +36,14 @@ public class GenreServiceImpl implements GenreService {
             key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     public PageDto<GenreSimpleDto> findTopGenres(Pageable pageable) {
         return new PageDto<>(genreRepository.findTopGenres(pageable).map(GenreSimpleDto::fromEntity));
+    }
+
+    @Override
+    public List<Genre> getGenresByIds(Set<Long> ids) {
+        return genreRepository.findAllById(ids);
+    }
+
+    public List<Genre> getGenresByIds(List<Long> ids) {
+        return genreRepository.findAllById(ids);
     }
 }

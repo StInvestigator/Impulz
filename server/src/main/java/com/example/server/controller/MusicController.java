@@ -40,24 +40,6 @@ public class MusicController {
     @Value("${server.url}")
     private String baseUrl;
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> upload(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam String title,
-            @RequestParam Long albumId,
-            @RequestParam List<String> authorIds,
-            @RequestParam List<Long> genreIds
-    ) {
-        try {
-            Track track = trackService.createTrack(title, albumId, authorIds, genreIds);
-
-            Track savedTrack = musicService.uploadMusic(file, track);
-            return ResponseEntity.ok("Track successfully saved with ID: " + savedTrack.getId());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error uploading track: " + e.getMessage());
-        }
-    }
-
     @GetMapping("/link/{id}")
     public ResponseEntity<String> getLink(@PathVariable Long id) {
         String token = Jwts.builder()

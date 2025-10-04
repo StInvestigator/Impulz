@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -140,5 +141,15 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<AuthorSimpleDto> findByNameLike(String name) {
         return authorRepository.findAllByUserUsernameContainingIgnoreCase(name).stream().map(AuthorSimpleDto::fromEntity).toList();
+    }
+
+    @Override
+    public List<Author> getAuthorsByIds(Set<String> ids) {
+        return authorRepository.findAllById(ids);
+    }
+
+    @Override
+    public List<Author> getAuthorsByIds(List<String> ids) {
+        return authorRepository.findAllById(ids);
     }
 }

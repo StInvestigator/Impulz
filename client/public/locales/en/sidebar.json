@@ -3,5 +3,10 @@
   "button-library": "Library",
   "button-download": "Download",
   "button-subscribe": "Subscribe",
-  "button-create-playlist": "Create playlist"
+  "button-create-playlist": "Create playlist",
+  "title-playlist-name": "Playlist name",
+  "title-proper-rights-image-notification": "Make sure that you have proper rights to use the image",
+  "title-public": "Public",
+  "title-private": "Private",
+  "title-save": "Save"
 }

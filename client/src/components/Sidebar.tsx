@@ -16,8 +16,9 @@ import createPlaylistImg from "../assets/sidebar/createPlaylist.svg"
 import MyPlaylistList from "./lists/MyPlaylistList.tsx";
 import { useTranslation } from 'react-i18next';
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
-import {memo} from "react";
+import {memo, useState} from "react";
 import { useLocation } from "react-router-dom";
+import CreatePlaylistModal from "./ui/CreatePlaylistModal.tsx";
 
 const buttons = [
     {
@@ -48,6 +49,7 @@ const Sidebar = memo(() => {
     const navigate = useAppNavigate()
     const { t } = useTranslation('sidebar')
     const location = useLocation();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <Box
@@ -106,7 +108,7 @@ const Sidebar = memo(() => {
                     ))}
                 </List>
                 <Divider sx={{ backgroundColor: 'var(--columbia-blue)', height: '0.1px', width: '270px', marginTop: "24px" }} />
-                <Button sx={{
+                <Button onClick={() => setIsModalOpen(true)} sx={{
                     margin: "30px 53px 60px",
                     height: "32px",
                     border: "1px solid var(--columbia-blue)",
@@ -120,6 +122,8 @@ const Sidebar = memo(() => {
                     <Box component="img" src={createPlaylistImg} color={"var(--columbia-blue)"} style={{ paddingRight: "10px" }} />
                     {t("button-create-playlist")}
                 </Button>
+                <CreatePlaylistModal open={isModalOpen} setOpen={setIsModalOpen}/>
+
                 <MyPlaylistList />
             </Box>
         </Box>

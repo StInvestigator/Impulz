@@ -8,6 +8,9 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
 
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
+
   security:
     oauth2:
       resource-server:
@@ -26,6 +29,9 @@ spring:
     locations: classpath:db/migration
 
   data:
+    elasticsearch:
+      repositories:
+        enabled: true
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
@@ -47,6 +53,9 @@ logging:
     org.springframework.expression: DEBUG
     org.springframework.cache.interceptor: TRACE
     org.springframework.data.redis: DEBUG
+    org.elasticsearch.client: DEBUG
+    com.example.server: DEBUG
+    org.springframework.web: DEBUG
 
 keycloak:
   keycloakUrl: ${KEYCLOAK_URL:http://localhost:9090}

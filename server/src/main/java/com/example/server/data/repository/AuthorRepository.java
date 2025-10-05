@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorRepository extends JpaRepository<Author, String> {
 
@@ -112,5 +113,13 @@ public interface AuthorRepository extends JpaRepository<Author, String> {
 
     List<Author> findAllByUserUsernameContainingIgnoreCase(String name);
 
+    @Query("SELECT DISTINCT a FROM Author a LEFT JOIN FETCH a.user")
+    List<Author> findAllWithUser();
+
+    @Query("SELECT a FROM Author a LEFT JOIN FETCH a.user WHERE a.id = :id")
+    Optional<Author> findByIdWithUser(@Param("id") String id);
+
+    @Query("SELECT DISTINCT a FROM Author a LEFT JOIN FETCH a.user WHERE a.id IN :ids")
+    List<Author> findAllWithUserByIds(@Param("ids") List<String> ids);
     Page<Author> findAllByFollowersFollowerIdOrderByFollowersFollowedAtDesc(String userId, Pageable pageable);
 }

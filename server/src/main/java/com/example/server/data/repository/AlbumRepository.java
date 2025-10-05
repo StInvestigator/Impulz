@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 
 public interface AlbumRepository extends JpaRepository<Album,Long>
 {
@@ -127,6 +129,15 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
     )
     Page<Album> findNewAlbumsByGenre(@Param("genreId") Long genreId, Pageable pageable);
 
+
+    @Query("SELECT DISTINCT a FROM Album a LEFT JOIN FETCH a.authors")
+    List<Album> findAllWithAuthors();
+
+    @Query("SELECT a FROM Album a LEFT JOIN FETCH a.authors WHERE a.id = :id")
+    Optional<Album> findByIdWithAuthors(@Param("id") Long id);
+
+    @Query("SELECT DISTINCT a FROM Album a LEFT JOIN FETCH a.authors WHERE a.id IN :ids")
+    List<Album> findAllWithAuthorsByIds(@Param("ids") List<Long> ids);
     @Query(
             value = """
         SELECT a.*

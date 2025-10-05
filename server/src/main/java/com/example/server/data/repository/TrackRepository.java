@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface TrackRepository extends JpaRepository<Track, Long> {
 
@@ -146,4 +149,24 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
     @Query("SELECT t FROM Track t JOIN t.genres g WHERE g.id = :genreId AND t.album.releaseDate <= CURRENT_TIMESTAMP ORDER BY t.totalPlays DESC")
     Page<Track> findByGenres_IdOrderByTotalPlaysDesc(@Param("genreId") Long genreId, Pageable pageable);
+
+    @Query("SELECT DISTINCT t FROM Track t " +
+            "LEFT JOIN FETCH t.authors " +
+            "LEFT JOIN FETCH t.album " +
+            "LEFT JOIN FETCH t.genres")
+    List<Track> findAllWithAuthorsAndAlbum();
+
+    @Query("SELECT t FROM Track t " +
+            "LEFT JOIN FETCH t.authors " +
+            "LEFT JOIN FETCH t.album " +
+            "LEFT JOIN FETCH t.genres " +
+            "WHERE t.id = :id")
+    Optional<Track> findByIdWithAuthorsAndAlbum(@Param("id") Long id);
+
+    @Query("SELECT DISTINCT t FROM Track t " +
+            "LEFT JOIN FETCH t.authors " +
+            "LEFT JOIN FETCH t.album " +
+            "LEFT JOIN FETCH t.genres " +
+            "WHERE t.id IN :ids")
+    List<Track> findAllWithAuthorsAndAlbumByIds(@Param("ids") List<Long> ids);
 }

@@ -1,8 +1,11 @@
 package com.example.server.service.keycloak;
 
 
+import com.example.server.model.Playlist;
 import com.example.server.model.User;
 import com.example.server.data.repository.UserRepository;
+import com.example.server.service.playlist.PlaylistService;
+import com.example.server.service.user.UserService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,11 +26,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class KeycloakServiceImpl implements KeycloakService {
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final PlaylistService playlistService;
     private final Keycloak keycloak;
 
     @Value("${keycloak.realm}")
     private String realm;
+
+    @Value("${app.liked-playlist-img-ulr}")
+    private String likedPlaylistImgUrl;
 
     public User updateExistingUser(User user, String username, String email) {
         boolean needsUpdate = false;
@@ -44,7 +51,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 
         if (needsUpdate) {
             log.info("Updating user: {}", user.getId());
-            return userRepository.save(user);
+            return userService.save(user);
         }
 
         log.debug("No updates needed for user: {}", user.getId());
@@ -90,6 +97,14 @@ public class KeycloakServiceImpl implements KeycloakService {
         newUser.setEmail(email);
 
         log.info("Creating new user: {}", id);
-        return userRepository.save(newUser);
+        userService.save(newUser);
+        Playlist playlist = new Playlist();
+        playlist.setCreatedAt(OffsetDateTime.now());
+        playlist.setOwner(newUser);
+        playlist.setImageUrl(likedPlaylistImgUrl);
+        playlist.setTitle("Liked songs");
+        playlist.setIsPublic(false);
+        playlistService.createPlaylist(playlist);
+        return newUser;
     }
 }

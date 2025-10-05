@@ -127,15 +127,25 @@ public class AlbumController {
 
     @PreAuthorize("hasRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
     @DeleteMapping("/delete/{albumId}")
-    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId){
-        try{
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId) {
+        try {
             albumService.delete(albumId);
             return ResponseEntity.ok().build();
-        }
-        catch(EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
-        catch(Exception e){
+    }
+
+    @GetMapping("/favoriteByUser/{userId}")
+    public ResponseEntity<Page<AlbumSimpleDto>> getFavoriteByUser(@PathVariable String userId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(albumService.findFavoriteByUserId(userId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }

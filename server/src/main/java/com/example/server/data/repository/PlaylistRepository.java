@@ -19,7 +19,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
         LEFT JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
         WHERE p.is_public = true
         GROUP BY p.id
-        ORDER BY COUNT(ufp.user_id) DESC
+        ORDER BY favorite_count DESC
         """,
             countQuery = """
         SELECT COUNT(*) FROM playlists
@@ -29,18 +29,26 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     )
     Page<Playlist> findTopPlaylistsByFavorites(Pageable pageable);
 
+    List<Playlist> findAllByOwnerIdOrderByCreatedAtDesc(String userId);
+
     @Query(
             value = """
         SELECT p.*
         FROM playlists p
-        LEFT JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
-        WHERE p.owner_id = :userId or ufp.user_id = :userId
-        GROUP BY p.id
+        JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
+        WHERE ufp.user_id = :userId
+        ORDER BY ufp.added_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM playlists p
+        JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
+        WHERE ufp.user_id = :userId
         """,
             nativeQuery = true
     )
-    List<Playlist> findAllByOwnerIdOrFavoredByUserId(String userId);
-    List<Playlist> findAllByOwnerIdAndIsPublicTrue(String ownerId);
+    Page<Playlist> findAllByFavoredByUserId(String userId, Pageable pageable);
+    Page<Playlist> findAllByOwnerIdAndIsPublicTrue(String ownerId, Pageable pageable);
 
     @Query(
             value = """
@@ -70,4 +78,6 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     )
     @Modifying
     void correctTracksPositionsAfterChangingPosition(Long playlistId, int position, int old_position);
+
+    Long findPlaylistIdByTitleAndOwnerId(String title, String userId);
 }

@@ -116,4 +116,9 @@ public class AlbumServiceImpl implements AlbumService
 
         return entity;
     }
+
+    @Override
+    public Page<AlbumSimpleDto> findFavoriteByUserId(String userId, Pageable pageable) {
+        return albumRepository.findAllFavoriteByUserId(userId,pageable).map(AlbumSimpleDto::fromEntity);
+    }
 }

@@ -31,4 +31,5 @@ public interface AuthorService
     List<AuthorSimpleDto> findByNameLike(String name);
     List<Author> getAuthorsByIds(Set<String> ids);
     List<Author> getAuthorsByIds(List<String> ids);
+    Page<AuthorSimpleDto> findAuthorsByFollowerId(String followerId, Pageable pageable);
 }

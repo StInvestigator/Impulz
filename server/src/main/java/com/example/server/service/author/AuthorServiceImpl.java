@@ -152,4 +152,9 @@ public class AuthorServiceImpl implements AuthorService {
     public List<Author> getAuthorsByIds(List<String> ids) {
         return authorRepository.findAllById(ids);
     }
+
+    @Override
+    public Page<AuthorSimpleDto> findAuthorsByFollowerId(String followerId, Pageable pageable) {
+        return authorRepository.findAllByFollowersFollowerIdOrderByFollowersFollowedAtDesc(followerId, pageable).map(AuthorSimpleDto::fromEntity);
+    }
 }

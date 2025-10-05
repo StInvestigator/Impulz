@@ -27,4 +27,5 @@ public interface AlbumService
     PageDto<AlbumSimpleDto> findByAuthorOrderByReleaseDateDesc(String authorId, Pageable pageable);
     PageDto<AlbumSimpleDto> findNewAlbumsByGenre(Long genreId, Pageable pageable);
     Album upload(AlbumCreationDto metadata, MultipartFile cover, List<MultipartFile> trackFiles, List<MultipartFile> trackCovers);
+    Page<AlbumSimpleDto> findFavoriteByUserId(String userId, Pageable pageable);
 }

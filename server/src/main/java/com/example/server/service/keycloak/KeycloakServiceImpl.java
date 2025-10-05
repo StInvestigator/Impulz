@@ -6,6 +6,7 @@ import com.example.server.model.User;
 import com.example.server.data.repository.UserRepository;
 import com.example.server.service.playlist.PlaylistService;
 import com.example.server.service.user.UserService;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -90,6 +91,7 @@ public class KeycloakServiceImpl implements KeycloakService {
         return users.get(0).getId();
     }
 
+    @Transactional
     public User createNewUser(String id, String username, String email) {
         User newUser = new User();
         newUser.setId(id);

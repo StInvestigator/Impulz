@@ -12,12 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -27,12 +26,12 @@ public class PlaylistController {
     private final PlaylistService playlistService;
 
     @GetMapping("/simpleDto/{id}")
-    public PlaylistSimpleDto getPlaylistSimpleDto(@PathVariable Long id){
+    public PlaylistSimpleDto getPlaylistSimpleDto(@PathVariable Long id) {
         return playlistService.getPlaylistSimpleDtoById(id);
     }
 
     @GetMapping("/Dto/{id}")
-    public PlaylistDto getPlaylistDto(@PathVariable Long id){
+    public PlaylistDto getPlaylistDto(@PathVariable Long id) {
         return playlistService.getPlaylistDtoById(id);
     }
 
@@ -48,4 +47,108 @@ public class PlaylistController {
         }
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createPlaylist(@RequestPart("userId") String userId,
+                                            @RequestPart("title") String title,
+                                            @RequestPart("isPublic") String isPublic,
+                                            @RequestPart(value = "img", required = false) MultipartFile image) {
+        try {
+            playlistService.create(title, userId, Objects.equals(isPublic.toLowerCase(), "true"), image);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deletePlaylist(@PathVariable Long id) {
+        try {
+            playlistService.deletePlaylistById(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/addTrack")
+    public ResponseEntity<?> addTrackToPlaylist(@RequestPart("playlistId") Long playListId,
+                                                @RequestPart("trackId") Long trackId) {
+        try {
+            playlistService.addTrackToPlaylist(playListId, trackId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/changeTrackPosition")
+    public ResponseEntity<?> changeTrackPosition(@RequestPart("playlistId") Long playListId,
+                                                 @RequestPart("trackId") Long trackId,
+                                                 @RequestPart("position") Integer position) {
+        try {
+            playlistService.changeTrackPosition(playListId, trackId, position);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/removeTrack/{playlistId}/{trackId}")
+    public ResponseEntity<?> removeTrackFromPlaylist(@PathVariable Long playlistId, @PathVariable Long trackId) {
+        try {
+            playlistService.removeTrackFromPlaylist(playlistId, trackId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/ownForUser/{userId}")
+    public ResponseEntity<List<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId) {
+        try {
+            return ResponseEntity.ok(playlistService.getAllPlaylistsByOwnerId(userId));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/favoriteByUser/{userId}")
+    public ResponseEntity<Page<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(playlistService.getPlaylistsFavorite(userId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/publicFromUser/{userId}")
+    public ResponseEntity<Page<PlaylistSimpleDto>> getPublicPlaylistsFromUser(@PathVariable String userId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(playlistService.getPublicPlaylistsByOwnerId(userId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

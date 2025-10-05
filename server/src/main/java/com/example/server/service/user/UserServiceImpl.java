@@ -17,6 +17,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }

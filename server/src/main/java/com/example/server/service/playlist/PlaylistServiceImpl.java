@@ -10,15 +10,21 @@ import com.example.server.model.Playlist;
 import com.example.server.model.Track;
 import com.example.server.model.id.PlaylistTrack;
 import com.example.server.model.key.PlaylistTrackKey;
+import com.example.server.service.image.ImageService;
 import com.example.server.service.track.TrackService;
+import com.example.server.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +33,11 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
     private final TrackService trackService;
+    private final UserService userService;
+    private final ImageService imageService;
+
+    @Value("${app.default-playlist-img-ulr}")
+    private String defaultPlaylistImgUrl;
 
     public PlaylistDto getPlaylistDtoById(Long id) {
         return PlaylistDto.fromEntity(playlistRepository.findById(id).orElseThrow());
@@ -41,8 +52,8 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @CacheEvict(cacheNames = "playlist.findTopPlaylistsByFavorites", allEntries = true)
-    public void deletePlaylist(Playlist playlist) {
-        playlistRepository.delete(playlist);
+    public void deletePlaylistById(Long id) {
+        playlistRepository.deleteById(id);
     }
 
     @Cacheable(value = "playlist.findTopPlaylistsByFavorites",
@@ -53,7 +64,8 @@ public class PlaylistServiceImpl implements PlaylistService {
                 map(PlaylistSimpleDto::fromEntity));
     }
 
-    public void addTrackToPlaylist(Long playlistId, Long trackId, int position) {
+    @Transactional
+    public void addTrackToPlaylist(Long playlistId, Long trackId) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found"));
         Track track = trackService.getTrackById(trackId);
@@ -67,8 +79,60 @@ public class PlaylistServiceImpl implements PlaylistService {
         entry.setId(key);
         entry.setPlaylist(playlist);
         entry.setTrack(track);
-        entry.setPosition(position);
-
+        entry.setPosition(1);
+        playlistRepository.correctTracksPositionsAfterChangingPosition(playlistId, 1, playlist.getTracks().size() + 1);
         playlistTrackRepository.save(entry);
+    }
+
+    @Transactional
+    public void addTrackToPlaylist(String title, String userId, Long trackId) {
+        addTrackToPlaylist(playlistRepository.findPlaylistIdByTitleAndOwnerId(title, userId), trackId);
+    }
+
+    @Override
+    @Transactional
+    public void changeTrackPosition(Long playlistId, Long trackId, Integer position) {
+        var pt = playlistTrackRepository.findById(new PlaylistTrackKey(playlistId, trackId)).get();
+        playlistRepository.correctTracksPositionsAfterChangingPosition(playlistId, position, pt.getPosition());
+
+        pt.setPosition(position);
+
+        playlistTrackRepository.save(pt);
+    }
+
+    @Override
+    @Transactional
+    public void removeTrackFromPlaylist(Long playlistId, Long trackId) {
+        var pt = playlistTrackRepository.findById(new PlaylistTrackKey(playlistId, trackId)).get();
+        playlistRepository.correctTracksPositionsAfterRemovingTrack(playlistId, pt.getPosition());
+        playlistTrackRepository.delete(pt);
+    }
+
+    @Override
+    public Playlist create(String title, String uid, Boolean isPublic, MultipartFile img) {
+        Playlist entity = new Playlist();
+        entity.setImageUrl(img != null ? imageService.uploadImage(img, title) : defaultPlaylistImgUrl);
+        entity.setTitle(title);
+        entity.setCreatedAt(OffsetDateTime.now());
+        entity.setOwner(userService.getUserById(uid));
+        entity.setIsPublic(isPublic);
+        playlistRepository.save(entity);
+        return entity;
+    }
+
+
+    @Override
+    public Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByFavoredByUserId(ownerId,pageable).map(PlaylistSimpleDto::fromEntity);
+    }
+
+    @Override
+    public List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId) {
+        return playlistRepository.findAllByOwnerIdOrderByCreatedAtDesc(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    }
+
+    @Override
+    public Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId, pageable).map(PlaylistSimpleDto::fromEntity);
     }
 }

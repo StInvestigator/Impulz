@@ -31,7 +31,7 @@ public class TrackDto {
         if (track.getAlbum() != null) {
             AlbumSimpleDto album = AlbumSimpleDto.fromEntity(track.getAlbum());
             dto.setAlbum(album);
-            dto.setImgUrl(album.getImgUrl());
+            dto.setImgUrl(track.getImageURl() == null ? album.getImgUrl() : track.getImageURl());
         }
 
         dto.setAuthors(track.getAuthors().stream()
@@ -46,12 +46,7 @@ public class TrackDto {
                 }).collect(Collectors.toSet()));
 
         dto.setGenre(track.getGenres().stream()
-                .map(genre -> {
-                    GenreSimpleDto genreSimpleDto = new GenreSimpleDto();
-                    genreSimpleDto.setId(genre.getId());
-                    genreSimpleDto.setName(genre.getName());
-                    return genreSimpleDto;
-                }).collect(Collectors.toSet()));
+                .map(GenreSimpleDto::fromEntity).collect(Collectors.toSet()));
 
         dto.setSubtitles(track.getSubtitles().stream()
                 .map(subtitle -> {

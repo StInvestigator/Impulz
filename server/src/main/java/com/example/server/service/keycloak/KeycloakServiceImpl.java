@@ -1,19 +1,41 @@
 package com.example.server.service.keycloak;
 
 
+import com.example.server.model.Playlist;
 import com.example.server.model.User;
 import com.example.server.data.repository.UserRepository;
+import com.example.server.service.playlist.PlaylistService;
+import com.example.server.service.user.UserService;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Log4j2
 @RequiredArgsConstructor
 @Service
 public class KeycloakServiceImpl implements KeycloakService {
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final PlaylistService playlistService;
+    private final Keycloak keycloak;
+
+    @Value("${keycloak.realm}")
+    private String realm;
+
+    @Value("${app.liked-playlist-img-ulr}")
+    private String likedPlaylistImgUrl;
 
     public User updateExistingUser(User user, String username, String email) {
         boolean needsUpdate = false;
@@ -30,13 +52,46 @@ public class KeycloakServiceImpl implements KeycloakService {
 
         if (needsUpdate) {
             log.info("Updating user: {}", user.getId());
-            return userRepository.save(user);
+            return userService.save(user);
         }
 
         log.debug("No updates needed for user: {}", user.getId());
         return user;
     }
 
+    @Override
+    public void addRoleToUser(String userId, String role) {
+        RealmResource realmResource = keycloak.realm(realm);
+        RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
+
+        UserResource userResource = realmResource.users().get(userId);
+        userResource.roles().realmLevel().add(Collections.singletonList(roleRep));
+    }
+
+    @Override
+    public void removeRoleFromUser(String userId, String role) {
+        RealmResource realmResource = keycloak.realm(realm);
+        RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
+
+        UserResource userResource = realmResource.users().get(userId);
+        userResource.roles().realmLevel().remove(Collections.singletonList(roleRep));
+    }
+
+    @Override
+    public List<RoleRepresentation> getAllRoles() {
+        return keycloak.realm(realm).roles().list();
+    }
+
+    @Override
+    public String getUserIdByEmail(String email) {
+        List<UserRepresentation> users = keycloak.realm(realm).users().searchByEmail(email, true);
+        if (users.isEmpty()) {
+            throw new NotFoundException("User not found");
+        }
+        return users.get(0).getId();
+    }
+
+    @Transactional
     public User createNewUser(String id, String username, String email) {
         User newUser = new User();
         newUser.setId(id);
@@ -44,6 +99,14 @@ public class KeycloakServiceImpl implements KeycloakService {
         newUser.setEmail(email);
 
         log.info("Creating new user: {}", id);
-        return userRepository.save(newUser);
+        userService.save(newUser);
+        Playlist playlist = new Playlist();
+        playlist.setCreatedAt(OffsetDateTime.now());
+        playlist.setOwner(newUser);
+        playlist.setImageUrl(likedPlaylistImgUrl);
+        playlist.setTitle("Liked songs");
+        playlist.setIsPublic(false);
+        playlistService.createPlaylist(playlist);
+        return newUser;
     }
 }

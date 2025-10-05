@@ -77,6 +77,8 @@ music:
   base-url: ${MUSIC_BASE_URL:https://impulz-bucket-1.s3.us-east-1.amazonaws.com/music/}
 
 app:
+  default-playlist-img-ulr: https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/2955528f-7c0f-44ed-97da-0d37f90b47d4_kitten.jpg
+  liked-playlist-img-ulr: https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/2955528f-7c0f-44ed-97da-0d37f90b47d4_kitten.jpg
   temp-dir: ${java.io.tmpdir}/audio_uploads
 
 jwt:

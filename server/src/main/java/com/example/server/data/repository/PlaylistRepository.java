@@ -1,9 +1,11 @@
 package com.example.server.data.repository;
 
 import com.example.server.model.Playlist;
+import com.example.server.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -17,11 +19,13 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
         SELECT p.*, COUNT(ufp.user_id) AS favorite_count
         FROM playlists p
         LEFT JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
+        WHERE p.is_public = true
         GROUP BY p.id
-        ORDER BY COUNT(ufp.user_id) DESC
+        ORDER BY favorite_count DESC
         """,
             countQuery = """
         SELECT COUNT(*) FROM playlists
+        WHERE is_public = true
         """,
             nativeQuery = true
     )
@@ -35,4 +39,55 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
     @Query("SELECT DISTINCT p FROM Playlist p LEFT JOIN FETCH p.owner WHERE p.id IN :ids")
     List<Playlist> findAllWithOwnerByIds(@Param("ids") List<Long> ids);
+    List<Playlist> findAllByOwnerIdOrderByCreatedAtDesc(String userId);
+
+    @Query(
+            value = """
+        SELECT p.*
+        FROM playlists p
+        JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
+        WHERE ufp.user_id = :userId
+        ORDER BY ufp.added_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM playlists p
+        JOIN user_favorite_playlists ufp ON p.id = ufp.playlist_id
+        WHERE ufp.user_id = :userId
+        """,
+            nativeQuery = true
+    )
+    Page<Playlist> findAllByFavoredByUserId(String userId, Pageable pageable);
+    Page<Playlist> findAllByOwnerIdAndIsPublicTrue(String ownerId, Pageable pageable);
+
+    @Query(
+            value = """
+        UPDATE playlist_tracks
+        SET position = position - 1
+        WHERE playlist_id = :playlistId AND position > :position
+        """,
+            nativeQuery = true
+    )
+    @Modifying
+    void correctTracksPositionsAfterRemovingTrack(Long playlistId, int position);
+
+
+    @Query(
+            value = """
+                    UPDATE playlist_tracks
+                    SET position = CASE
+                        WHEN :position < :old_position THEN position + 1
+                        WHEN :position > :old_position THEN position - 1
+                        ELSE position
+                    END
+                    WHERE playlist_id = :playlistId
+                      AND position BETWEEN LEAST(:position, :old_position) AND GREATEST(:position, :old_position)
+                      AND position <> :old_position
+                    """,
+            nativeQuery = true
+    )
+    @Modifying
+    void correctTracksPositionsAfterChangingPosition(Long playlistId, int position, int old_position);
+
+    Long findPlaylistIdByTitleAndOwnerId(String title, String userId);
 }

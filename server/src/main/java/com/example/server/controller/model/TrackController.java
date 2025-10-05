@@ -8,6 +8,7 @@ import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.model.Album;
 import com.example.server.model.Track;
 import com.example.server.service.music.MusicServiceImpl;
+import com.example.server.service.playlist.PlaylistService;
 import com.example.server.service.track.TrackService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TrackController {
     private final TrackService trackService;
+    private final PlaylistService playlistService;
 
     @GetMapping("/simpleDto/{id}")
     public TrackSimpleDto getSimpleTrackDto(@PathVariable Long id) {
@@ -123,4 +125,17 @@ public class TrackController {
         }
     }
 
+    @PostMapping("/like")
+    public ResponseEntity<?> addToLiked(@RequestPart("userId") String userId,
+                                        @RequestPart("trackId") Long trackId) {
+        try {
+            playlistService.addTrackToPlaylist("Liked songs", userId, trackId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

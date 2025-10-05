@@ -30,7 +30,7 @@ public class TrackSimpleDto
         dto.setTitle(track.getTitle());
         dto.setAlbum(album.getTitle());
         dto.setAlbumId(album.getId());
-        dto.setImgUrl(album.getImageUrl());
+        dto.setImgUrl(track.getImageURl() == null ? album.getImageUrl() : track.getImageURl());
         dto.setDurationSec(track.getDurationSec());
         dto.setAuthors(track.getAuthors().stream()
                 .map(AuthorSimpleDto::fromEntity)

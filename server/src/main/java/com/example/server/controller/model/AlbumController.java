@@ -1,5 +1,6 @@
 package com.example.server.controller.model;
 
+import com.example.server.dto.Album.AlbumCreationDto;
 import com.example.server.dto.Album.AlbumDto;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Page.PageDto;
@@ -8,13 +9,16 @@ import com.example.server.service.album.AlbumService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.KeyValuePair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -106,4 +110,44 @@ public class AlbumController {
         }
     }
 
+    @PreAuthorize("hasRole('AUTHOR')")
+    @PostMapping("/create")
+    public ResponseEntity<?> createAlbum(@RequestPart("metadata") AlbumCreationDto metadata,
+                                         @RequestPart("cover") MultipartFile cover,
+                                         @RequestPart("trackFiles") List<MultipartFile> trackFiles,
+                                         @RequestPart("trackCovers") List<MultipartFile> trackCovers) {
+        try {
+            albumService.upload(metadata, cover, trackFiles, trackCovers);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PreAuthorize("hasRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
+    @DeleteMapping("/delete/{albumId}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId) {
+        try {
+            albumService.delete(albumId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/favoriteByUser/{userId}")
+    public ResponseEntity<Page<AlbumSimpleDto>> getFavoriteByUser(@PathVariable String userId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(albumService.findFavoriteByUserId(userId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

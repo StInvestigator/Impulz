@@ -158,4 +158,15 @@ public class AuthorController {
         }
     }
 
+    @GetMapping("/byFollower/{followerId}")
+    public ResponseEntity<Page<AuthorSimpleDto>> findAuthorByFollower(@PathVariable String followerId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(authorService.findAuthorsByFollowerId(followerId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

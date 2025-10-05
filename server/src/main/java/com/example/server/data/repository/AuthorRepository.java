@@ -121,4 +121,5 @@ public interface AuthorRepository extends JpaRepository<Author, String> {
 
     @Query("SELECT DISTINCT a FROM Author a LEFT JOIN FETCH a.user WHERE a.id IN :ids")
     List<Author> findAllWithUserByIds(@Param("ids") List<String> ids);
+    Page<Author> findAllByFollowersFollowerIdOrderByFollowersFollowedAtDesc(String userId, Pageable pageable);
 }

@@ -138,4 +138,21 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
 
     @Query("SELECT DISTINCT a FROM Album a LEFT JOIN FETCH a.authors WHERE a.id IN :ids")
     List<Album> findAllWithAuthorsByIds(@Param("ids") List<Long> ids);
+    @Query(
+            value = """
+        SELECT a.*
+        FROM albums a
+        JOIN user_favorite_albums ufa on ufa.album_id = a.id
+        WHERE ufa.user_id = :userId
+        ORDER BY ufa.added_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM albums a
+        JOIN user_favorite_albums ufa on ufa.album_id = a.id
+        WHERE ufa.user_id = :userId
+        """,
+            nativeQuery = true
+    )
+    Page<Album> findAllFavoriteByUserId(String userId, Pageable pageable);
 }

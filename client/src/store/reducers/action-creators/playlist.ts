@@ -44,3 +44,33 @@ export const fetchPlaylistDetails = createAsyncThunk<
         }
     }
 );
+
+export const createPlaylist = createAsyncThunk<
+    PlaylistDto,
+    { name: string; isPublic: boolean; userId: string; imageFile?: File },
+    { rejectValue: string }
+>(
+    'playlists/createPlaylist',
+    async ({ name, isPublic, userId, imageFile }, { rejectWithValue }) => {
+        try {
+            const formData = new FormData();
+            formData.append('title', name);
+            formData.append('userId', userId);
+            formData.append('isPublic', isPublic.toString());
+
+            if (imageFile) {
+                formData.append('img', imageFile);
+            }
+
+            const response = await $authApi.post('/playlists/create', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue('Не удалось создать плейлист');
+        }
+    }
+);

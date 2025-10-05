@@ -7,6 +7,7 @@ import GenreReducer from "./reducers/GenreSlice.ts"
 import AlbumReducer from "./reducers/AlbumSlice.ts"
 import PageReducer from "./reducers/PageSlice.ts";
 import ProfileReducer from "./reducers/ProfileSlice.ts";
+import SearchReducer from "./reducers/SearchSlice.ts";
 
 
 const rootReducer = combineReducers({
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
     genre: GenreReducer,
     album: AlbumReducer,
     page: PageReducer,
-    profile: ProfileReducer
+    profile: ProfileReducer,
+    search: SearchReducer
 })
 
 export const setupStore = () => {

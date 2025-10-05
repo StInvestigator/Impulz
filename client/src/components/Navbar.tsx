@@ -5,15 +5,21 @@ import SearchIcon from "../assets/searchIcon.svg"
 import {useTranslation} from "react-i18next";
 import Dropdown from "./Dropdown.tsx";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
-import {memo, useState} from "react";
+import {memo, useEffect, useState} from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import LogoutButton from "./LogoutButton";
+import {clearSearchResults, setSearchQuery} from "../store/reducers/SearchSlice.ts";
+import { useDispatch } from "react-redux";
+import {searchAll} from "../store/reducers/action-creators/search.ts";
+import type {AppDispatch} from "../store/store.ts";
 
 const Navbar = memo(() => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [localSearchQuery, setLocalSearchQuery] = useState("");
     const { keycloak } = useKeycloak();
     const { t } = useTranslation("navbar")
     const navigate = useAppNavigate()
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -22,6 +28,38 @@ const Navbar = memo(() => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setLocalSearchQuery(value);
+        dispatch(setSearchQuery(value));
+    };
+
+    const handleSearchSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        if (localSearchQuery.trim()) {
+            dispatch(searchAll(localSearchQuery.trim()));
+            navigate(`/search?q=${encodeURIComponent(localSearchQuery.trim())}`);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearSearchResults());
+        };
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (localSearchQuery.trim()) {
+            const timer = setTimeout(() => {
+                dispatch(searchAll(localSearchQuery.trim()));
+            }, 500);
+
+            return () => clearTimeout(timer);
+        } else {
+            dispatch(clearSearchResults());
+        }
+    }, [localSearchQuery, dispatch]);
 
     return (
         <AppBar sx={{backgroundColor: "var(--columbia-blue)", zIndex: (theme) => theme.zIndex.drawer + 3}}>
@@ -35,9 +73,15 @@ const Navbar = memo(() => {
                     <IconButton disableRipple={true} onClick={() => navigate("/")}>
                         <Box  component="img" src={LogoIcon} alt="Impulz"/>
                     </IconButton>
-                    <Box component="form" sx={{width: "450px", display: "flex", position: "relative"}}>
+                    <Box
+                        component="form"
+                        sx={{width: "450px", display: "flex", position: "relative"}}
+                        onSubmit={handleSearchSubmit}
+                    >
                         <OutlinedInput
                             placeholder={t("search")}
+                            value={localSearchQuery}
+                            onChange={handleSearchChange}
                             sx={{
                                 width: "450px",
                                 backgroundColor: "#FFFFFF",
@@ -70,7 +114,6 @@ const Navbar = memo(() => {
                                 },
                             }}
                             disableRipple
-                            // onClick={}
                         >
                             <Box height={45} width={30} component="img" src={SearchIcon}/>
                         </IconButton>

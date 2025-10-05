@@ -53,6 +53,9 @@ logging:
     org.springframework.expression: DEBUG
     org.springframework.cache.interceptor: TRACE
     org.springframework.data.redis: DEBUG
+    org.elasticsearch.client: DEBUG
+    com.example.server: DEBUG
+    org.springframework.web: DEBUG
 
 keycloak:
   keycloakUrl: ${KEYCLOAK_URL:http://localhost:9090}

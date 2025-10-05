@@ -23,6 +23,7 @@ import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPa
 import MyProfilePage from "../pages/MyProfilePage.tsx";
 import AlbumTodayRecommendationsPage from "../pages/album_page/AlbumTodayRecommendationsPage.tsx";
 import AlbumPersonalRecommendationsPage from "../pages/album_page/AlbumPersonalRecommendationsPage.tsx";
+import SearchResultsPage from "../pages/search_page/SearchResultPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -83,6 +84,7 @@ const AppRouter = () => {
             <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/search" element={<SearchResultsPage />} />
         </Routes>
     );
 };

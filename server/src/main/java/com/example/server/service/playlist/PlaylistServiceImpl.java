@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
@@ -51,8 +52,8 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @CacheEvict(cacheNames = "playlist.findTopPlaylistsByFavorites", allEntries = true)
-    public void deletePlaylist(Playlist playlist) {
-        playlistRepository.delete(playlist);
+    public void deletePlaylistById(Long id) {
+        playlistRepository.deleteById(id);
     }
 
     @Cacheable(value = "playlist.findTopPlaylistsByFavorites",
@@ -63,7 +64,7 @@ public class PlaylistServiceImpl implements PlaylistService {
                 map(PlaylistSimpleDto::fromEntity));
     }
 
-    public void addTrackToPlaylist(Long playlistId, Long trackId, int position) {
+    public void addTrackToPlaylist(Long playlistId, Long trackId) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found"));
         Track track = trackService.getTrackById(trackId);
@@ -77,9 +78,28 @@ public class PlaylistServiceImpl implements PlaylistService {
         entry.setId(key);
         entry.setPlaylist(playlist);
         entry.setTrack(track);
-        entry.setPosition(position);
+        entry.setPosition(playlist.getTracks().size() + 1);
 
         playlistTrackRepository.save(entry);
+    }
+
+    @Override
+    @Transactional
+    public void changeTrackPosition(Long playlistId, Long trackId, Integer position) {
+        var pt = playlistTrackRepository.findById(new PlaylistTrackKey(playlistId, trackId)).get();
+        playlistRepository.correctTracksPositionsAfterChangingPosition(playlistId, position, pt.getPosition());
+
+        pt.setPosition(position);
+
+        playlistTrackRepository.save(pt);
+    }
+
+    @Override
+    @Transactional
+    public void removeTrackFromPlaylist(Long playlistId, Long trackId) {
+        var pt = playlistTrackRepository.findById(new PlaylistTrackKey(playlistId, trackId)).get();
+        playlistRepository.correctTracksPositionsAfterRemovingTrack(playlistId, pt.getPosition());
+        playlistTrackRepository.delete(pt);
     }
 
     @Override
@@ -92,5 +112,15 @@ public class PlaylistServiceImpl implements PlaylistService {
         entity.setIsPublic(isPublic);
         playlistRepository.save(entity);
         return entity;
+    }
+
+    @Override
+    public List<PlaylistSimpleDto> getAllPlaylistsByOwnerIdOrFavorite(String ownerId) {
+        return playlistRepository.findAllByOwnerIdOrFavoredByUserId(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    }
+
+    @Override
+    public List<PlaylistSimpleDto> getAllPublicPlaylistsByOwnerId(String ownerId) {
+        return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
     }
 }

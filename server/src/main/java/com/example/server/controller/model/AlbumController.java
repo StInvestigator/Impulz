@@ -13,6 +13,7 @@ import org.slf4j.event.KeyValuePair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -109,6 +110,7 @@ public class AlbumController {
         }
     }
 
+    @PreAuthorize("hasRole('AUTHOR')")
     @PostMapping("/create")
     public ResponseEntity<?> createAlbum(@RequestPart("metadata") AlbumCreationDto metadata,
                                          @RequestPart("cover") MultipartFile cover,
@@ -118,6 +120,22 @@ public class AlbumController {
             albumService.upload(metadata, cover, trackFiles, trackCovers);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PreAuthorize("hasRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
+    @DeleteMapping("/remove/{albumId}")
+    public ResponseEntity<?> removeAlbum(@PathVariable Long albumId){
+        try{
+            albumService.delete(albumId);
+            return ResponseEntity.ok().build();
+        }
+        catch(EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+        catch(Exception e){
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }

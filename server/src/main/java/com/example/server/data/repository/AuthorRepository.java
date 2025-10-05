@@ -111,4 +111,6 @@ public interface AuthorRepository extends JpaRepository<Author, String> {
     Long countAuthorPlaysByMonth(@Param("authorId") String authorId);
 
     List<Author> findAllByUserUsernameContainingIgnoreCase(String name);
+
+    Page<Author> findAllByFollowersFollowerIdOrderByFollowersFollowedAtDesc(String userId, Pageable pageable);
 }

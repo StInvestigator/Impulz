@@ -126,4 +126,22 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
             nativeQuery = true
     )
     Page<Album> findNewAlbumsByGenre(@Param("genreId") Long genreId, Pageable pageable);
+
+    @Query(
+            value = """
+        SELECT a.*
+        FROM albums a
+        JOIN user_favorite_albums ufa on ufa.album_id = a.id
+        WHERE ufa.user_id = :userId
+        ORDER BY ufa.added_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM albums a
+        JOIN user_favorite_albums ufa on ufa.album_id = a.id
+        WHERE ufa.user_id = :userId
+        """,
+            nativeQuery = true
+    )
+    Page<Album> findAllFavoriteByUserId(String userId, Pageable pageable);
 }

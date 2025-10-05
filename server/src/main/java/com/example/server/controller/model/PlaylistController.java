@@ -116,10 +116,22 @@ public class PlaylistController {
         }
     }
 
-    @GetMapping("/ownAndFavoriteForUser/{userId}")
-    public ResponseEntity<List<PlaylistSimpleDto>> getOwnAndFavoriteForUser(@PathVariable String userId) {
+    @GetMapping("/ownForUser/{userId}")
+    public ResponseEntity<List<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId) {
         try {
-            return ResponseEntity.ok(playlistService.getAllPlaylistsByOwnerIdOrFavorite(userId));
+            return ResponseEntity.ok(playlistService.getAllPlaylistsByOwnerId(userId));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/favoriteByUser/{userId}")
+    public ResponseEntity<Page<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(playlistService.getPlaylistsFavorite(userId, pageable));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
@@ -129,9 +141,9 @@ public class PlaylistController {
     }
 
     @GetMapping("/publicFromUser/{userId}")
-    public ResponseEntity<List<PlaylistSimpleDto>> getPublicPlaylistsFromUser(@PathVariable String userId) {
+    public ResponseEntity<Page<PlaylistSimpleDto>> getPublicPlaylistsFromUser(@PathVariable String userId, Pageable pageable) {
         try {
-            return ResponseEntity.ok(playlistService.getAllPublicPlaylistsByOwnerId(userId));
+            return ResponseEntity.ok(playlistService.getPublicPlaylistsByOwnerId(userId, pageable));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

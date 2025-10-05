@@ -64,6 +64,7 @@ public class PlaylistServiceImpl implements PlaylistService {
                 map(PlaylistSimpleDto::fromEntity));
     }
 
+    @Transactional
     public void addTrackToPlaylist(Long playlistId, Long trackId) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found"));
@@ -78,9 +79,14 @@ public class PlaylistServiceImpl implements PlaylistService {
         entry.setId(key);
         entry.setPlaylist(playlist);
         entry.setTrack(track);
-        entry.setPosition(playlist.getTracks().size() + 1);
-
+        entry.setPosition(1);
+        playlistRepository.correctTracksPositionsAfterChangingPosition(playlistId, 1, playlist.getTracks().size() + 1);
         playlistTrackRepository.save(entry);
+    }
+
+    @Transactional
+    public void addTrackToPlaylist(String title, String userId, Long trackId) {
+        addTrackToPlaylist(playlistRepository.findPlaylistIdByTitleAndOwnerId(title, userId), trackId);
     }
 
     @Override
@@ -114,13 +120,19 @@ public class PlaylistServiceImpl implements PlaylistService {
         return entity;
     }
 
+
     @Override
-    public List<PlaylistSimpleDto> getAllPlaylistsByOwnerIdOrFavorite(String ownerId) {
-        return playlistRepository.findAllByOwnerIdOrFavoredByUserId(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    public Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByFavoredByUserId(ownerId,pageable).map(PlaylistSimpleDto::fromEntity);
     }
 
     @Override
-    public List<PlaylistSimpleDto> getAllPublicPlaylistsByOwnerId(String ownerId) {
-        return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    public List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId) {
+        return playlistRepository.findAllByOwnerIdOrderByCreatedAtDesc(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    }
+
+    @Override
+    public Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId, pageable).map(PlaylistSimpleDto::fromEntity);
     }
 }

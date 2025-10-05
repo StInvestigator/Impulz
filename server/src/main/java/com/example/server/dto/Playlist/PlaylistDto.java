@@ -31,7 +31,7 @@ public class PlaylistDto
         dto.setIsPublic(playlist.getIsPublic());
         dto.setOwner(UserSimpleDto.fromEntity(playlist.getOwner()));
         dto.setTracks(playlist.getTracks().stream()
-                        .sorted(Comparator.comparingLong(PlaylistTrack::getPosition))
+                        .sorted(Comparator.comparingInt(PlaylistTrack::getPosition))
                 .map(playlistTrack -> TrackSimpleDto.fromEntity(playlistTrack.getTrack()))
                 .collect(Collectors.toSet()));
         return dto;

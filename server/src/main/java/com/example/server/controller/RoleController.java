@@ -1,5 +1,9 @@
 package com.example.server.controller;
 
+import com.example.server.service.keycloak.KeycloakService;
+import jakarta.ws.rs.NotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
@@ -15,60 +19,75 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/admin/user-roles")
 @PreAuthorize("hasRole('ADMIN')")
-public class RoleController
-{
-    @Value("${keycloak.realm}")
-    private String realm;
-
-    private final Keycloak keycloak;
-
-    @Autowired
-    public RoleController(Keycloak keycloak){
-        this.keycloak = keycloak;
-    }
+@RequiredArgsConstructor
+public class RoleController {
+    private final KeycloakService keycloakService;
 
     @GetMapping("/roles")
-    public List<RoleRepresentation> getAllRoles(){
-        return keycloak.realm(realm).roles().list();
+    public List<RoleRepresentation> getAllRoles() {
+        return keycloakService.getAllRoles();
     }
 
     @PostMapping("/user/{userId}/role/{roleName}")
     public ResponseEntity<String> addRoleToUser(
             @PathVariable String userId,
             @PathVariable String roleName
-    ){
-        RealmResource realmResource = keycloak.realm(realm);
-        RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
+    ) {
+        try {
+            keycloakService.addRoleToUser(userId, roleName);
+            return ResponseEntity.ok("Role '" + roleName + "' successfully added to user");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
 
-        UserResource userResource = realmResource.users().get(userId);
-        userResource.roles().realmLevel().add(Collections.singletonList(role));
-
-        return ResponseEntity.ok("Role '" + roleName + "' successfully added to user");
     }
 
     @DeleteMapping("/user/{userId}/role/{roleName}")
     public ResponseEntity<String> removeRoleFromUser(
             @PathVariable String userId,
             @PathVariable String roleName
-    ){
-        RealmResource realmResource = keycloak.realm(realm);
-        RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
+    ) {
+        try {
+            keycloakService.removeRoleFromUser(userId, roleName);
+            return ResponseEntity.ok("Role '" + roleName + "' successfully removed from user");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
 
-        UserResource userResource = realmResource.users().get(userId);
-        userResource.roles().realmLevel().remove(Collections.singletonList(role));
-
-        return ResponseEntity.ok("Role '" + roleName + "' successfully removed from user");
     }
 
     @GetMapping("/user/find")
     public ResponseEntity<String> getUserIdByEmail(@RequestParam String email) {
-        List<UserRepresentation> users = keycloak.realm(realm).users().searchByEmail(email, true);
-        if (users.isEmpty()) {
+        try {
+            return ResponseEntity.ok(keycloakService.getUserIdByEmail(email));
+        }
+        catch (NotFoundException e){
             return ResponseEntity.status(404).body("User with email '" + email + "' not found");
         }
-        return ResponseEntity.ok(users.get(0).getId());
+        catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/becomeAuthor/{userId}")
+    public ResponseEntity<String> becomeAuthor(@PathVariable String userId) {
+        try{
+            keycloakService.addRoleToUser(userId,"AUTHOR");
+            return ResponseEntity.ok("User with id '" + userId + "' successfully became author");
+        }
+        catch (NotFoundException e){
+            return ResponseEntity.status(404).body("User with id '" + userId + "' not found");
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }

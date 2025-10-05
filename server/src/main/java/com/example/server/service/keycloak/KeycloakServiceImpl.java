@@ -3,17 +3,31 @@ package com.example.server.service.keycloak;
 
 import com.example.server.model.User;
 import com.example.server.data.repository.UserRepository;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Log4j2
 @RequiredArgsConstructor
 @Service
 public class KeycloakServiceImpl implements KeycloakService {
     private final UserRepository userRepository;
+    private final Keycloak keycloak;
+
+    @Value("${keycloak.realm}")
+    private String realm;
 
     public User updateExistingUser(User user, String username, String email) {
         boolean needsUpdate = false;
@@ -35,6 +49,38 @@ public class KeycloakServiceImpl implements KeycloakService {
 
         log.debug("No updates needed for user: {}", user.getId());
         return user;
+    }
+
+    @Override
+    public void addRoleToUser(String userId, String role) {
+        RealmResource realmResource = keycloak.realm(realm);
+        RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
+
+        UserResource userResource = realmResource.users().get(userId);
+        userResource.roles().realmLevel().add(Collections.singletonList(roleRep));
+    }
+
+    @Override
+    public void removeRoleFromUser(String userId, String role) {
+        RealmResource realmResource = keycloak.realm(realm);
+        RoleRepresentation roleRep = realmResource.roles().get(role).toRepresentation();
+
+        UserResource userResource = realmResource.users().get(userId);
+        userResource.roles().realmLevel().remove(Collections.singletonList(roleRep));
+    }
+
+    @Override
+    public List<RoleRepresentation> getAllRoles() {
+        return keycloak.realm(realm).roles().list();
+    }
+
+    @Override
+    public String getUserIdByEmail(String email) {
+        List<UserRepresentation> users = keycloak.realm(realm).users().searchByEmail(email, true);
+        if (users.isEmpty()) {
+            throw new NotFoundException("User not found");
+        }
+        return users.get(0).getId();
     }
 
     public User createNewUser(String id, String username, String email) {

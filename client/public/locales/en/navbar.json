@@ -1,5 +1,7 @@
 {
     "registration": "Registration",
     "login": "Login",
-    "search": "Search for tracks, albums, author"
+    "search": "Search for tracks, albums, author",
+    "title-logout": "Logout",
+    "title-profile": "Profile"
 }

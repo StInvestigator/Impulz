@@ -7,7 +7,6 @@ import Dropdown from "./Dropdown.tsx";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import {memo, useEffect, useState} from "react";
 import { useKeycloak } from "@react-keycloak/web";
-import LogoutButton from "./LogoutButton";
 import {clearSearchResults, setSearchQuery} from "../store/reducers/SearchSlice.ts";
 import { useDispatch } from "react-redux";
 import {searchAll} from "../store/reducers/action-creators/search.ts";
@@ -20,6 +19,16 @@ const Navbar = memo(() => {
     const { t } = useTranslation("navbar")
     const navigate = useAppNavigate()
     const dispatch = useDispatch<AppDispatch>();
+
+    const handleLogout = () => {
+        try {
+            keycloak.logout({
+                redirectUri: window.location.origin
+            });
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -153,7 +162,6 @@ const Navbar = memo(() => {
                     {
                         keycloak.authenticated &&
                         <>
-                            <LogoutButton/>
                             <IconButton
                                 disableRipple={true}
                                 onDragStart={(e) => e.preventDefault()}
@@ -176,8 +184,8 @@ const Navbar = memo(() => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                                <MenuItem onClick={() => navigate("/profile")}>{t("title-profile")}</MenuItem>
+                                <MenuItem onClick={handleLogout}>{t("title-logout")}</MenuItem>
                             </Menu>
                         </>
                     }

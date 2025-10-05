@@ -14,6 +14,10 @@ import React, {type FC, useRef, useState} from "react";
 import addImage from "../../assets/addImage.svg";
 import cancelIcon from "../../assets/CancelButtonIcon.svg";
 import {useTranslation} from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import {createPlaylist} from "../../store/reducers/action-creators/playlist.ts";
+import type {AppDispatch, RootState} from "../../store/store.ts";
+import {useKeycloak} from "@react-keycloak/web";
 
 interface ModalProps {
     open: boolean,
@@ -21,11 +25,18 @@ interface ModalProps {
 }
 
 const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
-
-    const {t} = useTranslation("sidebar");
+    const {t} = useTranslation(["sidebar","errors"]);
     const [isPublic, setIsPublic] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [playlistName, setPlaylistName] = useState("");
+    const [error, setError] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { isLoading, error: createError } = useSelector((state: RootState) => state.playlist);
+    const { keycloak } = useKeycloak();
+    const userId = keycloak.tokenParsed?.sub;
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -34,6 +45,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
             if (file.type === 'image/png' || file.type === 'image/jpeg') {
                 const imageUrl = URL.createObjectURL(file);
                 setSelectedImage(imageUrl);
+                setImageFile(file);
             } else {
                 alert('Пожалуйста, выберите файл в формате PNG или JPEG');
             }
@@ -49,6 +61,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
         if (selectedImage) {
             URL.revokeObjectURL(selectedImage);
             setSelectedImage(null);
+            setImageFile(null);
         }
     };
 
@@ -56,10 +69,59 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
         setIsPublic(event.target.value === "true");
     };
 
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPlaylistName(event.target.value);
+        if (error) {
+            setError("");
+        }
+    };
+
+    const handleSave = async () => {
+        if (!playlistName.trim() || playlistName.trim().toLowerCase() === "liked songs") {
+            setError(`${t("errors:error-wrong-playlist-name")}`);
+            return;
+        }
+
+        if (!userId) {
+            setError("Пользователь не авторизован");
+            return;
+        }
+
+        setError("");
+
+        try {
+            const result = await dispatch(createPlaylist({
+                name: playlistName.trim(),
+                isPublic,
+                userId,
+                imageFile: imageFile || undefined
+            })).unwrap();
+
+            console.log("Плейлист создан:", result);
+
+            setOpen(false);
+            setPlaylistName("");
+            setSelectedImage(null);
+            setImageFile(null);
+            setIsPublic(false);
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            setError("Ошибка при создании плейлиста");
+        }
+    };
+
+    const handleClose = () => {
+        if (!isLoading) {
+            setOpen(false);
+            setError("");
+        }
+    };
+
     return(
         <Modal
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={handleClose}
             sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -79,7 +141,8 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                 }}
             >
                 <IconButton
-                    onClick={() => setOpen(false)}
+                    onClick={handleClose}
+                    disabled={isLoading}
                     sx={{
                         height: "20px",
                         width: "20px",
@@ -103,11 +166,12 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                             ref={fileInputRef}
                             onChange={handleFileUpload}
                             style={{display: 'none'}}
+                            disabled={isLoading}
                         />
 
                         {selectedImage ? (
                             <Box
-                                onClick={handleClick}
+                                onClick={isLoading ? undefined : handleClick}
                                 sx={{
                                     height: "260px",
                                     width: "200px",
@@ -116,13 +180,15 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    cursor: "pointer",
+                                    cursor: isLoading ? 'default' : 'pointer',
                                     overflow: 'hidden',
                                     position: 'relative',
+                                    opacity: isLoading ? 0.6 : 1
                                 }}
                             >
                                 <IconButton
                                     onClick={handleRemoveImage}
+                                    disabled={isLoading}
                                     sx={{
                                         position: 'absolute',
                                         top: '5px',
@@ -151,7 +217,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                             </Box>
                         ) : (
                             <Box
-                                onClick={handleClick}
+                                onClick={isLoading ? undefined : handleClick}
                                 sx={{
                                     height: "260px",
                                     width: "200px",
@@ -161,7 +227,8 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    cursor: "pointer",
+                                    cursor: isLoading ? 'default' : 'pointer',
+                                    opacity: isLoading ? 0.6 : 1
                                 }}
                             >
                                 <Box
@@ -189,14 +256,17 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                         </Typography>
 
                         <Input
+                            value={playlistName}
+                            onChange={handleNameChange}
                             disableUnderline
+                            disabled={isLoading}
                             sx={{
                                 height: "46px",
                                 width: "100%",
                                 border: "1px solid var(--berkeley-blue)",
                                 borderRadius: "10px",
                                 backgroundColor: "white",
-                                marginBottom: "12px"
+                                marginBottom: "4px"
                             }}
                             inputProps={{
                                 style: {
@@ -204,6 +274,18 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                                 }
                             }}
                         />
+
+                        {(error || createError) && (
+                            <Typography
+                                sx={{
+                                    color: "Red",
+                                    fontSize: "12px",
+                                    marginBottom: "12px"
+                                }}
+                            >
+                                {error || createError}
+                            </Typography>
+                        )}
 
                         <Typography
                             sx={{
@@ -232,6 +314,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                                                     color: "var(--dark-purple)",
                                                 },
                                             }}
+                                            disabled={isLoading}
                                         />}
                                         label={t("title-public")}
                                     />
@@ -244,6 +327,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                                                     color: "var(--dark-purple)",
                                                 },
                                             }}
+                                            disabled={isLoading}
                                         />}
                                         label={t("title-private")}
                                     />
@@ -251,26 +335,32 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                             </FormControl>
                         </Box>
                         <Button
+                            onClick={handleSave}
+                            disabled={isLoading}
                             sx={{
                                 marginTop: "30px",
-                                backgroundColor: "var(--orange-peel)",
+                                backgroundColor: isLoading ? "gray" : "var(--orange-peel)",
                                 height: "45px",
                                 width: "150px",
                                 borderRadius: "10px",
                                 marginLeft: "auto",
                                 display: "block",
+                                '&:disabled': {
+                                    backgroundColor: 'gray',
+                                    color: 'white'
+                                }
                             }}
                         >
                             <Typography
                                 sx={{
-                                    color:"var(--dark-purple)",
+                                    color: isLoading ? "white" : "var(--dark-purple)",
                                     fontSize: "20px",
                                     fontWeight: "700",
                                     fontFamily: "Manrope",
                                     textTransform: "none"
                                 }}
                             >
-                                {t("title-save")}
+                                {isLoading ? "Создание..." : t("title-save")}
                             </Typography>
                         </Button>
                     </Box>

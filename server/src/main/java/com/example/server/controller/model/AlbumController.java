@@ -126,8 +126,8 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
-    @DeleteMapping("/remove/{albumId}")
-    public ResponseEntity<?> removeAlbum(@PathVariable Long albumId){
+    @DeleteMapping("/delete/{albumId}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId){
         try{
             albumService.delete(albumId);
             return ResponseEntity.ok().build();

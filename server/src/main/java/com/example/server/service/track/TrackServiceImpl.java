@@ -1,17 +1,14 @@
 package com.example.server.service.track;
 
-import com.example.server.data.repository.AlbumRepository;
-import com.example.server.data.repository.AuthorRepository;
-import com.example.server.data.repository.GenreRepository;
-import com.example.server.data.repository.TrackRepository;
+import com.example.server.data.repository.*;
 import com.example.server.dto.Page.PageDto;
-import com.example.server.dto.Track.TrackCreationDto;
-import com.example.server.dto.Track.TrackDto;
-import com.example.server.dto.Track.TrackSimpleDto;
+import com.example.server.dto.Track.*;
 import com.example.server.model.Album;
 import com.example.server.model.Author;
 import com.example.server.model.Genre;
 import com.example.server.model.Track;
+import com.example.server.model.id.UserFavoriteTrack;
+import com.example.server.model.key.UserFavoriteTrackKey;
 import com.example.server.service.album.AlbumService;
 import com.example.server.service.author.AuthorService;
 import com.example.server.service.author.AuthorServiceImpl;
@@ -41,6 +38,7 @@ public class TrackServiceImpl implements TrackService {
     private final GenreService genreService;
     private final MusicService musicService;
     private final ImageService imageService;
+    private final UserFavoriteTrackRepository userFavoriteTrackRepository;
 
     public Track getTrackById(Long id) {
         return trackRepository.findById(id).orElseThrow();
@@ -50,8 +48,18 @@ public class TrackServiceImpl implements TrackService {
         return TrackDto.fromEntity(trackRepository.findById(id).orElseThrow());
     }
 
+    public TrackDtoWithFavorite getTrackDtoById(Long id, String userId) {
+        return TrackDtoWithFavorite.fromEntity(trackRepository.findById(id).orElseThrow(),
+                userFavoriteTrackRepository.existsById(new UserFavoriteTrackKey(userId, id)));
+    }
+
     public TrackSimpleDto getTrackSimpleDtoById(Long id) {
         return TrackSimpleDto.fromEntity(trackRepository.findById(id).orElseThrow());
+    }
+
+    public TrackSimpleDtoWithFavorite getTrackSimpleDtoById(Long id, String userId) {
+        return TrackSimpleDtoWithFavorite.fromEntity(trackRepository.findById(id).orElseThrow(),
+                userFavoriteTrackRepository.existsById(new UserFavoriteTrackKey(userId, id)));
     }
 
     @CacheEvict(cacheNames = {"track.findMostPlayedTracksThisWeek", "track.getRecommendedTracksToday",
@@ -140,7 +148,7 @@ public class TrackServiceImpl implements TrackService {
     }, allEntries = true)
     public Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album) {
         Track entity = new Track();
-        entity.setImageURl(cover != null ? imageService.uploadImage(cover, creationDto.getTitle()): null);
+        entity.setImageURl(cover != null ? imageService.uploadImage(cover, creationDto.getTitle()) : null);
         entity.setTitle(creationDto.getTitle());
         entity.setGenres(new HashSet<>(genreService.getGenresByIds(creationDto.getGenreIds())));
         entity.setAuthors(new HashSet<>(authorService.getAuthorsByIds(creationDto.getAuthorIds())));
@@ -158,15 +166,28 @@ public class TrackServiceImpl implements TrackService {
         creationDtos.forEach(trackCreationDto -> {
             tracks.add(uploadTrack(trackCreationDto,
                     covers.stream()
-                            .filter(c-> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
+                            .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
                             .findAny()
                             .orElse(null),
                     files.stream()
-                            .filter(c-> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientFileName()))
+                            .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientFileName()))
                             .findAny()
                             .orElseThrow(),
                     album));
         });
         return tracks;
+    }
+
+    @Override
+    public List<Long> getUserFavoriteFromTrackIds(String userId, List<Long> trackIds) {
+        return userFavoriteTrackRepository.findTrackIdsByUserAndTrackIds(userId, trackIds);
+    }
+
+    @Override
+    public void like(Long trackId, String userId) {
+        UserFavoriteTrack entity = new UserFavoriteTrack();
+        entity.setId(new UserFavoriteTrackKey(userId, trackId));
+        entity.setAddedAt(OffsetDateTime.now());
+        userFavoriteTrackRepository.save(entity);
     }
 }

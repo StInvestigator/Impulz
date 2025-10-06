@@ -1,9 +1,7 @@
 package com.example.server.service.track;
 
 import com.example.server.dto.Page.PageDto;
-import com.example.server.dto.Track.TrackCreationDto;
-import com.example.server.dto.Track.TrackDto;
-import com.example.server.dto.Track.TrackSimpleDto;
+import com.example.server.dto.Track.*;
 import com.example.server.model.Album;
 import com.example.server.model.Author;
 import com.example.server.model.Track;
@@ -19,7 +17,9 @@ public interface TrackService
 {
     Track getTrackById(Long id);
     TrackDto getTrackDtoById(Long id);
+    TrackDtoWithFavorite getTrackDtoById(Long id, String userId);
     TrackSimpleDto getTrackSimpleDtoById(Long id);
+    TrackSimpleDtoWithFavorite getTrackSimpleDtoById(Long id, String userId);
     void deleteTrack(Track track);
     PageDto<TrackSimpleDto> findMostPlayedTracksThisWeek(Pageable pageable);
     PageDto<TrackSimpleDto> getRecommendedTracksToday(Pageable pageable);
@@ -30,4 +30,6 @@ public interface TrackService
     PageDto<TrackSimpleDto> findTracksByAlbum(Long albumId, Pageable pageable);
     Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album);
     List<Track> uploadTracks(List<TrackCreationDto> creationDtos, List<MultipartFile> covers, List<MultipartFile> files, Album album);
+    List<Long> getUserFavoriteFromTrackIds(String userId, List<Long> trackIds);
+    void like(Long trackId, String userId);
 }

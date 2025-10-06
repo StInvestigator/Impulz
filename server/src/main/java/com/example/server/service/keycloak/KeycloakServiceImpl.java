@@ -34,9 +34,6 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Value("${keycloak.realm}")
     private String realm;
 
-    @Value("${app.liked-playlist-img-ulr}")
-    private String likedPlaylistImgUrl;
-
     public User updateExistingUser(User user, String username, String email) {
         boolean needsUpdate = false;
 
@@ -99,14 +96,6 @@ public class KeycloakServiceImpl implements KeycloakService {
         newUser.setEmail(email);
 
         log.info("Creating new user: {}", id);
-        userService.save(newUser);
-        Playlist playlist = new Playlist();
-        playlist.setCreatedAt(OffsetDateTime.now());
-        playlist.setOwner(newUser);
-        playlist.setImageUrl(likedPlaylistImgUrl);
-        playlist.setTitle("Liked songs");
-        playlist.setIsPublic(false);
-        playlistService.createPlaylist(playlist);
-        return newUser;
+        return userService.save(newUser);
     }
 }

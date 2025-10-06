@@ -36,9 +36,6 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final UserService userService;
     private final ImageService imageService;
 
-    @Value("${app.default-playlist-img-ulr}")
-    private String defaultPlaylistImgUrl;
-
     public PlaylistDto getPlaylistDtoById(Long id) {
         return PlaylistDto.fromEntity(playlistRepository.findById(id).orElseThrow());
     }
@@ -111,7 +108,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public Playlist create(String title, String uid, Boolean isPublic, MultipartFile img) {
         Playlist entity = new Playlist();
-        entity.setImageUrl(img != null ? imageService.uploadImage(img, title) : defaultPlaylistImgUrl);
+        entity.setImageUrl(img != null ? imageService.uploadImage(img, title) : null);
         entity.setTitle(title);
         entity.setCreatedAt(OffsetDateTime.now());
         entity.setOwner(userService.getUserById(uid));

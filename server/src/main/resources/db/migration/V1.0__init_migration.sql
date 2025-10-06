@@ -8,7 +8,6 @@ CREATE TABLE users (
 
 CREATE TABLE authors (
                          user_id VARCHAR(36) PRIMARY KEY REFERENCES users (keycloak_id) ON DELETE CASCADE,
-                         bio TEXT,
                          created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
                          followers_count BIGINT NOT NULL DEFAULT 0
 );

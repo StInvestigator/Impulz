@@ -16,8 +16,5 @@ public class AuthorDocument {
     private String name;
 
     @Field(type = FieldType.Text, analyzer = "standard")
-    private String bio;
-
-    @Field(type = FieldType.Text, analyzer = "standard")
     private String searchText;
 }

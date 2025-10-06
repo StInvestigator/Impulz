@@ -28,7 +28,6 @@ import java.util.List;
 @Service
 public class KeycloakServiceImpl implements KeycloakService {
     private final UserService userService;
-    private final PlaylistService playlistService;
     private final Keycloak keycloak;
 
     @Value("${keycloak.realm}")

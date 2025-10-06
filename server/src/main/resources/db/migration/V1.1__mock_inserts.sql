@@ -22,21 +22,21 @@ VALUES ('11111111-1111-4111-8111-111111111111', 'Adele', 'adele@example.com', 'h
         now() - interval '22 days');
 
 -- 2) AUTHORS (10)
-INSERT INTO authors (user_id, bio, created_at)
-VALUES ('11111111-1111-4111-8111-111111111111', 'Adele — English singer-songwriter', now() - interval '39 days'),
-       ('22222222-2222-4222-8222-222222222222', 'The Weeknd — Canadian singer-songwriter and producer',
+INSERT INTO authors (user_id, created_at)
+VALUES ('11111111-1111-4111-8111-111111111111', now() - interval '39 days'),
+       ('22222222-2222-4222-8222-222222222222',
         now() - interval '37 days'),
-       ('33333333-3333-4333-8333-333333333333', 'Norah Jones — jazz/pop vocalist and pianist',
+       ('33333333-3333-4333-8333-333333333333',
         now() - interval '35 days'),
-       ('44444444-4444-4444-8444-444444444444', 'Coldplay — British rock band', now() - interval '33 days'),
-       ('55555555-5555-4555-8555-555555555555', 'Ludovico Einaudi — Italian contemporary classical composer',
+       ('44444444-4444-4444-8444-444444444444', now() - interval '33 days'),
+       ('55555555-5555-4555-8555-555555555555',
         now() - interval '31 days'),
-       ('66666666-6666-4666-8666-666666666666', 'Kendrick Lamar — American hip-hop artist', now() - interval '29 days'),
-       ('77777777-7777-4777-8777-777777777777', 'Mumford & Sons — British folk rock band', now() - interval '27 days'),
-       ('88888888-8888-4888-8888-888888888888', 'Metallica — American heavy metal band', now() - interval '25 days'),
-       ('99999999-9999-4999-8999-999999999999', 'Brian Eno — ambient music pioneer and producer',
+       ('66666666-6666-4666-8666-666666666666', now() - interval '29 days'),
+       ('77777777-7777-4777-8777-777777777777', now() - interval '27 days'),
+       ('88888888-8888-4888-8888-888888888888', now() - interval '25 days'),
+       ('99999999-9999-4999-8999-999999999999',
         now() - interval '23 days'),
-       ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Bob Marley — Jamaican reggae legend', now() - interval '21 days');
+       ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', now() - interval '21 days');
 
 -- 3) GENRES (оставляем прежние 10)
 INSERT INTO genres (id, name)

@@ -9,11 +9,7 @@ public interface AuthorSearchRepository extends ElasticsearchRepository<AuthorDo
 {
     List<AuthorDocument> findByNameContaining(String name);
 
-    List<AuthorDocument> findByBioContaining(String bio);
-
     List<AuthorDocument> findBySearchTextContaining(String text);
-
-    List<AuthorDocument> findByNameContainingOrBioContaining(String name, String bio);
 
     List<AuthorDocument> findByName(String name);
 }

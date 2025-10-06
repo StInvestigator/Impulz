@@ -169,4 +169,17 @@ public class AuthorController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping("/becomeAuthor/{userId}")
+    public ResponseEntity<?> findAuthorByFollower(@PathVariable String userId) {
+        try {
+            authorService.becomeAuthor(userId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

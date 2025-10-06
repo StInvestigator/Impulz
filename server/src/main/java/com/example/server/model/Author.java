@@ -25,9 +25,6 @@ public class Author {
     @JoinColumn(name = "user_id", referencedColumnName = "keycloak_id")
     private User user;
 
-    @Column(columnDefinition = "TEXT")
-    private String bio;
-
     @Column(name = "created_at", nullable = false,
             columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP")
     private OffsetDateTime createdAt = OffsetDateTime.now();

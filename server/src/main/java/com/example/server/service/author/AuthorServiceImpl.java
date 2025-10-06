@@ -11,6 +11,7 @@ import com.example.server.model.Author;
 import com.example.server.model.User;
 import com.example.server.model.id.AuthorFollower;
 import com.example.server.model.key.AuthorFollowerKey;
+import com.example.server.service.keycloak.KeycloakService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -30,6 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorFollowersRepository authorFollowersRepository;
     private final UserRepository userRepository;
+    private final KeycloakService keycloakService;
 
     public Author getAuthorById(String id) {
         return authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
@@ -156,5 +159,16 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Page<AuthorSimpleDto> findAuthorsByFollowerId(String followerId, Pageable pageable) {
         return authorRepository.findAllByFollowersFollowerIdOrderByFollowersFollowedAtDesc(followerId, pageable).map(AuthorSimpleDto::fromEntity);
+    }
+
+    @Override
+    @Transactional
+    public void becomeAuthor(String userId) {
+        Author author = new Author();
+        author.setId(userId);
+        author.setCreatedAt(OffsetDateTime.now());
+        author.setFollowersCount(0L);
+        authorRepository.save(author);
+        keycloakService.addRoleToUser(userId,"AUTHOR");
     }
 }

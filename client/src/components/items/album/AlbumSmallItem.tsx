@@ -6,6 +6,7 @@ import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {useAppDispatch} from "../../../hooks/redux.ts";
 import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
+import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -18,6 +19,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
     const { t } = useTranslation('other')
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
+    const route = useAppNavigate();
 
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
@@ -36,6 +38,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
 
     return (
         <Box
+            onClick={() => route(`/album/${album.id}`)}
             sx={{
                 width: itemWidth,
                 color: 'black',

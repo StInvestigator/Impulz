@@ -129,7 +129,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/favoriteByUser/{userId}")
-    public ResponseEntity<Page<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId, Pageable pageable) {
+    public ResponseEntity<Page<PlaylistSimpleDto>> getFavoriteForUser(@PathVariable String userId, Pageable pageable) {
         try {
             return ResponseEntity.ok(playlistService.getPlaylistsFavorite(userId, pageable));
         } catch (EntityNotFoundException e) {

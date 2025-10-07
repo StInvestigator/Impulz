@@ -51,9 +51,14 @@ const Sidebar = memo(() => {
     const location = useLocation();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const handleWheel = (e: React.WheelEvent) => {
+        e.stopPropagation();
+    };
+
     return (
         <Box
             component="aside"
+            onWheel={handleWheel}
             sx={{
                 width: "320px",
                 height: "calc(100vh - 48px)",
@@ -61,6 +66,11 @@ const Sidebar = memo(() => {
                 marginTop: "48px",
                 position: "fixed",
                 backgroundColor: "var(--dark-purple)",
+                '&::-webkit-scrollbar': {
+                    display: 'none',
+                },
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
             }}
         >
             <Box sx={{ paddingLeft: "24px" }}>

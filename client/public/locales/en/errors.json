@@ -1,3 +1,4 @@
 {
-  "error-wrong-playlist-name": "Incorrect playlist name"
+  "error-wrong-playlist-name": "Incorrect playlist name",
+  "error-users-playlists-not-found": "User`s playlists not found"
 }

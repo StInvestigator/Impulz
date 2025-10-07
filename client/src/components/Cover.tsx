@@ -3,6 +3,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../assets/play.svg";
 import pushPinImage from "../assets/pushPin.svg"
 import bgCoverImg from "../assets/bg-cover.svg";
+import { useTranslation } from "react-i18next";
 
 interface CoverProps {
     type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album"; // Добавьте "privatePlaylist"
@@ -23,6 +24,8 @@ const Cover: FC<CoverProps> = ({
                                    duration,
                                    imgUrl
                                }) => {
+    const {t} = useTranslation("other");
+
     return (
         <Box
             width={"100%"}
@@ -65,9 +68,9 @@ const Cover: FC<CoverProps> = ({
                 </Box>
                 <Box flex={1} marginLeft={"100px"} marginTop={"auto"} display={"flex"} flexDirection={"column"} gap={3}>
                     <Typography variant={"mainSbL"} fontSize={"24px"} color="var(--columbia-blue)">
-                        {type === "myPlaylist" && "Мій плейлист"}
-                        {type === "publicPlaylist" && "Публічний плейлист"}
-                        {type === "privatePlaylist" && "Приватний плейлист"} {/* Добавьте эту строку */}
+                        {type === "myPlaylist" && t("title-my-playlist")}
+                        {type === "publicPlaylist" && t("title-public-playlist")}
+                        {type === "privatePlaylist" && t("title-private-playlist")}
                         {type === "album" && "Альбом"}
                     </Typography>
                     <Typography
@@ -98,7 +101,7 @@ const Cover: FC<CoverProps> = ({
                         )}
                         {trackCount && (
                             <Typography variant={"mainRL"} fontSize={"24px"}>
-                                {trackCount} пісень
+                                {trackCount} {t("title-songs")}
                             </Typography>
                         )}
                         {duration && (

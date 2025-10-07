@@ -15,7 +15,7 @@ import addImage from "../../assets/addImage.svg";
 import cancelIcon from "../../assets/CancelButtonIcon.svg";
 import {useTranslation} from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import {createPlaylist} from "../../store/reducers/action-creators/playlist.ts";
+import {createPlaylist, fetchPlaylistsOwnByUserId} from "../../store/reducers/action-creators/playlist.ts";
 import type {AppDispatch, RootState} from "../../store/store.ts";
 import {useKeycloak} from "@react-keycloak/web";
 
@@ -98,6 +98,10 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
             })).unwrap();
 
             console.log("Плейлист создан:", result);
+
+            if (userId) {
+                await dispatch(fetchPlaylistsOwnByUserId({ userId }));
+            }
 
             setOpen(false);
             setPlaylistName("");

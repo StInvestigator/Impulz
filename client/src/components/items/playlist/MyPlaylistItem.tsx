@@ -1,35 +1,38 @@
-import {useState, type FC} from "react";
+import { useState, type FC } from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
+import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
+import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 
 interface PlaylistProps {
-    image: string,
-    name: string,
-    countTracks: number;
+    playlist: PlaylistSimpleDto; // Добавляем плейлист в пропсы
+    defaultImage: string;
 }
 
-const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
+const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
     const [hover, setHover] = useState(false);
     const [active, setActive] = useState(false);
+    const route = useAppNavigate();
+    const { t } = useTranslation('other');
 
-    const { t } = useTranslation('other')
+    const handleClick = () => {
+        setActive(!active);
+        route(`/playlist/${playlist.id}`);
+    };
 
     return (
         <ListItem disablePadding>
             <ListItemButton
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
-                onClick={() => setActive(!active)}
+                onClick={handleClick}
                 sx={{
                     gap: 1,
                     borderRadius: '15px',
                     transition: 'color 0.3s',
                     padding: "22px 12px",
-                    color: active ? 'var(--berkeley-blue)' : (hover ? 'var(--deep-sky-blue)' : 'var(--columbia-blue)'),
+                    color: active ? '#DAE4FB' : (hover ? 'var(--deep-sky-blue)' : '#DAE4FB'),
                     '&:hover': {
-                        backgroundColor: 'white',
-                        opacity: '0.7',
-                        transition: 'background-color 0.3s ease',
                         color: 'var(--deep-sky-blue)',
                         '& .MuiTypography-root': {
                             color: 'var(--deep-sky-blue)',
@@ -38,29 +41,30 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                             color: 'var(--deep-sky-blue)',
                         },
                     },
-                    '&:active': {
-                        color: 'var(--berkeley-blue)',
-                        '& .MuiTypography-root': {
-                            color: 'var(--berkeley-blue)',
-                        },
-                        '& .MuiListItemText-root': {
-                            color: 'var(--berkeley-blue)',
-                        },
-                    }
                 }}
                 disableRipple
             >
                 <ListItemIcon>
-                    <Box component="img" src={image} />
+                    <Box
+                        component="img"
+                        src={playlist.imgUrl || defaultImage} // Используем imgUrl из плейлиста
+                        alt={playlist.title}
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '8px',
+                            objectFit: 'cover'
+                        }}
+                    />
                 </ListItemIcon>
                 <ListItemText
                     disableTypography
                     sx={{
-                        fontWeight:400,
+                        fontWeight: 400,
                         fontSize: "16px",
                         color: 'inherit',
                     }}
-                    primary={name}
+                    primary={playlist.title}
                     secondary={
                         <Box
                             component="span"
@@ -78,7 +82,7 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ image, name, countTracks }) => {
                                     color: 'inherit',
                                 }}
                             >
-                                {t("title-playlist")} &middot; {countTracks} {t("title-song")}
+                                {t("title-playlist")} &middot; {playlist.tracksCount || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }

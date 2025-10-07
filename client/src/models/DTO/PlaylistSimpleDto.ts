@@ -6,4 +6,5 @@ export interface PlaylistSimpleDto {
     imgUrl: string;
     createdAt: Date;
     owner: UserSimpleDto;
+    tracksCount: number;
 }

@@ -74,3 +74,20 @@ export const createPlaylist = createAsyncThunk<
         }
     }
 );
+
+export const fetchPlaylistsOwnByUserId = createAsyncThunk<
+    PlaylistSimpleDto[],
+    { userId: string;},
+    { rejectValue: string }
+>(
+    'playlists/fetchPlaylistsOwnByUserId',
+    async ({ userId }, { rejectWithValue }) => {
+        try {
+            const response = await $authApi.get(`/playlists/ownForUser/${userId}`);
+            return response.data;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue('Не удалось найти плейлисты принадлежащие пользователю');
+        }
+    }
+)

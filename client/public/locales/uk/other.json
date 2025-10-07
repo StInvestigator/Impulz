@@ -7,5 +7,12 @@
   "pagination-next": "Наступна",
   "pagination-previous": "Попередня",
   "pagination-end": "В кінець",
-  "pagination-start": "На початок"
+  "pagination-start": "На початок",
+  "title-minutes": "хвилин",
+  "title-hours": "годин",
+  "title-seconds": "секунд",
+  "title-songs": "пісень",
+  "title-my-playlist": "Мій плейлист",
+  "title-public-playlist": "Публічний плейлист",
+  "title-private-playlist": "Приватний плейлист"
 }

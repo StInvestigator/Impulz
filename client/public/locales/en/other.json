@@ -7,5 +7,12 @@
   "pagination-next": "Next",
   "pagination-previous": "Previous",
   "pagination-end": "Last",
-  "pagination-start": "First"
+  "pagination-start": "First",
+  "title-minutes": "minutes",
+  "title-hours": "hours",
+  "title-seconds": "seconds",
+  "title-songs": "songs",
+  "title-my-playlist": "My Playlist",
+  "title-public-playlist": "Public playlist",
+  "title-private-playlist": "Private playlist"
 }

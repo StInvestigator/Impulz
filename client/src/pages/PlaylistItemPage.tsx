@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {fetchPlaylistDetails} from "../store/reducers/action-creators/playlist.ts";
 import {useParams} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
+import {useTranslation} from "react-i18next";
 
 const PlaylistItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
@@ -14,6 +15,7 @@ const PlaylistItemPage = () => {
     const dispatch = useAppDispatch();
     const { currentPlaylist, isLoading, error } = useAppSelector(state => state.playlist);
     const { keycloak } = useKeycloak();
+    const {t} = useTranslation("other");
 
     useEffect(() => {
         if (playlistId) {
@@ -54,9 +56,9 @@ const PlaylistItemPage = () => {
         const seconds = totalSeconds % 60;
 
         if (hours > 0) {
-            return `${hours} год ${minutes} хв`;
+            return `${hours + " " + t("title-hours") + " " + minutes + " " + t("title-minutes")}`;
         }
-        return `${minutes} хв ${seconds} с`;
+        return `${minutes + " " + t("title-minutes") + " " + seconds + " " + t("title-seconds")}`;
     };
 
     const totalDuration = currentPlaylist.tracks.reduce((acc, track) => acc + track.durationSec, 0);

@@ -15,6 +15,7 @@ public class PlaylistSimpleDto
     private String imgUrl;
     private OffsetDateTime createdAt;
     private UserSimpleDto owner;
+    private Integer tracksCount;
 
     public static PlaylistSimpleDto fromEntity(Playlist playlist){
         PlaylistSimpleDto dto = new PlaylistSimpleDto();
@@ -23,6 +24,7 @@ public class PlaylistSimpleDto
         dto.setImgUrl(playlist.getImageUrl());
         dto.setCreatedAt(playlist.getCreatedAt());
         dto.setOwner(UserSimpleDto.fromEntity(playlist.getOwner()));
+        dto.setTracksCount(playlist.getTracks().size());
         return dto;
     }
 }

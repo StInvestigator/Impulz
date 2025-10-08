@@ -74,9 +74,6 @@ const Sidebar = memo(() => {
             }}
         >
             <Box sx={{ paddingLeft: "24px" }}>
-
-
-
                 <List disablePadding sx={{marginTop:"50px"}}>
                     {buttons.map(({ name, icon, path }) => (
                         <ListItem key={name} disablePadding>

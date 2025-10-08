@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import type {AlbumSimpleDto} from "../../../models/DTO/AlbumSimpleDto.ts";
+import type {AlbumSimpleDto} from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import {$api, $authApi} from "../../../http";
 import type {AlbumDto} from "../../../models/AlbumDto.ts";
 // import { useAppDispatch } from "../../../hooks/redux.ts";

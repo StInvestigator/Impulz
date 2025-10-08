@@ -1,4 +1,4 @@
 export interface GenreSimpleDto {
-    id: number;
+    id: string;
     name: string;
 }

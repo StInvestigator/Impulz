@@ -1,7 +1,7 @@
 import {Box, IconButton, Link, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
-import type { AlbumSimpleDto } from "../../../models/DTO/AlbumSimpleDto";
+import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto";
 // import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 interface AlbumItemProps {
     album: AlbumSimpleDto;

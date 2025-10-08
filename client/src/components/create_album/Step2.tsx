@@ -1,7 +1,12 @@
 import { Box, OutlinedInput, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 
-const Step2 = () => {
+interface Step2Props {
+  nameAlbum: string;
+  setNameAlbum: (name: string) => void;
+}
+
+const Step2 = ({ nameAlbum, setNameAlbum }: Step2Props) => {
   return (
     <Box>
       <Typography
@@ -71,6 +76,8 @@ const Step2 = () => {
       <Box mt={3} display={"flex"} justifyContent={"center"}>
         <OutlinedInput
             placeholder={"Введіть назву альбому"}
+            value={nameAlbum}
+            onChange={(e) => setNameAlbum(e.target.value)}
             sx={{
                 width: "564px",
                 height: "44px",

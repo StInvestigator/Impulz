@@ -5,7 +5,7 @@ import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
 import type {AuthorSimpleDto} from "../models/DTO/AuthorSimpleDto.ts";
-import type {TrackSimpleDto} from "../models/DTO/TrackSimpleDto.ts";
+import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
 
 const authors: AuthorSimpleDto[] = [
     {

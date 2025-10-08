@@ -8,7 +8,7 @@ export const fetchTopAuthorsByMonth = createAsyncThunk<AuthorSimpleDto[],
     { page?: number; size?: number }
 >(
     "authors/BestAuthorsOfMonth",
-    async ({ page = 0, size = 20 }, { dispatch }) => {
+    async ({ page = 0, size }, { dispatch }) => {
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());

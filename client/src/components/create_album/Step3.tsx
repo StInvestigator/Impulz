@@ -1,7 +1,12 @@
 import { Box, OutlinedInput, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 
-const Step3 = () => {
+interface Step3Props {
+  dateRelease: string;
+  setDateRelease: (date: string) => void;
+}
+
+const Step3 = ({ dateRelease, setDateRelease }: Step3Props) => {
   return (
     <Box>
       <Typography
@@ -56,6 +61,8 @@ const Step3 = () => {
         <OutlinedInput
             placeholder={"Введіть дату публікації"}
             type="date"
+            value={dateRelease}
+            onChange={(e) => setDateRelease(e.target.value)}
             sx={{
                 width: "231px",
                 height: "44px",

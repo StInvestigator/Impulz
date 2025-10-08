@@ -7,10 +7,16 @@ import Step1 from "../components/create_album/Step1";
 import Step2 from "../components/create_album/Step2";
 import Step3 from "../components/create_album/Step3";
 import Step4 from "../components/create_album/Step4";
+import type { TrackCreationDto } from "../models/DTO/track/TrackCreationDto";
 
 function MyProfilePage() {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
+
+  const [image, setImage] = useState<string | null>(null);
+  const [nameAlbum, setNameAlbum] = useState<string>("");
+  const [dateRelease, setDateRelease] = useState<string>("");
+  const [tracks, setTracks] = useState<TrackCreationDto[]>([]);
 
   useEffect(() => {
     if (activeStep > 4 || activeStep < 1) {
@@ -20,16 +26,18 @@ function MyProfilePage() {
   }, [activeStep]);
 
   return (
+
+
     <>
       <MyProfile />
       <Button onClick={() => setOpen(true)}>Создать альбом</Button>
 
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />
-        {activeStep === 1 && <Step1 />}
-        {activeStep === 2 && <Step2 />}
-        {activeStep === 3 && <Step3 />}
-        {activeStep === 4 && <Step4 />}
+        {activeStep === 1 && <Step1 image={image} setImage={setImage} />}
+        {activeStep === 2 && <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />}
+        {activeStep === 3 && <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />}
+        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} />}
         <Box
           display={"grid"}
           sx={{

@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import TrackList from "../../components/lists/TrackList";
 import MyPagination from "../../components/MyPagination";
-import type {TrackSimpleDto} from "../../models/DTO/TrackSimpleDto.ts";
+import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
 import {useAppSelector} from "../../hooks/redux.ts";
 

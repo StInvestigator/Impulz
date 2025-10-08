@@ -1,5 +1,5 @@
-import type { TrackSimpleDto } from "./DTO/TrackSimpleDto.ts";
-import type { AlbumSimpleDto } from "./DTO/AlbumSimpleDto.ts";
+import type { TrackSimpleDto } from "./DTO/track/TrackSimpleDto.ts";
+import type { AlbumSimpleDto } from "./DTO/album/AlbumSimpleDto.ts";
 
 export interface AuthorDto {
   id: string;

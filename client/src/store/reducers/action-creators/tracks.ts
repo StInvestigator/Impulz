@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { TrackSimpleDto } from "../../../models/DTO/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { $api, $authApi } from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 

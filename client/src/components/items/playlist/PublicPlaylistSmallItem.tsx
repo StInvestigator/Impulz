@@ -7,6 +7,7 @@ import React, {type FC} from "react";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {useAppDispatch} from "../../../hooks/redux.ts";
 import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
+import playlistImage from "../../../assets/sidebar/playlistImage.svg"
 
 interface PlaylistItemProps {
     playlist: PlaylistSimpleDto;
@@ -20,7 +21,6 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
     const route = useAppNavigate()
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
-
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -46,21 +46,31 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                 flexShrink: 0,
                 cursor: "pointer",
                 transition: 'background-color 0.3s ease',
-
             }}
         >
+            {/* Контейнер для изображения и кнопки */}
             <Box
                 position="relative"
                 width={itemWidth}
                 height={itemWidth}
-                bgcolor={"white"}
                 borderRadius={"10px"}
                 sx={{
-                    backgroundImage: `url(${playlist.imgUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
+                    overflow: 'hidden',
                 }}
             >
+                {/* Изображение плейлиста */}
+                <Box
+                    component="img"
+                    width="100%"
+                    height="100%"
+                    src={playlist.imgUrl || playlistImage}
+                    sx={{
+                        objectFit: "cover",
+                        display: "block",
+                    }}
+                />
+
+                {/* Кнопка play поверх изображения */}
                 <IconButton
                     onClick={(e) => {
                         handlePlayPlaylist(e)

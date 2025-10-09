@@ -3,6 +3,7 @@ import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
 import { useTranslation } from 'react-i18next';
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto";
+import playlistImage from "../../../assets/sidebar/playlistImage.svg"
 
 interface PlaylistItemProps {
     playlist: PlaylistSimpleDto;
@@ -19,12 +20,25 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}
                 width: "100%",
             }}
         >
-            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative" } sx={{
-                backgroundImage: `url(${playlist.imgUrl || ""})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-            }}>
-
+            <Box
+                width="100%"
+                height={`${itemHeight - 88}px`}
+                borderRadius={"10px 10px 0 0"}
+                position={"relative"}
+                sx={{
+                    overflow: 'hidden',
+                }}
+            >
+                <Box
+                    component="img"
+                    src={playlist.imgUrl || playlistImage}
+                    width="100%"
+                    height="100%"
+                    sx={{
+                        objectFit: 'cover',
+                        display: 'block',
+                    }}
+                />
             </Box>
             <Box display={"flex"} padding={"24px"} height={"88px"} boxSizing={"border-box"} borderRadius={"0 0 10px 10px"} sx={{
                 background: "var(--gradient-plashka-purple)",

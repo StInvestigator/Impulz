@@ -9,12 +9,12 @@ import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
 
 const authors: AuthorSimpleDto[] = [
     {
-        id: 1,
+        id: "1",
         name: "Автор 1",
         imgUrl: ""
     },
     {
-        id: 2,
+        id: "1",
         name: "Автор 2",
         imgUrl: ""
     },

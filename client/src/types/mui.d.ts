@@ -34,3 +34,8 @@ declare module '@mui/material/Typography' {
         mainRXS: true;
     }
 }
+
+declare module '*.svg' {
+    const content: string;
+    export default content;
+}

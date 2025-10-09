@@ -25,9 +25,9 @@ import TrackProgress from './TrackProgress';
 import { $authApi } from '../http';
 import keycloak from '../keycloak.ts';
 import { fetchPopularTracksByAuthor, fetchTracksByAlbum } from '../store/reducers/action-creators/tracks.ts';
-import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
 import { usePlayTrack } from '../hooks/usePlayTrack';
 import { useNavigate } from "react-router-dom";
+import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
 
 interface PlaybackStats {
     trackId: number;
@@ -284,7 +284,6 @@ const MusicPlayer: React.FC = () => {
                                     return;
                             }
 
-                            // Типизируем результат
                             const payload = (fetchResult as { payload?: TrackSimpleDto[] })?.payload;
                             const newTracks: TrackSimpleDto[] = payload ?? [];
 

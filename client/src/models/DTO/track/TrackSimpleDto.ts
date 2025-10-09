@@ -1,4 +1,4 @@
-import type {AuthorSimpleDto} from "./AuthorSimpleDto.ts";
+import type {AuthorSimpleDto} from "../AuthorSimpleDto.ts";
 
 export interface TrackSimpleDto {
     id: number;

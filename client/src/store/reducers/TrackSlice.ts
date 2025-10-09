@@ -5,7 +5,7 @@ import {
     fetchAuthorTrackCollaborations,
     fetchTracksByAlbum
 } from "./action-creators/tracks.ts";
-import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
+import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
 interface TrackState {
     topTracks: TrackSimpleDto[];

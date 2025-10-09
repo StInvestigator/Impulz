@@ -3,10 +3,8 @@ import playImage from "../../../assets/play.svg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
-import { useAppSelector } from "../../../hooks/redux.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
-import type {FC} from "react";
-import {fetchAuthorTracksPaged} from "../../../store/reducers/action-creators/player.ts";
+import React, {type FC} from "react";
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -18,51 +16,30 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
     const navigate = useNavigate();
     const { t } = useTranslation('other');
     const { playAuthorPopularTracks } = usePlayTrack();
-    const popularTracks = useAppSelector(state => state.track.popularTracks);
 
-    const handlePlayClick = async (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handlePlayClick = async (event: React.MouseEvent) => {
+        event.stopPropagation();
+        console.log('🎵 Клик по play для автора:', author.id);
 
-        const pageSize = 3;
-
-        const fetchTracksPage = async (page: number, size: number) => {
-            console.log(`Загрузка страницы ${page}, размер: ${size}`);
-
-            if (page === 0) {
-                const cachedTracks = popularTracks
-                    .filter(t => t.authors.some(a => a.id === author.id))
-                    .slice(0, size);
-
-                if (cachedTracks.length > 0) {
-                    console.log('Используем кэшированные треки:', cachedTracks.length);
-                    return { tracks: cachedTracks, totalPages: 1 };
-                }
-            }
-
-            const result = await fetchAuthorTracksPaged(author.id, page, size);
-            return result;
-        };
-
-        const initialTracks = popularTracks
-            .filter(t => t.authors.some(a => a.id === author.id))
-            .slice(0, pageSize);
-
-        console.log('Начальные треки:', initialTracks.length);
-
-        await playAuthorPopularTracks(
-            author.id,
-            author.name,
-            fetchTracksPage,
-            initialTracks,
-            pageSize
-        );
+        try {
+            await playAuthorPopularTracks(
+                author.id,
+                author.name,
+                3
+            );
+        } catch (error) {
+            console.error('🎵 Ошибка при воспроизведении:', error);
+        }
     };
 
+    const handleCardClick = () => {
+        navigate(`/author/${author.id}`);
+    };
 
 
     return (
         <Box
-            onClick={() => navigate(`/author/${author.id}`)}
+            onClick={handleCardClick}
             sx={{
                 width: itemWidth,
                 boxShadow: "none",
@@ -93,7 +70,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
                 }}
             >
                 <IconButton
-                    onClick={handlePlayClick}
+                    onClick={(e) => handlePlayClick(e)}
                     sx={{
                         padding: 0,
                         position: "absolute",

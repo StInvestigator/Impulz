@@ -1,13 +1,35 @@
 import {$authApi} from "../../../http";
 
-export const fetchAuthorTracksPaged = async (authorId: number, page: number, size: number) => {
-    const params = new URLSearchParams();
-    params.append("page", page.toString());
-    params.append("size", size.toString());
+export const fetchAuthorTracksPaged = async (authorId: string, page: number, size: number) => {
+    try {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        params.append("size", size.toString());
 
-    const response = await $authApi.get(`/tracks/ByAuthor/Popular/${authorId}?${params}`);
-    return {
-        tracks: response.data.content,
-        totalPages: response.data.totalPages
-    };
+        console.log(`🎵 API запрос: /tracks/ByAuthor/Popular/${authorId}?${params}`);
+
+        const response = await $authApi.get(`/tracks/ByAuthor/Popular/${authorId}?${params}`);
+
+        console.log('🎵 Полный ответ от API:', response.data);
+
+        // Правильная структура согласно контроллеру
+        const tracks = response.data.page?.content || [];
+        const totalPages = response.data.page?.totalPages || 1;
+
+        console.log('🎵 Извлеченные треки:', tracks.length);
+        console.log('🎵 Извлеченные totalPages:', totalPages);
+
+        return {
+            tracks: tracks,
+            totalPages: totalPages
+        };
+    } catch (error: any) {
+        console.error('🎵 Ошибка API запроса:', {
+            url: `/tracks/ByAuthor/Popular/${authorId}`,
+            error: error.message,
+            status: error.response?.status,
+            data: error.response?.data
+        });
+        throw error;
+    }
 };

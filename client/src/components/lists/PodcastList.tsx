@@ -1,17 +1,16 @@
 import {Box} from "@mui/material";
-// import AlbumAverageItem from "../items/album/AlbumAverageItem.tsx";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
-import type {TrackSimpleDto} from "../../models/DTO/TrackSimpleDto.ts";
 import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
+import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
 const authors: AuthorSimpleDto[] = [
     {
-        id: 1,
+        id: "1",
         name: "Автор 1",
         imgUrl: ""
     },
     {
-        id: 2,
+        id: "2",
         name: "Автор 2",
         imgUrl: ""
     },

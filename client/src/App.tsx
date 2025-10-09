@@ -40,24 +40,25 @@ const SecuredContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  
+
   useEffect(() => {
-      if (keycloak.subject) {
-          dispatch(fetchUserDetails(keycloak.subject))
-              .unwrap()
-              .then((user) => {
-                  dispatch(setProfile(user));
-              })
-              .catch((error) => {
-                  console.error('Failed to fetch user details:', error);
-              });
-      }
+    if (keycloak.subject) {
+      dispatch(fetchUserDetails(keycloak.subject))
+          .unwrap()
+          .then((user) => {
+            dispatch(setProfile(user));
+          })
+          .catch((error) => {
+            console.error('Failed to fetch user details:', error);
+          });
+    }
   }, [keycloak.subject, dispatch]);
 
   useEffect(() => {
-    if (initialized && location.hash.includes('state=')) {
-      navigate('/', { replace: true });
-    }
+    // УБИРАЕМ этот редирект - он сбрасывает на главную после логина
+    // if (initialized && location.hash.includes('state=')) {
+    //   navigate('/', { replace: true });
+    // }
 
     if (initialized && keycloak.authenticated && keycloak.token) {
       sendTokenToBackend();
@@ -75,11 +76,6 @@ const SecuredContent = () => {
   };
 
   if (!initialized) return <div>Loading...</div>;
-
-  if (!keycloak.authenticated && location.pathname !== "/") {
-    keycloak.login();
-    return <div>Redirecting to login...</div>;
-  }
 
   return (
       <>

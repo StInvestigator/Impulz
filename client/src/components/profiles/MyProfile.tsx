@@ -1,6 +1,5 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../assets/play.svg";
-// import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import bgCoverImg from "../../assets/bg-cover.svg";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useEffect, useState } from "react";

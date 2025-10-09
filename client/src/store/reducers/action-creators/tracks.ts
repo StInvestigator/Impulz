@@ -24,16 +24,16 @@ export const fetchPopularTracksByAuthor = createAsyncThunk<
 >(
     "tracks/ByAuthor/Popular",
     async ({ authorId, page = 0, size = 20 }, { dispatch }) => {
-        // const dispatch = useAppDispatch();
-        const params = new URLSearchParams();
-        if (page !== undefined) params.append('page', page.toString());
-        if (size !== undefined) params.append('size', size.toString());
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
 
-        const response = await $authApi.get(
-            `/tracks/ByAuthor/Popular/${authorId}?${params}`
-        );
-        dispatch(setTotalPages(response.data.page.totalPages))
-        return response.data.page.content;
+            const response = await $authApi.get(
+                `/tracks/ByAuthor/Popular/${authorId}?${params}`
+            );
+
+            dispatch(setTotalPages(response.data.page.totalPages))
+            return response.data.page.content;
     }
 );
 
@@ -57,7 +57,7 @@ export const fetchAuthorTrackCollaborations = createAsyncThunk<
 
 export const fetchTracksByAlbum = createAsyncThunk<
     TrackSimpleDto[],
-    { albumId: number, page?: number, size?: number }
+    { albumId: number | string, page?: number, size?: number }
 >(
     "tracks/fetchTracksByAlbum",
     async ({ albumId, page = 0, size = 20 }) => {

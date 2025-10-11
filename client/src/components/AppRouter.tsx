@@ -42,7 +42,9 @@ const AppRouter = () => {
             <Route
                 path="/profile"
                 element={
+                    <ProtectedRoute>
                         <MyProfilePage/>
+                    </ProtectedRoute>
                 }/>
 
             <Route

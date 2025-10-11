@@ -4,7 +4,6 @@ import ListCarousel from "../ListCarousel.tsx";
 import { Skeleton, type TypographyProps } from "@mui/material";
 import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
-
 interface TrackListProps {
   tracks: TrackSimpleDto[];
   isLoading: boolean;

@@ -62,6 +62,8 @@ export const createPlaylist = createAsyncThunk<
                 formData.append('img', imageFile);
             }
 
+            console.log("FormData entries: ", Array.from(formData.entries()));
+
             const response = await $authApi.post('/playlists/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',

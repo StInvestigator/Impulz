@@ -7,7 +7,7 @@ import playTrack from "../../assets/playOrangeColor.svg";
 import pauseTrack from "../../assets/pauseOrangeColor.svg";
 import editTrack from "../../assets/edit-icon.svg";
 import deleteTrack from "../../assets/delete-icon.svg";
-import type { TrackCreationDto } from "../../models/DTO/track/TrackCreationDto";
+import type { TrackCreationFullDto } from "../../models/DTO/track/TrackCreationFullDto.ts";
 import {useEffect, useMemo, useRef, useState} from "react";
 import type { GenreSimpleDto } from "../../models/DTO/GenreSimpleDto";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
@@ -17,182 +17,215 @@ import {fetchTopAuthorsByMonth} from "../../store/reducers/action-creators/autho
 import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
 
 interface TrackItemProps {
-  track: TrackCreationDto;
+  track: TrackCreationFullDto;
   index: number;
   deleteClick: (index: number) => void;
 }
 
 const TrackItem = ({ track, index, deleteClick }: TrackItemProps) => {
-    const [play, setPlay] = useState(false)
+  const [play, setPlay] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [coverUrl, setCoverUrl] = useState<string | null>(null);
 
-    const playClick = () => {
-        if (audioRef.current) {
-            if(play){
-                audioRef.current.pause()
-                setPlay(false)
-            }
-            else{
-                audioRef.current.play();
-                setPlay(true)
-            }
-        }
-    };
+  useEffect(() => {
+    if (track.clientCoverName) {
+      const objectUrl = URL.createObjectURL(track.clientCoverName);
+      setCoverUrl(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setCoverUrl(null);
+    }
+  }, [track.clientCoverName]);
 
-    return (
-        <Box
-            position="relative"
-            height="80px"
-            margin="0 auto"
-            display="flex"
-            flexDirection="row"
-            gap={2}
-            px="12px"
-            borderRadius="10px"
-            border="1px solid #FF990066"
-            boxSizing={"border-box"}
-            alignItems="center"
-            sx={{
-                background: "var(--gradient-purple-rose)",
-            }}
+  useEffect(() => {
+    if (track.clientFileName) {
+      const objectUrl = URL.createObjectURL(track.clientFileName);
+      setAudioUrl(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setAudioUrl(null);
+    }
+  }, [track.clientFileName]);
+
+  // Сбрасываем состояние play, когда трек закончился
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleEnded = () => setPlay(false);
+
+    audio.addEventListener("ended", handleEnded);
+    return () => audio.removeEventListener("ended", handleEnded);
+  }, []);
+
+  const playClick = () => {
+    if (!audioRef.current) return;
+
+    if (play) {
+      audioRef.current.pause();
+      setPlay(false);
+    } else {
+      audioRef.current.play();
+      setPlay(true);
+    }
+  };
+
+  return (
+    <Box
+      position="relative"
+      height="80px"
+      margin="0 auto"
+      display="flex"
+      flexDirection="row"
+      gap={2}
+      px="12px"
+      borderRadius="10px"
+      border="1px solid #FF990066"
+      boxSizing={"border-box"}
+      alignItems="center"
+      sx={{
+        background: "var(--gradient-purple-rose)",
+      }}
+    >
+      {/* Заголовок */}
+      <Box
+        position="absolute"
+        top={-12}
+        left="50%"
+        sx={{
+          transform: "translateX(-50%)",
+          background: "var(--columbia-blue)",
+          borderRadius: "50px",
+          px: "12px",
+          py: "6px",
+        }}
+      >
+        <Typography fontSize="14px" fontWeight={700}>
+          Трек {index + 1}
+        </Typography>
+      </Box>
+
+      {/* Обложка */}
+      <Box
+        width="60px"
+        height="60px"
+        borderRadius="8px"
+        flexShrink={0}
+        sx={{
+          backgroundImage: `url(${coverUrl || ""})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "#6B7280",
+        }}
+      />
+
+      {/* Инфо */}
+      <Box flex={1} minWidth={0}>
+        <Typography
+          variant="h4"
+          color="var(--columbia-blue)"
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
         >
-            {/* Заголовок */}
-            <Box
-                position="absolute"
-                top={-12}
-                left="50%"
-                sx={{
-                    transform: "translateX(-50%)",
-                    background: "var(--columbia-blue)",
-                    borderRadius: "50px",
-                    px: "12px",
-                    py: "6px",
-                }}
-            >
-                <Typography fontSize="14px" fontWeight={700}>
-                    Трек {index + 1}
-                </Typography>
-            </Box>
+          {track.title}
+        </Typography>
 
-            {/* Обложка */}
-            <Box
-                width="60px"
-                height="60px"
-                borderRadius="8px"
-                flexShrink={0}
-                sx={{
-                    backgroundImage: `url(${track.clientCoverName})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundColor: "#6B7280",
-                }}
-            />
+        <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Typography
+            variant="mainRL"
+            color="white"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            {track.authors.map((artist) => artist.name).join(", ")}
+          </Typography>
 
-            {/* Инфо */}
-            <Box flex={1} minWidth={0}>
-                <Typography
-                    variant="h4"
-                    color="var(--columbia-blue)"
-                    sx={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                    }}
-                >
-                    {track.title}
-                </Typography>
-
-                <Box display="flex" flexDirection="row" gap={1} alignItems="center">
-                    <Typography
-                        variant="mainRL"
-                        color="white"
-                        sx={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            flex: 1,
-                            minWidth: 0,
-                        }}
-                    >
-                        {track.authors.map((artist) => artist.name).join(", ")}
-                    </Typography>
-
-                    <Typography
-                        variant="mainRL"
-                        color="white"
-                        sx={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            flex: 1,
-                            minWidth: 0,
-                        }}
-                    >
-                        {track.genres.map((genre) => genre.name).join(", ")}
-                    </Typography>
-                </Box>
-            </Box>
-
-            {/* Кнопки */}
-            <IconButton onClick={playClick} sx={{ padding: 0, flexShrink: 0 }}>
-                {!play
-                    ?
-                <Box
-                    component="img"
-                    src={playTrack}
-                    alt="playTrack"
-                    height="28px"
-                    width="28px"
-                />
-                    :
-                    <Box
-                        component="img"
-                        src={pauseTrack}
-                        alt="pauseTrack"
-                        height="28px"
-                        width="28px"
-                    />
-                }
-            </IconButton>
-            <IconButton sx={{ padding: 0, flexShrink: 0 }}>
-                <Box
-                    component="img"
-                    src={editTrack}
-                    alt="editTrack"
-                    height="28px"
-                    width="28px"
-                />
-            </IconButton>
-            <IconButton sx={{ padding: 0, flexShrink: 0 }} onClick={() => deleteClick(index)}>
-                <Box
-                    component="img"
-                    src={deleteTrack}
-                    alt="deleteTrack"
-                    height="28px"
-                    width="28px"
-                />
-            </IconButton>
-
-            {/* Аудио */}
-            <audio ref={audioRef} src={track.clientFileName} preload="auto" />
+          <Typography
+            variant="mainRL"
+            color="white"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            {track.genres.map((genre) => genre.name).join(", ")}
+          </Typography>
         </Box>
-    );
+      </Box>
+
+      {/* Кнопки */}
+      <IconButton onClick={playClick} sx={{ padding: 0, flexShrink: 0 }}>
+        {!play ? (
+          <Box
+            component="img"
+            src={playTrack}
+            alt="playTrack"
+            height="28px"
+            width="28px"
+          />
+        ) : (
+          <Box
+            component="img"
+            src={pauseTrack}
+            alt="pauseTrack"
+            height="28px"
+            width="28px"
+          />
+        )}
+      </IconButton>
+      <IconButton sx={{ padding: 0, flexShrink: 0 }}>
+        <Box
+          component="img"
+          src={editTrack}
+          alt="editTrack"
+          height="28px"
+          width="28px"
+        />
+      </IconButton>
+      <IconButton sx={{ padding: 0, flexShrink: 0 }} onClick={() => deleteClick(index)}>
+        <Box
+          component="img"
+          src={deleteTrack}
+          alt="deleteTrack"
+          height="28px"
+          width="28px"
+        />
+      </IconButton>
+
+      {/* Аудио (невидимый плеер) */}
+      {audioUrl && (
+        <audio ref={audioRef} src={audioUrl} preload="auto" style={{ display: "none" }} />
+      )}
+    </Box>
+  );
 };
 
 
 interface Step4Props {
-  tracks: TrackCreationDto[];
-  setTracks: (tracks: TrackCreationDto[]) => void;
+  tracks: TrackCreationFullDto[];
+  setTracks: (tracks: TrackCreationFullDto[]) => void;
 }
 
 const Step4 = ({ tracks, setTracks }: Step4Props) => {
   const [titleTrack, setTitleTrack] = useState<string>("");
   const [authorsTrack, setAuthorsTrack] = useState<AuthorSimpleDto[]>([]);
   const [genresTrack, setGenresTrack] = useState<GenreSimpleDto[]>([]);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [audioName, setAudioName] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
 
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement | null>(null);
@@ -213,18 +246,18 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
   const authorOptions = useMemo(() => {
       return authors.map((author) => ({
           label: author.name,
-          value: author.id,
+          value: author.id.toString(),
       }));
   }, [authors]);
 
   const handleImageClick = () => {
-    if (!imagePreview) {
+    if (!imageFile) {
       imageInputRef.current?.click();
     }
   };
 
   const handleAudioClick = () => {
-    if (!audioName) {
+    if (!audioFile) {
       audioInputRef.current?.click();
     }
   };
@@ -232,34 +265,34 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImagePreview(URL.createObjectURL(file));
+      setImageFile(file);
     }
   };
 
   const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setAudioName(URL.createObjectURL(file));
+      setAudioFile(file);
     }
   };
 
   const removeImage = () => {
-    setImagePreview(null);
+    setImageFile(null);
     if (imageInputRef.current) imageInputRef.current.value = "";
   };
 
   const removeAudio = () => {
-    setAudioName(null);
+    setAudioFile(null);
     if (audioInputRef.current) audioInputRef.current.value = "";
   };
 
   const createTrack = () => {
-    const newTrack: TrackCreationDto = {
+    const newTrack: TrackCreationFullDto = {
       title: titleTrack,
       authors: authorsTrack,
       genres: genresTrack,
-      clientFileName: audioName || "",
-      clientCoverName: imagePreview || "",
+      clientFileName: audioFile,
+      clientCoverName: imageFile,
     };
     console.log(newTrack)
     setTracks([...tracks, newTrack]);
@@ -343,9 +376,9 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
           </Typography>
             <MySelect
                 options={authorOptions}
-                value={authorsTrack.map(author => author.id)}
+                value={authorsTrack.map(author => author.id.toString())}
                 onChange={(ids) => {
-                    const selectedAuthors = authors.filter(author => ids.includes(author.id));
+                    const selectedAuthors = authors.filter(author => ids.includes(author.id.toString()));
                     setAuthorsTrack(selectedAuthors);
                 }}
             />
@@ -363,11 +396,11 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
           <MySelect
             options={genres.map(genre => ({
               label: genre.name,
-              value: genre.id,
+              value: genre.id.toString(),
             }))}
-            value={genresTrack.map(genre => genre.id)}
+            value={genresTrack.map(genre => genre.id.toString())}
             onChange={(ids) => {
-              const selectedGenres = genres.filter(genre => ids.includes(genre.id));
+              const selectedGenres = genres.filter(genre => ids.includes(genre.id.toString()));
               setGenresTrack(selectedGenres);
             }}
           />
@@ -391,11 +424,11 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
         sx={{ cursor: "pointer", position: "relative", overflow: "hidden" }}
         onClick={handleImageClick}
       >
-        {imagePreview ? (
+        {imageFile ? (
           <>
             <Box
               component="img"
-              src={imagePreview}
+              src={URL.createObjectURL(imageFile)}
               alt="cover"
               sx={{
                 width: "100%",
@@ -463,7 +496,7 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
         sx={{ cursor: "pointer", position: "relative" }}
         onClick={handleAudioClick}
       >
-        {audioName ? (
+        {audioFile ? (
           <>
             <Typography
               variant="h5"

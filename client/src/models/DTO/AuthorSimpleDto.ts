@@ -1,5 +1,5 @@
 export interface AuthorSimpleDto {
-    id: string;
+    id: number;
     name: string;
     imgUrl: string;
 } 

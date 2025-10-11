@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.KeyValuePair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -111,11 +112,11 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('AUTHOR')")
-    @PostMapping("/create")
+    @PostMapping(value = "/create")
     public ResponseEntity<?> createAlbum(@RequestPart("metadata") AlbumCreationDto metadata,
-                                         @RequestPart("cover") MultipartFile cover,
-                                         @RequestPart("trackFiles") List<MultipartFile> trackFiles,
-                                         @RequestPart("trackCovers") List<MultipartFile> trackCovers) {
+                                         @RequestPart(value="cover", required = false) MultipartFile cover,
+                                         @RequestPart(value="trackFiles", required = false) List<MultipartFile> trackFiles,
+                                         @RequestPart(value="trackCovers", required = false) List<MultipartFile> trackCovers) {
         try {
             albumService.upload(metadata, cover, trackFiles, trackCovers);
             return ResponseEntity.ok().build();

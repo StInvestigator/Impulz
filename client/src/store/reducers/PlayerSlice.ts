@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto";
 
 export interface PlayerSource {
     type: "author" | "album" | "playlist";

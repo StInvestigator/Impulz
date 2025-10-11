@@ -4,6 +4,7 @@ import {$api, $authApi} from "../../../http";
 import type {AlbumDto} from "../../../models/AlbumDto.ts";
 // import { useAppDispatch } from "../../../hooks/redux.ts";
 import { setTotalPages } from "../PageSlice.ts";
+import type { AlbumCreationDto } from "../../../models/DTO/album/AlbumCreationDto.ts";
 
 export const fetchAlbumsByAuthor = createAsyncThunk<
     AlbumSimpleDto[],
@@ -111,3 +112,56 @@ export const fetchPersonalAlbumsByGenre = createAsyncThunk<
         }
     }
 )
+
+export const createAlbum = createAsyncThunk<
+  AlbumDto,
+  {
+    metadata: AlbumCreationDto;
+    coverFile: File | null;
+    trackFiles: (File | null)[];
+    trackCoverFiles: (File | null)[];
+  },
+  { rejectValue: string }
+>(
+  "albums/createAlbum",
+  async (albumData, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+
+      formData.append("metadata", JSON.stringify(albumData.metadata));
+
+      if (albumData.coverFile) {
+        formData.append("cover", albumData.coverFile); 
+      }
+
+    if (albumData.trackFiles) {
+        albumData.trackFiles.forEach((file) => {
+            if (file) {
+                formData.append("trackFiles", file);
+            }
+        });
+    }
+
+      if (albumData.trackFiles) {
+        albumData.trackFiles.forEach((file) => {
+            if (file) {
+                formData.append("trackFiles", file);
+            }
+        });
+    }
+
+      console.log("FormData entries: ", Array.from(formData.entries()));
+      const response = await $authApi.post("/albums/create", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      return rejectWithValue("Не удалось создать альбом");
+    }
+  }
+);
+

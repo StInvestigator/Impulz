@@ -5,8 +5,8 @@ import addImage from "../../assets/addImage.svg";
 import { useRef } from "react";
 
 interface Step1Props {
-  image: string | null;
-  setImage: (img: string | null) => void;
+  image: File | null;
+  setImage: (img: File | null) => void;
 }
 
 const Step1 = ({ image, setImage }: Step1Props) => {
@@ -19,7 +19,7 @@ const Step1 = ({ image, setImage }: Step1Props) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setImage(file);
     }
   };
 
@@ -86,7 +86,7 @@ const Step1 = ({ image, setImage }: Step1Props) => {
           <>
             <Box
               component="img"
-              src={image}
+              src={URL.createObjectURL(image)}
               alt="preview"
               sx={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '10px' }}
             />

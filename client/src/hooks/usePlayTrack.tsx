@@ -13,7 +13,7 @@ import {
     setBufferTracks,
     appendToPlaylist,
 } from "../store/reducers/PlayerSlice.ts";
-import type { TrackSimpleDto } from "../models/DTO/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
 

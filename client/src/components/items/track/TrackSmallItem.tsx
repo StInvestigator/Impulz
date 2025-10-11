@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography, Link } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect, useCallback } from "react";
-import type { TrackSimpleDto } from "../../../models/DTO/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 
 interface TrackItemProps {

@@ -1,10 +1,7 @@
-import type {AuthorSimpleDto} from "../AuthorSimpleDto.ts";
-import type {GenreSimpleDto} from "../GenreSimpleDto.ts";
-
 export interface TrackCreationDto {
     title: string;
-    authors: AuthorSimpleDto[];
-    genres: GenreSimpleDto[];
+    authorsIds: string[];
+    genresIds: number[];
     clientFileName: string;
     clientCoverName: string;
 }

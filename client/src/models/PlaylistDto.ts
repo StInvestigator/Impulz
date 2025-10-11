@@ -1,4 +1,4 @@
-import type {TrackSimpleDto} from "./DTO/TrackSimpleDto.ts";
+import type {TrackSimpleDto} from "./DTO/track/TrackSimpleDto.ts";
 import type {UserSimpleDto} from "./DTO/UserSimpleDto.ts";
 
 export interface PlaylistDto {

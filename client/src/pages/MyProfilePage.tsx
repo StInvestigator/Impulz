@@ -7,17 +7,23 @@ import Step1 from "../components/create_album/Step1";
 import Step2 from "../components/create_album/Step2";
 import Step3 from "../components/create_album/Step3";
 import Step4 from "../components/create_album/Step4";
-import type { TrackCreationDto } from "../models/DTO/track/TrackCreationDto";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { createAlbum } from "../store/reducers/action-creators/album";
+import type { TrackCreationFullDto } from "../models/DTO/track/TrackCreationFullDto";
 
 function MyProfilePage() {
+  const {profile} = useAppSelector(state => state.profile);
+
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
 
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [nameAlbum, setNameAlbum] = useState<string>("");
   const [dateRelease, setDateRelease] = useState<string>("");
-  const [tracks, setTracks] = useState<TrackCreationDto[]>([]);
+  const [tracks, setTracks] = useState<TrackCreationFullDto[]>([]);
 
+  const dispatch = useAppDispatch();
+  
   useEffect(() => {
     if (activeStep > 4 || activeStep < 1) {
       setOpen(false);
@@ -25,13 +31,32 @@ function MyProfilePage() {
     }
   }, [activeStep]);
 
+  const createAlbumClick = () => {
+    dispatch(createAlbum({
+      metadata: {
+        title: nameAlbum,
+        authorIds: profile.authorDto ? [profile.authorDto.id] : [],
+        releaseDate: dateRelease,
+        tracks: tracks.map(track => ({
+          title: track.title,
+          authorsIds: track.authors.map(author => author.id.toString()),
+          genresIds: track.genres.map(genre => genre.id),
+          clientCoverName: track.clientCoverName?.name || "",
+          clientFileName: track.clientFileName?.name || "",
+        })),
+      },
+      coverFile: image ,
+      trackFiles: tracks.map(track => track.clientFileName),
+      trackCoverFiles: tracks.map(track => track.clientCoverName),
+    }));
+  };
+
   return (
-
-
-    <>
+    <>     
       <MyProfile />
-      <Button onClick={() => setOpen(true)}>Создать альбом</Button>
-
+      {profile?.authorDto && (
+        <Button onClick={() => setOpen(true)}>Создать альбом</Button>
+      )}
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />
         {activeStep === 1 && <Step1 image={image} setImage={setImage} />}
@@ -60,7 +85,13 @@ function MyProfilePage() {
           >
             Назад
           </Button>
-          <Button onClick={() => setActiveStep(step => step + 1)}
+          <Button onClick={() => {
+            if (activeStep === 4) {
+              createAlbumClick();
+            }
+            setActiveStep(step => step + 1);
+          }}
+
             sx={{
               color: "var(--dark-purple)",
               bgcolor: "var(--orange-peel)",

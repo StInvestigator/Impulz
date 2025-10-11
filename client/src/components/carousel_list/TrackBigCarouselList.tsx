@@ -2,7 +2,7 @@ import { type FC } from "react";
 import TrackAverageItem from "../items/track/TrackAverageItem.tsx";
 import ListCarousel from "../ListCarousel.tsx";
 import { Skeleton, type TypographyProps } from "@mui/material";
-import type { TrackSimpleDto } from "../../models/DTO/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 
 interface TrackListProps {
   tracks: TrackSimpleDto[];

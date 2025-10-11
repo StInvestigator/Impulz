@@ -2,7 +2,7 @@ import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import medalImage from "../../../assets/medal.svg";
-import type {TrackSimpleDto} from "../../../models/DTO/TrackSimpleDto.ts";
+import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {useNavigate} from "react-router-dom";
 

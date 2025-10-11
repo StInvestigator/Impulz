@@ -7,12 +7,12 @@ import {useAppSelector} from "../../hooks/redux.ts";
 
 const authors: AuthorSimpleDto[] = [
     {
-        id: 1,
+        id: "1",
         name: "Автор 1",
         imgUrl: ""
     },
     {
-        id: 2,
+        id: "1",
         name: "Автор 2",
         imgUrl: ""
     },

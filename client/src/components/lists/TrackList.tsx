@@ -1,6 +1,6 @@
 import TrackSmallItem from "../items/track/TrackSmallItem.tsx";
-import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 import { useAppSelector } from "../../hooks/redux.ts";
+import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
 interface TrackListProps {
     tracks: TrackSimpleDto[];

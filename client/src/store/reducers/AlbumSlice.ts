@@ -5,8 +5,8 @@ import {
     fetchAlbumTodayRecommendations,
     fetchAuthorAlbumCollaborations, fetchPersonalAlbumsByGenre
 } from "./action-creators/album.ts";
-import type { AlbumSimpleDto } from "../../models/DTO/album/AlbumSimpleDto.ts";
 import type {AlbumDto} from "../../models/AlbumDto.ts";
+import type {AlbumSimpleDto} from "../../models/DTO/album/AlbumSimpleDto.ts";
 
 interface AlbumState {
     albums: AlbumSimpleDto[];

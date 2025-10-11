@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
 import TrackList from "../components/lists/TrackList";
 import MyPagination from "../components/MyPagination";
-import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
 import {useAppSelector} from "../hooks/redux.ts";
+import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
 
 const favoriteTracks: TrackSimpleDto[] = [
     {
@@ -12,7 +12,7 @@ const favoriteTracks: TrackSimpleDto[] = [
         albumId: 1,
         authors: [
             {
-                id: 1,
+                id: "1",
                 name: "Автор 1",
                 imgUrl: ""
             }
@@ -27,7 +27,7 @@ const favoriteTracks: TrackSimpleDto[] = [
         albumId: 2,
         authors: [
             {
-                id: 2,
+                id: "1",
                 name: "Автор 2",
                 imgUrl: ""
             }

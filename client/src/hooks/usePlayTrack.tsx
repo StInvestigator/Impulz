@@ -13,12 +13,13 @@ import {
     setBufferTracks,
     appendToPlaylist,
 } from "../store/reducers/PlayerSlice.ts";
-import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
+import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
+import {fetchAuthorTracksPaged} from "../store/reducers/action-creators/player.ts";
 
 let sharedFetchFn: ((page: number, size: number) => Promise<TrackSimpleDto[]>) | null = null;
-let sharedFetchSource: { type: PlayerSource["type"]; id: number } | null = null;
+let sharedFetchSource: { type: PlayerSource["type"]; id: string | number } | null = null;
 const pendingPageRef = { current: null as number | null };
 
 export const usePlayTrack = () => {
@@ -83,6 +84,16 @@ export const usePlayTrack = () => {
             const actualSource = sourceOverride ?? source;
             const actualFetchFn = fetchFnOverride ?? sharedFetchFn;
 
+            console.log('🎵 loadNextPageToBuffer проверка:', {
+                actualSource: !!actualSource,
+                actualFetchFn: !!actualFetchFn,
+                sharedFetchSource,
+                isBufferLoading,
+                typesMatch: actualSource && sharedFetchSource
+                    ? actualSource.type === sharedFetchSource.type && actualSource.id === sharedFetchSource.id
+                    : false
+            });
+
             if (
                 !actualSource ||
                 !actualFetchFn ||
@@ -91,6 +102,7 @@ export const usePlayTrack = () => {
                 actualSource.id !== sharedFetchSource.id ||
                 isBufferLoading
             ) {
+                console.log('🎵 loadNextPageToBuffer: условия не выполнены');
                 return false;
             }
 
@@ -107,10 +119,13 @@ export const usePlayTrack = () => {
 
             pendingPageRef.current = nextPage;
             dispatch(setBufferLoading(true));
+
             try {
+                console.log('🎵 Загружаем страницу', nextPage, 'для источника', actualSource.id);
                 const newTracks = await callWithTimeout(actualFetchFn(nextPage, actualSource.size), 10000);
 
                 if (Array.isArray(newTracks) && newTracks.length > 0) {
+                    console.log('🎵 Загружены треки для буфера:', newTracks.length);
                     dispatch(setBufferTracks(newTracks));
                     const hasMore =
                         typeof actualSource.totalPages === "number"
@@ -119,11 +134,12 @@ export const usePlayTrack = () => {
                     dispatch(setSourceHasMore(hasMore));
                     return true;
                 } else {
+                    console.log('🎵 Нет треков для загрузки в буфер');
                     dispatch(setSourceHasMore(false));
                     return false;
                 }
             } catch (error) {
-                console.error("Ошибка загрузки буфера:", error);
+                console.error("🎵 Ошибка загрузки буфера:", error);
                 dispatch(setSourceHasMore(false));
                 return false;
             } finally {
@@ -163,8 +179,10 @@ export const usePlayTrack = () => {
             totalPages: sourceConfig.totalPages ?? Infinity,
         };
 
+        console.log('🎵 playWithBuffering: устанавливаем плейлист без предзагрузки буфера');
+
         dispatch(setSourceWithBuffer({ source: newSource, initialTracks, bufferTracks: [], startIndex }));
-        void loadNextPageToBuffer(newSource, fetchPageFn);
+
     };
 
     const useAutoBuffer = () => {
@@ -173,16 +191,36 @@ export const usePlayTrack = () => {
 
             const tracksLeft = playlist.length - currentTrackIndex - 1;
             const BUFFER_AHEAD = 1;
+
             const shouldLoadBuffer =
-                tracksLeft <= BUFFER_AHEAD && source?.hasMore && !isBufferLoading && bufferTracks.length === 0;
+                tracksLeft <= BUFFER_AHEAD &&
+                source?.hasMore &&
+                !isBufferLoading &&
+                bufferTracks.length === 0;
+
             const shouldAppendBuffer = tracksLeft === 0 && bufferTracks.length > 0;
 
+            console.log('🎵 useAutoBuffer проверка:', {
+                currentTrackIndex,
+                playlistLength: playlist.length,
+                tracksLeft,
+                hasMore: source?.hasMore,
+                isBufferLoading,
+                bufferTracksCount: bufferTracks.length,
+                shouldLoadBuffer,
+                shouldAppendBuffer
+            });
+
             if (shouldLoadBuffer) {
+                console.log('🎵 Загружаем следующую страницу в буфер (осталось треков:', tracksLeft, ')');
                 void loadNextPageToBuffer();
             }
+
             if (shouldAppendBuffer) {
+                console.log('🎵 Добавляем буфер в плейлист (последний трек)');
                 const appended = appendBufferToPlaylist();
                 if (appended && source?.hasMore) {
+                    console.log('🎵 Буфер добавлен, загружаем следующую страницу');
                     setTimeout(() => {
                         void loadNextPageToBuffer();
                     }, 300);
@@ -200,31 +238,43 @@ export const usePlayTrack = () => {
     };
 
     const playAuthorPopularTracks = async (
-        authorId: number,
+        authorId: string,
         authorName: string,
-        fetchTracksFn: (page: number, size: number) => Promise<{ tracks: TrackSimpleDto[]; totalPages: number }>,
-        initialTracks: TrackSimpleDto[] = [],
         pageSize: number = 3
     ) => {
         if (!requireAuth()) return;
 
-        let totalPages = Infinity;
-        const first = await fetchTracksFn(0, pageSize);
+        console.log('🎵 Начало playAuthorPopularTracks для автора:', authorId);
 
-        if (first && Array.isArray(first.tracks) && first.tracks.length > 0) {
-            if (initialTracks.length === 0) initialTracks = first.tracks;
-            totalPages = typeof first.totalPages === "number" ? first.totalPages : Infinity;
-        }
+        try {
+            console.log('🎵 Загружаем первую страницу треков...');
+            const firstPage = await fetchAuthorTracksPaged(authorId, 0, pageSize);
 
-        if (initialTracks.length > 0) {
-            await playWithBuffering(
-                initialTracks,
-                { type: "author", id: authorId, name: authorName, size: pageSize, totalPages },
-                async (page, size) => {
-                    const res = await fetchTracksFn(page, size);
-                    return res.tracks;
-                }
-            );
+            console.log('🎵 Ответ от API:', firstPage);
+
+            if (firstPage && Array.isArray(firstPage.tracks) && firstPage.tracks.length > 0) {
+                console.log('🎵 Загружены треки первой страницы:', firstPage.tracks.length);
+                console.log('🎵 Устанавливаем плейлист БЕЗ предзагрузки буфера');
+
+                await playWithBuffering(
+                    firstPage.tracks,
+                    {
+                        type: "author",
+                        id: authorId,
+                        name: authorName,
+                        size: pageSize,
+                        totalPages: firstPage.totalPages
+                    },
+                    async (page, size) => {
+                        const res = await fetchAuthorTracksPaged(authorId, page, size);
+                        return res.tracks;
+                    }
+                );
+            } else {
+                console.warn('🎵 Не удалось загрузить треки для автора', authorId);
+            }
+        } catch (e) {
+            console.error('🎵 Ошибка загрузки треков автора:', e);
         }
     };
 

@@ -1,7 +1,7 @@
 export interface TrackCreationDto {
     title: string;
-    authorsIds: string[];
-    genresIds: number[];
+    authorIds: string[];
+    genreIds: number[];
     clientFileName: string;
     clientCoverName: string;
 }

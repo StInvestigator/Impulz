@@ -10,6 +10,7 @@ import Step4 from "../components/create_album/Step4";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { createAlbum } from "../store/reducers/action-creators/album";
 import type { TrackCreationFullDto } from "../models/DTO/track/TrackCreationFullDto";
+import AlbumList from "../components/lists/AlbumList";
 
 function MyProfilePage() {
   const {profile} = useAppSelector(state => state.profile);
@@ -39,8 +40,8 @@ function MyProfilePage() {
         releaseDate: dateRelease,
         tracks: tracks.map(track => ({
           title: track.title,
-          authorsIds: track.authors.map(author => author.id.toString()),
-          genresIds: track.genres.map(genre => genre.id),
+          authorIds: track.authors.map(author => author.id.toString()),
+          genreIds: track.genres.map(genre => genre.id),
           clientCoverName: track.clientCoverName?.name || "",
           clientFileName: track.clientFileName?.name || "",
         })),
@@ -57,6 +58,9 @@ function MyProfilePage() {
       {profile?.authorDto && (
         <Button onClick={() => setOpen(true)}>Создать альбом</Button>
       )}
+      <Box component={"section"} marginTop={"20px"} >
+          <AlbumList albums={profile?.authorDto?.albums || []}/>
+      </Box>
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />
         {activeStep === 1 && <Step1 image={image} setImage={setImage} />}

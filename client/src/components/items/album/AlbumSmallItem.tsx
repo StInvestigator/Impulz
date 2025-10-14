@@ -2,7 +2,7 @@ import {Box, IconButton, Link, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import React, {type FC} from "react";
 import { useTranslation } from 'react-i18next';
-import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto";
+import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {useAppDispatch} from "../../../hooks/redux.ts";
 import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";

@@ -12,7 +12,7 @@ const favoriteTracks: TrackSimpleDto[] = [
         albumId: 1,
         authors: [
             {
-                id: 1,
+                id: "1",
                 name: "Автор 1",
                 imgUrl: ""
             }
@@ -27,7 +27,7 @@ const favoriteTracks: TrackSimpleDto[] = [
         albumId: 2,
         authors: [
             {
-                id: 1,
+                id: "1",
                 name: "Автор 2",
                 imgUrl: ""
             }

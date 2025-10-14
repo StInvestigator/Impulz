@@ -9,7 +9,7 @@ import editTrack from "../../assets/edit-icon.svg";
 import deleteTrack from "../../assets/delete-icon.svg";
 import type { TrackCreationFullDto } from "../../models/DTO/track/TrackCreationFullDto.ts";
 import {useEffect, useMemo, useRef, useState} from "react";
-import type { GenreSimpleDto } from "../../models/DTO/GenreSimpleDto";
+import type { GenreSimpleDto } from "../../models/DTO/GenreSimpleDto.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchTopGenres } from "../../store/reducers/action-creators/genre";
 import MySelect from "../ui/MySelect";

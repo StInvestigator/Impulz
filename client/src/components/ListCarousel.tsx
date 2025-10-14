@@ -73,12 +73,12 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
                 </Typography>
                 <Button onClick={() => route(url)} sx={{
                     backgroundColor: textColor !== "var(--dark-purple)" ? "none" : 'var(--dark-purple)',
-                    border: `1px solid ${textColor !== "var(--dark-purple)" ? textColor : 'none'}`, 
+                    border: `1px solid ${textColor !== "var(--dark-purple)" ? textColor : 'none'}`,
                     borderRadius: "10px",
                     color: textColor !== "var(--dark-purple)" ? textColor : 'var(--columbia-blue)',
                     textTransform: "none",
                     padding: "8px 12px",
-                    
+
                 }}>
                     <Typography variant={"mainSbS"}>
                         {t("button-watch-all")}
@@ -87,23 +87,31 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
             </Box>
 
             {/* Кнопка Влево */}
-            <IconButton
+            <Box
                 onClick={() => handleScroll('left')}
-                disabled={offset === 0}
                 sx={{
+                    height: "30px",
+                    width: "30px",
                     display: offset === 0 ? "none" : "block",
                     position: 'absolute',
                     top: '50%',
                     left: 10,
                     transform: 'translateY(-50%)',
                     zIndex: 1,
-                    color: 'white',
-                    backgroundColor: 'rgba(255,255,255,0)',
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0)' }
+                    cursor: 'pointer',
+                    '&:hover': {
+                        transform: 'translateY(-50%) scale(1.1)'
+                    },
+                    transition: 'transform 0.2s ease',
                 }}
             >
-                <Box component={"img"} src={arrowLeftImg} width={"30px"} height={"30px"}/>
-            </IconButton>
+                <Box
+                    component={"img"}
+                    src={arrowLeftImg}
+                    width={"30px"}
+                    height={"30px"}
+                />
+            </Box>
 
             {/* Контейнер прокрутки */}
             <Box ref={containerRef} sx={{ overflow: 'hidden', width: '100%' }}>
@@ -125,10 +133,13 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
 
             {/* Кнопка Вправо */}
             <IconButton
+                disableRipple
                 onClick={() => handleScroll('right')}
                 disabled={offset >= maxOffset}
                 sx={{
-                    display: offset >= maxOffset  ? "none" : "block",
+                    height: "30px",
+                    width: "30px",
+                    display: offset >= maxOffset ? "none" : "block",
                     position: 'absolute',
                     top: '50%',
                     right: 10,
@@ -136,10 +147,25 @@ const ListCarousel: FC<ListCarouselProps> = ({title, variant, bgColor, textColor
                     zIndex: 1,
                     color: 'white',
                     backgroundColor: 'rgba(255,255,255,0.1)',
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
+                    '&:hover': {
+                        backgroundColor: 'rgba(255,255,255,0.2)',
+                        transform: 'translateY(-50%) scale(1.1)'
+                    },
+                    padding: 0,
+                    minWidth: 'auto',
+                    borderRadius: '50%',
+                    transition: 'transform 0.2s ease',
                 }}
             >
-                <Box component={"img"} src={arrowRightImg} width={"30px"} height={"30px"}/>
+                <Box
+                    component={"img"}
+                    src={arrowRightImg}
+                    width={"30px"}
+                    height={"30px"}
+                    sx={{
+                        display: 'block',
+                    }}
+                />
             </IconButton>
         </Box>
     );

@@ -24,70 +24,72 @@ import MyProfilePage from "../pages/MyProfilePage.tsx";
 import AlbumTodayRecommendationsPage from "../pages/album_page/AlbumTodayRecommendationsPage.tsx";
 import AlbumPersonalRecommendationsPage from "../pages/album_page/AlbumPersonalRecommendationsPage.tsx";
 import SearchResultsPage from "../pages/search_page/SearchResultPage.tsx";
+import { Suspense } from "react";
 
 const AppRouter = () => {
     return (
-        <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/profile" element={<MyProfilePage/>}/>
-            <Route path="/library" element={<LibraryPage />} />
-            <Route path="/hello" element={<HelloPage />} />
-            <Route path="/category" element={<CategoryPage />} />
-            <Route path="/hitsWeek" element={<HitsWeekPage />} />
-            <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
-            <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
-            <Route path="/albumTodayRecommendations" element={<AlbumTodayRecommendationsPage />} />
-            <Route path="/personalAlbumRecommendations" element={<AlbumPersonalRecommendationsPage />} />
+        <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/library" element={<LibraryPage />} />
+                <Route path="/hello" element={<HelloPage />} />
+                <Route path="/category" element={<CategoryPage />} />
+                <Route path="/hitsWeek" element={<HitsWeekPage />} />
+                <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
+                <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
+                <Route path="/albumTodayRecommendations" element={<AlbumTodayRecommendationsPage />} />
+                <Route path="/personalAlbumRecommendations" element={<AlbumPersonalRecommendationsPage />} />
 
-            <Route
-                path="/profile"
-                element={
-                    <ProtectedRoute>
-                        <MyProfilePage/>
-                    </ProtectedRoute>
-                }/>
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <MyProfilePage/>
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/author/:id"
-                element={
-                    <ProtectedRoute>
-                        <AuthorProfilePage />
-                    </ProtectedRoute>
-                }
-            />
-            <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
-            <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
-            <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
-            <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
+                <Route
+                    path="/author/:id"
+                    element={
+                        <ProtectedRoute>
+                            <AuthorProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
+                <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
+                <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
+                <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
 
+                <Route
+                    path="/playlist/:playlistId"
+                    element={
+                        <ProtectedRoute>
+                            <PlaylistItemPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/playlist/:playlistId"
-                element={
-                    <ProtectedRoute>
-                        <PlaylistItemPage />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/album/:albumId"
+                    element={
+                        <ProtectedRoute>
+                            <AlbumItemPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/album/:albumId"
-                element={
-                    <ProtectedRoute>
-                        <AlbumItemPage />
-                    </ProtectedRoute>
-                }
-            />
+                <Route path="/user/:id" element={<UserProfilePage />} />
+                <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
+                <Route path="/allAuthors" element={<AuthorPage />} />
+                <Route path="/allTopSelections" element={<TopSelectionsPage />} />
+                <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
 
-            <Route path="/user/:id" element={<UserProfilePage />} />
-            <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
-            <Route path="/allAuthors" element={<AuthorPage />} />
-            <Route path="/allTopSelections" element={<TopSelectionsPage />} />
-            <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
-
-            <Route path="*" element={<Navigate to="/" replace />} />
-            <Route path="/search" element={<SearchResultsPage />} />
-        </Routes>
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Suspense>
     );
 };
 

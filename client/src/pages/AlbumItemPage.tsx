@@ -17,7 +17,10 @@ const AlbumItemPage = () => {
         if (albumId) {
             const id = parseInt(albumId, 10);
             if (!isNaN(id)) {
-                dispatch(fetchAlbumDetails(id));
+                dispatch(fetchAlbumDetails(id))
+                    .unwrap()
+                    .then((data) => console.log("✅ Album fetched:", data))
+                    .catch((e) => console.error("❌ Album fetch failed:", e));
             }
         }
     }, [dispatch, albumId]);
@@ -41,7 +44,7 @@ const AlbumItemPage = () => {
     if (!currentAlbum) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography>Альбом не знайдено</Typography>
+                <Typography>Album not found</Typography>
             </Box>
         );
     }
@@ -50,39 +53,54 @@ const AlbumItemPage = () => {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-
         if (hours > 0) {
             return `${hours} год ${minutes} хв`;
         }
         return `${minutes} хв ${seconds} с`;
     };
 
-    const totalDuration = currentAlbum.tracks.reduce((acc, track) => acc + track.durationSec, 0);
+    const totalDuration = currentAlbum.tracks?.reduce(
+        (acc, track) => acc + (track.durationSec || 0),
+        0
+    ) || 0;
+
+    const ownerNames = currentAlbum.authors?.map(author => author.name) || [];
+    const ownerImageUrl = currentAlbum.authors?.[0]?.imgUrl || "";
+    const releaseYear = currentAlbum.releaseDate
+        ? new Date(currentAlbum.releaseDate).getFullYear()
+        : undefined;
 
     return (
         <>
-            <Box component={"section"}>
+            <Box component="section">
                 <Cover
-                    type={"album"}
-                    title={currentAlbum.title}
-                    authorName={currentAlbum.authors.map(a => a.name).join(", ")}
-                    year={currentAlbum.releaseDate ? new Date(currentAlbum.releaseDate).getFullYear() : undefined}
-                    trackCount={currentAlbum.tracks.length}
+                    type="album"
+                    title={currentAlbum.title || "Без названия"}
+                    OwnerNames={ownerNames}
+                    OwnerImageUrl={ownerImageUrl}
+                    year={releaseYear}
+                    trackCount={currentAlbum.tracks?.length || 0}
                     duration={formatDuration(totalDuration)}
-                    imgUrl={currentAlbum.imgUrl}
+                    imgUrl={currentAlbum.imgUrl || ""}
                 />
             </Box>
-            <Box component={"section"} marginTop={"60px"}>
-                <Stack spacing={3}>
-                    <TrackList tracks={currentAlbum.tracks}/>
-                </Stack>
-            </Box>
-            <Box component={"section"} marginTop={"60px"}>
-                <MyPagination
-                    currentPage={currentPage}
-                    totalPages={Math.ceil(currentAlbum.tracks.length / 20)}
-                />
-            </Box>
+
+            {currentAlbum.tracks?.length > 0 && (
+                <>
+                    <Box component="section" marginTop="60px">
+                        <Stack spacing={3}>
+                            <TrackList tracks={currentAlbum.tracks} />
+                        </Stack>
+                    </Box>
+
+                    <Box component="section" marginTop="60px">
+                        <MyPagination
+                            currentPage={currentPage}
+                            totalPages={Math.ceil(currentAlbum.tracks.length / 20)}
+                        />
+                    </Box>
+                </>
+            )}
         </>
     );
 };

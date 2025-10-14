@@ -10,6 +10,7 @@ interface AuthorItemProps {
 
 const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
   const navigate = useNavigate();
+
   return (
     <Box
       width="100%"

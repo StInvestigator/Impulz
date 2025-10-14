@@ -6,12 +6,10 @@ import { useEffect } from "react";
 import { fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
 import { useKeycloak } from "@react-keycloak/web";
 import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
-import { useTranslation } from "react-i18next";
 
 const MyPlaylistList = () => {
     const dispatch = useAppDispatch();
     const { playlistsOwnByCurrentUser, isLoading, error } = useAppSelector(state => state.playlist);
-    const { t } = useTranslation("errors");
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
 
@@ -33,13 +31,10 @@ const MyPlaylistList = () => {
         return <div>Error: {error}</div>;
     }
 
-    if (playlistsOwnByCurrentUser.length === 0) {
-        return <div>{t("error-users-playlists-not-found")}</div>;
-    }
 
     return (
         <List disablePadding>
-            {keycloak.authenticated &&
+            {keycloak.authenticated && Array.isArray(playlistsOwnByCurrentUser) && playlistsOwnByCurrentUser.length > 0 ? (
                 playlistsOwnByCurrentUser.map((playlist: PlaylistSimpleDto) => (
                     <MyPlaylistItem
                         key={playlist.id}
@@ -47,9 +42,14 @@ const MyPlaylistList = () => {
                         defaultImage={playlistImage}
                     />
                 ))
-            }
+            ) : (
+                <Box padding="8px 16px" color="var(--columbia-blue)" fontSize="14px">
+                    No playlists found
+                </Box>
+            )}
         </List>
     );
+
 };
 
 export default MyPlaylistList;

@@ -6,35 +6,15 @@ import AlbumList from "../components/lists/AlbumList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
 import {useTranslation} from "react-i18next";
 import {useAppNavigate} from "../hooks/useAppNavigate.ts";
-import UserList from "../components/lists/UserList.tsx";
 import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 import {useEffect} from "react";
 import {fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
-import type {UserSimpleDto} from "../models/DTO/UserSimpleDto.ts";
 import {
     checkSubscriptionStatus,
     fetchAuthorDetails,
     fetchSimilarAuthorsByGenre, subscribeToAuthor, unsubscribeFromAuthor
 } from "../store/reducers/action-creators/author.ts";
 import {fetchAlbumsByAuthor, fetchAuthorAlbumCollaborations} from "../store/reducers/action-creators/album.ts";
-
-const users: UserSimpleDto[] = [
-    {
-        id: "1",
-        name: "Анна Петрова",
-        imgUrl: "https://via.placeholder.com/60x60?text=AP"
-    },
-    {
-        id: "2",
-        name: "Иван Сидоров",
-        imgUrl: "https://via.placeholder.com/60x60?text=IS"
-    },
-    {
-        id: "3",
-        name: "Мария Иванова",
-        imgUrl: "https://via.placeholder.com/60x60?text=MI"
-    }
-]
 
 const AuthorProfilePage = () => {
     const dispatch = useAppDispatch();
@@ -159,47 +139,30 @@ const AuthorProfilePage = () => {
                 </Box>
             )}
 
-            <Box component={"section"} mt={"60px"}>
-                <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-                        {t("authorPage:title-similar-author")}
-                    </Typography>
-                    <Button onClick={() => route(`/author/${id}/similarAuthors`)} sx={{
-                        height: "32px",
-                        border: "1px solid black",
-                        borderRadius: "10px",
-                        backgroundColor: "var(--dark-purple)",
-                        color: "var(--columbia-blue)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        textTransform: "none"
-                    }}>
-                        {t("other:button-watch-all")}
-                    </Button>
+            {similarAuthors.length > 1 &&(
+                <Box component={"section"} mt={"60px"}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+                            {t("authorPage:title-similar-author")}
+                        </Typography>
+                        <Button onClick={() => route(`/author/${id}/similarAuthors`)} sx={{
+                            height: "32px",
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            textTransform: "none"
+                        }}>
+                            {t("other:button-watch-all")}
+                        </Button>
+                    </Box>
+                    <AuthorList authors={similarAuthors}/>
                 </Box>
-                <AuthorList authors={similarAuthors}/>
-            </Box>
+            )}
 
-            <Box component={"section"} mt={"60px"}>
-                <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-                        {t("authorPage:title-subscribers")}
-                    </Typography>
-                    <Button onClick={() => route("/allAuthors")} sx={{
-                        height: "32px",
-                        border: "1px solid black",
-                        borderRadius: "10px",
-                        backgroundColor: "var(--dark-purple)",
-                        color: "var(--columbia-blue)",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        textTransform: "none"
-                    }}>
-                        {t("other:button-watch-all")}
-                    </Button>
-                </Box>
-                <UserList users={users}/>
-            </Box>
+
         </>
     );
 };

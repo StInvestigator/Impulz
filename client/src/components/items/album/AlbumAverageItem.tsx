@@ -1,42 +1,49 @@
-import {Box, IconButton, Link, Typography} from "@mui/material";
+import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import type {FC} from "react";
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto";
-// import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { fetchAlbumDetails } from "../../../store/reducers/action-creators/album.ts";
+
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
     itemWidth: number;
 }
 
-const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => {
-    // const { playPlaylist } = usePlayTrack();
-    
+const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) => {
+    const navigate = useAppNavigate();
+    const dispatch = useAppDispatch();
+
+    const handleAlbumClick = () => {
+        dispatch(fetchAlbumDetails(album.id));
+        navigate(`/album/${album.id}`);
+    };
+
     return (
         <Box
             sx={{
                 width: "100%",
                 position: "relative",
+                cursor: 'pointer',
             }}
-
+            onClick={handleAlbumClick}
         >
-            <Link href={`/album/${album.id}"`} style={{ textDecoration: 'none' }}>
-                <Box
-                    bgcolor="gray"
-                    width="100%"
-                    height={`${itemHeight}px`}
-                    maxWidth={itemWidth}
-                    borderRadius={"10px"}
-                    position={"relative"}
-                    sx={{
-                        backgroundImage: `url(${album.imgUrl || ""})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                >
-
-                </Box>
-            </Link>
+            <Box
+                bgcolor="gray"
+                width="100%"
+                height={`${itemHeight}px`}
+                maxWidth={itemWidth}
+                borderRadius={"10px"}
+                position={"relative"}
+                sx={{
+                    backgroundImage: `url(${album.imgUrl || ""})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                }}
+            >
+            </Box>
             <Box
                 display={"flex"}
                 padding={"24px"}
@@ -62,7 +69,6 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight,itemWidth}) => 
                     </Box>
                     <IconButton
                         sx={{padding: 0}}
-                        // onClick={() => playPlaylist(album.tracks || [])}
                         disableRipple={true}
                     >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}

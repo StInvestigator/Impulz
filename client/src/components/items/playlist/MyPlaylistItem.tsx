@@ -1,11 +1,11 @@
-import { useState, type FC } from "react";
+import {useState, type FC} from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 
 interface PlaylistProps {
-    playlist: PlaylistSimpleDto; // Добавляем плейлист в пропсы
+    playlist: PlaylistSimpleDto;
     defaultImage: string;
 }
 
@@ -20,6 +20,7 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
         route(`/playlist/${playlist.id}`);
     };
 
+
     return (
         <ListItem disablePadding>
             <ListItemButton
@@ -29,11 +30,12 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                 sx={{
                     gap: 1,
                     borderRadius: '15px',
-                    transition: 'color 0.3s',
+                    transition: 'color 0.3s, background-color 0.3s',
                     padding: "22px 12px",
                     color: active ? '#DAE4FB' : (hover ? 'var(--deep-sky-blue)' : '#DAE4FB'),
                     '&:hover': {
                         color: 'var(--deep-sky-blue)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
                         '& .MuiTypography-root': {
                             color: 'var(--deep-sky-blue)',
                         },
@@ -47,13 +49,15 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                 <ListItemIcon>
                     <Box
                         component="img"
-                        src={playlist.imgUrl || defaultImage} // Используем imgUrl из плейлиста
+                        src={playlist.imgUrl || defaultImage}
                         alt={playlist.title}
                         sx={{
                             width: 40,
                             height: 40,
                             borderRadius: '8px',
-                            objectFit: 'cover'
+                            objectFit: 'cover',
+                            transition: 'transform 0.2s ease',
+                            transform: hover ? 'scale(1.1)' : 'scale(1)',
                         }}
                     />
                 </ListItemIcon>

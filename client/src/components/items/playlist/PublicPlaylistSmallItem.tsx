@@ -44,9 +44,12 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                 boxShadow: "none",
                 color: 'black',
                 flexShrink: 0,
+                padding: "4px",
                 cursor: "pointer",
                 transition: 'background-color 0.3s ease',
-
+                '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                }
             }}
         >
             <Box
@@ -58,7 +61,11 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                 sx={{
                     backgroundImage: `url(${playlist.imgUrl})`,
                     backgroundSize: "cover",
-                    backgroundPosition: "center"
+                    backgroundPosition: "center",
+                    transition: 'transform 0.2s ease',
+                    '&:hover': {
+                        transform: 'scale(1.05)',
+                    }
                 }}
             >
                 <IconButton
@@ -69,12 +76,22 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
                         padding: 0,
                         position: "absolute",
                         bottom: 16,
-                        right: 16
+                        right: 16,
+                        transition: 'transform 0.2s ease',
+                        '&:hover': {
+                            transform: 'scale(1.1)',
+                        }
                     }}
                     disableRipple={true}
                 >
-                    <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
-                         height={"30px"}/>
+                    <Box
+                        component={"img"}
+                        src={playImage}
+                        borderRadius={'50%'}
+                        width={"30px"}
+                        height={"30px"}
+                        sx={{ transition: 'transform 0.2s' }}
+                    />
                 </IconButton>
             </Box>
 

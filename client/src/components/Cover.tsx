@@ -1,14 +1,15 @@
 import type { FC } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../assets/play.svg";
-import pushPinImage from "../assets/pushPin.svg"
+import pushPinImage from "../assets/pushPin.svg";
 import bgCoverImg from "../assets/bg-cover.svg";
 import { useTranslation } from "react-i18next";
 
 interface CoverProps {
-    type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album"; // Добавьте "privatePlaylist"
+    type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album";
     title: string;
-    authorName: string;
+    OwnerNames: string[];
+    OwnerImageUrl: string;
     year?: number;
     trackCount?: number;
     duration?: string;
@@ -17,14 +18,19 @@ interface CoverProps {
 
 const Cover: FC<CoverProps> = ({
                                    type,
-                                   title,
-                                   authorName,
+                                   title = "Без названия",
+                                   OwnerNames = [],
+                                   OwnerImageUrl = "",
                                    year,
                                    trackCount,
                                    duration,
-                                   imgUrl
+                                   imgUrl = ""
                                }) => {
     const {t} = useTranslation("other");
+
+    const safeTitle = title || "Empty";
+    const safeOwnerNames = OwnerNames || [];
+    const safeOwnerImageUrl = OwnerImageUrl || "";
 
     return (
         <Box
@@ -33,7 +39,7 @@ const Cover: FC<CoverProps> = ({
             padding={"50px"}
             boxSizing={"border-box"}
             position={"relative"}
-            sx={{ 
+            sx={{
                 backgroundColor: "var(--dark-purple)",
             }}
         >
@@ -48,7 +54,7 @@ const Cover: FC<CoverProps> = ({
                     alignItems={"center"}
                     flexShrink={0}
                     sx={{
-                        backgroundImage: `url(${imgUrl ? imgUrl : ""})`,
+                        backgroundImage: `url(${imgUrl})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}
@@ -86,13 +92,23 @@ const Cover: FC<CoverProps> = ({
                             color: "var(--orange-peel)"
                         }}
                     >
-                        {title}
+                        {safeTitle}
                     </Typography>
                     <Box display={"flex"} height={"52px"} justifyContent={"flex-start"} alignItems={"center"} gap={1} color={"var(--columbia-blue)"}>
-                        <Box bgcolor={"#D3A8A8"} width={"52px"} height={"52px"} borderRadius={"50%"}/>
+                        {safeOwnerImageUrl && (
+                            <Box
+                                component={"img"}
+                                src={safeOwnerImageUrl}
+                                bgcolor={"#D3A8A8"}
+                                width={"52px"}
+                                height={"52px"}
+                                borderRadius={"50%"}
+                                sx={{ objectFit: 'cover' }}
+                            />
+                        )}
                         <Box component="img" src={pushPinImage} width={"20px"} height={"20px"}/>
                         <Typography variant={"mainSbL"} fontSize={"32px"} noWrap sx={{ flexBasis: "50%", minWidth: 0 }}>
-                            {authorName}
+                            {safeOwnerNames.join(", ") || "Unknown author"}
                         </Typography>
                         {year && (
                             <Typography variant={"mainRL"} fontSize={"24px"}>

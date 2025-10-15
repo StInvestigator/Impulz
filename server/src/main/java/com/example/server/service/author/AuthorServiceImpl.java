@@ -165,7 +165,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public void becomeAuthor(String userId) {
         Author author = new Author();
-        author.setId(userId);
+        author.setUser(userRepository.findById(userId).orElseThrow());
         author.setCreatedAt(OffsetDateTime.now());
         author.setFollowersCount(0L);
         authorRepository.save(author);

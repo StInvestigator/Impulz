@@ -71,4 +71,27 @@ export const fetchTracksByAlbum = createAsyncThunk<
         );
         return response.data.page.content;
     }
+);
+
+export const fetchPopularTracksByGenre = createAsyncThunk<
+    TrackSimpleDto[],
+    { genreId: number; page?: number; size?: number },
+    { rejectValue: string }
+>(
+    "tracks/fetchPopularTracksByGenre",
+    async ({ genreId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
+        try {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $api.get(
+                `/tracks/ByGenre/Popular/${genreId}?${params}`
+            );
+            dispatch(setTotalPages(response.data.page.totalPages));
+            return response.data.page.content;
+        } catch (e) {
+            return rejectWithValue(`Не удалось загрузить треки по жанру`);
+        }
+    }
 )

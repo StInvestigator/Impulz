@@ -1,25 +1,40 @@
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Box } from "@mui/material";
 import categoryTop from '../assets/category/categoryTop.svg';
 // import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 // import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import { useAppDispatch } from '../hooks/redux.ts';
+import { useAppDispatch, useAppSelector } from '../hooks/redux.ts';
 import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author.ts';
-// import { useAuthorsByKey } from '../hooks/modelByKey.ts';
+import { fetchRecentAlbumsByGenre } from '../store/reducers/action-creators/album.ts';
+import { fetchPopularTracksByGenre } from '../store/reducers/action-creators/tracks.ts';
+import { fetchRecentPlaylistsByGenre } from '../store/reducers/action-creators/playlist.ts';
+import MediaSmallCarouselList from "../components/carousel_list/MediaSmallCarouselList.tsx";
+import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList.tsx";
+import { useTranslation } from 'react-i18next';
+import TrackSmallCarouselList from '../components/carousel_list/TrackSmallCarouselList.tsx';
 
 
 const CategoryPage = () => {
     const dispatch = useAppDispatch();
-    //const { topAuthors, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAppSelector(state => state.author);
+    const { topAuthorsInGenre, isLoading: authorsLoading, error: authorsError } = useAppSelector(state => state.author);
+    const { recentAlbumsByGenre, isLoading: albumLoading, error: albumError } = useAppSelector(state => state.album);
+    const { popularTracksByGenre, isLoading: tracksLoading, error: tracksError } = useAppSelector(state => state.track);
+    const { recentPlaylistsByGenre, isLoading: playlistsLoading, error: playlistsError } = useAppSelector(state => state.playlist);
 
+    const location = useLocation();
+    const { t } = useTranslation('category');
     const [searchParams] = useSearchParams();
-    const category = searchParams.get('category');
-    //const { t } = useTranslation('category')
+    const category = (location.state as any)?.category || searchParams.get('category');
+    const genreId = (location.state as any)?.genreId || Number(searchParams.get('genreId')) || 1;
 
     useEffect(() => {
-        dispatch(fetchTopAuthorsInGenre({ genreId: 1 }));
-    }, [dispatch]);
+        if (!genreId) return;
+        dispatch(fetchTopAuthorsInGenre({ genreId, page: 0, size: 20 }));
+        dispatch(fetchRecentAlbumsByGenre({ genreId, page: 0, size: 20 }));
+        dispatch(fetchPopularTracksByGenre({ genreId, page: 0, size: 20 }));
+        dispatch(fetchRecentPlaylistsByGenre({ genreId, page: 0, size: 20 }));
+    }, [dispatch, genreId]);
 
     return (
         <>
@@ -40,7 +55,6 @@ const CategoryPage = () => {
                     position="absolute"
                     bottom={0}
                     left={0}
-                    bgcolor="rgba(255, 255, 255, 0.50)"
                     borderRadius="10px"
                     maxWidth={584}
                     maxHeight={132}
@@ -52,17 +66,50 @@ const CategoryPage = () => {
                 </Box>
             </Box>
 
-            {/* <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList isLoading={isLoadingTopAuthors} error={errorTopAuthors} authors={topAuthors} itemWidth={134} name={t("title-best-author-genre")} />
-            </Box> */}
+            <Box component={"section"} mt={"60px"}>
+                <MediaSmallCarouselList
+                    medias={recentAlbumsByGenre}
+                    itemWidth={134}
+                    name={t("title-recent-albums")}
+                    isLoading={albumLoading}
+                    error={albumError}
+                    url={"/genre/recent-albums"}
+                />
+            </Box>
 
-            {/*<Box component={"section"} mt={"60px"}>*/}
-            {/*    <MediaSmallCarouselList medias={tracks} itemWidth={134} name={t("title-best-song-genre")} />*/}
-            {/*</Box>*/}
+            <Box component={"section"} mt={"60px"}>
+                <TrackSmallCarouselList
+                    tracks={popularTracksByGenre}
+                    isLoading={tracksLoading}
+                    error={tracksError}
+                    itemWidth={134}
+                    title={t("title-popular-tracks")}
+                    variant="h3"
+                    url={"/genre/popular-tracks"}
+                />
+            </Box>
 
-            {/*<Box component={"section"} mt={"60px"}>*/}
-            {/*    <MediaSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-new-release")} />*/}
-            {/*</Box>*/}
+            <Box component={"section"} mt={"60px"}>
+                <MediaSmallCarouselList
+                    medias={recentPlaylistsByGenre}
+                    itemWidth={134}
+                    name={t("title-recent-playlists")}
+                    isLoading={playlistsLoading}
+                    error={playlistsError}
+                    url={"/genre/recent-playlists"}
+                />
+            </Box>
+
+            <Box component={"section"} mt={"60px"}>
+                <AuthorCarouselList
+                    authors={topAuthorsInGenre}
+                    itemWidth={134}
+                    name={t("title-top-authors")}
+                    isLoading={authorsLoading}
+                    error={authorsError}
+                    url={"/genre/top-authors"}
+                />
+            </Box>
         </>
     );
 };

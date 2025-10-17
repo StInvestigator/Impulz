@@ -127,7 +127,7 @@ const LibraryGrid = () => {
             <GridContainer>
                 {elements.map((elem, index) => (
                     <GridItem
-                        onClick={()=>navigate('/category?category='+elem.title+`&genreId=${elem.id}`)}
+                        onClick={() => navigate('/category', { state: { genreId: elem.id, category: elem.title } })}
                         key={index}
                         colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
                         rowSpan={elem.height}
@@ -136,11 +136,12 @@ const LibraryGrid = () => {
                             <Box
                                 sx={{
                                     color: 'var(--orange-peel)',
-                                    px: '16px',
-                                    py: '8px',
-                                    mx: '16px',
+                                    px: '12px',
+                                    py: '12px',
+                                    mx: '24px',
                                     borderRadius: '10px',
-                                    backgroundColor: 'rgba(36, 12, 65, 0.8)'
+                                    backdropFilter: 'blur(6px)',
+                                    backgroundColor: 'rgba(35, 12, 51, 0.6)'
                                 }}
                             >
                                 {elem.title}

@@ -25,4 +25,5 @@ public interface PlaylistService {
     List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId);
     Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable);
     Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable);
+    PageDto<PlaylistSimpleDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable);
 }

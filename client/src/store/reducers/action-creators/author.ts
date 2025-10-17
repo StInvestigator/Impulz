@@ -126,3 +126,14 @@ export const checkSubscriptionStatus = createAsyncThunk<
     }
 );
 
+export const befomeAuthor = createAsyncThunk<void, string, { rejectValue: string }>(
+    "author/befomeAuthor",
+    async (userId, { rejectWithValue }) => {
+        try {
+            await $authApi.get(`http://localhost:8083/api/authors/becomeAuthor/${userId}`);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue("Не удалось стать автором");
+        }
+    }
+);

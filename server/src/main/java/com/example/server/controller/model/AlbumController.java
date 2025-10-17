@@ -151,4 +151,17 @@ public class AlbumController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+
+    @PostMapping("/addToFavorite/{albumId}/{userId}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId, @PathVariable String userId) {
+        try {
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

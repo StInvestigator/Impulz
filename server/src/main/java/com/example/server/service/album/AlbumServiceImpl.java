@@ -12,6 +12,7 @@ import com.example.server.model.Author;
 import com.example.server.service.author.AuthorService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.track.TrackService;
+import com.example.server.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,6 +36,7 @@ public class AlbumServiceImpl implements AlbumService
 {
     private final AlbumRepository albumRepository;
     private final AuthorService authorService;
+    private final UserService userService;
     private final TrackService trackService;
     private final ImageService imageService;
 
@@ -120,5 +122,10 @@ public class AlbumServiceImpl implements AlbumService
     @Override
     public Page<AlbumSimpleDto> findFavoriteByUserId(String userId, Pageable pageable) {
         return albumRepository.findAllFavoriteByUserId(userId,pageable).map(AlbumSimpleDto::fromEntity);
+    }
+
+    @Override
+    public void addAlbumToFavorite(Long albumId, String userId) {
+
     }
 }

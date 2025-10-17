@@ -171,7 +171,7 @@ public class AuthorController {
     }
 
     @GetMapping("/becomeAuthor/{userId}")
-    public ResponseEntity<?> findAuthorByFollower(@PathVariable String userId) {
+    public ResponseEntity<?> becomeAuthor(@PathVariable String userId) {
         try {
             authorService.becomeAuthor(userId);
             return ResponseEntity.ok().build();
@@ -182,4 +182,5 @@ public class AuthorController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 }

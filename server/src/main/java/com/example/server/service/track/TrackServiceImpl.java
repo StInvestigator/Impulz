@@ -3,10 +3,7 @@ package com.example.server.service.track;
 import com.example.server.data.repository.*;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Track.*;
-import com.example.server.model.Album;
-import com.example.server.model.Author;
-import com.example.server.model.Genre;
-import com.example.server.model.Track;
+import com.example.server.model.*;
 import com.example.server.model.id.UserFavoriteTrack;
 import com.example.server.model.key.UserFavoriteTrackKey;
 import com.example.server.service.album.AlbumService;
@@ -15,6 +12,7 @@ import com.example.server.service.author.AuthorServiceImpl;
 import com.example.server.service.genre.GenreService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.music.MusicService;
+import com.example.server.service.user.UserService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -36,6 +34,7 @@ public class TrackServiceImpl implements TrackService {
     private final TrackRepository trackRepository;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final UserService userService;
     private final MusicService musicService;
     private final ImageService imageService;
     private final UserFavoriteTrackRepository userFavoriteTrackRepository;
@@ -185,9 +184,15 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void like(Long trackId, String userId) {
+        Track track = trackRepository.findById(trackId).orElseThrow();
+        User user = userService.getUserById(userId);
+
         UserFavoriteTrack entity = new UserFavoriteTrack();
         entity.setId(new UserFavoriteTrackKey(userId, trackId));
+        entity.setTrack(track);
+        entity.setUser(user);
         entity.setAddedAt(OffsetDateTime.now());
+
         userFavoriteTrackRepository.save(entity);
     }
 }

@@ -11,7 +11,7 @@ const BackdropCircle = () => (
       width: `${BG_DIAMETER}px`,
       aspectRatio: 1,
       transform: 'translate(-50%, -50%)',
-      bgcolor: 'rgba(255, 255, 255, 0.4)',
+      bgcolor: 'rgba(255, 255, 255, 0.15)',
       zIndex: (theme) => theme.zIndex.drawer + 2,
       pointerEvents: 'none',
     }}

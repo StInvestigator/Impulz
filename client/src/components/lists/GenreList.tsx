@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import GenreSpirale01 from "/src/assets/genre/genre_spirale_01.svg";
 import GenreSpirale02 from "/src/assets/genre/genre_spirale_02.svg";
 import GenreSpirale03 from "/src/assets/genre/genre_spirale_03.svg";
+import { useTranslation } from 'react-i18next';
 
 const GenreList = () => {
+    const { t } = useTranslation('main');
     const genres = {
-        genre1: { id: "rock", name: "Rock" },
-        genre2: { id: "pop", name: "Pop" },
-        genre3: { id: "jazz", name: "Jazz" }
+        genre1: { name: t('genre-rock') },
+        genre2: { name: t('genre-pop') },
+        genre3: { name: t('genre-jazz') }
     };
 
     return (

@@ -77,25 +77,6 @@ const MainPage = () => {
                     </Box>
                 )
             }
-            <Box component={"section"} mt={"60px"}>
-                <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>
-                    <Typography variant={"h1"} fontSize={"36px"} fontWeight={700}>
-                        {t("main:title-top-selections")}
-                    </Typography>
-                    <Button onClick={() => route("/allTopSelections")} sx={{
-                        height: "32px",
-                        border: "1px solid black",
-                        borderRadius: "10px",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        color: "black",
-                        textTransform: "none"
-                    }}>
-                        {t("other:button-watch-all")}
-                    </Button>
-                </Box>
-                <TopSelectionsList />
-            </Box>
         </>
     );
 };

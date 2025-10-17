@@ -16,5 +16,6 @@ public interface GenreService
     void deleteGenre(Genre genre);
     PageDto<GenreSimpleDto> findTopGenres(Pageable pageable);
     List<Genre> getGenresByIds(Set<Long> ids);
+    List<GenreSimpleDto> getAllGenres();
     List<Genre> getGenresByIds(List<Long> ids);
 }

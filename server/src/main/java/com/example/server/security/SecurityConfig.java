@@ -29,6 +29,7 @@ public class SecurityConfig {
             "/", "/login-success",
             "/albums/Recommendations/**",
             "/genres/TopGenres",
+            "/genres/all",
             "/playlists/TopPlaylistsByFavorites",
             "/tracks/Recommendations/**",
             "/tracks/MostListenedTracksOfWeek",

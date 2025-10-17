@@ -5,5 +5,8 @@
   "title-recommendation-today": "Рекомендацї на сьогодні",
   "title-top-listens": "Найбільше слухають",
   "title-watch-for-you": "Перегляньте підібране для вас",
-  "title-top-selections": "Топ добірок"
+  "title-top-selections": "Топ добірок",
+  "genre-rock": "Рок",
+  "genre-pop": "Поп",
+  "genre-jazz": "Джаз"
 }

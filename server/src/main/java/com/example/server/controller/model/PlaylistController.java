@@ -75,13 +75,15 @@ public class PlaylistController {
     }
 
     @PostMapping("/addTrack")
-    public ResponseEntity<?> addTrackToPlaylist(@RequestPart("playlistId") Long playListId,
-                                                @RequestPart("trackId") Long trackId) {
+    public ResponseEntity<?> addTrackToPlaylist(@RequestParam("playlistId") Long playListId,
+                                                @RequestParam("trackId") Long trackId) {
         try {
             playlistService.addTrackToPlaylist(playListId, trackId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().build();

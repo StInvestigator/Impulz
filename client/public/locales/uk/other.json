@@ -14,5 +14,13 @@
   "title-songs": "пісень",
   "title-my-playlist": "Мій плейлист",
   "title-public-playlist": "Публічний плейлист",
-  "title-private-playlist": "Приватний плейлист"
+  "title-private-playlist": "Приватний плейлист",
+  "title-add-to-playlist": "Додати до плейліста",
+  "title-add-to-liked": "Додати до улюблених",
+  "title-add-to-queue": "Додати до черги",
+  "title-go-to-author": "Перейти до виконавця",
+  "title-go-to-album": "Перейти до альбому",
+  "title-copy-track-link": "Копіювати посилання на трек",
+  "title-link-copied": "Посилання скопійовано",
+  "title-create-playlist": "Створити плейлист"
 }

@@ -3,8 +3,9 @@ import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect, useCallback } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
-import { TrackContextMenu } from "./TrackContextMenu";
+import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
 import { useTrackContextMenu } from "../../../hooks/useTrackContextMenu";
+import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -16,6 +17,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useTrackContextMenu();
+    const route  = useAppNavigate();
 
     const handlePlay = useCallback(() => {
         playSingle(track);
@@ -23,9 +25,11 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
 
     const handleAddToPlaylist = (trackId: number) => {
         console.log("Add track to playlist:", trackId);
-        // Здесь будет логика добавления в плейлист
-        // Например: openAddToPlaylistModal(trackId);
     };
+
+    const handleAlbumClick = useCallback(() => {
+        route(`/album/${track.albumId}`);
+    }, [route, track.albumId]);
 
     useLayoutEffect(() => {
         const updateCardWidth = () => {
@@ -107,7 +111,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                     {isMobileLayout ? (
                         <MobileLayout track={track} />
                     ) : (
-                        <DesktopLayout track={track} />
+                        <DesktopLayout track={track} onAlbumClick={handleAlbumClick} />
                     )}
 
                     {/* Длительность и кнопка воспроизведения */}
@@ -138,7 +142,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
             <TrackContextMenu
                 contextMenu={contextMenu}
                 onClose={handleCloseContextMenu}
-                trackId={track.id}
+                track={track}
                 onAddToPlaylist={handleAddToPlaylist}
             />
         </>
@@ -154,7 +158,7 @@ const MobileLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
     </Box>
 );
 
-const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
+const DesktopLayout: FC<{ track: TrackSimpleDto; onAlbumClick: () => void }> = ({ track, onAlbumClick }) => (
     <>
         <Typography variant="mainSbL" noWrap sx={{ flex: 1, minWidth: 0, textAlign: 'center' }}>
             {track.title || "Без названия"}
@@ -165,12 +169,14 @@ const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
         </Box>
 
         <Link
-            href={`/album/${track.albumId}`}
+            component="button"
+            onClick={onAlbumClick}
             underline="none"
             sx={{
                 flex: 1,
                 minWidth: 0,
                 color: 'inherit',
+                cursor: 'pointer',
                 '&:hover': { textDecoration: 'underline', color: '#1976d2' },
             }}
         >
@@ -182,6 +188,12 @@ const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
 );
 
 const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) => {
+    const route  = useAppNavigate();
+
+    const handleAuthorClick = useCallback((authorId: string) => {
+        route(`/author/${authorId}`);
+    }, [route]);
+
     if (!authors || authors.length === 0) {
         return (
             <Typography variant="mainRM">
@@ -195,10 +207,12 @@ const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) =>
             {authors.map((author, index) => (
                 <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
                     <Link
-                        href={`/author/${author.id}`}
+                        component="button"
+                        onClick={() => handleAuthorClick(author.id)}
                         underline="none"
                         sx={{
                             color: 'inherit',
+                            cursor: 'pointer',
                             '&:hover': {
                                 textDecoration: 'underline',
                                 color: '#1976d2',

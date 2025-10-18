@@ -14,5 +14,13 @@
   "title-songs": "songs",
   "title-my-playlist": "My Playlist",
   "title-public-playlist": "Public playlist",
-  "title-private-playlist": "Private playlist"
+  "title-private-playlist": "Private playlist",
+  "title-add-to-playlist": "Add to playlist",
+  "title-add-to-liked": "Add to liked",
+  "title-add-to-queue": "Add to queue",
+  "title-go-to-author": "Go to author",
+  "title-go-to-album": "Go to album",
+  "title-copy-track-link": "Copy track link",
+  "title-link-copied": "Link copied",
+  "title-create-playlist": "Create playlist"
 }

@@ -1,4 +1,6 @@
 {
   "error-wrong-playlist-name": "Невірна назва плейлиста",
-  "error-users-playlists-not-found": "Плейлисти користувача не знайдені"
+  "error-users-playlists-not-found": "Плейлисти користувача не знайдені",
+  "error-no-tracks-in-playlist": "У цьому плейлисті поки немає треків",
+  "error-playlist-not-found": "Плейлист не знайден"
 }

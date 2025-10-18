@@ -2,15 +2,36 @@ import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import diskImage from "../../assets/disk.svg"
 import spiraleImage from "../../assets/spirale.svg"
+import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
+import { useAppDispatch } from "../../hooks/redux.ts";
+import { fetchPopularTracksByGenre } from "../../store/reducers/action-creators/tracks.ts";
 
 interface GenreItemProps {
     genre: string;
     index: number;
+    genreId: number;
 }
 
-const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index}) => {
+const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index, genreId}) => {
 
     const rotate = index % 2 !== 0 ? 'rotate(0deg)' : 'rotate(180deg)';
+       const { playTrackList } = usePlayTrack();
+       const dispatch = useAppDispatch();
+       
+       const handlePlay = async (e: React.MouseEvent) => {
+            e.stopPropagation();
+    
+            const result = await dispatch(fetchPopularTracksByGenre({
+                genreId: genreId,
+                page: 0,
+                size: 1000
+            }));
+    
+            if (fetchPopularTracksByGenre.fulfilled.match(result)) {
+                playTrackList(result.payload, 0);
+            }
+        }
+    
 
     return (  
         <Box display={"flex"} mt={"20px"} alignItems={"center"} height={"160px"} sx={{
@@ -23,7 +44,8 @@ const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index}) => {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                 }}>
-                    <IconButton sx={{padding: 0}}>
+                    <IconButton sx={{padding: 0}}
+                    onClick={handlePlay}>
                         <Box component={"img"} src={diskImage} borderRadius={'50%'} width={"160px"}
                                 height={"160px"}/>
                     </IconButton>

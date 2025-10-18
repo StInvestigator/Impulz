@@ -1,8 +1,8 @@
 import {Box, Skeleton, Typography} from "@mui/material";
 import TopFiveGenreItem from "../items/TopFiveGenreItem.tsx";
-import { useTranslation } from 'react-i18next';
 import type { GenreSimpleDto } from "../../models/DTO/GenreSimpleDto.ts";
 import type { FC } from "react";
+import { useTranslation } from 'react-i18next';
 
 interface TopFiveGenreListProps {
     genres: GenreSimpleDto[];
@@ -13,6 +13,8 @@ interface TopFiveGenreListProps {
 const TopFiveGenreList: FC<TopFiveGenreListProps> = ({ genres, isLoading, error }) => {
 
     const { t } = useTranslation('main')
+    const {i18n} = useTranslation();
+    const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
 
     return (
         <>
@@ -29,7 +31,7 @@ const TopFiveGenreList: FC<TopFiveGenreListProps> = ({ genres, isLoading, error 
                         {t("title-top-listens")}
                     </Typography>
                     {genres.map((genre, index) =>
-                        <TopFiveGenreItem key={genre.id} genre={genre.name} index={index + 1}/>
+                        <TopFiveGenreItem key={genre.id} genre={isUkrainian ? genre.uaName : genre.name} index={index + 1} genreId={genre.id}/>
                     )}  
                 </Box>
             )}

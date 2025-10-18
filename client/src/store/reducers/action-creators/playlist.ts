@@ -92,6 +92,29 @@ export const fetchPlaylistsOwnByUserId = createAsyncThunk<
             return rejectWithValue('Не удалось найти плейлисты принадлежащие пользователю');
         }
     }
+);
+
+export const fetchRecentPlaylistsByGenre = createAsyncThunk<
+    PlaylistSimpleDto[],
+    { genreId: number; page?: number; size?: number },
+    { rejectValue: string }
+>(
+    'playlists/fetchRecentPlaylistsByGenre',
+    async ({ genreId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
+        try {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $api.get(`/playlists/ByGenre/Recent/${genreId}?${params}`);
+            dispatch(setTotalPages(response.data.totalPages));
+            return response.data.content;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue('Не удалось загрузить плейлисты по жанру');
+        }
+    }
+)
 )
 
 export const addTrackToPlaylist = createAsyncThunk<

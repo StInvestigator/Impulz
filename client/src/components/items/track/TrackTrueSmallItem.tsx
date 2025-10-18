@@ -1,67 +1,52 @@
 import { Box, IconButton, Link, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import React, { type FC } from "react";
-import { useTranslation } from 'react-i18next';
-import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
+import { useCallback, type FC } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
-import { useAppDispatch } from "../../../hooks/redux.ts";
-import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
-import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
+import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
+import { useNavigate } from "react-router-dom";
 
-interface AlbumItemProps {
-    album: AlbumSimpleDto;
+interface TrackTrueSmallItemProps {
+    track: TrackSimpleDto;
     itemWidth: number;
     color?: "dark" | "light";
 }
 
-const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" }) => {
+const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, color = "light" }) => {
 
-    const { t } = useTranslation('other')
-    const { playTrackList } = usePlayTrack();
-    const dispatch = useAppDispatch();
-    const route = useAppNavigate();
+    const { playSingle } = usePlayTrack();
+    const route = useNavigate();
 
+    const handlePlay = useCallback(() => {
+        playSingle(track);
+    }, [playSingle, track]);
 
-    const handlePlayPlaylist = async (e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        const result = await dispatch(fetchTracksByAlbum({
-            albumId: album.id,
-            page: 0,
-            size: 1000
-        }));
-
-        if (fetchTracksByAlbum.fulfilled.match(result)) {
-            playTrackList(result.payload, 0);
-        }
-    }
 
     return (
         <Box
-            onClick={() => route(`/album/${album.id}`)}
             sx={{
                 width: itemWidth,
+                boxShadow: "none",
                 color: 'black',
                 flexShrink: 0,
-                cursor: "pointer",
                 padding: "4px",
+                cursor: "pointer",
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
                     backgroundColor: 'rgba(0, 0, 0, 0.04)',
                 }
             }}
-        >
-            {/* Контейнер для изображения альбома */}
+            onClick={handlePlay}>
+            {/* Контейнер для изображения трека */}
             <Box
                 position="relative"
                 width={itemWidth}
                 height={itemWidth}
                 borderRadius={"10px"}
                 sx={{
-                    backgroundImage: `url(${album.imgUrl || ""})`,
+                    backgroundImage: `url(${track.imgUrl || ""})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    backgroundColor: album.imgUrl ? 'transparent' : 'rgba(255, 255, 255, 0.1)',
+                    backgroundColor: track.imgUrl ? 'transparent' : 'rgba(255, 255, 255, 0.1)',
                     transition: 'transform 0.2s ease',
                     '&:hover': {
                         transform: 'scale(1.05)',
@@ -70,9 +55,6 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
             >
                 {/* Кнопка play поверх изображения */}
                 <IconButton
-                    onClick={(e) => {
-                        handlePlayPlaylist(e)
-                    }}
                     sx={{
                         padding: 0,
                         position: "absolute",
@@ -94,14 +76,14 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                 </IconButton>
             </Box>
 
-            {/* Информация об альбоме */}
+            {/* Информация о треке */}
             <Box display="flex" flexDirection="column" mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography
                     gutterBottom
                     variant="mainSbL"
                     sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                 >
-                    {album.title}
+                    {track.title}
                 </Typography>
                 <Typography
                     variant="mainRM"
@@ -114,8 +96,15 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                         gap: '4px'
                     }}
                 >
-                    <Box>
-                        {t("title-album")}
+                    <Box onClick={() => route(`/album/${track.albumId}`)} sx={{
+                        color: 'inherit',
+                        textDecoration: 'none',
+                        '&:hover': {
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                        }
+                    }}>
+                        {track.album}
                     </Box>
                     <Box component="span" sx={{ fontSize: '20px', lineHeight: 1 }}>
                         &middot;
@@ -127,7 +116,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                         overflow: 'hidden',
                         textOverflow: 'ellipsis'
                     }}>
-                        {album.authors.map((author, index) => (
+                        {track.authors.map((author, index) => (
                             <Box key={author.id} sx={{
                                 display: 'flex', alignItems: 'center', color: 'inherit',
                                 textDecoration: 'none',
@@ -138,12 +127,12 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                             }}
                                 onClick={() => route(`/author/${author.id}`)}>
                                 {author.name}
-                                {index < album.authors.length - 1 && (
+                                {index < track.authors.length - 1 && (
                                     <Box component="span" sx={{ mx: '4px' }}>,</Box>
                                 )}
                             </Box>
                         ))}
-                        {album.authors.length === 0 && "Unknown"}
+                        {track.authors.length === 0 && "Unknown"}
                     </Box>
                 </Typography>
             </Box>
@@ -151,4 +140,4 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
     );
 };
 
-export default AlbumSmallItem;
+export default TrackTrueSmallItem;

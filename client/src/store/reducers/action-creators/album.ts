@@ -119,6 +119,30 @@ export const fetchPersonalAlbumsByGenre = createAsyncThunk<
   }
 );
 
+export const fetchRecentAlbumsByGenre = createAsyncThunk<
+  AlbumSimpleDto[],
+  { genreId: number; page?: number; size?: number },
+  { rejectValue: string }
+>(
+  "albums/fetchRecentAlbumsByGenre",
+  async ({ genreId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
+    try {
+      const params = new URLSearchParams();
+      if (page !== undefined) params.append("page", page.toString());
+      if (size !== undefined) params.append("size", size.toString());
+
+      const response = await $api.get(
+        `/albums/ByGenre/Recent/${genreId}?${params}`
+      );
+      dispatch(setTotalPages(response.data.totalPages));
+      return response.data.content;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      return rejectWithValue(`Не удалось загрузить альбомы по жанру`);
+    }
+  }
+);
+
 export const createAlbum = createAsyncThunk<
   AlbumDto,
   {
@@ -133,8 +157,8 @@ export const createAlbum = createAsyncThunk<
     const formData = new FormData();
 
     formData.append(
-    "metadata",
-    new Blob([JSON.stringify(albumData.metadata)], { type: "application/json" })
+      "metadata",
+      new Blob([JSON.stringify(albumData.metadata)], { type: "application/json" })
     );
 
     if (albumData.coverFile) {

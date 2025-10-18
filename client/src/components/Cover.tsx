@@ -14,19 +14,21 @@ interface CoverProps {
     trackCount?: number;
     duration?: string;
     imgUrl?: string;
+    handlePlay?: (e: React.MouseEvent<Element, MouseEvent>) => Promise<void>;
 }
 
 const Cover: FC<CoverProps> = ({
-                                   type,
-                                   title = "Без названия",
-                                   OwnerNames = [],
-                                   OwnerImageUrl = "",
-                                   year,
-                                   trackCount,
-                                   duration,
-                                   imgUrl = ""
-                               }) => {
-    const {t} = useTranslation("other");
+    type,
+    title = "Без названия",
+    OwnerNames = [],
+    OwnerImageUrl = "",
+    year,
+    trackCount,
+    duration,
+    imgUrl = "",
+    handlePlay
+}) => {
+    const { t } = useTranslation("other");
 
     const safeTitle = title || "Empty";
     const safeOwnerNames = OwnerNames || [];
@@ -60,6 +62,7 @@ const Cover: FC<CoverProps> = ({
                     }}
                 >
                     <IconButton
+                        onClick={handlePlay}
                         sx={{ padding: 0 }}
                         disableRipple={true}
                     >
@@ -106,7 +109,7 @@ const Cover: FC<CoverProps> = ({
                                 sx={{ objectFit: 'cover' }}
                             />
                         )}
-                        <Box component="img" src={pushPinImage} width={"20px"} height={"20px"}/>
+                        <Box component="img" src={pushPinImage} width={"20px"} height={"20px"} />
                         <Typography variant={"mainSbL"} fontSize={"32px"} noWrap sx={{ flexBasis: "50%", minWidth: 0 }}>
                             {safeOwnerNames.join(", ") || "Unknown author"}
                         </Typography>

@@ -5,5 +5,8 @@
   "title-recommendation-today": "Recommendations for today",
   "title-top-listens": "Most listened to",
   "title-watch-for-you": "Take a look at the selection for you",
-  "title-top-selections": "Top selections"
+  "title-top-selections": "Top selections",
+  "genre-rock": "Rock",
+  "genre-pop": "Pop",
+  "genre-jazz": "Jazz"
 }

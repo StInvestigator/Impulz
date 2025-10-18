@@ -39,4 +39,14 @@ public class GenreController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<GenreSimpleDto>> getAll() {
+        try {
+            return ResponseEntity.ok(genreService.getAllGenres());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }

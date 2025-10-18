@@ -2,10 +2,10 @@ import { Box, IconButton, Typography, Link } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect, useCallback } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
-import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
-import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
+import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
+import { TrackContextMenu } from "./TrackContextMenu";
 import { useTrackContextMenu } from "../../../hooks/useTrackContextMenu";
-import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
+import { useNavigate } from "react-router-dom";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -158,41 +158,35 @@ const MobileLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => (
     </Box>
 );
 
-const DesktopLayout: FC<{ track: TrackSimpleDto; onAlbumClick: () => void }> = ({ track, onAlbumClick }) => (
-    <>
-        <Typography variant="mainSbL" noWrap sx={{ flex: 1, minWidth: 0, textAlign: 'center' }}>
-            {track.title || "Без названия"}
-        </Typography>
+const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => {
+    const route = useNavigate();
+    return (
+        <>
+            <Typography variant="mainSbL" noWrap sx={{ flex: 1, minWidth: 0, textAlign: 'center' }}>
+                {track.title || "Без названия"}
+            </Typography>
 
-        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'center' }}>
-            <AuthorLinks authors={track.authors} />
-        </Box>
+            <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'center' }}>
+                <AuthorLinks authors={track.authors} />
+            </Box>
 
-        <Link
-            component="button"
-            onClick={onAlbumClick}
-            underline="none"
-            sx={{
+            <Box sx={{
                 flex: 1,
-                minWidth: 0,
                 color: 'inherit',
                 cursor: 'pointer',
                 '&:hover': { textDecoration: 'underline', color: '#1976d2' },
             }}
-        >
-            <Typography variant="mainRM" noWrap textAlign="center">
-                {track.album || "Неизвестный альбом"}
-            </Typography>
-        </Link>
-    </>
-);
+                onClick={() => route(`/album/${track.albumId}`)}>
+                <Typography variant="mainRM" noWrap>
+                    {track.album || "Error"}
+                </Typography>
+            </Box>
+        </>
+    )
+};
 
 const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) => {
-    const route  = useAppNavigate();
-
-    const handleAuthorClick = useCallback((authorId: string) => {
-        route(`/author/${authorId}`);
-    }, [route]);
+    const route = useNavigate();
 
     if (!authors || authors.length === 0) {
         return (
@@ -205,24 +199,17 @@ const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) =>
     return (
         <Box sx={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
             {authors.map((author, index) => (
-                <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Link
-                        component="button"
-                        onClick={() => handleAuthorClick(author.id)}
-                        underline="none"
-                        sx={{
-                            color: 'inherit',
-                            cursor: 'pointer',
-                            '&:hover': {
-                                textDecoration: 'underline',
-                                color: '#1976d2',
-                            },
-                        }}
-                    >
-                        <Typography variant="mainRM" noWrap>
-                            {author.name}
-                        </Typography>
-                    </Link>
+                <Box key={author.id} sx={{
+                    display: 'flex', alignItems: 'center', color: 'inherit',
+                    '&:hover': {
+                        textDecoration: 'underline',
+                        color: '#1976d2',
+                    }
+                }}
+                    onClick={() => route(`/author/${author.id}`)}>
+                    <Typography variant="mainRM" noWrap>
+                        {author.name}
+                    </Typography>
                     {index < authors.length - 1 && (
                         <Typography variant="mainRM" sx={{ mx: 0.5 }}>,</Typography>
                     )}

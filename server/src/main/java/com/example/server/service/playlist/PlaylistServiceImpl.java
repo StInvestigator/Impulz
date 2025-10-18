@@ -48,7 +48,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         playlistRepository.save(playlist);
     }
 
-    @CacheEvict(cacheNames = "playlist.findTopPlaylistsByFavorites", allEntries = true)
+    @CacheEvict(cacheNames = {"playlist.findTopPlaylistsByFavorites", "playlist.findRecentPublicPlaylistsByGenre"}, allEntries = true)
     public void deletePlaylistById(Long id) {
         playlistRepository.deleteById(id);
     }
@@ -137,5 +137,14 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable) {
         return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId, pageable).map(PlaylistSimpleDto::fromEntity);
+    }
+
+    @Override
+      @Cacheable(value = "playlist.findRecentPublicPlaylistsByGenre",
+            key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    public PageDto<PlaylistSimpleDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable) {
+        return new PageDto<>(playlistRepository
+                .findRecentPublicPlaylistsByGenre(genreId, pageable)
+                .map(PlaylistSimpleDto::fromEntity));
     }
 }

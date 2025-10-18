@@ -161,6 +161,22 @@ public class TrackController {
         }
     }
 
+    @GetMapping("/ByPlaylist/{playlistId}")
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTracksByPlaylist(@PathVariable Long playlistId, Pageable pageable, String userId) {
+        try {
+            PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
+            pts.setPage(trackService.findTracksByPlaylist(playlistId, pageable));
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+                    pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
+            return ResponseEntity.ok(pts);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @PostMapping("/like")
     public ResponseEntity<?> addToLiked(@RequestPart("userId") String userId,
                                         @RequestPart("trackId") Long trackId) {

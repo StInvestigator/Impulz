@@ -6,6 +6,8 @@ import { fetchPlaylistDetails } from "../store/reducers/action-creators/playlist
 import Cover from "../components/Cover.tsx";
 import TrackList from "../components/lists/TrackList.tsx";
 import MyPagination from "../components/MyPagination.tsx";
+import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
+import { fetchTracksByPlaylist } from "../store/reducers/action-creators/tracks.ts";
 import { useTranslation } from "react-i18next";
 
 const PlaylistItemPage = () => {
@@ -13,6 +15,9 @@ const PlaylistItemPage = () => {
     const dispatch = useAppDispatch();
     const { currentPlaylist, isLoading, error } = useAppSelector(state => state.playlist);
     const { currentPage } = useAppSelector(state => state.page);
+    const { playTrackList } = usePlayTrack();
+
+    const id = Number(playlistId)
     const { t } = useTranslation(["other","errors"]);
 
 
@@ -63,6 +68,20 @@ const PlaylistItemPage = () => {
     const ownerImageUrl = currentPlaylist.owner?.imgUrl || "";
     const isOwner = true;
 
+    const handlePlayPlaylist = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const result = await dispatch(fetchTracksByPlaylist({
+            playlistId: id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByPlaylist.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
+    }
+
     return (
         <>
             <Box component={"section"}>
@@ -74,6 +93,7 @@ const PlaylistItemPage = () => {
                     trackCount={currentPlaylist.tracks?.length || 0}
                     duration={formatDuration(totalDuration)}
                     imgUrl={currentPlaylist.imageUrl}
+                    handlePlay={handlePlayPlaylist}
                 />
             </Box>
 
@@ -81,7 +101,7 @@ const PlaylistItemPage = () => {
                 {currentPlaylist.tracks && currentPlaylist.tracks.length > 0 ? (
                     <>
                         <Stack spacing={3}>
-                            <TrackList tracks={currentPlaylist.tracks}/>
+                            <TrackList tracks={currentPlaylist.tracks} />
                         </Stack>
                         <Box component={"section"} marginTop={"60px"}>
                             <MyPagination

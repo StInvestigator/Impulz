@@ -23,6 +23,10 @@ import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPa
 import MyProfilePage from "../pages/MyProfilePage.tsx";
 import AlbumTodayRecommendationsPage from "../pages/album_page/AlbumTodayRecommendationsPage.tsx";
 import AlbumPersonalRecommendationsPage from "../pages/album_page/AlbumPersonalRecommendationsPage.tsx";
+import AlbumRecentInCategoryPage from "../pages/album_page/AlbumRecentInCategoryPage.tsx";
+import BestTracksInGenrePage from "../pages/tracks_page/BestTracksInGenrePage.tsx";
+import BestAuthorsInGenre from "../pages/authors_page/BestAuthorsInGenre.tsx";
+import PlaylistsRecentCategoryPage from "../pages/playlists_page/PlaylistsRecentCategoryPage.tsx";
 import SearchResultsPage from "../pages/search_page/SearchResultPage.tsx";
 import { Suspense } from "react";
 
@@ -39,6 +43,10 @@ const AppRouter = () => {
                 <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
                 <Route path="/albumTodayRecommendations" element={<AlbumTodayRecommendationsPage />} />
                 <Route path="/personalAlbumRecommendations" element={<AlbumPersonalRecommendationsPage />} />
+                <Route path="/genre/:id/recent-albums" element={<AlbumRecentInCategoryPage />} />
+                <Route path="/genre/:id/top-authors" element={<BestAuthorsInGenre />} />
+                <Route path="/genre/:id/popular-tracks" element={<BestTracksInGenrePage />} />
+                <Route path="/genre/:id/recent-playlists" element={<PlaylistsRecentCategoryPage />} />
 
                 <Route
                     path="/profile"

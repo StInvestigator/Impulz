@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class GenreServiceImpl implements GenreService {
         genreRepository.save(genre);
     }
 
-    @CacheEvict(cacheNames = "genre.findTopGenres", allEntries = true)
+    @CacheEvict(cacheNames = {"genre.findTopGenres", "genre.getAllGenres"}, allEntries = true)
     public void deleteGenre(Genre genre) {
         genreRepository.delete(genre);
     }
@@ -41,6 +42,12 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public List<Genre> getGenresByIds(Set<Long> ids) {
         return genreRepository.findAllById(ids);
+    }
+
+    @Override
+    @Cacheable(value = "genre.getAllGenres")
+    public List<GenreSimpleDto> getAllGenres() {
+        return genreRepository.findAll().stream().map(GenreSimpleDto::fromEntity).collect(Collectors.toList());
     }
 
     public List<Genre> getGenresByIds(List<Long> ids) {

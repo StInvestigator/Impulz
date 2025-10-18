@@ -1,58 +1,46 @@
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Box } from "@mui/material";
-import CircleImg from '../assets/category/Circle.svg';
-// import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
-// import { useTranslation } from 'react-i18next';
+import categoryTop from '../assets/category/categoryTop.svg';
 import { useEffect } from 'react';
-import { useAppDispatch } from '../hooks/redux.ts';
+import { useAppDispatch, useAppSelector } from '../hooks/redux.ts';
 import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author.ts';
-// import { useAuthorsByKey } from '../hooks/modelByKey.ts';
+import { fetchRecentAlbumsByGenre } from '../store/reducers/action-creators/album.ts';
+import { fetchPopularTracksByGenre } from '../store/reducers/action-creators/tracks.ts';
+import { fetchRecentPlaylistsByGenre } from '../store/reducers/action-creators/playlist.ts';
+import MediaSmallCarouselList from "../components/carousel_list/MediaSmallCarouselList.tsx";
+import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList.tsx";
+import { useTranslation } from 'react-i18next';
+import TrackSmallCarouselList from '../components/carousel_list/TrackSmallCarouselList.tsx';
 
-
-// const authors: AuthorSimpleDto[] = [
-//     {
-//         id: 1,
-//         name: 'Автор 1',
-//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+1'
-//     },
-//     {
-//         id: 2,
-//         name: 'Автор 2',
-//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+2'
-//     },
-//     {
-//         id: 3,
-//         name: 'Автор 3',
-//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+3'
-//     },
-//     {
-//         id: 4,
-//         name: 'Автор 4',
-//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+4'
-//     },
-//     {
-//         id: 5,
-//         name: 'Автор 5',
-//         imgUrl: 'https://via.placeholder.com/150x150?text=Author+5'
-//     },
-// ];
 
 const CategoryPage = () => {
     const dispatch = useAppDispatch();
-    //const { topAuthors, isLoading: isLoadingTopAuthors, error: errorTopAuthors } = useAppSelector(state => state.author);
+    const { topAuthorsInGenre, isLoading: authorsLoading, error: authorsError } = useAppSelector(state => state.author);
+    const { recentAlbumsByGenre, isLoading: albumLoading, error: albumError } = useAppSelector(state => state.album);
+    const { popularTracksByGenre, isLoading: tracksLoading, error: tracksError } = useAppSelector(state => state.track);
+    const { recentPlaylistsByGenre, isLoading: playlistsLoading, error: playlistsError } = useAppSelector(state => state.playlist);
 
+    const location = useLocation();
+    const { t } = useTranslation('category');
     const [searchParams] = useSearchParams();
-    const category = searchParams.get('category');
-    //const { t } = useTranslation('category')
+    const category = (location.state as any)?.category || searchParams.get('category');
+    const genreId = (location.state as any)?.genreId || Number(searchParams.get('genreId')) || 1;
 
     useEffect(() => {
-        dispatch(fetchTopAuthorsInGenre({genreId: 1}));
-    }, [dispatch]);
+        if (!genreId) return;
+        dispatch(fetchTopAuthorsInGenre({ genreId, page: 0, size: 20 }));
+        dispatch(fetchRecentAlbumsByGenre({ genreId, page: 0, size: 20 }));
+        dispatch(fetchPopularTracksByGenre({ genreId, page: 0, size: 20 }));
+        dispatch(fetchRecentPlaylistsByGenre({ genreId, page: 0, size: 20 }));
+    }, [dispatch, genreId]);
 
     return (
         <>
-            <Box
-                bgcolor="gray"
+            <Box sx={{
+                backgroundImage: `url(${categoryTop})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover'
+            }}
                 borderRadius="10px"
                 height={400}
                 width="100%"
@@ -61,12 +49,10 @@ const CategoryPage = () => {
                 alignItems="center"
                 position="relative"
             >
-                <Box component="img" src={CircleImg} draggable={"false"}/>
                 <Box
                     position="absolute"
                     bottom={0}
                     left={0}
-                    bgcolor="rgba(255, 255, 255, 0.50)"
                     borderRadius="10px"
                     maxWidth={584}
                     maxHeight={132}
@@ -78,17 +64,60 @@ const CategoryPage = () => {
                 </Box>
             </Box>
 
-            {/* <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList isLoading={isLoadingTopAuthors} error={errorTopAuthors} authors={topAuthors} itemWidth={134} name={t("title-best-author-genre")} />
-            </Box> */}
+            {topAuthorsInGenre && topAuthorsInGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <AuthorCarouselList
+                        authors={topAuthorsInGenre}
+                        itemWidth={134}
+                        name={t("title-best-author-genre")}
+                        isLoading={authorsLoading}
+                        error={authorsError}
+                        url={"/genre/" + genreId + "/top-authors"}
+                        color='light'
+                    />
+                </Box>)}
 
-            {/*<Box component={"section"} mt={"60px"}>*/}
-            {/*    <MediaSmallCarouselList medias={tracks} itemWidth={134} name={t("title-best-song-genre")} />*/}
-            {/*</Box>*/}
 
-            {/*<Box component={"section"} mt={"60px"}>*/}
-            {/*    <MediaSmallCarouselList tracks={tracks} itemWidth={134} name={t("title-new-release")} />*/}
-            {/*</Box>*/}
+            {popularTracksByGenre && popularTracksByGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <TrackSmallCarouselList
+                        tracks={popularTracksByGenre}
+                        isLoading={tracksLoading}
+                        error={tracksError}
+                        itemWidth={134}
+                        title={t("title-best-song-genre")}
+                        variant="h3"
+                        url={"/genre/" + genreId + "/popular-tracks"}
+                    />
+                </Box>)}
+
+
+            {recentAlbumsByGenre && recentAlbumsByGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <MediaSmallCarouselList
+                        medias={recentAlbumsByGenre}
+                        itemWidth={134}
+                        name={t("title-recent-albums")}
+                        isLoading={albumLoading}
+                        error={albumError}
+                        url={"/genre/" + genreId + "/recent-albums"}
+                    />
+                </Box>)}
+
+
+            {recentPlaylistsByGenre && recentPlaylistsByGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <MediaSmallCarouselList
+                        medias={recentPlaylistsByGenre}
+                        itemWidth={134}
+                        name={t("title-recent-playlists")}
+                        isLoading={playlistsLoading}
+                        error={playlistsError}
+                        url={"/genre/" + genreId + "/recent-playlists"}
+                    />
+                </Box>)}
+
+
         </>
     );
 };

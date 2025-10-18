@@ -75,6 +75,8 @@ const playerSlice = createSlice({
             state.playlist.push(...action.payload);
         },
 
+        // В PlayerSlice.ts исправьте редьюсер setPlaylist:
+
         setPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             const isSamePlaylist =
                 state.playlist.length === action.payload.length &&
@@ -84,16 +86,27 @@ const playerSlice = createSlice({
                 return;
             }
 
+            // Сохраняем текущее состояние воспроизведения
+            const currentTrackId = state.active?.id;
+            const wasPlaying = !state.pause;
+            const previousTime = state.currentTime;
+            const previousDuration = state.duration;
+
             state.playlist = action.payload;
             state.bufferTracks = [];
 
             if (action.payload.length > 0) {
-                const currentTrackId = state.active?.id;
                 const newIndex = action.payload.findIndex(track => track.id === currentTrackId);
 
                 if (newIndex !== -1) {
+                    // Тот же трек остается активным - сохраняем состояние воспроизведения
                     state.currentTrackIndex = newIndex;
+                    state.active = action.payload[newIndex];
+                    state.duration = previousDuration;
+                    state.currentTime = previousTime;
+                    state.pause = wasPlaying ? false : true;
                 } else {
+                    // Активный трек изменился - сбрасываем состояние
                     state.currentTrackIndex = 0;
                     state.active = action.payload[0];
                     state.duration = 0;

@@ -39,7 +39,7 @@ const CategoryPage = () => {
     return (
         <>
             <Box sx={{
-                backgroundImage:  `url(${categoryTop})`,
+                backgroundImage: `url(${categoryTop})`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover'
             }}
@@ -66,50 +66,60 @@ const CategoryPage = () => {
                 </Box>
             </Box>
 
-            <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList
-                    medias={recentAlbumsByGenre}
-                    itemWidth={134}
-                    name={t("title-recent-albums")}
-                    isLoading={albumLoading}
-                    error={albumError}
-                    url={"/genre/recent-albums"}
-                />
-            </Box>
+            {topAuthorsInGenre && topAuthorsInGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <AuthorCarouselList
+                        authors={topAuthorsInGenre}
+                        itemWidth={134}
+                        name={t("title-best-author-genre")}
+                        isLoading={authorsLoading}
+                        error={authorsError}
+                        url={"/genre/" + genreId + "/top-authors"}
+                        color='light'
+                    />
+                </Box>)}
 
-            <Box component={"section"} mt={"60px"}>
-                <TrackSmallCarouselList
-                    tracks={popularTracksByGenre}
-                    isLoading={tracksLoading}
-                    error={tracksError}
-                    itemWidth={134}
-                    title={t("title-popular-tracks")}
-                    variant="h3"
-                    url={"/genre/popular-tracks"}
-                />
-            </Box>
 
-            <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList
-                    medias={recentPlaylistsByGenre}
-                    itemWidth={134}
-                    name={t("title-recent-playlists")}
-                    isLoading={playlistsLoading}
-                    error={playlistsError}
-                    url={"/genre/recent-playlists"}
-                />
-            </Box>
+            {popularTracksByGenre && popularTracksByGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <TrackSmallCarouselList
+                        tracks={popularTracksByGenre}
+                        isLoading={tracksLoading}
+                        error={tracksError}
+                        itemWidth={134}
+                        title={t("title-best-song-genre")}
+                        variant="h3"
+                        url={"/genre/" + genreId + "/popular-tracks"}
+                    />
+                </Box>)}
 
-            <Box component={"section"} mt={"60px"}>
-                <AuthorCarouselList
-                    authors={topAuthorsInGenre}
-                    itemWidth={134}
-                    name={t("title-top-authors")}
-                    isLoading={authorsLoading}
-                    error={authorsError}
-                    url={"/genre/top-authors"}
-                />
-            </Box>
+
+            {recentAlbumsByGenre && recentAlbumsByGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <MediaSmallCarouselList
+                        medias={recentAlbumsByGenre}
+                        itemWidth={134}
+                        name={t("title-recent-albums")}
+                        isLoading={albumLoading}
+                        error={albumError}
+                        url={"/genre/" + genreId + "/recent-albums"}
+                    />
+                </Box>)}
+
+
+            {recentPlaylistsByGenre && recentPlaylistsByGenre.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <MediaSmallCarouselList
+                        medias={recentPlaylistsByGenre}
+                        itemWidth={134}
+                        name={t("title-recent-playlists")}
+                        isLoading={playlistsLoading}
+                        error={playlistsError}
+                        url={"/genre/" + genreId + "/recent-playlists"}
+                    />
+                </Box>)}
+
+
         </>
     );
 };

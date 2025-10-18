@@ -1,7 +1,10 @@
-import {Box, IconButton, Typography} from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import type {FC} from "react";
 import { useTranslation } from 'react-i18next';
+import React, { type FC } from "react";
+import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto";
 
 interface PlaylistItemProps {
@@ -9,9 +12,25 @@ interface PlaylistItemProps {
     itemHeight: number;
 }
 
-const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}) => {
+const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight }) => {
 
     const { t } = useTranslation('other')
+    const { playTrackList } = usePlayTrack();
+    const dispatch = useAppDispatch();
+
+    const handlePlayPlaylist = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const result = await dispatch(fetchTracksByAlbum({
+            albumId: playlist.id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByAlbum.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
+    }
 
     return (
         <Box
@@ -19,7 +38,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}
                 width: "100%",
             }}
         >
-            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative" } sx={{
+            <Box bgcolor="gray" width="100%" height={`${itemHeight - 88}px`} borderRadius={"10px 10px 0 0"} position={"relative"} sx={{
                 backgroundImage: `url(${playlist.imgUrl || ""})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -31,19 +50,23 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({playlist, itemHeight}
             }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" width={"100%"}>
                     <Box display={"flex"} flexDirection={"column"}>
-                        <Typography variant={"mainSbL"} gutterBottom sx={{ color: "black"}}>
+                        <Typography variant={"mainSbL"} gutterBottom color={"var(--orange-peel)"}>
                             {playlist.title}
                         </Typography>
-                        <Typography variant={"mainRM"} sx={{ color: "black"}}>
+                        <Typography variant={"mainRM"} color={"var(--columbia-blue)"}>
                             {t("title-album")} &middot; {playlist.owner.name || "Unknown"}
                         </Typography>
                     </Box>
+
                     <IconButton
-                        sx={{padding: 0}}
+                        onClick={(e) => {
+                            handlePlayPlaylist(e)
+                        }}
+                        sx={{ padding: 0 }}
                         disableRipple={true}
                     >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
-                             height={"30px"}/>
+                            height={"30px"} />
                     </IconButton>
                 </Box>
             </Box>

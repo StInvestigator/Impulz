@@ -1,7 +1,6 @@
 import {Box, IconButton, Link, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import {useCallback, type FC} from "react";
-import { useTranslation } from 'react-i18next';
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { useNavigate } from "react-router-dom";
@@ -14,10 +13,8 @@ interface TrackTrueSmallItemProps {
 
 const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({track, itemWidth, color = "light"}) => {
 
-    const { t } = useTranslation('other')
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
-    console.log(track);
 
     const handlePlay = useCallback(() => {
         playSingle(track);

@@ -17,7 +17,8 @@ const MyPlaylistList = () => {
         if (userId) {
             dispatch(fetchPlaylistsOwnByUserId({ userId }));
         }
-    }, [dispatch, userId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId]);
 
     if (isLoading) {
         return (

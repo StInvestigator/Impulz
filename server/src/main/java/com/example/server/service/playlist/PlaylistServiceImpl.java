@@ -71,6 +71,12 @@ public class PlaylistServiceImpl implements PlaylistService {
             throw new EntityNotFoundException("Track not found");
         }
 
+        boolean trackAlreadyExists = playlistTrackRepository.existsById_PlaylistIdAndId_TrackId(playlistId, trackId);
+
+        if (trackAlreadyExists) {
+            throw new IllegalArgumentException("Track already exists in playlist");
+        }
+
         PlaylistTrackKey key = new PlaylistTrackKey(playlistId, trackId);
         PlaylistTrack entry = new PlaylistTrack();
         entry.setId(key);

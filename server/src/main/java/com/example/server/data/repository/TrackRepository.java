@@ -111,7 +111,7 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
     @Query(
             value = """
-        SELECT t.* FROM tracks t 
+        SELECT t.* FROM tracks t
         JOIN albums a ON a.id = t.album_id
         JOIN track_authors ta ON t.id = ta.track_id 
         WHERE ta.author_id = :authorId 
@@ -139,6 +139,20 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
     @Query("SELECT t FROM Track t WHERE t.album.id = :albumId AND t.album.releaseDate <= CURRENT_TIMESTAMP")
     Page<Track> findTracksByAlbum(@Param("albumId") Long albumId, Pageable pageable);
+
+    @Query(value = """
+            SELECT t.*
+            FROM tracks t JOIN playlist_tracks pt ON pt.track_id = t.id
+            WHERE pt.playlist_id = :playlistId
+            """,
+            countQuery = """
+            SELECT COUNT(*) FROM(
+            SELECT t.id
+            FROM tracks t JOIN playlist_tracks pt ON pt.track_id = t.id
+            WHERE pt.playlist_id = :playlistId) sub
+            """
+            , nativeQuery = true)
+    Page<Track> findTracksByPlaylist(@Param("playlistId") Long playlistId, Pageable pageable);
 
     @Modifying
     @Query("UPDATE Track t SET t.totalPlays = t.totalPlays + 1 WHERE t.id = :trackId")

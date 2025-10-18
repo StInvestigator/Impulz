@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import React, { type FC } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
-import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
+import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto";
+import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
 
 interface PlaylistItemProps {
     playlist: PlaylistSimpleDto;
@@ -17,24 +18,27 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
     const { t } = useTranslation('other')
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
+    const route = useAppNavigate()
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const result = await dispatch(fetchTracksByAlbum({
-            albumId: playlist.id,
+        const result = await dispatch(fetchTracksByPlaylist({
+            playlistId: playlist.id,
             page: 0,
             size: 1000
         }));
 
-        if (fetchTracksByAlbum.fulfilled.match(result)) {
+        if (fetchTracksByPlaylist.fulfilled.match(result)) {
             playTrackList(result.payload, 0);
         }
     }
 
     return (
         <Box
+            onClick={() => route(`/playlist/${playlist.id}`)}
             sx={{
+                cursor: "pointer",
                 width: "100%",
             }}
         >
@@ -54,7 +58,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
                             {playlist.title}
                         </Typography>
                         <Typography variant={"mainRM"} color={"var(--columbia-blue)"}>
-                            {t("title-album")} &middot; {playlist.owner.name || "Unknown"}
+                            {t("title-playlist")} &middot; {playlist.owner.name || "Unknown creator"}
                         </Typography>
                     </Box>
 

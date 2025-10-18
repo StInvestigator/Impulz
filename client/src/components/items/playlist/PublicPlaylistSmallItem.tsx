@@ -1,12 +1,12 @@
-import {Box, IconButton, Typography} from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
-import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
+import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
-import React, {type FC} from "react";
-import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
-import {useAppDispatch} from "../../../hooks/redux.ts";
-import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
+import React, { type FC } from "react";
+import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
 
 interface PlaylistItemProps {
     playlist: PlaylistSimpleDto;
@@ -14,7 +14,7 @@ interface PlaylistItemProps {
     color?: "dark" | "light";
 }
 
-const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, color = "light"}) => {
+const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, color = "light" }) => {
 
     const { t } = useTranslation('other')
     const route = useAppNavigate()
@@ -25,13 +25,13 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({playlist, itemWidth, co
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const result = await dispatch(fetchTracksByAlbum({
-            albumId: playlist.id,
+        const result = await dispatch(fetchTracksByPlaylist({
+            playlistId: playlist.id,
             page: 0,
             size: 1000
         }));
 
-        if (fetchTracksByAlbum.fulfilled.match(result)) {
+        if (fetchTracksByPlaylist.fulfilled.match(result)) {
             playTrackList(result.payload, 0);
         }
     }

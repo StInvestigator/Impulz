@@ -64,7 +64,7 @@ public class TrackServiceImpl implements TrackService {
 
     @CacheEvict(cacheNames = {"track.findMostPlayedTracksThisWeek", "track.getRecommendedTracksToday",
             "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors",
-            "track.findPopularTracksByGenre", "track.findTracksByAlbum"}, allEntries = true)
+            "track.findPopularTracksByGenre", "track.findTracksByAlbum", "track.findTracksByPlaylist"}, allEntries = true)
     public void deleteTrack(Track track) {
         trackRepository.delete(track);
     }
@@ -138,6 +138,17 @@ public class TrackServiceImpl implements TrackService {
         return new PageDto<>(
                 trackRepository
                         .findTracksByAlbum(albumId, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
+    }
+
+    @Cacheable(value = "track.findTracksByPlaylist",
+            key = "#playlistId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+    @Override
+    public PageDto<TrackSimpleDto> findTracksByPlaylist(Long playlistId, Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findTracksByPlaylist(playlistId, pageable)
                         .map(TrackSimpleDto::fromEntity)
         );
     }

@@ -4,7 +4,8 @@ import {
     fetchPopularTracksByAuthor,
     fetchAuthorTrackCollaborations,
     fetchTracksByAlbum,
-    fetchPopularTracksByGenre
+    fetchPopularTracksByGenre,
+    fetchTracksByPlaylist
 } from "./action-creators/tracks.ts";
 import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
@@ -85,6 +86,20 @@ const trackSlice = createSlice({
             .addCase(fetchTracksByAlbum.rejected,(state,action) =>{
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузки треков альбома";
+            })
+
+            .addCase(fetchTracksByPlaylist.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchTracksByPlaylist.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.tracksByAlbum = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchTracksByPlaylist.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузки треков плейлиста";
             })
 
             .addCase(fetchPopularTracksByGenre.pending,(state) =>{

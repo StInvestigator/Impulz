@@ -1,12 +1,12 @@
-import {Box, IconButton, Link, Typography} from "@mui/material";
+import { Box, IconButton, Link, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import React, {type FC} from "react";
+import React, { type FC } from "react";
 import { useTranslation } from 'react-i18next';
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
-import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
-import {useAppDispatch} from "../../../hooks/redux.ts";
-import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
-import {useAppNavigate} from "../../../hooks/useAppNavigate.ts";
+import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
+import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -14,7 +14,7 @@ interface AlbumItemProps {
     color?: "dark" | "light";
 }
 
-const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"}) => {
+const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" }) => {
 
     const { t } = useTranslation('other')
     const { playTrackList } = usePlayTrack();
@@ -44,6 +44,11 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                 color: 'black',
                 flexShrink: 0,
                 cursor: "pointer",
+                padding: "4px",
+                transition: 'background-color 0.3s ease',
+                '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                }
             }}
         >
             {/* Контейнер для изображения альбома */}
@@ -57,6 +62,10 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundColor: album.imgUrl ? 'transparent' : 'rgba(255, 255, 255, 0.1)',
+                    transition: 'transform 0.2s ease',
+                    '&:hover': {
+                        transform: 'scale(1.05)',
+                    }
                 }}
             >
                 {/* Кнопка play поверх изображения */}
@@ -119,20 +128,16 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({album, itemWidth, color = "light"})
                         textOverflow: 'ellipsis'
                     }}>
                         {album.authors.map((author, index) => (
-                            <Box key={author.id} sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Link
-                                    href={`/author/${author.id}`}
-                                    sx={{
-                                        color: 'inherit',
-                                        textDecoration: 'none',
-                                        '&:hover': {
-                                            textDecoration: 'underline',
-                                            cursor: 'pointer',
-                                        }
-                                    }}
-                                >
-                                    {author.name}
-                                </Link>
+                            <Box key={author.id} sx={{
+                                display: 'flex', alignItems: 'center', color: 'inherit',
+                                textDecoration: 'none',
+                                '&:hover': {
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                }
+                            }}
+                                onClick={() => route(`/author/${author.id}`)}>
+                                {author.name}
                                 {index < album.authors.length - 1 && (
                                     <Box component="span" sx={{ mx: '4px' }}>,</Box>
                                 )}

@@ -28,6 +28,7 @@ public interface TrackService
     PageDto<TrackSimpleDto> findTracksByAuthorWithMultipleAuthors(String authorId, Pageable pageable);
     PageDto<TrackSimpleDto> findPopularTracksByGenre(Long genreId, Pageable pageable);
     PageDto<TrackSimpleDto> findTracksByAlbum(Long albumId, Pageable pageable);
+    PageDto<TrackSimpleDto> findTracksByPlaylist(Long playlistId, Pageable pageable);
     Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album);
     List<Track> uploadTracks(List<TrackCreationDto> creationDtos, List<MultipartFile> covers, List<MultipartFile> files, Album album);
     List<Long> getUserFavoriteFromTrackIds(String userId, List<Long> trackIds);

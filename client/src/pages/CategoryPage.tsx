@@ -1,8 +1,6 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Box } from "@mui/material";
 import categoryTop from '../assets/category/categoryTop.svg';
-// import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
-// import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux.ts';
 import { fetchTopAuthorsInGenre } from '../store/reducers/action-creators/author.ts';

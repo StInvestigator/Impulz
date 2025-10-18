@@ -73,6 +73,24 @@ export const fetchTracksByAlbum = createAsyncThunk<
     }
 );
 
+export const fetchTracksByPlaylist = createAsyncThunk<
+    TrackSimpleDto[],
+    { playlistId: number | string, page?: number, size?: number }
+>(
+    "tracks/fetchTracksByPlaylist",
+    async ({ playlistId, page = 0, size = 20 }) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
+
+
+        const response = await $authApi.get(
+            `/tracks/ByPlaylist/${playlistId}?${params}`
+        );
+        return response.data.page.content;
+    }
+);
+
 export const fetchPopularTracksByGenre = createAsyncThunk<
     TrackSimpleDto[],
     { genreId: number; page?: number; size?: number },

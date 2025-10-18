@@ -34,7 +34,7 @@ const TrackSmallCarouselList: FC<TrackListProps> = ({
         />
       ) : (
         <ListCarousel
-          gap={24}
+          gap={16}
           count_items={tracks.length}
           variant={variant}
           title={title}

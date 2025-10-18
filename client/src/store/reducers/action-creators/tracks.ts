@@ -110,7 +110,6 @@ export const likeTrack = createAsyncThunk<
             return rejectWithValue(`Failed to add track to playlist : ${error}`);
         }
     }
-)
 );
 
 export const fetchTracksByPlaylist = createAsyncThunk<

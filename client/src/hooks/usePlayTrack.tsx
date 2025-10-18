@@ -11,7 +11,7 @@ import {
     setCurrentTrack,
     updateSourcePage,
     setBufferTracks,
-    appendToPlaylist,
+    appendToPlaylist, playTrack,
 } from "../store/reducers/PlayerSlice.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
@@ -25,7 +25,7 @@ const pendingPageRef = { current: null as number | null };
 export const usePlayTrack = () => {
     const dispatch = useAppDispatch();
     const { keycloak } = useKeycloak();
-    const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading } =
+    const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading,active } =
         useAppSelector((state) => state.player);
 
     const currentFetchFnRef = useRef<((page: number, size: number) => Promise<TrackSimpleDto[]>) | null>(null);
@@ -52,21 +52,56 @@ export const usePlayTrack = () => {
 
     const playSingle = (track: TrackSimpleDto, mode?: "replace" | "append" | "insertNext") => {
         if (!requireAuth()) return;
+
         const effectiveMode = mode || playbackMode;
+
+        console.log('🎵 playSingle called:', {
+            track: track.title,
+            mode: effectiveMode,
+            currentPlaylistLength: playlist.length,
+            currentTrackIndex
+        });
+
         switch (effectiveMode) {
             case "append":
                 dispatch(addToPlaylist([track]));
+                console.log('🎵 Track appended to playlist');
                 break;
             case "insertNext":
                 dispatch(insertNextInPlaylist([track]));
+                console.log('🎵 Track inserted next');
                 break;
             case "replace":
             default:
                 dispatch(setPlaylist([track]));
                 dispatch(setCurrentTrack(0));
+                console.log('🎵 Playlist replaced with single track');
                 break;
         }
     };
+
+    const addToQueue = (track: TrackSimpleDto) => {
+        if (!requireAuth()) return;
+
+        const isPlayerInitialized = active !== null;
+
+        console.log('🎵 addToQueue:', {
+            track: track.title,
+            isPlayerInitialized,
+            currentActive: active?.title,
+            playlistLength: playlist.length
+        });
+
+        if (!isPlayerInitialized) {
+            console.log('🎵 Плеер не инициализирован, начинаем воспроизведение');
+            dispatch(setPlaylist([track]));
+            dispatch(playTrack());
+        } else {
+            console.log('🎵 Плеер инициализирован, добавляем в конец очереди');
+            dispatch(appendToPlaylist([track]));
+        }
+    };
+
 
     const playTrackList = (tracks: TrackSimpleDto[], startIndex: number = 0) => {
         if (!requireAuth()) return;
@@ -315,6 +350,7 @@ export const usePlayTrack = () => {
 
     return {
         playSingle,
+        addToQueue,
         playTrackList,
         playWithBuffering,
         loadNextPageToBuffer,

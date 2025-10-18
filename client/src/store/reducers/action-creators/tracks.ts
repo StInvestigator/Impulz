@@ -89,3 +89,26 @@ export const fetchTracksByAlbum = createAsyncThunk<
         return response.data.page.content;
     }
 )
+
+
+export const likeTrack = createAsyncThunk<
+    void,
+    { userId : string;trackId : number },
+    { rejectValue: string }
+>(
+    'track/likeTrack',
+    async({userId,trackId},{rejectWithValue}) => {
+        try {
+            await $authApi.post('/tracks/like', null, {
+                params: {
+                    userId: userId,
+                    trackId: trackId.toString()
+                }
+            });
+        }
+        catch (error: unknown)
+        {
+            return rejectWithValue(`Failed to add track to playlist : ${error}`);
+        }
+    }
+)

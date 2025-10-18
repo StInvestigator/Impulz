@@ -112,8 +112,6 @@ export const addTrackToPlaylist = createAsyncThunk<
             return;
 
         } catch (error: unknown) {
-            console.error('Error adding track to playlist:', error);
-
             if (typeof error === 'object' && error !== null && 'response' in error) {
                 const axiosError = error as { response?: { status?: number } };
 

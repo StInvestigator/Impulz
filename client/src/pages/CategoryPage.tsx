@@ -22,9 +22,12 @@ const CategoryPage = () => {
 
     const location = useLocation();
     const { t } = useTranslation('category');
+    const { i18n } = useTranslation();
     const [searchParams] = useSearchParams();
     const category = (location.state as any)?.category || searchParams.get('category');
+    const categoryUa = (location.state as any)?.categoryUa || searchParams.get('categoryUa');
     const genreId = (location.state as any)?.genreId || Number(searchParams.get('genreId')) || 1;
+    const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
 
     useEffect(() => {
         if (!genreId) return;
@@ -60,7 +63,7 @@ const CategoryPage = () => {
                     fontSize={48}
                     fontWeight={700}
                 >
-                    {category}
+                    {isUkrainian ? categoryUa : category}
                 </Box>
             </Box>
 

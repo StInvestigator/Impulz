@@ -129,4 +129,4 @@ export const fetchPopularTracksByGenre = createAsyncThunk<
             return rejectWithValue(`Не удалось загрузить треки по жанру`);
         }
     }
-)
+);

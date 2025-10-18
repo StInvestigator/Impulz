@@ -1,4 +1,4 @@
-import { Box, IconButton, Link, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useCallback, type FC } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";

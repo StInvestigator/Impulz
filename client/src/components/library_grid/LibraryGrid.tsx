@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 type Element = {
     id: number;
     title: string;
+    titleUa: string;
     imageUrl: string;
     align: 'left' | 'center' | 'right';
     height: number;
@@ -74,8 +75,8 @@ const LibraryGrid = () => {
         dispatch(fetchAllGenres());
     }, [dispatch]);
 
+    const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
     useEffect(() => {
-        const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
         const mapped: Element[] = allGenres.map((g, idx) => {
             const hasBase = idx < baseLayout.length;
             const layout = hasBase
@@ -84,7 +85,8 @@ const LibraryGrid = () => {
 
             return {
                 id: g.id,
-                title: isUkrainian ? (g.uaName || g.name) : g.name,
+                title: g.name,
+                titleUa: g.uaName,
                 imageUrl: g.imgUrl || '',
                 align: layout.align,
                 height: layout.height,
@@ -127,7 +129,7 @@ const LibraryGrid = () => {
             <GridContainer>
                 {elements.map((elem, index) => (
                     <GridItem
-                        onClick={() => navigate('/category', { state: { genreId: elem.id, category: elem.title } })}
+                        onClick={() => navigate('/category', { state: { genreId: elem.id, category: elem.title, categoryUa: elem.titleUa } })}
                         key={index}
                         colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
                         rowSpan={elem.height}
@@ -144,7 +146,7 @@ const LibraryGrid = () => {
                                     backgroundColor: 'rgba(35, 12, 51, 0.6)'
                                 }}
                             >
-                                {elem.title}
+                                {isUkrainian ? elem.titleUa : elem.title}
                             </Box>
                         </CirclesCard>
                     </GridItem>

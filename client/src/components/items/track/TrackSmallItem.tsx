@@ -1,9 +1,9 @@
-import { Box, IconButton, Typography, Link } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { type FC, useRef, useState, useLayoutEffect, useCallback } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
-import { TrackContextMenu } from "./TrackContextMenu";
+import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
 import { useTrackContextMenu } from "../../../hooks/useTrackContextMenu";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useTrackContextMenu();
-    const route  = useAppNavigate();
+    const route  = useNavigate();
 
     const handlePlay = useCallback(() => {
         playSingle(track);
@@ -26,10 +26,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const handleAddToPlaylist = (trackId: number) => {
         console.log("Add track to playlist:", trackId);
     };
-
-    const handleAlbumClick = useCallback(() => {
-        route(`/album/${track.albumId}`);
-    }, [route, track.albumId]);
 
     useLayoutEffect(() => {
         const updateCardWidth = () => {
@@ -111,7 +107,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                     {isMobileLayout ? (
                         <MobileLayout track={track} />
                     ) : (
-                        <DesktopLayout track={track} onAlbumClick={handleAlbumClick} />
+                        <DesktopLayout track={track} />
                     )}
 
                     {/* Длительность и кнопка воспроизведения */}

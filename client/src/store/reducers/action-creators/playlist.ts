@@ -114,8 +114,7 @@ export const fetchRecentPlaylistsByGenre = createAsyncThunk<
             return rejectWithValue('Не удалось загрузить плейлисты по жанру');
         }
     }
-)
-)
+);
 
 export const addTrackToPlaylist = createAsyncThunk<
     void,

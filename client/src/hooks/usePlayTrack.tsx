@@ -203,9 +203,19 @@ export const usePlayTrack = () => {
     ) => {
         if (!requireAuth()) return;
 
-        currentFetchFnRef.current = fetchPageFn;
-        sharedFetchFn = fetchPageFn;
-        sharedFetchSource = { type: sourceConfig.type, id: sourceConfig.id };
+        if (!sharedFetchFn || !sharedFetchSource ||
+            sharedFetchSource.type !== sourceConfig.type ||
+            sharedFetchSource.id !== sourceConfig.id) {
+
+            currentFetchFnRef.current = fetchPageFn;
+            sharedFetchFn = fetchPageFn;
+            sharedFetchSource = { type: sourceConfig.type, id: sourceConfig.id };
+
+            console.log('🎵 playWithBuffering: установили sharedFetchFn и sharedFetchSource', {
+                type: sourceConfig.type,
+                id: sourceConfig.id
+            });
+        }
 
         const newSource: PlayerSource = {
             ...sourceConfig,
@@ -217,7 +227,6 @@ export const usePlayTrack = () => {
         console.log('🎵 playWithBuffering: устанавливаем плейлист без предзагрузки буфера');
 
         dispatch(setSourceWithBuffer({ source: newSource, initialTracks, bufferTracks: [], startIndex }));
-
     };
 
     const useAutoBuffer = () => {
@@ -243,11 +252,19 @@ export const usePlayTrack = () => {
                 isBufferLoading,
                 bufferTracksCount: bufferTracks.length,
                 shouldLoadBuffer,
-                shouldAppendBuffer
+                shouldAppendBuffer,
+                sharedFetchFn: !!sharedFetchFn,
+                sharedFetchSource: sharedFetchSource
             });
 
             if (shouldLoadBuffer) {
                 console.log('🎵 Загружаем следующую страницу в буфер (осталось треков:', tracksLeft, ')');
+                console.log('🎵 Параметры для загрузки:', {
+                    sourceType: source?.type,
+                    sourceId: source?.id,
+                    sharedFetchSource,
+                    sharedFetchFn: !!sharedFetchFn
+                });
                 void loadNextPageToBuffer();
             }
 
@@ -291,6 +308,15 @@ export const usePlayTrack = () => {
                 console.log('🎵 Загружены треки первой страницы:', firstPage.tracks.length);
                 console.log('🎵 Устанавливаем плейлист БЕЗ предзагрузки буфера');
 
+                const fetchFn = async (page: number, size: number) => {
+                    const res = await fetchAuthorTracksPaged(authorId, page, size);
+                    return res.tracks;
+                };
+
+                currentFetchFnRef.current = fetchFn;
+                sharedFetchFn = fetchFn;
+                sharedFetchSource = { type: "author", id: authorId };
+
                 await playWithBuffering(
                     firstPage.tracks,
                     {
@@ -300,10 +326,7 @@ export const usePlayTrack = () => {
                         size: pageSize,
                         totalPages: firstPage.totalPages
                     },
-                    async (page, size) => {
-                        const res = await fetchAuthorTracksPaged(authorId, page, size);
-                        return res.tracks;
-                    }
+                    fetchFn
                 );
             } else {
                 console.warn('🎵 Не удалось загрузить треки для автора', authorId);

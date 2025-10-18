@@ -118,7 +118,7 @@ const Cover: FC<CoverProps> = ({
                                 {year}
                             </Typography>
                         )}
-                        {trackCount && (
+                        {trackCount !== undefined && trackCount > 0 && (
                             <Typography variant={"mainRL"} fontSize={"24px"}>
                                 {trackCount} {t("title-songs")}
                             </Typography>

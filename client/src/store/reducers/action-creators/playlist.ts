@@ -115,3 +115,40 @@ export const fetchRecentPlaylistsByGenre = createAsyncThunk<
         }
     }
 )
+)
+
+export const addTrackToPlaylist = createAsyncThunk<
+    void,
+    { playlistId: number; trackId: number },
+    { rejectValue: string }
+>(
+    'playlists/addTrackToPlaylist',
+    async ({ playlistId, trackId }, { rejectWithValue }) => {
+        try {
+            await $authApi.post('/playlists/addTrack', null, {
+                params: {
+                    playlistId: playlistId.toString(),
+                    trackId: trackId.toString()
+                }
+            });
+
+            return;
+
+        } catch (error: unknown) {
+            console.error('Error adding track to playlist:', error);
+
+            if (typeof error === 'object' && error !== null && 'response' in error) {
+                const axiosError = error as { response?: { status?: number } };
+
+                if (axiosError.response?.status === 400) {
+                    return rejectWithValue('Track already exists in playlist');
+                }
+                if (axiosError.response?.status === 404) {
+                    return rejectWithValue('Playlist or track not found');
+                }
+            }
+
+            return rejectWithValue('Failed to add track to playlist');
+        }
+    }
+);

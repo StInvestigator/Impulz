@@ -19,10 +19,11 @@ import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
 interface TrackItemProps {
   track: TrackCreationFullDto;
   index: number;
+  editClick: (index: number) => void;
   deleteClick: (index: number) => void;
 }
 
-const TrackItem = ({ track, index, deleteClick }: TrackItemProps) => {
+const TrackItem = ({ track, index, deleteClick, editClick }: TrackItemProps) => {
   const [play, setPlay] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -187,7 +188,7 @@ const TrackItem = ({ track, index, deleteClick }: TrackItemProps) => {
           />
         )}
       </IconButton>
-      <IconButton sx={{ padding: 0, flexShrink: 0 }}>
+      <IconButton sx={{ padding: 0, flexShrink: 0 }} onClick={() => editClick(index)}>
         <Box
           component="img"
           src={editTrack}
@@ -308,10 +309,22 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
     setTracks(tracks.filter((_, i) => i !== index));
   };
 
+  const editTrack = (index: number) => {
+    const trackToEdit = tracks[index];
+    
+    if (trackToEdit) {
+      setTitleTrack(trackToEdit.title);
+      setAuthorsTrack(trackToEdit.authors);
+      setGenresTrack(trackToEdit.genres);
+      setAudioFile(trackToEdit.clientFileName);
+      setImageFile(trackToEdit.clientCoverName);
+    }
+  };
+
     return (
     <Box>
       {tracks.map((track, index) => (
-        <TrackItem key={index} track={track} index={index} deleteClick={deleteTrack} />
+        <TrackItem key={index} track={track} index={index} deleteClick={deleteTrack} editClick={editTrack} />
       ))}
       <Typography
         variant="h3"

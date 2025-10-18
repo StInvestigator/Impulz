@@ -17,6 +17,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useTrackContextMenu();
+    const route  = useAppNavigate();
 
     const handlePlay = useCallback(() => {
         playSingle(track);
@@ -24,9 +25,11 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
 
     const handleAddToPlaylist = (trackId: number) => {
         console.log("Add track to playlist:", trackId);
-        // Здесь будет логика добавления в плейлист
-        // Например: openAddToPlaylistModal(trackId);
     };
+
+    const handleAlbumClick = useCallback(() => {
+        route(`/album/${track.albumId}`);
+    }, [route, track.albumId]);
 
     useLayoutEffect(() => {
         const updateCardWidth = () => {
@@ -108,7 +111,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                     {isMobileLayout ? (
                         <MobileLayout track={track} />
                     ) : (
-                        <DesktopLayout track={track} />
+                        <DesktopLayout track={track} onAlbumClick={handleAlbumClick} />
                     )}
 
                     {/* Длительность и кнопка воспроизведения */}
@@ -139,7 +142,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
             <TrackContextMenu
                 contextMenu={contextMenu}
                 onClose={handleCloseContextMenu}
-                trackId={track.id}
+                track={track}
                 onAddToPlaylist={handleAddToPlaylist}
             />
         </>
@@ -170,10 +173,8 @@ const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => {
             <Box sx={{
                 flex: 1,
                 color: 'inherit',
-                '&:hover': {
-                    textDecoration: 'underline',
-                    color: '#1976d2',
-                }
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline', color: '#1976d2' },
             }}
                 onClick={() => route(`/album/${track.albumId}`)}>
                 <Typography variant="mainRM" noWrap>
@@ -186,6 +187,7 @@ const DesktopLayout: FC<{ track: TrackSimpleDto }> = ({ track }) => {
 
 const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) => {
     const route = useNavigate();
+
     if (!authors || authors.length === 0) {
         return (
             <Typography variant="mainRM">

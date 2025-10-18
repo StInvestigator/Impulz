@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import mainImage from "../assets/mainImage.svg"
 import GenreList from "../components/lists/GenreList";
 import TrackBigCarouselList from "../components/carousel_list/TrackBigCarouselList";
@@ -7,8 +7,6 @@ import AuthorCarouselList from "../components/carousel_list/AuthorCarouselList";
 import PlaylistCarouselList from "../components/carousel_list/PlaylistCarouselList";
 import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
-import TopSelectionsList from "../components/lists/TopSelectionsList.tsx";
-import { useAppNavigate } from "../hooks/useAppNavigate.ts";
 import { fetchTopTracksByWeek } from "../store/reducers/action-creators/tracks.ts";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { useEffect } from "react";
@@ -30,7 +28,6 @@ const MainPage = () => {
         isLoading: albumLoading,
         error: albumError
     } = useAppSelector((state) => state.album);
-    const route = useAppNavigate()
     const { t } = useTranslation(['main', 'other'])
 
     const { keycloak } = useKeycloak();
@@ -77,6 +74,25 @@ const MainPage = () => {
                     </Box>
                 )
             }
+            {/* <Box component={"section"} mt={"60px"}>
+                <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>
+                    <Typography variant={"h1"} fontSize={"36px"} fontWeight={700}>
+                        {t("main:title-top-selections")}
+                    </Typography>
+                    <Button onClick={() => route("/allTopSelections")} sx={{
+                        height: "32px",
+                        border: "1px solid black",
+                        borderRadius: "10px",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: "black",
+                        textTransform: "none"
+                    }}>
+                        {t("other:button-watch-all")}
+                    </Button>
+                </Box>
+                <TopSelectionsList />
+            </Box> */}
         </>
     );
 };

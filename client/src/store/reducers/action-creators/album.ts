@@ -34,15 +34,18 @@ export const fetchAlbumDetails = createAsyncThunk<
   AlbumDto,
   number,
   { rejectValue: string }
->("albums/fetchAlbumDetails", async (albumId, { rejectWithValue }) => {
-  try {
-    const response = await $authApi.get(`/albums/Dto/${albumId}`);
-    return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
-    return rejectWithValue("Не удалось загрузить информацию об альбоме");
-  }
-});
+>(
+    "albums/fetchAlbumDetails",
+    async (albumId, { rejectWithValue }) => {
+      try {
+        const response = await $authApi.get(`/albums/Dto/${albumId}`);
+        return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
+        return rejectWithValue("Не удалось загрузить информацию об альбоме");
+      }
+    }
+);
 
 export const fetchAuthorAlbumCollaborations = createAsyncThunk<
   AlbumSimpleDto[],

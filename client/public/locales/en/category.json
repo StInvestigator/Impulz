@@ -1,5 +1,8 @@
 {
-  "title-best-author-genre": "The best author this genre",
-  "title-best-song-genre": "The best song this genre",
-  "title-new-release": "New releases"
+  "title-best-author-genre": "The best authors in the genre",
+  "title-best-song-genre": "The best tracks in the genre",
+  "title-new-release": "New releases",
+  "title-recent-albums": "Newest albums in this genre",
+  "title-popular-tracks": "Popular tracks in this genre",
+  "title-recent-playlists": "Newest playlists in this genre"
 }

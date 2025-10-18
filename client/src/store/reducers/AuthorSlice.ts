@@ -4,6 +4,7 @@ import {
     fetchAuthorPlaysByMonth,
     fetchSimilarAuthorsByGenre,
     fetchTopAuthorsByMonth,
+    fetchTopAuthorsInGenre,
     subscribeToAuthor,
     unsubscribeFromAuthor,
     checkSubscriptionStatus
@@ -12,10 +13,10 @@ import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AuthorDto } from "../../models/AuthorDto.ts";
 
 interface AuthorState {
-    
     topAuthors: AuthorSimpleDto[];
     currentAuthor: AuthorDto | null;
     similarAuthors: AuthorSimpleDto[];
+    topAuthorsInGenre: AuthorSimpleDto[];
     playsByMonth: number | null;
     isLoading: boolean;
     error: string | null;
@@ -29,6 +30,7 @@ const initialState: AuthorState = {
     topAuthors: [],
     currentAuthor: null,
     similarAuthors: [],
+    topAuthorsInGenre: [],
     playsByMonth: null,
     isLoading: false,
     error: null,
@@ -131,6 +133,20 @@ const authorSlice = createSlice({
             })
             .addCase(checkSubscriptionStatus.rejected, (state, action) => {
                 state.subscriptionError = action.payload || "Ошибка проверки подписки";
+            })
+
+            .addCase(fetchTopAuthorsInGenre.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchTopAuthorsInGenre.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.topAuthorsInGenre = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchTopAuthorsInGenre.rejected,(state,action)=>{
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузке топ авторов по жанру";
             });
     },
 });

@@ -19,5 +19,9 @@ public class Genre {
     private Long id;
     @Column(nullable = false, unique = true, length = 50)
     private String name;
+    @Column(nullable = false, unique = true, length = 50)
+    private String uaName;
+    @Column(nullable = false)
+    private String imageUrl;
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "genres") private Set<Track> tracks = new HashSet<>();
 }

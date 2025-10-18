@@ -3,7 +3,9 @@ import {
     fetchAlbumDetails,
     fetchAlbumsByAuthor,
     fetchAlbumTodayRecommendations,
-    fetchAuthorAlbumCollaborations, fetchPersonalAlbumsByGenre
+    fetchAuthorAlbumCollaborations, 
+    fetchPersonalAlbumsByGenre,
+    fetchRecentAlbumsByGenre
 } from "./action-creators/album.ts";
 import type {AlbumDto} from "../../models/AlbumDto.ts";
 import type {AlbumSimpleDto} from "../../models/DTO/album/AlbumSimpleDto.ts";
@@ -14,6 +16,7 @@ interface AlbumState {
     authorCollaborationsAlbums: AlbumSimpleDto[];
     albumTodayRecommendations: AlbumSimpleDto[];
     albumPersonalRecommendationsByGenre: AlbumSimpleDto[];
+    recentAlbumsByGenre: AlbumSimpleDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -24,6 +27,7 @@ const initialState: AlbumState = {
     authorCollaborationsAlbums: [],
     albumTodayRecommendations: [],
     albumPersonalRecommendationsByGenre: [],
+    recentAlbumsByGenre: [],
     isLoading: false,
     error: null,
 };
@@ -106,6 +110,20 @@ const albumSlice = createSlice({
             .addCase(fetchPersonalAlbumsByGenre.rejected,(state,action)=>{
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке персональных альбомов-рекомендаций";
+            })
+
+            .addCase(fetchRecentAlbumsByGenre.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchRecentAlbumsByGenre.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.recentAlbumsByGenre = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchRecentAlbumsByGenre.rejected,(state,action)=>{
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке новых альбомов по жанру";
             });
     },
 });

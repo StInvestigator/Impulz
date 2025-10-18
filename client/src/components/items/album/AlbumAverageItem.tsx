@@ -5,6 +5,8 @@ import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchAlbumDetails } from "../../../store/reducers/action-creators/album.ts";
+import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
+import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -14,7 +16,24 @@ interface AlbumItemProps {
 
 const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) => {
     const navigate = useAppNavigate();
+    const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
+    const route = useAppNavigate();
+
+
+    const handlePlayPlaylist = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const result = await dispatch(fetchTracksByAlbum({
+            albumId: album.id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByAlbum.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
+    }
 
     const handleAlbumClick = () => {
         dispatch(fetchAlbumDetails(album.id));
@@ -68,6 +87,9 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
                         </Typography>
                     </Box>
                     <IconButton
+                    onClick={(e) => {
+                        handlePlayPlaylist(e)
+                    }}
                         sx={{padding: 0}}
                         disableRipple={true}
                     >

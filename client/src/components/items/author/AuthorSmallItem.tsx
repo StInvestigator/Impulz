@@ -19,7 +19,6 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
 
     const handlePlayClick = async (event: React.MouseEvent) => {
         event.stopPropagation();
-        console.log('🎵 Клик по play для автора:', author.id);
 
         try {
             await playAuthorPopularTracks(
@@ -28,7 +27,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
                 3
             );
         } catch (error) {
-            console.error('🎵 Ошибка при воспроизведении:', error);
+            console.error(error);
         }
     };
 

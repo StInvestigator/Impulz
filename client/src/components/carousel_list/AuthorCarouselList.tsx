@@ -11,6 +11,7 @@ interface AuthorListProps {
   itemWidth: number;
   name: string;
   url: string;  
+  color?: "dark" | "light";
 }
 
 const AuthorCarouselList: FC<AuthorListProps> = ({
@@ -20,6 +21,7 @@ const AuthorCarouselList: FC<AuthorListProps> = ({
   isLoading,
   error,
   url,
+  color = "dark"
 }) => {
   return (
     <>
@@ -36,12 +38,12 @@ const AuthorCarouselList: FC<AuthorListProps> = ({
           gap={24}
           variant={"h3"}
           count_items={authors.length}
-          bgColor={"var(--dark-purple)"}
-          textColor={"var(--deep-sky-blue)"}
+          bgColor={color == "dark" ? "var(--dark-purple)" : "var(--gradient-purple-rose)"}
+          textColor={color == "dark" ? "var(--deep-sky-blue)" : "var(--dark-purple)"}
           url={url}
         >
           {authors.map((author, index) => (
-            <AuthorSmallItem key={index} author={author} itemWidth={itemWidth} />
+            <AuthorSmallItem key={index} author={author} itemWidth={itemWidth} color={color == "dark" ? "light" : "dark"}/>
           ))}
         </ListCarousel>
       )}

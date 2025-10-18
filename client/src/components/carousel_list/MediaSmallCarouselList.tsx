@@ -39,7 +39,7 @@ const MediaSmallCarouselList: FC<TracklistListProps> = ({
         <ListCarousel
           title={name}
           variant={"h3"}
-          gap={24}
+          gap={16}
           count_items={medias.length}
           bgColor="var(--gradient-purple-rose)"
           textColor="var(--dark-purple)"

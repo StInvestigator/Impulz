@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { GenreSimpleDto } from "../../../models/DTO/GenreSimpleDto";
 import { setTotalPages } from "../PageSlice";
-import {$api} from "../../../http";
+import {$api, $authApi} from "../../../http";
 
 export const fetchTopGenres = createAsyncThunk<
     GenreSimpleDto[],
@@ -21,6 +21,22 @@ export const fetchTopGenres = createAsyncThunk<
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue(`Не удалось загрузить жанры`);
+        }
+    }
+)
+
+export const fetchAllGenres = createAsyncThunk<
+    GenreSimpleDto[],
+    void,
+    { rejectValue: string }
+>(
+    'genres/All',
+    async (_: void, { rejectWithValue }) => {
+        try {
+            const response = await $api.get(`/genres/all`);
+            return response.data as GenreSimpleDto[];
+        } catch (e) {
+            return rejectWithValue(`Не удалось загрузить все жанры`);
         }
     }
 )

@@ -47,6 +47,18 @@ public class PlaylistController {
         }
     }
 
+    @GetMapping("/ByGenre/Recent/{genreId}")
+    public ResponseEntity<PageDto<PlaylistSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(playlistService.findRecentPublicPlaylistsByGenre(genreId, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createPlaylist(@RequestPart("userId") String userId,
                                             @RequestPart("title") String title,

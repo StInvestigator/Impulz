@@ -34,7 +34,7 @@ const PlaylistCarouselList: FC<PlaylistListProps> = ({
         <ListCarousel
           title={name}
           variant={"h3"}
-          gap={24}
+          gap={16}
           count_items={playlists.length}
           bgColor={"var(--dark-purple)"}
           textColor={"var(--deep-sky-blue)"}

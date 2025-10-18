@@ -3,7 +3,9 @@ import {
     fetchTopTracksByWeek,
     fetchPopularTracksByAuthor,
     fetchAuthorTrackCollaborations,
-    fetchTracksByAlbum
+    fetchTracksByAlbum,
+    fetchPopularTracksByGenre,
+    fetchTracksByPlaylist
 } from "./action-creators/tracks.ts";
 import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
@@ -12,6 +14,7 @@ interface TrackState {
     popularTracks: TrackSimpleDto[];
     collaborationTracks: TrackSimpleDto[];
     tracksByAlbum: TrackSimpleDto[];
+    popularTracksByGenre: TrackSimpleDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -21,6 +24,7 @@ const initialState: TrackState = {
     popularTracks: [],
     collaborationTracks: [],
     tracksByAlbum: [],
+    popularTracksByGenre: [],
     isLoading: false,
     error: null,
 };
@@ -82,6 +86,34 @@ const trackSlice = createSlice({
             .addCase(fetchTracksByAlbum.rejected,(state,action) =>{
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузки треков альбома";
+            })
+
+            .addCase(fetchTracksByPlaylist.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchTracksByPlaylist.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.tracksByAlbum = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchTracksByPlaylist.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.error.message || "Ошибка при загрузки треков плейлиста";
+            })
+
+            .addCase(fetchPopularTracksByGenre.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchPopularTracksByGenre.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.popularTracksByGenre = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchPopularTracksByGenre.rejected,(state,action)=>{
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке популярных треков по жанру";
             });
     },
 });

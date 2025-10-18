@@ -1,6 +1,7 @@
 -- 1) USERS (10) — реальные исполнители (UUIDы сохранены)
 INSERT INTO users (keycloak_id, username, email, avatar_url, created_at)
-VALUES ('11111111-1111-4111-8111-111111111111', 'Adele', 'adele@example.com', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Adele.jpg',
+VALUES ('11111111-1111-4111-8111-111111111111', 'Adele', 'adele@example.com',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Adele.jpg',
         now() - interval '40 days'),
        ('22222222-2222-4222-8222-222222222222', 'The Weeknd', 'theweeknd@example.com',
         'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/TheWeeknd.jpg', now() - interval '38 days'),
@@ -16,9 +17,11 @@ VALUES ('11111111-1111-4111-8111-111111111111', 'Adele', 'adele@example.com', 'h
         'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/MumfordAndSons.jpg', now() - interval '28 days'),
        ('88888888-8888-4888-8888-888888888888', 'Metallica', 'metallica@example.com',
         'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Metallica.jpg', now() - interval '26 days'),
-       ('99999999-9999-4999-8999-999999999999', 'Brian Eno', 'eno@example.com', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/BrianEno.jpg',
+       ('99999999-9999-4999-8999-999999999999', 'Brian Eno', 'eno@example.com',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/BrianEno.jpg',
         now() - interval '24 days'),
-       ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Bob Marley', 'bob@example.com', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/BobMarley.jpg',
+       ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Bob Marley', 'bob@example.com',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/BobMarley.jpg',
         now() - interval '22 days');
 
 -- 2) AUTHORS (10)
@@ -39,35 +42,46 @@ VALUES ('11111111-1111-4111-8111-111111111111', now() - interval '39 days'),
        ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', now() - interval '21 days');
 
 -- 3) GENRES (оставляем прежние 10)
-INSERT INTO genres (id, name)
-VALUES (1, 'Pop'),
-       (2, 'Rock'),
-       (3, 'Jazz'),
-       (4, 'Classical'),
-       (5, 'Electronic'),
-       (6, 'Hip-Hop'),
-       (7, 'Folk'),
-       (8, 'Metal'),
-       (9, 'Ambient'),
-       (10, 'Reggae');
+INSERT INTO genres (id, name, ua_name, image_url)
+VALUES (1, 'Pop', 'Поп', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/woman_singing.png'),
+       (2, 'Rock', 'Рок', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/chill_wide_guy.png'),
+       (3, 'Jazz', 'Джаз', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/cool_man_with_saxaphone.png'),
+       (11, 'Rap', 'Реп', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/rapper.png'),
+       (4, 'Classical', 'Класика', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/old_man_playing_saxaphone.png'),
+       (5, 'Electronic', 'Електронна', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/cool_man_with_headphones.png'),
+       (6, 'Hip-Hop', 'Хіп-хоп', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/cool_man_with_hat.png'),
+       (7, 'Folk', 'Фолк', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/woman_with_guitar.png'),
+       (8, 'Metal', 'Метал', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/strong_angry_man_with_guitar.png'),
+       (9, 'Ambient', 'Ембієнт', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/girl_with_violin.png'),
+       (10, 'Reggae', 'Реггі', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/black_man_with_dreds.png'),
+       (12, 'K-pop', 'К-поп', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/korean.png');
 
 -- 4) ALBUMS (10) — реальные альбомы
 INSERT INTO albums (id, title, release_date, image_url, created_at)
-VALUES (1, '30', '2021-11-19', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/30.jpg', now() - interval '400 days'),
+VALUES (1, '30', '2021-11-19', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/30.jpg',
+        now() - interval '400 days'),
        (2, 'After Hours', '2020-03-20', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/AfterHours.jpg',
         now() - interval '350 days'),
-       (3, 'Come Away With Me', '2002-02-26', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ComeAwayWithMe.jpg',
+       (3, 'Come Away With Me', '2002-02-26',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ComeAwayWithMe.jpg',
         now() - interval '300 days'),
-       (4, 'A Rush of Blood to the Head', '2002-08-26', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ARushofBloodtotheHead.jpg',
+       (4, 'A Rush of Blood to the Head', '2002-08-26',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ARushofBloodtotheHead.jpg',
         now() - interval '320 days'),
-       (5, 'Elements', '2015-01-30', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Elements.jpg', now() - interval '450 days'),
-       (6, 'DAMN.', '2017-04-14', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/DAMN.jpg', now() - interval '200 days'),
-       (7, 'Sigh No More', '2009-10-05', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/SighNoMore.jpg', now() - interval '220 days'),
-       (8, 'Master of Puppets', '1986-03-03', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/MasterofPuppets.jpg',
+       (5, 'Elements', '2015-01-30', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Elements.jpg',
+        now() - interval '450 days'),
+       (6, 'DAMN.', '2017-04-14', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/DAMN.jpg',
+        now() - interval '200 days'),
+       (7, 'Sigh No More', '2009-10-05', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/SighNoMore.jpg',
+        now() - interval '220 days'),
+       (8, 'Master of Puppets', '1986-03-03',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/MasterofPuppets.jpg',
         now() - interval '160 days'),
-       (9, 'Ambient 1: Music for Airports', '1978-03-01', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Ambient1MusicforAirports.jpg',
+       (9, 'Ambient 1: Music for Airports', '1978-03-01',
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Ambient1MusicforAirports.jpg',
         now() - interval '140 days'),
-       (10, 'Legend', '1984-05-08', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Legend.jpg', now() - interval '280 days');
+       (10, 'Legend', '1984-05-08', 'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/Legend.jpg',
+        now() - interval '280 days');
 
 -- 5) ALBUM_AUTHORS (map albums -> authors)
 INSERT INTO album_authors (album_id, author_id)
@@ -107,7 +121,8 @@ VALUES
 (9, 3, 'Feelin'' The Same Way', 175, 'music/norah-jones-nora-dzhons--feelin-the-same-way.mp3', 600,
  now() - interval '293 days'),
 -- album 4 (Coldplay)
-(10, 4, 'Clocks', 307, 'music/coldplay-clocks-a-rush-of-blood-to-the-head-2002_(get-tune.net).mp3', 9200, now() - interval '315 days'),
+(10, 4, 'Clocks', 307, 'music/coldplay-clocks-a-rush-of-blood-to-the-head-2002_(get-tune.net).mp3', 9200,
+ now() - interval '315 days'),
 (11, 4, 'The Scientist', 308, 'music/TheScientist.mp3', 8600,
  now() - interval '314 days'),
 (12, 4, 'In My Place', 228, 'music/coldplay_in-my-place-coldplay.mp3', 4500,
@@ -259,25 +274,35 @@ VALUES (1, 0, 15000, '[Intro] piano motif and hush'),
 -- 10) PLAYLISTS (10) — оставлены как пользовательские подборки
 INSERT INTO playlists (id, owner_id, title, is_public, image_url, created_at)
 VALUES (1, '11111111-1111-4111-8111-111111111111', 'Adele Essentials', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/adele_essentials_playlist_image.png',now() - interval '200 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/adele_essentials_playlist_image.png',
+        now() - interval '200 days'),
        (2, '22222222-2222-4222-8222-222222222222', 'Night Drive Hits', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/night_drive_playlist_image.png', now() - interval '180 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/night_drive_playlist_image.png',
+        now() - interval '180 days'),
        (3, '33333333-3333-4333-8333-333333333333', 'Blue Jazz', false,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/blue_jazz_playlist_image.png',now() - interval '170 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/blue_jazz_playlist_image.png',
+        now() - interval '170 days'),
        (4, '44444444-4444-4444-8444-444444444444', 'Rock Classics', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/rock_classic_playlist_image.png', now() - interval '160 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/rock_classic_playlist_image.png',
+        now() - interval '160 days'),
        (5, '55555555-5555-4555-8555-555555555555', 'Piano Evenings', false,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/piano_evenings_playlist_image.png', now() - interval '150 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/piano_evenings_playlist_image.png',
+        now() - interval '150 days'),
        (6, '66666666-6666-4666-8666-666666666666', 'Hip-Hop Essentials', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/hip-hop_playlist_image.png', now() - interval '140 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/hip-hop_playlist_image.png',
+        now() - interval '140 days'),
        (7, '77777777-7777-4777-8777-777777777777', 'Folk Favorites', false,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/folk_playlist_image.png', now() - interval '130 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/folk_playlist_image.png',
+        now() - interval '130 days'),
        (8, '88888888-8888-4888-8888-888888888888', 'Metal Anthems', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/metal_anthems_playlist_image.png', now() - interval '120 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/metal_anthems_playlist_image.png',
+        now() - interval '120 days'),
        (9, '99999999-9999-4999-8999-999999999999', 'Ambient Spaces', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ambient_spaces_playlist_image.png', now() - interval '110 days'),
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/ambient_spaces_playlist_image.png',
+        now() - interval '110 days'),
        (10, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Reggae Roots', true,
-        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/raggae_roots_playlist_image.png', now() - interval '100 days');
+        'https://impulz-bucket-1.s3.us-east-1.amazonaws.com/image/raggae_roots_playlist_image.png',
+        now() - interval '100 days');
 
 -- 11) PLAYLIST_TRACKS (каждый плейлист содержит 3 трека)
 INSERT INTO playlist_tracks (playlist_id, track_id)

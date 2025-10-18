@@ -90,4 +90,28 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     void correctTracksPositionsAfterChangingPosition(Long playlistId, int position, int old_position);
 
     Long findPlaylistIdByTitleAndOwnerId(String title, String userId);
+
+    @Query(
+            value = """
+        SELECT DISTINCT p.*
+        FROM playlists p
+        JOIN playlist_tracks pt ON pt.playlist_id = p.id
+        JOIN tracks t ON t.id = pt.track_id
+        JOIN track_genres tg ON tg.track_id = t.id
+        WHERE tg.genre_id = :genreId
+          AND p.is_public = true
+        ORDER BY p.created_at DESC NULLS LAST
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT p.id)
+        FROM playlists p
+        JOIN playlist_tracks pt ON pt.playlist_id = p.id
+        JOIN tracks t ON t.id = pt.track_id
+        JOIN track_genres tg ON tg.track_id = t.id
+        WHERE tg.genre_id = :genreId
+          AND p.is_public = true
+        """,
+            nativeQuery = true
+    )
+    Page<Playlist> findRecentPublicPlaylistsByGenre(@Param("genreId") Long genreId, Pageable pageable);
 }

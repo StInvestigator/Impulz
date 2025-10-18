@@ -30,7 +30,7 @@ export const fetchTopAuthorsInGenre = createAsyncThunk<AuthorSimpleDto[],
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
 
-        const response = await $authApi.get(
+        const response = await $api.get(
             `/authors/TopInGenre/${genreId}?${params}`
         );
         dispatch(setTotalPages(response.data.totalPages))

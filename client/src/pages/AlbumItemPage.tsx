@@ -1,21 +1,25 @@
 import MyPagination from "../components/MyPagination.tsx";
-import {useEffect} from "react";
-import {Box, Stack, CircularProgress, Typography} from "@mui/material";
+import { useEffect } from "react";
+import { Box, Stack, CircularProgress, Typography } from "@mui/material";
 import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
-import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
-import {fetchAlbumDetails} from "../store/reducers/action-creators/album.ts";
-import {useParams} from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
+import { fetchAlbumDetails } from "../store/reducers/action-creators/album.ts";
+import { useParams } from "react-router-dom";
+import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
+import { fetchTracksByAlbum } from "../store/reducers/action-creators/tracks.ts";
 
 const AlbumItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
     const { albumId } = useParams<{ albumId: string }>();
     const dispatch = useAppDispatch();
     const { currentAlbum, isLoading, error } = useAppSelector(state => state.album);
+    const { playTrackList } = usePlayTrack();
 
+    const id = Number(albumId)
+    
     useEffect(() => {
         if (albumId) {
-            const id = parseInt(albumId, 10);
             if (!isNaN(id)) {
                 dispatch(fetchAlbumDetails(id))
                     .unwrap()
@@ -70,6 +74,20 @@ const AlbumItemPage = () => {
         ? new Date(currentAlbum.releaseDate).getFullYear()
         : undefined;
 
+    const handlePlayPlaylist = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const result = await dispatch(fetchTracksByAlbum({
+            albumId: id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByAlbum.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
+    }
+
     return (
         <>
             <Box component="section">
@@ -82,6 +100,7 @@ const AlbumItemPage = () => {
                     trackCount={currentAlbum.tracks?.length || 0}
                     duration={formatDuration(totalDuration)}
                     imgUrl={currentAlbum.imgUrl || ""}
+                    handlePlay={handlePlayPlaylist}
                 />
             </Box>
 

@@ -96,7 +96,7 @@ export const ContextMenuItemWithSubmenu: React.FC<ContextMenuItemWithSubmenuProp
                 }}
                 ref={menuRef}
             >
-                <ListItemIcon sx={{ minWidth: "auto", marginRight: "8px"}}>
+                <ListItemIcon sx={{ minWidth: "auto", marginRight: "-10px"}}>
                     <Box
                         component="img"
                         src={icon}
@@ -181,7 +181,7 @@ export const ContextMenuItemWithSubmenu: React.FC<ContextMenuItemWithSubmenuProp
                             }
                         }}
                     >
-                        <ListItemIcon sx={{ minWidth: "auto", marginRight: "8px"}}>
+                        <ListItemIcon sx={{ minWidth: "auto", marginRight: "-10px"}}>
                             <Box
                                 component="img"
                                 src={item.icon}

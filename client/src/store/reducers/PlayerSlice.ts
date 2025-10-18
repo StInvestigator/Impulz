@@ -48,6 +48,11 @@ const playerSlice = createSlice({
         addToPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             if (action.payload.length === 0) return;
 
+            const wasPlaying = !state.pause;
+            const previousActive = state.active;
+            const previousTime = state.currentTime;
+            const previousDuration = state.duration;
+
             state.playlist = [...state.playlist, ...action.payload];
 
             if (state.active === null && state.playlist.length > 0) {
@@ -56,22 +61,60 @@ const playerSlice = createSlice({
                 state.duration = 0;
                 state.currentTime = 0;
                 state.pause = true;
+            } else {
+                state.active = previousActive;
+                state.duration = previousDuration;
+                state.currentTime = previousTime;
+                state.pause = wasPlaying ? false : true;
             }
         },
 
         appendToPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             if (action.payload.length === 0) return;
+
             state.playlist.push(...action.payload);
         },
 
         setPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
+            const isSamePlaylist =
+                state.playlist.length === action.payload.length &&
+                state.playlist.every((track, index) => track.id === action.payload[index]?.id);
+
+            if (isSamePlaylist) {
+                return;
+            }
+
+            const currentTrackId = state.active?.id;
+            const wasPlaying = !state.pause;
+            const previousTime = state.currentTime;
+            const previousDuration = state.duration;
+
             state.playlist = action.payload;
             state.bufferTracks = [];
-            state.currentTrackIndex = action.payload.length > 0 ? 0 : -1;
-            state.active = action.payload[0] || null;
-            state.duration = 0;
-            state.currentTime = 0;
-            state.pause = true;
+
+            if (action.payload.length > 0) {
+                const newIndex = action.payload.findIndex(track => track.id === currentTrackId);
+
+                if (newIndex !== -1) {
+                    state.currentTrackIndex = newIndex;
+                    state.active = action.payload[newIndex];
+                    state.duration = previousDuration;
+                    state.currentTime = previousTime;
+                    state.pause = wasPlaying ? false : true;
+                } else {
+                    state.currentTrackIndex = 0;
+                    state.active = action.payload[0];
+                    state.duration = 0;
+                    state.currentTime = 0;
+                    state.pause = true;
+                }
+            } else {
+                state.currentTrackIndex = -1;
+                state.active = null;
+                state.duration = 0;
+                state.currentTime = 0;
+                state.pause = true;
+            }
         },
 
         insertNextInPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {

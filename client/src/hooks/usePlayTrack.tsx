@@ -11,7 +11,7 @@ import {
     setCurrentTrack,
     updateSourcePage,
     setBufferTracks,
-    appendToPlaylist,
+    appendToPlaylist, playTrack,
 } from "../store/reducers/PlayerSlice.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
@@ -25,7 +25,7 @@ const pendingPageRef = { current: null as number | null };
 export const usePlayTrack = () => {
     const dispatch = useAppDispatch();
     const { keycloak } = useKeycloak();
-    const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading } =
+    const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading,active } =
         useAppSelector((state) => state.player);
 
     const currentFetchFnRef = useRef<((page: number, size: number) => Promise<TrackSimpleDto[]>) | null>(null);
@@ -52,19 +52,62 @@ export const usePlayTrack = () => {
 
     const playSingle = (track: TrackSimpleDto, mode?: "replace" | "append" | "insertNext") => {
         if (!requireAuth()) return;
+
         const effectiveMode = mode || playbackMode;
+
+        console.log('🎵 playSingle called:', {
+            track: track.title,
+            mode: effectiveMode,
+            currentPlaylistLength: playlist.length,
+            currentTrackIndex
+        });
+
         switch (effectiveMode) {
             case "append":
                 dispatch(addToPlaylist([track]));
+                console.log('🎵 Track appended to playlist');
                 break;
             case "insertNext":
                 dispatch(insertNextInPlaylist([track]));
+                console.log('🎵 Track inserted next');
                 break;
             case "replace":
             default:
                 dispatch(setPlaylist([track]));
                 dispatch(setCurrentTrack(0));
+                console.log('🎵 Playlist replaced with single track');
                 break;
+        }
+    };
+
+    const addToQueue = (track: TrackSimpleDto) => {
+        if (!requireAuth()) return;
+
+        const isPlayerInitialized = active !== null;
+
+        console.log('🎵 addToQueue:', {
+            track: track.title,
+            isPlayerInitialized,
+            currentActive: active?.title,
+            playlistLength: playlist.length,
+            sharedFetchFn: !!sharedFetchFn,
+            sharedFetchSource: sharedFetchSource,
+            currentSource: source
+        });
+
+        if (!isPlayerInitialized) {
+            console.log('🎵 Плеер не инициализирован, начинаем воспроизведение');
+            dispatch(setPlaylist([track]));
+            dispatch(playTrack());
+        } else {
+            console.log('🎵 Плеер инициализирован, добавляем в конец очереди');
+            dispatch(appendToPlaylist([track]));
+
+            if (source && (!sharedFetchSource || source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id)) {
+                console.log('🎵 Обновляем shared состояние для текущего источника');
+                const restored = restoreSourceConnection();
+                console.log('🎵 Результат восстановления в addToQueue:', restored);
+            }
         }
     };
 
@@ -168,9 +211,19 @@ export const usePlayTrack = () => {
     ) => {
         if (!requireAuth()) return;
 
-        currentFetchFnRef.current = fetchPageFn;
-        sharedFetchFn = fetchPageFn;
-        sharedFetchSource = { type: sourceConfig.type, id: sourceConfig.id };
+        if (!sharedFetchFn || !sharedFetchSource ||
+            sharedFetchSource.type !== sourceConfig.type ||
+            sharedFetchSource.id !== sourceConfig.id) {
+
+            currentFetchFnRef.current = fetchPageFn;
+            sharedFetchFn = fetchPageFn;
+            sharedFetchSource = { type: sourceConfig.type, id: sourceConfig.id };
+
+            console.log('🎵 playWithBuffering: установили sharedFetchFn и sharedFetchSource', {
+                type: sourceConfig.type,
+                id: sourceConfig.id
+            });
+        }
 
         const newSource: PlayerSource = {
             ...sourceConfig,
@@ -182,8 +235,48 @@ export const usePlayTrack = () => {
         console.log('🎵 playWithBuffering: устанавливаем плейлист без предзагрузки буфера');
 
         dispatch(setSourceWithBuffer({ source: newSource, initialTracks, bufferTracks: [], startIndex }));
-
     };
+
+    const restoreSourceConnection = useCallback(() => {
+        if (!source) {
+            console.log('🎵 restoreSourceConnection: source отсутствует');
+            return false;
+        }
+
+        console.log('🎵 Попытка восстановить соединение с источником:', {
+            sourceType: source.type,
+            sourceId: source.id,
+            currentSharedSource: sharedFetchSource
+        });
+
+        switch (source.type) {
+            case "author":
+                { const authorFetchFn = async (page: number, size: number) => {
+                    console.log('🎵 Вызываем fetchAuthorTracksPaged для восстановления:', { authorId: source.id, page, size });
+                    const res = await fetchAuthorTracksPaged(source.id.toString(), page, size);
+                    console.log('🎵 Результат восстановления для автора:', { tracksCount: res.tracks.length });
+                    return res.tracks;
+                };
+                sharedFetchFn = authorFetchFn;
+                sharedFetchSource = { type: source.type, id: source.id };
+                currentFetchFnRef.current = authorFetchFn;
+                console.log('🎵 Восстановлено соединение для автора', {
+                    sourceType: source.type,
+                    sourceId: source.id,
+                    sharedFetchFn: !!sharedFetchFn,
+                    sharedFetchSource
+                });
+                return true; }
+
+            case "album":
+                console.warn('🎵 Не удалось восстановить соединение для альбома - нужна исходная fetch функция');
+                return false;
+
+            default:
+                console.warn('🎵 Неизвестный тип источника:', source.type);
+                return false;
+        }
+    }, [source]);
 
     const useAutoBuffer = () => {
         useEffect(() => {
@@ -192,11 +285,26 @@ export const usePlayTrack = () => {
             const tracksLeft = playlist.length - currentTrackIndex - 1;
             const BUFFER_AHEAD = 1;
 
+            const isSourceMatching =
+                source &&
+                sharedFetchSource &&
+                source.type === sharedFetchSource.type &&
+                source.id === sharedFetchSource.id;
+
+            if (source && (!sharedFetchSource || !isSourceMatching)) {
+                console.log('🎵 Источники не совпадают, пытаемся восстановить соединение');
+                const restored = restoreSourceConnection();
+                console.log('🎵 Результат восстановления:', restored);
+            }
+
             const shouldLoadBuffer =
                 tracksLeft <= BUFFER_AHEAD &&
                 source?.hasMore &&
                 !isBufferLoading &&
-                bufferTracks.length === 0;
+                bufferTracks.length === 0 &&
+                sharedFetchFn &&
+                sharedFetchSource &&
+                isSourceMatching;
 
             const shouldAppendBuffer = tracksLeft === 0 && bufferTracks.length > 0;
 
@@ -208,7 +316,14 @@ export const usePlayTrack = () => {
                 isBufferLoading,
                 bufferTracksCount: bufferTracks.length,
                 shouldLoadBuffer,
-                shouldAppendBuffer
+                shouldAppendBuffer,
+                sharedFetchFn: !!sharedFetchFn,
+                sharedFetchSource: sharedFetchSource,
+                isSourceMatching,
+                sourceType: source?.type,
+                sharedSourceType: sharedFetchSource?.type,
+                sourceId: source?.id,
+                sharedSourceId: sharedFetchSource?.id
             });
 
             if (shouldLoadBuffer) {
@@ -234,6 +349,7 @@ export const usePlayTrack = () => {
             isBufferLoading,
             loadNextPageToBuffer,
             appendBufferToPlaylist,
+            restoreSourceConnection,
         ]);
     };
 
@@ -256,6 +372,15 @@ export const usePlayTrack = () => {
                 console.log('🎵 Загружены треки первой страницы:', firstPage.tracks.length);
                 console.log('🎵 Устанавливаем плейлист БЕЗ предзагрузки буфера');
 
+                const fetchFn = async (page: number, size: number) => {
+                    const res = await fetchAuthorTracksPaged(authorId, page, size);
+                    return res.tracks;
+                };
+
+                currentFetchFnRef.current = fetchFn;
+                sharedFetchFn = fetchFn;
+                sharedFetchSource = { type: "author", id: authorId };
+
                 await playWithBuffering(
                     firstPage.tracks,
                     {
@@ -265,10 +390,7 @@ export const usePlayTrack = () => {
                         size: pageSize,
                         totalPages: firstPage.totalPages
                     },
-                    async (page, size) => {
-                        const res = await fetchAuthorTracksPaged(authorId, page, size);
-                        return res.tracks;
-                    }
+                    fetchFn
                 );
             } else {
                 console.warn('🎵 Не удалось загрузить треки для автора', authorId);
@@ -294,16 +416,6 @@ export const usePlayTrack = () => {
     };
 
     useEffect(() => {
-        if (!source) {
-            sharedFetchFn = null;
-            sharedFetchSource = null;
-        } else if (sharedFetchSource && (source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id)) {
-            sharedFetchFn = null;
-            sharedFetchSource = null;
-        }
-    }, [source]);
-
-    useEffect(() => {
         return () => {
             if (currentFetchFnRef.current && sharedFetchFn === currentFetchFnRef.current) {
                 sharedFetchFn = null;
@@ -313,8 +425,26 @@ export const usePlayTrack = () => {
         };
     }, []);
 
+    const resetSharedState = useCallback(() => {
+        sharedFetchFn = null;
+        sharedFetchSource = null;
+        currentFetchFnRef.current = null;
+    }, []);
+
+    const updateSharedState = useCallback((
+        fetchFn: (page: number, size: number) => Promise<TrackSimpleDto[]>,
+        sourceType: PlayerSource["type"],
+        sourceId: string | number
+    ) => {
+        sharedFetchFn = fetchFn;
+        sharedFetchSource = { type: sourceType, id: sourceId };
+        currentFetchFnRef.current = fetchFn;
+        console.log('🎵 Shared state updated:', { type: sourceType, id: sourceId });
+    }, []);
+
     return {
         playSingle,
+        addToQueue,
         playTrackList,
         playWithBuffering,
         loadNextPageToBuffer,
@@ -322,6 +452,9 @@ export const usePlayTrack = () => {
         playAuthorPopularTracks,
         playAlbumTracks,
         useAutoBuffer,
+        resetSharedState,
+        updateSharedState,
+        restoreSourceConnection,
         setPlaybackMode: (mode: "replace" | "append") => dispatch(setPlaybackMode(mode)),
         currentMode: playbackMode,
         bufferState: { tracksCount: bufferTracks.length, isLoading: isBufferLoading, hasMore: source?.hasMore },

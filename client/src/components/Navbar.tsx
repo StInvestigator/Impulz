@@ -185,6 +185,7 @@ const Navbar = memo(() => {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={() => navigate("/profile")}>{t("title-profile")}</MenuItem>
+                                {keycloak.hasRealmRole("AUTHOR") && <MenuItem onClick={() => navigate("/officeArtist")}>{t("title-office-artist")}</MenuItem>}
                                 <MenuItem onClick={handleLogout}>{t("title-logout")}</MenuItem>
                             </Menu>
                         </>

@@ -20,7 +20,7 @@ import AlbumItemPage from "../pages/AlbumItemPage.tsx";
 import HitsWeekPage from "../pages/tracks_page/HitsWeekPage.tsx";
 import BestAuthorsMonthPage from "../pages/authors_page/BestAuthorsMonthPage.tsx";
 import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPage.tsx";
-import MyProfilePage from "../pages/MyProfilePage.tsx";
+import OfficeArtistPage from "../pages/OfficeArtistPage.tsx";
 import AlbumTodayRecommendationsPage from "../pages/album_page/AlbumTodayRecommendationsPage.tsx";
 import AlbumPersonalRecommendationsPage from "../pages/album_page/AlbumPersonalRecommendationsPage.tsx";
 import AlbumRecentInCategoryPage from "../pages/album_page/AlbumRecentInCategoryPage.tsx";
@@ -29,6 +29,7 @@ import BestAuthorsInGenre from "../pages/authors_page/BestAuthorsInGenre.tsx";
 import PlaylistsRecentCategoryPage from "../pages/playlists_page/PlaylistsRecentCategoryPage.tsx";
 import SearchResultsPage from "../pages/search_page/SearchResultPage.tsx";
 import { Suspense } from "react";
+import MyProfilePage from "../pages/MyProfilePage.tsx";
 
 const AppRouter = () => {
     return (
@@ -53,6 +54,15 @@ const AppRouter = () => {
                     element={
                         <ProtectedRoute>
                             <MyProfilePage/>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/officeArtist"
+                    element={
+                        <ProtectedRoute>
+                            <OfficeArtistPage/>
                         </ProtectedRoute>
                     }
                 />

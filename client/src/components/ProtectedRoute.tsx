@@ -1,12 +1,8 @@
-import React, {type JSX, useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useKeycloak } from "@react-keycloak/web";
-import {useLocation} from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 
-interface ProtectedRouteProps {
-    children: JSX.Element;
-}
-
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+const ProtectedRoute: React.FC = () => {
     const { keycloak } = useKeycloak();
     const location = useLocation();
     const [isRedirecting, setIsRedirecting] = useState(false);
@@ -16,7 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             setIsRedirecting(true);
 
             const currentPath = location.pathname + location.search;
-            sessionStorage.setItem('redirectAfterLogin', currentPath);
+            sessionStorage.setItem("redirectAfterLogin", currentPath);
 
             const redirectUri = window.location.origin + currentPath;
             keycloak.login({ redirectUri });
@@ -27,7 +23,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         return <div>Redirecting to login...</div>;
     }
 
-    return children;
+    return <Outlet />;
 };
 
 export default ProtectedRoute;

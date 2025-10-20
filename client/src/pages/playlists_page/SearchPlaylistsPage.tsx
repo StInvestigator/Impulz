@@ -2,32 +2,37 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useTranslation } from 'react-i18next';
 import { setCurrentPage } from '../../store/reducers/PageSlice';
+import { useParams } from "react-router-dom";
 import { Box, Typography } from '@mui/material';
 import MyPagination from '../../components/MyPagination';
-import { fetchAlbumTodayRecommendations } from '../../store/reducers/action-creators/album';
-import AlbumList from '../../components/lists/AlbumList.tsx';
+import PublicPlaylistList from '../../components/lists/PublicPlaylistList';
+import { searchPublicPlaylists } from "../../store/reducers/action-creators/search";
+import { selectPlaylistsResults } from "../../store/reducers/SearchSlice.ts";
 
-function AlbumTodayRecommendationsPage() {
+function SearchPlaylistsPage() {
     const { currentPage, totalPages } = useAppSelector((state) => state.page);
-    const { t } = useTranslation(["main"]);
+    const { t } = useTranslation(["search"]);
+    const { query } = useParams<{ query: string }>();
 
     const dispatch = useAppDispatch();
-    const { albumTodayRecommendations } = useAppSelector((state) => state.album);
+    const playlists = useAppSelector(selectPlaylistsResults);
+
 
     useEffect(() => {
         dispatch(setCurrentPage(1));
-    }, [dispatch]);
+    }, [query, dispatch]);
 
     useEffect(() => {
-        if (currentPage >= 1) {
+        if (query && currentPage >= 1) {
             dispatch(
-                fetchAlbumTodayRecommendations({
+                searchPublicPlaylists({
+                    query: query,
                     page: currentPage - 1,
                     size: 10,
                 })
             );
         }
-    }, [dispatch, currentPage]);
+    }, [dispatch, query, currentPage]);
 
     const shouldShowPagination = totalPages > 1;
 
@@ -35,22 +40,24 @@ function AlbumTodayRecommendationsPage() {
         <>
             <Box component={"section"}>
                 <Typography variant="h2">
-                    {t("title-recommendation-today")}
+                    {t("title-playlists")}
                 </Typography>
 
-                <Box mt={3}>
-                    <AlbumList albums={albumTodayRecommendations}
-                    />
+                <Box display={"grid"} mt={3} sx={{
+                    gridTemplateColumns: "repeat(5, 1fr)"
+                }} gap={3}>
+                    <PublicPlaylistList playlists={playlists} />
                 </Box>
-            </Box>
+            </Box >
 
             {shouldShowPagination && (
                 <Box component={"section"} marginTop={"60px"}>
                     <MyPagination totalPages={totalPages} currentPage={currentPage} />
                 </Box>
-            )}
+            )
+            }
         </>
     );
 }
 
-export default AlbumTodayRecommendationsPage;
+export default SearchPlaylistsPage;

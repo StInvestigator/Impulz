@@ -4,30 +4,34 @@ import { useTranslation } from 'react-i18next';
 import { setCurrentPage } from '../../store/reducers/PageSlice';
 import { Box, Typography } from '@mui/material';
 import MyPagination from '../../components/MyPagination';
-import { fetchAlbumTodayRecommendations } from '../../store/reducers/action-creators/album';
+import { searchAlbums } from "../../store/reducers/action-creators/search";
+import { useParams } from "react-router-dom";
 import AlbumList from '../../components/lists/AlbumList.tsx';
+import { selectAlbumsResults } from "../../store/reducers/SearchSlice.ts";
 
-function AlbumTodayRecommendationsPage() {
+function SearchAlbumsPage() {
     const { currentPage, totalPages } = useAppSelector((state) => state.page);
-    const { t } = useTranslation(["main"]);
+    const { t } = useTranslation(["search"]);
+    const { query } = useParams<{ query: string }>();
 
     const dispatch = useAppDispatch();
-    const { albumTodayRecommendations } = useAppSelector((state) => state.album);
+    const albums = useAppSelector(selectAlbumsResults);
 
     useEffect(() => {
         dispatch(setCurrentPage(1));
     }, [dispatch]);
 
     useEffect(() => {
-        if (currentPage >= 1) {
+        if (currentPage >= 1 && query) {
             dispatch(
-                fetchAlbumTodayRecommendations({
+                searchAlbums({
+                    query: query,
                     page: currentPage - 1,
                     size: 10,
                 })
             );
         }
-    }, [dispatch, currentPage]);
+    }, [dispatch, currentPage, query]);
 
     const shouldShowPagination = totalPages > 1;
 
@@ -35,11 +39,11 @@ function AlbumTodayRecommendationsPage() {
         <>
             <Box component={"section"}>
                 <Typography variant="h2">
-                    {t("title-recommendation-today")}
+                    {t("title-albums")}
                 </Typography>
 
                 <Box mt={3}>
-                    <AlbumList albums={albumTodayRecommendations}
+                    <AlbumList albums={albums}
                     />
                 </Box>
             </Box>
@@ -53,4 +57,4 @@ function AlbumTodayRecommendationsPage() {
     );
 }
 
-export default AlbumTodayRecommendationsPage;
+export default SearchAlbumsPage;

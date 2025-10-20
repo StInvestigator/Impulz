@@ -18,7 +18,6 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
     const navigate = useAppNavigate();
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
-    const route = useAppNavigate();
 
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {

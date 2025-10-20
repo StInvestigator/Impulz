@@ -22,13 +22,15 @@ function BestTracksInGenrePage() {
         dispatch(setCurrentPage(1));
     }, [dispatch]);
 
+    const size = 10;
+
     useEffect(() => {
         if (currentPage >= 1) {
             dispatch(
                 fetchPopularTracksByGenre({
                     genreId,
                     page: currentPage - 1,
-                    size: 10,
+                    size: size,
                 })
             );
         }
@@ -44,7 +46,7 @@ function BestTracksInGenrePage() {
                 </Typography>
 
                 <Stack spacing={3} mt={3}>
-                    <TrackList tracks={popularTracksByGenre} />
+                    <TrackList tracks={popularTracksByGenre} pageSize={size}/>
                 </Stack>
             </Box>
 

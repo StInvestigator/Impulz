@@ -1,23 +1,43 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
-import {selectGlobalSearchResults, selectSearchError, selectSearchLoading} from "../../store/reducers/SearchSlice.ts";
-import {searchAll} from "../../store/reducers/action-creators/search.ts";
-import type {AppDispatch} from "../../store/store.ts";
+import { Box, Typography, CircularProgress, Alert, Button } from "@mui/material";
+import { selectTracksResults, selectAlbumsResults, selectAuthorsResults, selectPlaylistsResults, selectSearchError, selectSearchLoading } from "../../store/reducers/SearchSlice.ts";
+import type { AppDispatch } from "../../store/store.ts";
+import { useAppNavigate } from "../../hooks/useAppNavigate.ts";
+import AlbumList from "../../components/lists/AlbumList.tsx";
+import { useTranslation } from "react-i18next";
+import AuthorList from "../../components/lists/AuthorList.tsx";
+import TrackList from "../../components/lists/TrackList.tsx";
+import PublicPlaylistList from "../../components/lists/PublicPlaylistList.tsx";
+import { searchAlbums, searchAuthors, searchPublicPlaylists, searchTracks } from "../../store/reducers/action-creators/search.ts";
+import { setCurrentPage } from '../../store/reducers/PageSlice';
 
 const SearchResultsPage = () => {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("q") || "";
     const dispatch = useDispatch<AppDispatch>();
+    const route = useAppNavigate();
 
-    const { tracks, authors, albums, playlists } = useSelector(selectGlobalSearchResults);
+    useEffect(() => {
+        dispatch(setCurrentPage(1));
+    }, [dispatch]);
+
+    const { t } = useTranslation(["search", "other"]);
+
+    const tracks = useSelector(selectTracksResults);
+    const albums = useSelector(selectAlbumsResults);
+    const authors = useSelector(selectAuthorsResults);
+    const playlists = useSelector(selectPlaylistsResults);
     const loading = useSelector(selectSearchLoading);
     const error = useSelector(selectSearchError);
 
     useEffect(() => {
         if (query) {
-            dispatch(searchAll(query));
+            dispatch(searchAlbums({ query, page: 0, size: 5 }));
+            dispatch(searchAuthors({ query, page: 0, size: 5 }));
+            dispatch(searchTracks({ query, page: 0, size: 5 }));
+            dispatch(searchPublicPlaylists({ query, page: 0, size: 5 }));
         }
     }, [query, dispatch]);
 
@@ -37,75 +57,120 @@ const SearchResultsPage = () => {
 
     return (
         <Box p={3}>
-            <Typography variant="h4" gutterBottom>
-                Результаты поиска: "{query}"
-            </Typography>
-
+            {hasResults &&
+                (<Typography variant="h2" gutterBottom>
+                    {t("search:title-result")} "{query}":
+                </Typography>)
+            }
             {/* Треки */}
             {tracks.length > 0 && (
-                <Box mb={4}>
-                    <Typography variant="h5" gutterBottom>Треки</Typography>
-                    {tracks.map((track) => (
-                        <Box key={track.id} p={1} borderBottom="1px solid #eee">
-                            <Typography>{track.title}</Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                {track.authorNames.join(", ")} • {track.albumTitle}
-                            </Typography>
-                        </Box>
-                    ))}
+                <Box component={"section"} mt={"60px"}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                            {t("search:title-tracks")}
+                        </Typography>
+                        <Button onClick={() => route(`/search/${query}/tracks`)} sx={{
+                            height: "32px",
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
+                            textTransform: "none"
+                        }}>
+                            {t("other:button-watch-all")}
+                        </Button>
+                    </Box>
+                    <Box display={"grid"} sx={{
+                        gridTemplateColumns: "repeat(1, 1fr)"
+                    }} gap={3}>
+                        <TrackList tracks={tracks} />
+                    </Box>
                 </Box>
             )}
 
-            {/* Авторы */}
-            {authors.length > 0 && (
-                <Box mb={4}>
-                    <Typography variant="h5" gutterBottom>Авторы</Typography>
-                    {authors.map((author) => (
-                        <Box key={author.id} p={1} borderBottom="1px solid #eee">
-                            <Typography>{author.name}</Typography>
-                            {author.bio && (
-                                <Typography variant="body2" color="textSecondary">
-                                    {author.bio}
-                                </Typography>
-                            )}
-                        </Box>
-                    ))}
-                </Box>
-            )}
 
-            {/* Альбомы */}
+            {/* Альбоми */}
             {albums.length > 0 && (
-                <Box mb={4}>
-                    <Typography variant="h5" gutterBottom>Альбомы</Typography>
-                    {albums.map((album) => (
-                        <Box key={album.id} p={1} borderBottom="1px solid #eee">
-                            <Typography>{album.title}</Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                {album.authorNames.join(", ")}
-                            </Typography>
-                        </Box>
-                    ))}
+                <Box component={"section"} mt={"60px"}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                            {t("search:title-albums")}
+                        </Typography>
+                        <Button onClick={() => route(`/search/${query}/albums`)} sx={{
+                            height: "32px",
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            textTransform: "none"
+                        }}>
+                            {t("other:button-watch-all")}
+                        </Button>
+                    </Box>
+                    <AlbumList albums={albums} />
                 </Box>
             )}
+
 
             {/* Плейлисты */}
             {playlists.length > 0 && (
-                <Box mb={4}>
-                    <Typography variant="h5" gutterBottom>Плейлисты</Typography>
-                    {playlists.map((playlist) => (
-                        <Box key={playlist.id} p={1} borderBottom="1px solid #eee">
-                            <Typography>{playlist.title}</Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                Владелец: {playlist.ownerName}
-                            </Typography>
-                        </Box>
-                    ))}
+                <Box component={"section"} mt={"60px"}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                            {t("search:title-playlists")}
+                        </Typography>
+                        <Button onClick={() => route(`/search/${query}/playlists`)} sx={{
+                            height: "32px",
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            textTransform: "none"
+                        }}>
+                            {t("other:button-watch-all")}
+                        </Button>
+                    </Box>
+                    <Box display={"grid"} mt={3} sx={{
+                        gridTemplateColumns: "repeat(5, 1fr)"
+                    }} gap={3}>
+                        <PublicPlaylistList playlists={playlists} />
+                    </Box>
+                </Box>
+            )}
+
+            {/* Автори */}
+            {authors.length > 0 && (
+                <Box component={"section"} mt={"60px"}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                            {t("search:title-authors")}
+                        </Typography>
+                        <Button onClick={() => route(`/search/${query}/authors`)} sx={{
+                            height: "32px",
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            backgroundColor: "var(--dark-purple)",
+                            color: "var(--columbia-blue)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            textTransform: "none"
+                        }}>
+                            {t("other:button-watch-all")}
+                        </Button>
+                    </Box>
+                    <AuthorList authors={authors} />
                 </Box>
             )}
 
             {/* Нет результатов */}
             {!loading && !hasResults && (
-                <Typography>Ничего не найдено</Typography>
+                <Typography align="center" variant="h2">{t("search:title-nothing-found")}</Typography>
             )}
         </Box>
     );

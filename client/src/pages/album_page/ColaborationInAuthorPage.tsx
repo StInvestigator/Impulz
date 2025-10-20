@@ -18,7 +18,7 @@ const ColaborationInAuthorPage = () => {
 
     useEffect(() => {
         if (id){
-            dispatch(fetchAuthorAlbumCollaborations({ authorId: id, page: currentPage - 1, size: 20 }));
+            dispatch(fetchAuthorAlbumCollaborations({ authorId: id, page: currentPage - 1, size: 10 }));
         }
     }, [dispatch, currentPage]);
 

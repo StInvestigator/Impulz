@@ -33,4 +33,5 @@ public interface TrackService
     List<Track> uploadTracks(List<TrackCreationDto> creationDtos, List<MultipartFile> covers, List<MultipartFile> files, Album album);
     List<Long> getUserFavoriteFromTrackIds(String userId, List<Long> trackIds);
     void like(Long trackId, String userId);
+    List<Track> getTracksByIds(List<Long> trackIds);
 }

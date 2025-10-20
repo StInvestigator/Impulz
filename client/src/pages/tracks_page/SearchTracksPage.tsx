@@ -4,33 +4,35 @@ import MyPagination from "../../components/MyPagination";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { fetchPopularTracksByAuthor } from "../../store/reducers/action-creators/tracks";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { setCurrentPage } from "../../store/reducers/PageSlice";
+import { searchTracks } from "../../store/reducers/action-creators/search";
+import { selectTracksResults } from "../../store/reducers/SearchSlice.ts";
 
-export default function FavoriteTracksPage() {
-    const {currentPage, totalPages} = useAppSelector(state => state.page);
-    const {id} = useParams<{ id:string }>();
-    const { t } = useTranslation(["authorPage", "other"]);
+
+export default function SearchTracksPage() {
+    const { currentPage, totalPages } = useAppSelector(state => state.page);
+    const { query } = useParams<{ query: string }>();
+    const { t } = useTranslation(["search", "other"]);
 
     const dispatch = useAppDispatch();
-    const { popularTracks } = useAppSelector(state => state.track);
+    const tracks = useAppSelector(selectTracksResults);
 
     useEffect(() => {
         dispatch(setCurrentPage(1));
-    }, [id, dispatch]);
+    }, [query, dispatch]);
 
     const size = 10
 
     useEffect(() => {
-        if (id && currentPage >= 1) {
-            dispatch(fetchPopularTracksByAuthor({
-                authorId: id,
+        if (query && currentPage >= 1) {
+            dispatch(searchTracks({
+                query: query,
                 page: currentPage - 1,
                 size: size
             }));
         }
-    }, [dispatch, currentPage, id]);
+    }, [dispatch, currentPage, query]);
 
     const shouldShowPagination = totalPages > 1;
 
@@ -38,10 +40,10 @@ export default function FavoriteTracksPage() {
         <>
             <Box component={"section"}>
                 <Typography variant="h2">
-                    {t("authorPage:title-popular-tracks")}
+                    {t("search:title-tracks")}
                 </Typography>
                 <Stack spacing={3} mt={3}>
-                    <TrackList tracks={popularTracks} pageSize={size}/>
+                    <TrackList tracks={tracks} pageSize={size} />
                 </Stack>
             </Box>
             {shouldShowPagination && (

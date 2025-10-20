@@ -29,6 +29,10 @@ import BestAuthorsInGenre from "../pages/authors_page/BestAuthorsInGenre.tsx";
 import PlaylistsRecentCategoryPage from "../pages/playlists_page/PlaylistsRecentCategoryPage.tsx";
 import SearchResultsPage from "../pages/search_page/SearchResultPage.tsx";
 import { Suspense } from "react";
+import SearchTracksPage from "../pages/tracks_page/SearchTracksPage.tsx";
+import SearchPlaylistsPage from "../pages/playlists_page/SearchPlaylistsPage.tsx";
+import SearchAlbumsPage from "../pages/album_page/SearchAlbumsPage.tsx";
+import SearchAuthorsPage from "../pages/authors_page/SearchAuthorsPage.tsx";
 import MyProfilePage from "../pages/MyProfilePage.tsx";
 
 const AppRouter = () => {
@@ -49,61 +53,31 @@ const AppRouter = () => {
                 <Route path="/genre/:id/popular-tracks" element={<BestTracksInGenrePage />} />
                 <Route path="/genre/:id/recent-playlists" element={<PlaylistsRecentCategoryPage />} />
 
-                <Route
-                    path="/profile"
-                    element={
-                        <ProtectedRoute>
-                            <MyProfilePage/>
-                        </ProtectedRoute>
-                    }
-                />
 
-                <Route
-                    path="/officeArtist"
-                    element={
-                        <ProtectedRoute>
-                            <OfficeArtistPage/>
-                        </ProtectedRoute>
-                    }
-                />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/profile" element={<MyProfilePage />} />
+                    <Route path="/user/:id" element={<UserProfilePage />} />
+                    <Route path="/author/:id" element={<AuthorProfilePage />} />
+                    <Route path="/album/:albumId" element={<AlbumItemPage />} />
+                    <Route path="/playlist/:playlistId" element={<PlaylistItemPage />} />
+                    <Route path="/search" element={<SearchResultsPage />} />
+                    <Route path="/search/:query/authors" element={<SearchAuthorsPage />} />
+                    <Route path="/search/:query/tracks" element={<SearchTracksPage />} />
+                    <Route path="/search/:query/albums" element={<SearchAlbumsPage />} />
+                    <Route path="/search/:query/playlists" element={<SearchPlaylistsPage />} />
+                    <Route path="/officeArtist" element={<OfficeArtistPage />} />
+                </Route>
 
-                <Route
-                    path="/author/:id"
-                    element={
-                        <ProtectedRoute>
-                            <AuthorProfilePage />
-                        </ProtectedRoute>
-                    }
-                />
+              
                 <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                 <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
                 <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
                 <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
 
-                <Route
-                    path="/playlist/:playlistId"
-                    element={
-                        <ProtectedRoute>
-                            <PlaylistItemPage />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/album/:albumId"
-                    element={
-                        <ProtectedRoute>
-                            <AlbumItemPage />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route path="/user/:id" element={<UserProfilePage />} />
                 <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
                 <Route path="/allAuthors" element={<AuthorPage />} />
                 <Route path="/allTopSelections" element={<TopSelectionsPage />} />
                 <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
-                <Route path="/search" element={<SearchResultsPage />} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

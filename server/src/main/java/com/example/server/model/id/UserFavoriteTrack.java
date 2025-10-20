@@ -1,14 +1,10 @@
 package com.example.server.model.id;
-
-import com.example.server.model.Playlist;
 import com.example.server.model.Track;
 import com.example.server.model.User;
-import com.example.server.model.key.UserFavoritePlaylistKey;
 import com.example.server.model.key.UserFavoriteTrackKey;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-
 import java.time.OffsetDateTime;
 
 @Data

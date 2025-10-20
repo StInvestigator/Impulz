@@ -15,6 +15,9 @@ import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
 import {addTrackToPlaylist, fetchPlaylistsOwnByUserId} from "../../store/reducers/action-creators/playlist.ts";
 import {ContextMenuItemWithSubmenu} from "./ContextMenuItemWithSubmenu.tsx";
 import keycloak from "../../keycloak.ts";
+import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
+import {likeTrack} from "../../store/reducers/action-creators/tracks.ts";
+import {usePlayTrack} from "../../hooks/usePlayTrack.tsx";
 
 interface TrackContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -28,15 +31,17 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                                                                       onClose,
                                                                       track
                                                                   }) => {
-    const { t } = useTranslation("other");
+    const { t } = useTranslation(["other","errors"]);
     const [toastOpen, setToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [playlistMenuAnchor, setPlaylistMenuAnchor] = useState<null | HTMLElement>(null);
+    const [isCreatePlaylistModalOpen,setIsCreatePlaylistModalOpen] = useState(false);
     const route = useAppNavigate();
     const dispatch = useAppDispatch();
     const { playlistsOwnByCurrentUser } = useAppSelector(state => state.playlist);
     const userId = keycloak.tokenParsed?.sub;
+    const { addToQueue } = usePlayTrack();
 
     const menuRef = useRef<HTMLDivElement>(null);
     const subMenuRef = useRef<HTMLDivElement>(null);
@@ -67,21 +72,23 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
 
     const handleAddToSpecificPlaylist = (playlistId: number) => {
         return () => {
-            console.log("Add track to playlist:", track.id, playlistId);
             dispatch(addTrackToPlaylist({ trackId: track.id, playlistId: playlistId }))
                 .unwrap()
                 .then(() => {
-                    console.log("Track added successfully");
                     if(userId){
                         dispatch(fetchPlaylistsOwnByUserId({ userId }));
                     }
                     onClose();
                 })
                 .catch((error) => {
-                    console.error("Failed to add track:", error);
-
-                    if (error.includes("Track already exists in playlist")) {
-                        setErrorMessage("Цей трек вже є в плейлісті");
+                    if (error === 'Track already exists in playlist') {
+                        setErrorMessage(`${t("errors:error-playlist-already-exists-in-playlist")}`);
+                        setErrorToastOpen(true);
+                    } else if (error === 'Playlist or track not found') {
+                        setErrorMessage(`${t("errors:error-playlist-not-found")}`);
+                        setErrorToastOpen(true);
+                    } else {
+                        setErrorMessage(`${t("errors:error-failed-to-add-track-to-playlist")}`);
                         setErrorToastOpen(true);
                     }
 
@@ -91,13 +98,17 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleCreatePlaylist = () => {
-        console.log("Create new playlist for track:", track.id);
+        setIsCreatePlaylistModalOpen(true);
         handlePlaylistMenuClose();
         onClose();
     };
 
     const handleAddToFavorites = () => {
-        console.log("Add to favorites:", track.id);
+        return () =>{
+            if(userId){
+                dispatch(likeTrack({trackId: track.id,userId: userId}))
+            }
+        }
         onClose();
     };
 
@@ -123,6 +134,11 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 console.error("Failed to copy track link:", err);
             });
 
+        onClose();
+    };
+
+    const handleAddToQueue = () => {
+        addToQueue(track);
         onClose();
     };
 
@@ -252,7 +268,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 <ContextMenuItem
                     icon={AddToQueueIcon}
                     text={t("title-add-to-queue")}
-                    onClick={handleAddToFavorites}
+                    onClick={handleAddToQueue}
                 />
 
                 <ContextMenuItem
@@ -275,7 +291,11 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 />
             </Menu>
 
-            {/* Snackbar для успешного копирования ссылки */}
+            <CreatePlaylistModal
+                open={isCreatePlaylistModalOpen}
+                setOpen={setIsCreatePlaylistModalOpen}
+            />
+
             <Snackbar
                 open={toastOpen}
                 autoHideDuration={2000}
@@ -297,7 +317,6 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 </Alert>
             </Snackbar>
 
-            {/* Snackbar для ошибки дублирования трека */}
             <Snackbar
                 open={errorToastOpen}
                 autoHideDuration={3000}
@@ -307,8 +326,9 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 <Alert
                     onClose={handleCloseErrorToast}
                     severity="warning"
+                    variant="filled"
                     sx={{
-                        backgroundColor: 'var(--warning-color)', // или любой другой цвет для предупреждения
+                        backgroundColor: '#ff9800',
                         color: 'white',
                         '& .MuiAlert-icon': {
                             color: 'white',

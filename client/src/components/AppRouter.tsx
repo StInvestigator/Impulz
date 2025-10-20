@@ -20,7 +20,7 @@ import AlbumItemPage from "../pages/AlbumItemPage.tsx";
 import HitsWeekPage from "../pages/tracks_page/HitsWeekPage.tsx";
 import BestAuthorsMonthPage from "../pages/authors_page/BestAuthorsMonthPage.tsx";
 import BestPlaylistByWeekPage from "../pages/playlists_page/BesrPlaylistByWeekPage.tsx";
-import MyProfilePage from "../pages/MyProfilePage.tsx";
+import OfficeArtistPage from "../pages/OfficeArtistPage.tsx";
 import AlbumTodayRecommendationsPage from "../pages/album_page/AlbumTodayRecommendationsPage.tsx";
 import AlbumPersonalRecommendationsPage from "../pages/album_page/AlbumPersonalRecommendationsPage.tsx";
 import AlbumRecentInCategoryPage from "../pages/album_page/AlbumRecentInCategoryPage.tsx";
@@ -33,6 +33,7 @@ import SearchTracksPage from "../pages/tracks_page/SearchTracksPage.tsx";
 import SearchPlaylistsPage from "../pages/playlists_page/SearchPlaylistsPage.tsx";
 import SearchAlbumsPage from "../pages/album_page/SearchAlbumsPage.tsx";
 import SearchAuthorsPage from "../pages/authors_page/SearchAuthorsPage.tsx";
+import MyProfilePage from "../pages/MyProfilePage.tsx";
 
 const AppRouter = () => {
     return (
@@ -64,9 +65,10 @@ const AppRouter = () => {
                     <Route path="/search/:query/tracks" element={<SearchTracksPage />} />
                     <Route path="/search/:query/albums" element={<SearchAlbumsPage />} />
                     <Route path="/search/:query/playlists" element={<SearchPlaylistsPage />} />
+                    <Route path="/officeArtist" element={<OfficeArtistPage />} />
                 </Route>
 
-
+              
                 <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                 <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
                 <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />

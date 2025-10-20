@@ -46,7 +46,7 @@ export const ContextMenuItem: React.FC<ContextMenuItemProps> = ({
                 }
             }}
         >
-            <ListItemIcon sx={{ minWidth: "auto", marginRight: "8px"}}>
+            <ListItemIcon sx={{ minWidth: "auto", marginRight: "-10px"}}>
                 <Box
                     component="img"
                     src={icon}

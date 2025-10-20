@@ -3,5 +3,6 @@
     "login": "Login",
     "search": "Search for tracks, albums, author",
     "title-logout": "Logout",
-    "title-profile": "Profile"
+    "title-profile": "My profile",
+    "title-office-artist": "Artist's office"
 }

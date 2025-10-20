@@ -149,7 +149,6 @@ const MusicPlayer: React.FC = () => {
         if (!active) {
             setLoading(false);
             setError(null);
-            objectUrlRef.current = null;
             return;
         }
 
@@ -162,7 +161,6 @@ const MusicPlayer: React.FC = () => {
         const loadStream = async () => {
             setLoading(true);
             setError(null);
-            dispatch(pauseTrack());
 
             try {
                 const url = await playbackService.getStreamUrl(active.id);
@@ -173,7 +171,13 @@ const MusicPlayer: React.FC = () => {
                     setLoading(false);
                     return;
                 }
-
+                if (audioRef.current && objectUrlRef.current === url) {
+                    setLoading(false);
+                    if (!pause) {
+                        audioRef.current.play().catch(console.error);
+                    }
+                    return;
+                }
                 if (audioRef.current) {
                     audioRef.current.pause();
                     audioRef.current.src = '';
@@ -199,15 +203,22 @@ const MusicPlayer: React.FC = () => {
                 audio.oncanplay = () => {
                     if (!mounted || !isMountedRef.current) return;
                     setLoading(false);
+
                     audio.play().catch((err) => {
                         console.error('Ошибка автовоспроизведения:', err);
                         setError('Ошибка воспроизведения аудио');
-                        dispatch(pauseTrack());
                     });
                 };
 
-                audio.onplay = () => dispatch(playTrack());
-                audio.onpause = () => dispatch(pauseTrack());
+                audio.onplay = () => {
+                    if (!mounted || !isMountedRef.current) return;
+                    dispatch(playTrack());
+                };
+
+                audio.onpause = () => {
+                    if (!mounted || !isMountedRef.current) return;
+                    dispatch(pauseTrack());
+                };
 
                 audio.onerror = (e) => {
                     if (!mounted || !isMountedRef.current) return;
@@ -280,7 +291,6 @@ const MusicPlayer: React.FC = () => {
                                     }));
                                     break;
                                 default:
-                                    dispatch(pauseTrack());
                                     return;
                             }
 
@@ -299,16 +309,11 @@ const MusicPlayer: React.FC = () => {
                             } else {
                                 console.log('Нет новых треков, останавливаем воспроизведение');
                                 dispatch(setSourceHasMore(false));
-                                dispatch(pauseTrack());
                             }
                         } catch (error) {
                             console.error('Ошибка загрузки треков:', error);
                             dispatch(setSourceHasMore(false));
-                            dispatch(pauseTrack());
                         }
-                    } else {
-                        console.log('Больше нет треков, останавливаем воспроизведение');
-                        dispatch(pauseTrack());
                     }
                 };
 
@@ -324,7 +329,7 @@ const MusicPlayer: React.FC = () => {
 
         loadStream();
         return () => { mounted = false; };
-    }, [active, dispatch, sendPlaybackStats, playlist, currentTrackIndex, source, appendBufferToPlaylist, loadNextPageToBuffer]);
+    }, [active?.id]);
 
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = volume / 100;

@@ -18,12 +18,14 @@ const HitsWeekPage = () => {
     dispatch(setCurrentPage(1));
   }, [dispatch]);
 
+  const size = 10
+
   useEffect(() => {
     if (currentPage >= 1) {
       dispatch(
         fetchTopTracksByWeek({
           page: currentPage - 1,
-          size: 5,
+          size: size,
         })
       );
     }
@@ -38,7 +40,7 @@ const HitsWeekPage = () => {
           {t("title-hits-week")}
         </Typography>
         <Stack spacing={3} mt={3}>
-          <TrackList tracks={topTracks} />
+          <TrackList tracks={topTracks} pageSize={size}/>
         </Stack>
       </Box>
       {shouldShowPagination && (

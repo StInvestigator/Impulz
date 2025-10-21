@@ -1,29 +1,21 @@
-import type {GlobalSearchResult} from "../../models/document/GlobalSearchResult.ts";
-import type {TrackDocument} from "../../models/document/TrackDocument.ts";
-import type {AuthorDocument} from "../../models/document/AuthorDocument.ts";
-import type {AlbumDocument} from "../../models/document/AlbumDocument.ts";
-import type {PlaylistDocument} from "../../models/document/PlaylistDocument.ts";
 import {createSlice} from "@reduxjs/toolkit";
-import {searchAlbums, searchAll, searchAuthors, searchPublicPlaylists, searchTracks } from "./action-creators/search.ts";
+import {searchAlbums, searchAuthors, searchPublicPlaylists, searchTracks } from "./action-creators/search.ts";
+import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
+import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
+import type { AlbumSimpleDto } from "../../models/DTO/album/AlbumSimpleDto.ts";
+import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 
 interface SearchState {
-    globalResults: GlobalSearchResult;
-    tracks: TrackDocument[];
-    authors: AuthorDocument[];
-    albums: AlbumDocument[];
-    playlists: PlaylistDocument[];
+    tracks: TrackSimpleDto[];
+    authors: AuthorSimpleDto[];
+    albums: AlbumSimpleDto[];
+    playlists: PlaylistSimpleDto[];
     loading: boolean;
     error: string | null;
     searchQuery: string;
 }
 
 const initialState: SearchState = {
-    globalResults: {
-        tracks: [],
-        authors: [],
-        albums: [],
-        playlists: []
-    },
     tracks: [],
     authors: [],
     albums: [],
@@ -38,12 +30,6 @@ const searchSlice = createSlice({
     initialState,
     reducers: {
         clearSearchResults: (state) => {
-            state.globalResults = {
-                tracks: [],
-                authors: [],
-                albums: [],
-                playlists: []
-            };
             state.tracks = [];
             state.authors = [];
             state.albums = [];
@@ -60,19 +46,6 @@ const searchSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // searchAll
-            .addCase(searchAll.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(searchAll.fulfilled, (state, action) => {
-                state.loading = false;
-                state.globalResults = action.payload;
-            })
-            .addCase(searchAll.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || 'Ошибка поиска';
-            })
             // searchTracks
             .addCase(searchTracks.pending, (state) => {
                 state.loading = true;
@@ -131,7 +104,6 @@ const searchSlice = createSlice({
 export const { clearSearchResults, setSearchQuery, clearError } = searchSlice.actions;
 export default searchSlice.reducer;
 
-export const selectGlobalSearchResults = (state: { search: SearchState }) => state.search.globalResults;
 export const selectTracksResults = (state: { search: SearchState }) => state.search.tracks;
 export const selectAuthorsResults = (state: { search: SearchState }) => state.search.authors;
 export const selectAlbumsResults = (state: { search: SearchState }) => state.search.albums;
@@ -139,13 +111,3 @@ export const selectPlaylistsResults = (state: { search: SearchState }) => state.
 export const selectSearchLoading = (state: { search: SearchState }) => state.search.loading;
 export const selectSearchError = (state: { search: SearchState }) => state.search.error;
 export const selectSearchQuery = (state: { search: SearchState }) => state.search.searchQuery;
-
-export const selectHasSearchResults = (state: { search: SearchState }) => {
-    const { tracks, authors, albums, playlists } = state.search.globalResults;
-    return tracks.length > 0 || authors.length > 0 || albums.length > 0 || playlists.length > 0;
-};
-
-export const selectTotalResultsCount = (state: { search: SearchState }) => {
-    const { tracks, authors, albums, playlists } = state.search.globalResults;
-    return tracks.length + authors.length + albums.length + playlists.length;
-};

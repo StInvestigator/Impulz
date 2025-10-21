@@ -202,4 +202,9 @@ public class TrackServiceImpl implements TrackService {
         entity.setAddedAt(OffsetDateTime.now());
         userFavoriteTrackRepository.save(entity);
     }
+
+    @Override
+    public List<Track> getTracksByIds(List<Long> trackIds) {
+        return trackRepository.findAllById(trackIds);
+    }
 }

@@ -147,4 +147,9 @@ public class PlaylistServiceImpl implements PlaylistService {
                 .findRecentPublicPlaylistsByGenre(genreId, pageable)
                 .map(PlaylistSimpleDto::fromEntity));
     }
+
+    @Override
+    public List<Playlist> findPlaylistsByIds(List<Long> ids) {
+        return playlistRepository.findAllById(ids);
+    }
 }

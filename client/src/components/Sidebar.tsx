@@ -46,7 +46,7 @@ const buttonsAuthor = [
     {
         name: "button-download",
         icon: downloadImg,
-        path: "/downloads",
+        path: "/officeArtist",
     },
 ]
 
@@ -78,6 +78,7 @@ const ButtonItem: React.FC<ButtonItemProps> = ({ name, icon, path, action }) => 
             navigate(path);
         } else if (action === "becomeAuthor") {
             dispatch(befomeAuthor(profile.id));
+            window.location.reload()
         }
     };
 

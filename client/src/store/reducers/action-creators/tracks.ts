@@ -147,8 +147,8 @@ export const fetchPopularTracksByGenre = createAsyncThunk<
             );
             dispatch(setTotalPages(response.data.page.totalPages));
             return response.data.page.content;
-        } catch (e) {
-            return rejectWithValue(`Не удалось загрузить треки по жанру`);
+        } catch (e: unknown) {
+            return rejectWithValue(`Не удалось загрузить треки по жанру : ${e}`);
         }
     }
 );

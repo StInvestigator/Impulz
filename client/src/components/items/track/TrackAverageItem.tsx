@@ -108,7 +108,15 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                         </Typography>
                     </Box>
                     <IconButton
-                        sx={{padding: 0, flexShrink: 0}}
+                        sx={{
+                            marginLeft: "10px",
+                            padding: 0,
+                            flexShrink: 0,
+                            transition: 'transform 0.2s ease-in-out',
+                            "&:hover": {
+                                transform: "scale(1.2)"
+                            }
+                        }}
                         onClick={() => playSingle(track)}
                         disableRipple={true}
                     >

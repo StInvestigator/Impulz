@@ -178,8 +178,8 @@ public class TrackController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> addToLiked(@RequestPart("userId") String userId,
-                                        @RequestPart("trackId") Long trackId) {
+    public ResponseEntity<?> addToLiked(@RequestParam("userId") String userId,
+                                        @RequestParam("trackId") Long trackId) {
         try {
             trackService.like(trackId, userId);
             return ResponseEntity.ok().build();

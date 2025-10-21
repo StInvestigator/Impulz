@@ -104,10 +104,9 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleAddToFavorites = () => {
-        return () =>{
-            if(userId){
-                dispatch(likeTrack({trackId: track.id,userId: userId}))
-            }
+        console.log("Like track");
+        if (userId) {
+            dispatch(likeTrack({ trackId: track.id, userId: userId }));
         }
         onClose();
     };
@@ -121,6 +120,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
         route(`/album/${track.albumId}`);
         onClose();
     };
+
 
     const handleCopyTrackLink = () => {
         const trackLink = `${window.location.origin}/track/${track.id}`;
@@ -243,7 +243,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 >
                     <ContextMenuItem
                         icon={ContextCreatePlaylistIcon}
-                        text={t("title-create-playlist") || "Створити плейліст"}
+                        text={t("title-create-playlist")}
                         onClick={handleCreatePlaylist}
                         isFirst={true}
                     />

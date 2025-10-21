@@ -22,5 +22,9 @@
   "title-go-to-album": "Go to album",
   "title-copy-track-link": "Copy track link",
   "title-link-copied": "Link copied",
-  "title-create-playlist": "Create playlist"
+  "title-create-playlist": "Create playlist",
+  "title-queue": "Queue",
+  "title-next-in-queue": "Next in queue",
+  "title-clear-queue": "Clear queue",
+  "title-plays": "Plays"
 }

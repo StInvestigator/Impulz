@@ -11,27 +11,28 @@ import {theme} from "./theme.ts";
 
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MusicPlayer from './components/MusicPlayer.tsx';
+import FullScreenPlayer from './components/FullScreenPlayer.tsx';
 import {$authApi} from "./http";
-import { useAppDispatch } from './hooks/redux.ts';
+import { useAppDispatch, useAppSelector } from './hooks/redux.ts';
 import { fetchUserDetails } from './store/reducers/action-creators/user.ts';
 import { setProfile } from './store/reducers/ProfileSlice.ts';
 import './assets/fonts/fonts.css'
 
 function App() {
   return (
-    <ReactKeycloakProvider
-      authClient={keycloak}
-      initOptions={{
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-      }}
-    >
-      <BrowserRouter>
-        <SecuredContent />
-      </BrowserRouter>
-    </ReactKeycloakProvider>
+      <ReactKeycloakProvider
+          authClient={keycloak}
+          initOptions={{
+            onLoad: 'check-sso',
+            silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+          }}
+      >
+        <BrowserRouter>
+          <SecuredContent />
+        </BrowserRouter>
+      </ReactKeycloakProvider>
   );
 }
 
@@ -40,6 +41,17 @@ const SecuredContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [isFullScreenPlayerOpen, setIsFullScreenPlayerOpen] = useState(false);
+
+  const {
+    active,
+    playlist,
+    currentTrackIndex,
+    currentTime,
+    duration,
+    pause,
+  } = useAppSelector((state) => state.player);
 
   useEffect(() => {
     if (keycloak.subject) {
@@ -55,15 +67,18 @@ const SecuredContent = () => {
   }, [keycloak.subject, dispatch]);
 
   useEffect(() => {
-    // УБИРАЕМ этот редирект - он сбрасывает на главную после логина
-    // if (initialized && location.hash.includes('state=')) {
-    //   navigate('/', { replace: true });
-    // }
-
     if (initialized && keycloak.authenticated && keycloak.token) {
       sendTokenToBackend();
     }
   }, [initialized, location, navigate, keycloak]);
+
+  const handleOpenFullScreenPlayer = () => {
+    setIsFullScreenPlayerOpen(true);
+  };
+
+  const handleCloseFullScreenPlayer = () => {
+    setIsFullScreenPlayerOpen(false);
+  };
 
   const sendTokenToBackend = async() => {
     try {
@@ -83,19 +98,45 @@ const SecuredContent = () => {
           <Navbar />
           <Box component="main" display={"flex"}>
             <Sidebar />
-            <Box component="article" sx={{
-              width: "100%",
+            <Box sx={{
+              position: 'relative',
+              width: "calc(100% - 320px)",
               marginLeft: `320px`,
-              marginTop: "48px",
-              padding: "60px 20px 120px 20px",
-              overflowX: 'hidden',
             }}>
-              <ScrollToTop />
-              <AppRouter />
+              {/* Основной контент */}
+              <Box component="article" sx={{
+                marginTop: "48px",
+                padding: "60px 20px 120px 20px",
+                overflowX: 'hidden',
+                display: isFullScreenPlayerOpen ? 'none' : 'block',
+                width: '100%',
+                boxSizing: 'border-box'
+              }}>
+                <ScrollToTop />
+                <AppRouter />
+              </Box>
+
+              {/* Полноэкранный плеер внутри основного контейнера */}
+              {active && isFullScreenPlayerOpen && (
+                  <FullScreenPlayer
+                      active={active}
+                      playlist={playlist}
+                      currentTrackIndex={currentTrackIndex}
+                      currentTime={currentTime}
+                      duration={duration}
+                      pause={pause}
+                      onClose={handleCloseFullScreenPlayer}
+                  />
+              )}
             </Box>
           </Box>
-          <MusicPlayer/>
-          <Footer />
+
+          <MusicPlayer
+              onOpenFullScreen={handleOpenFullScreenPlayer}
+              onCloseFullScreen={handleCloseFullScreenPlayer}
+              isFullScreenMode={isFullScreenPlayerOpen}
+          />
+          {!isFullScreenPlayerOpen && <Footer />}
         </ThemeProvider>
       </>
   );

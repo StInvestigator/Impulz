@@ -114,7 +114,7 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
                         alignItems: 'center',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
-                        textOverflow: 'ellipsis'
+                        textOverflow: 'ellipsis',
                     }}>
                         {track.authors.map((author, index) => (
                             <Box key={author.id} sx={{

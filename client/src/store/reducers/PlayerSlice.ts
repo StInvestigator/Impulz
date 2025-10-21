@@ -45,6 +45,17 @@ const playerSlice = createSlice({
     name: "player",
     initialState,
     reducers: {
+        setActive: (state, action: PayloadAction<TrackSimpleDto>) => {
+            const track = action.payload;
+            const trackIndex = state.playlist.findIndex(t => t.id === track.id);
+
+            if (trackIndex !== -1) {
+                state.active = track;
+                state.currentTrackIndex = trackIndex;
+                state.pause = false;
+                state.currentTime = 0;
+            }
+        },
         addToPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             if (action.payload.length === 0) return;
 
@@ -157,8 +168,6 @@ const playerSlice = createSlice({
             if (nextIndex < state.playlist.length) {
                 state.currentTrackIndex = nextIndex;
                 state.active = state.playlist[nextIndex];
-                state.duration = 0;
-                state.currentTime = 0;
             }
         },
 
@@ -169,8 +178,6 @@ const playerSlice = createSlice({
             if (prevIndex >= 0) {
                 state.currentTrackIndex = prevIndex;
                 state.active = state.playlist[prevIndex];
-                state.duration = 0;
-                state.currentTime = 0;
             }
         },
 
@@ -178,8 +185,6 @@ const playerSlice = createSlice({
             if (action.payload >= 0 && action.payload < state.playlist.length) {
                 state.currentTrackIndex = action.payload;
                 state.active = state.playlist[action.payload];
-                state.duration = 0;
-                state.currentTime = 0;
             }
         },
 
@@ -346,6 +351,7 @@ const playerSlice = createSlice({
 
 export const {
     setPlaylist,
+    setActive,
     addToPlaylist,
     appendToPlaylist,
     insertNextInPlaylist,

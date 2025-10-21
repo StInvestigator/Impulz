@@ -12,7 +12,6 @@ export const fetchAuthorTracksPaged = async (authorId: string, page: number, siz
 
         console.log('🎵 Полный ответ от API:', response.data);
 
-        // Правильная структура согласно контроллеру
         const tracks = response.data.page?.content || [];
         const totalPages = response.data.page?.totalPages || 1;
 

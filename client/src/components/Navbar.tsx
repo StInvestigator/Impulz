@@ -71,7 +71,12 @@ const Navbar = memo(() => {
     }, [localSearchQuery, dispatch]);
 
     return (
-        <AppBar sx={{backgroundColor: "var(--columbia-blue)", zIndex: (theme) => theme.zIndex.drawer + 3}}>
+        <AppBar sx={{
+                backgroundColor: "var(--columbia-blue)",
+                zIndex: (theme) => theme.zIndex.drawer + 3,
+                boxShadow: 'none'
+            }}
+        >
             <Toolbar variant="dense" sx={{display:"flex", justifyContent: "space-between"}}>
                 <Box sx={{
                     width: "766px",

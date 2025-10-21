@@ -17,7 +17,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useTrackContextMenu();
-    const route  = useNavigate();
 
     const handlePlay = useCallback(() => {
         playSingle(track);
@@ -117,7 +116,13 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                         </Typography>
 
                         <IconButton
-                            sx={{ padding: 0, '&:hover': { transform: 'scale(1.1)' } }}
+                            sx={{
+                                padding: 0,
+                                transition: 'transform 0.2s ease-in-out',
+                                '&:hover': {
+                                    transform: 'scale(1.1)'
+                                }
+                            }}
                             onClick={handlePlay}
                             disableRipple={false}
                         >
@@ -200,6 +205,7 @@ const AuthorLinks: FC<{ authors: TrackSimpleDto['authors'] }> = ({ authors }) =>
                     '&:hover': {
                         textDecoration: 'underline',
                         color: '#1976d2',
+                        cursor: "pointer"
                     }
                 }}
                     onClick={() => route(`/author/${author.id}`)}>

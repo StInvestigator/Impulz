@@ -109,7 +109,13 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
     const isFirstTrack = currentTrackIndex <= 0;
     const lastActiveIdRef = useRef<number | null>(null);
 
+    const playlistRef = useRef(playlist);
+    const currentTrackIndexRef = useRef(currentTrackIndex);
 
+    useEffect(() => {
+        playlistRef.current = playlist;
+        currentTrackIndexRef.current = currentTrackIndex;
+    }, [playlist, currentTrackIndex]);
 
     useEffect(() => {
         const savedVolume = localStorage.getItem('playerVolume');
@@ -203,6 +209,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
         const activeTrackChanged = lastActiveIdRef.current !== active.id;
         lastActiveIdRef.current = active.id;
 
+        const isOnlyPlaylistChanged =
+            !activeTrackChanged &&
+            audioRef.current &&
+            objectUrlRef.current;
+
+        if (isOnlyPlaylistChanged) {
+            console.log('🎵 Изменился только плейлист, не пересоздаем аудио');
+            return;
+        }
+
         if (activeTrackChanged && audioRef.current) {
             console.log('🎵 Активный трек изменился, очищаем предыдущее аудио');
             audioRef.current.pause();
@@ -241,13 +257,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                     setLoading(false);
                     return;
                 }
+
                 if (audioRef.current && objectUrlRef.current === url) {
+                    console.log('🎵 Аудио уже загружено с этим URL, продолжаем воспроизведение');
                     setLoading(false);
-                    if (!pause) {
+                    if (!pause && audioRef.current.paused) {
                         audioRef.current.play().catch(console.error);
                     }
                     return;
                 }
+
                 if (audioRef.current) {
                     audioRef.current.pause();
                     audioRef.current.src = '';
@@ -318,12 +337,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                 };
 
                 audio.onended = async () => {
-                    const isLastTrack = currentTrackIndex >= playlist.length - 1;
+                    const currentPlaylist = playlistRef.current;
+                    const currentIndex = currentTrackIndexRef.current;
+                    const isLastTrack = currentIndex >= currentPlaylist.length - 1;
 
                     console.log('Трек завершен:', {
                         isLastTrack,
-                        currentTrackIndex,
-                        playlistLength: playlist.length,
+                        currentTrackIndex: currentIndex,
+                        playlistLength: currentPlaylist.length,
                         hasMore: source?.hasMore,
                         bufferTracksCount: bufferTracks.length
                     });
@@ -405,18 +426,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
         loadStream();
         return () => { mounted = false; };
-    },
-        [
-            active?.id,
-            currentTrackIndex,
-            playlist.length,
-            source,
-            bufferTracks.length,
-            dispatch,
-            appendBufferToPlaylist,
-            loadNextPageToBuffer
-        ]);
-
+    }, [active?.id]);
 
     useEffect(() => {
         if (audioRef.current) audioRef.current.volume = volume / 100;
@@ -475,7 +485,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
                 const payload = (fetchResult as { payload?: TrackSimpleDto[] })?.payload;
                 const newTracks: TrackSimpleDto[] = payload ?? [];
-
 
                 if (newTracks.length > 0) {
                     dispatch(addToPlaylist(newTracks));

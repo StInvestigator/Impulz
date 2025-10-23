@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/impulz
+  elasticsearch:
+    uris: http://elasticsearch:9200
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          jwk-set-uri: http://keycloak:8080/realms/Impulz/protocol/openid-connect/certs
+  data:
+    redis:
+      host: redis
+
+keycloak:
+  keycloakUrl: http://keycloak:8080
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.springframework.security: INFO

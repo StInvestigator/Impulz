@@ -1,4 +1,3 @@
-// TrackContextMenu.tsx
 import { Menu, Snackbar, Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, {useState, useRef} from "react";
@@ -6,7 +5,7 @@ import AddToPlaylistIcon from "../../assets/context/AddToPlaylistIcon.svg";
 import AddToLikedIcon from "../../assets/context/AddToLikedIcon.svg";
 import AddToQueueIcon from "../../assets/context/AddToQueueIcon.svg";
 import GoToAlbumIcon from "../../assets/context/GoToAlbumIcon.svg";
-import GotoAuthorIcon from "../../assets/context/GotoAuthorIcon.svg";
+import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
 import CopyTrackLinkIcon from "../../assets/context/CopyTrackLinkIcon.svg";
 import ContextCreatePlaylistIcon from "../../assets/context/ContextCreatePlaylistIcon.svg";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";

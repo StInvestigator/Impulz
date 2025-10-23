@@ -78,6 +78,7 @@ const ButtonItem: React.FC<ButtonItemProps> = ({ name, icon, path, action }) => 
             navigate(path);
         } else if (action === "becomeAuthor") {
             dispatch(befomeAuthor(profile.id));
+            window.location.reload();
         }
     };
 

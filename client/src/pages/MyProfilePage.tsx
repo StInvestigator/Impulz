@@ -15,8 +15,8 @@ function MyProfilePage() {
   return (
     <>
       <MyProfile />
-      <Box component={"section"} mt={"60px"}>
-        {profile.favoriteAlbums && <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+      {profile.favoriteAlbums && <Box component={"section"} mt={"60px"}>
+        <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
             <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                 {t("authorPage:title-albums")}
             </Typography>
@@ -32,9 +32,10 @@ function MyProfilePage() {
             }}>
                 {t("other:button-watch-all")}
             </Button>
-            <AlbumList albums={profile.favoriteAlbums} />
-        </Box>}
+        </Box>
+        <AlbumList albums={profile.favoriteAlbums} />
       </Box>
+      }
     </>
   )
 }

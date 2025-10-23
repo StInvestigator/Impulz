@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useEffect, useState } from "react";
 import { fetchAuthorPlaysByMonth } from "../../store/reducers/action-creators/author";
 import { useTranslation } from "react-i18next";
+import editIcon from "../../assets/edit-icon.svg"
 
 function MyProfile() {
   const { profile } = useAppSelector((state) => state.profile);
@@ -44,6 +45,15 @@ function MyProfile() {
           width={"100%"}
           height={"100%"}
         />
+
+        <IconButton sx={{ padding: 0, flexShrink: 0, position: "absolute", top: 20, right: 20}}>
+          <Box
+            component="img"
+            src={editIcon}
+            height="28px"
+            width="28px"
+          />
+        </IconButton>
         {/* Контейнер для фото и имени пользователя */}
         <Box
           display={"flex"}

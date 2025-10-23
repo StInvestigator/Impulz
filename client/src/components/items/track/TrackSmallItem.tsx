@@ -17,7 +17,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useTrackContextMenu();
-    const route  = useNavigate();
 
     const handlePlay = useCallback(() => {
         playSingle(track);

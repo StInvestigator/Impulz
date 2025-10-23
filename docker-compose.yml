@@ -20,6 +20,9 @@ services:
     volumes:
       - ./server/src/main/resources/db/migration:/app/db/migration
     environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SPRING_PROFILES_ACTIVE=prod
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
       postgres:

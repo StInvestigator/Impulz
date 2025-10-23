@@ -22,10 +22,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
         playSingle(track);
     }, [playSingle, track]);
 
-    const handleAddToPlaylist = (trackId: number) => {
-        console.log("Add track to playlist:", trackId);
-    };
-
     useLayoutEffect(() => {
         const updateCardWidth = () => {
             if (cardRef.current) {
@@ -144,7 +140,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                 contextMenu={contextMenu}
                 onClose={handleCloseContextMenu}
                 track={track}
-                onAddToPlaylist={handleAddToPlaylist}
             />
         </>
     );

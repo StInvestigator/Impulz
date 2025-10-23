@@ -22,5 +22,9 @@
   "title-go-to-album": "Перейти до альбому",
   "title-copy-track-link": "Копіювати посилання на трек",
   "title-link-copied": "Посилання скопійовано",
-  "title-create-playlist": "Створити плейлист"
+  "title-create-playlist": "Створити плейлист",
+  "title-queue": "Черга",
+  "title-next-in-queue": "Наступне у черзі",
+  "title-clear-queue": "Очистити чергу",
+  "title-plays": "Відтворюється"
 }

@@ -1,10 +1,9 @@
-// hooks/useTrackContextMenu.ts
 import { useState } from "react";
 
 interface ContextMenuState {
     mouseX: number;
     mouseY: number;
-    trackId: number; // Должно быть number
+    trackId: number;
 }
 
 export const useTrackContextMenu = () => {

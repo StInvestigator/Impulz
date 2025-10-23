@@ -1,12 +1,23 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
-import { Box, CircularProgress, Grid, IconButton, Typography, Tooltip } from '@mui/material';
+import PreviousIcon from '../assets/player/PlayerPreviousIcon.svg';
+import NextIcon from '../assets/player/PlayerNextIcon.svg';
+import RandomTracksIcon from '../assets/player/PlayerRandomPlayingIcon.svg';
+import PlayerPlayIcon from '../assets/player/PlayerPlayIcon.svg';
+import PlayerVolumeOnIcon from '../assets/player/PlayerVolumeOnIcon.svg';
+import PlayerVolumeOffIcon from '../assets/player/PlayerVolumeOffIcon.svg';
+import PlayerToggleFullMode from '../assets/player/PlayerToggleFullMode.svg';
+import HoverPlayerPlayIcon from '../assets/player/HoverPlayerPlayIcon.svg';
+import PlayerPauseIcon from '../assets/player/PlayerPauseIcon.svg';
+import PlayerAddToPlaylistIcon from '../assets/player/PlayerAddToPlaylistIcon.svg';
+import HoverPlayerToggleFullMode from '../assets/player/HoverPlayerToggleFullMode.svg';
+import HoverPlayerToggleOffFullModeIcon from '../assets/player/HoverPlayerToggleOffFullModeIcon.svg';
+import PlayerToggleOffFullModeIcon from '../assets/player/PlayerToggleOffFullModeIcon.svg';
+import HoverPlayerNextIcon from '../assets/player/HoverPlayerNextIcon.svg';
+import HoverPlayerPreviousIcon from '../assets/player/HoverPlayerPreviousIcon.svg';
+import HoverPlayerRandomPlaying from '../assets/player/HoverPlayerRandomPlaying.svg';
+import HoverPlayerAddToPlaylistIcon from '../assets/player/HoverPlayerAddToPlaylistIcon.svg';
+import HoverPlayerPauseIcon from '../assets/player/HoverPlayerPauseIcon.svg';
+import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import {
     pauseTrack,
@@ -28,6 +39,7 @@ import { fetchPopularTracksByAuthor, fetchTracksByAlbum } from '../store/reducer
 import { usePlayTrack } from '../hooks/usePlayTrack';
 import { useNavigate } from "react-router-dom";
 import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
+import {useTranslation} from "react-i18next";
 
 interface PlaybackStats {
     trackId: number;
@@ -54,7 +66,13 @@ const playbackService = {
     },
 };
 
-const MusicPlayer: React.FC = () => {
+interface MusicPlayerProps {
+    onOpenFullScreen?: () => void;
+    onCloseFullScreen?: () => void;
+    isFullScreenMode?: boolean;
+}
+
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullScreen,isFullScreenMode = false }) => {
     const {
         active,
         playlist,
@@ -64,11 +82,12 @@ const MusicPlayer: React.FC = () => {
         volume,
         currentTrackIndex,
         source,
-        playbackMode,
         bufferTracks
     } = useAppSelector((state) => state.player);
 
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const { t } = useTranslation("errors");
 
     const { useAutoBuffer, appendBufferToPlaylist, loadNextPageToBuffer } = usePlayTrack();
     useAutoBuffer();
@@ -83,10 +102,20 @@ const MusicPlayer: React.FC = () => {
     const listenedTimeRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
     const isMountedRef = useRef<boolean>(true);
-    const route = useNavigate();
 
+    const [isMuted, setIsMuted] = useState<boolean>(false);
+    const [previousVolume, setPreviousVolume] = useState<number>(volume);
     const isLastTrack = currentTrackIndex >= playlist.length - 1;
     const isFirstTrack = currentTrackIndex <= 0;
+    const lastActiveIdRef = useRef<number | null>(null);
+
+    const playlistRef = useRef(playlist);
+    const currentTrackIndexRef = useRef(currentTrackIndex);
+
+    useEffect(() => {
+        playlistRef.current = playlist;
+        currentTrackIndexRef.current = currentTrackIndex;
+    }, [playlist, currentTrackIndex]);
 
     useEffect(() => {
         const savedVolume = localStorage.getItem('playerVolume');
@@ -100,6 +129,31 @@ const MusicPlayer: React.FC = () => {
             dispatch(setPlaybackMode(savedMode));
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        if (volume === 0 && !isMuted) {
+            setIsMuted(true);
+        } else if (volume > 0 && isMuted) {
+            setIsMuted(false);
+        }
+    }, [volume, isMuted]);
+
+    const toggleMute = () => {
+        if (isMuted) {
+            dispatch(setVolume(previousVolume));
+            if (audioRef.current) {
+                audioRef.current.volume = previousVolume / 100;
+            }
+            setIsMuted(false);
+        } else {
+            setPreviousVolume(volume);
+            dispatch(setVolume(0));
+            if (audioRef.current) {
+                audioRef.current.volume = 0;
+            }
+            setIsMuted(true);
+        }
+    };
 
     const sendPlaybackStats = useCallback(async () => {
         if (hasSentPlayback.current || !active || !keycloak?.authenticated) return;
@@ -152,6 +206,38 @@ const MusicPlayer: React.FC = () => {
             return;
         }
 
+        const activeTrackChanged = lastActiveIdRef.current !== active.id;
+        lastActiveIdRef.current = active.id;
+
+        const isOnlyPlaylistChanged =
+            !activeTrackChanged &&
+            audioRef.current &&
+            objectUrlRef.current;
+
+        if (isOnlyPlaylistChanged) {
+            console.log('🎵 Изменился только плейлист, не пересоздаем аудио');
+            return;
+        }
+
+        if (activeTrackChanged && audioRef.current) {
+            console.log('🎵 Активный трек изменился, очищаем предыдущее аудио');
+            audioRef.current.pause();
+            audioRef.current.src = '';
+            audioRef.current.onloadedmetadata = null;
+            audioRef.current.oncanplay = null;
+            audioRef.current.ontimeupdate = null;
+            audioRef.current.onended = null;
+            audioRef.current.onerror = null;
+            audioRef.current.onplay = null;
+            audioRef.current.onpause = null;
+            audioRef.current = null;
+
+            if (objectUrlRef.current) {
+                URL.revokeObjectURL(objectUrlRef.current);
+                objectUrlRef.current = null;
+            }
+        }
+
         let mounted = true;
         sessionIdRef.current = generateSessionId();
         hasSentPlayback.current = false;
@@ -171,13 +257,16 @@ const MusicPlayer: React.FC = () => {
                     setLoading(false);
                     return;
                 }
+
                 if (audioRef.current && objectUrlRef.current === url) {
+                    console.log('🎵 Аудио уже загружено с этим URL, продолжаем воспроизведение');
                     setLoading(false);
-                    if (!pause) {
+                    if (!pause && audioRef.current.paused) {
                         audioRef.current.play().catch(console.error);
                     }
                     return;
                 }
+
                 if (audioRef.current) {
                     audioRef.current.pause();
                     audioRef.current.src = '';
@@ -196,8 +285,12 @@ const MusicPlayer: React.FC = () => {
                 audioRef.current = audio;
 
                 audio.onloadedmetadata = () => {
-                    if (!mounted || !isMountedRef.current) return;
-                    dispatch(setDuration(Math.ceil(audio.duration || 0)));
+                    const checkDuration = setInterval(() => {
+                        if (!isNaN(audio.duration) && isFinite(audio.duration)) {
+                            clearInterval(checkDuration);
+                            dispatch(setDuration(audio.duration));
+                        }
+                    }, 100);
                 };
 
                 audio.oncanplay = () => {
@@ -229,8 +322,10 @@ const MusicPlayer: React.FC = () => {
 
                 audio.ontimeupdate = () => {
                     if (!mounted || !isMountedRef.current) return;
-                    const cur = audio.currentTime;
-                    dispatch(setCurrentTime(Math.ceil(cur)));
+                    const cur = Math.floor(audio.currentTime);
+                    if (Math.floor(currentTime) !== cur) {
+                        dispatch(setCurrentTime(cur));
+                    }
 
                     if (!audio.paused) {
                         const delta = cur - lastTimeRef.current;
@@ -242,12 +337,14 @@ const MusicPlayer: React.FC = () => {
                 };
 
                 audio.onended = async () => {
-                    const isLastTrack = currentTrackIndex >= playlist.length - 1;
+                    const currentPlaylist = playlistRef.current;
+                    const currentIndex = currentTrackIndexRef.current;
+                    const isLastTrack = currentIndex >= currentPlaylist.length - 1;
 
                     console.log('Трек завершен:', {
                         isLastTrack,
-                        currentTrackIndex,
-                        playlistLength: playlist.length,
+                        currentTrackIndex: currentIndex,
+                        playlistLength: currentPlaylist.length,
                         hasMore: source?.hasMore,
                         bufferTracksCount: bufferTracks.length
                     });
@@ -322,7 +419,7 @@ const MusicPlayer: React.FC = () => {
             } catch (err) {
                 if (!mounted || !isMountedRef.current) return;
                 console.error('Load stream error:', err);
-                setError('Ошибка загрузки трека');
+                setError(t("error-track-loading"));
                 setLoading(false);
             }
         };
@@ -350,12 +447,6 @@ const MusicPlayer: React.FC = () => {
         if (loading) return;
         if (pause) dispatch(playTrack());
         else dispatch(pauseTrack());
-    };
-
-    const togglePlaybackMode = () => {
-        const newMode = playbackMode === "replace" ? "append" : "replace";
-        dispatch(setPlaybackMode(newMode));
-        localStorage.setItem('playerPlaybackMode', newMode);
     };
 
     const handleNext = async () => {
@@ -419,113 +510,476 @@ const MusicPlayer: React.FC = () => {
     };
 
     const changeCurrentTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!audioRef.current) return;
+        if (!audioRef.current) {
+            console.log('🎵 Audio ref is null in changeCurrentTime');
+            return;
+        }
         const newTime = Number(e.target.value);
+        console.log('🎵 Changing time from', currentTime, 'to', newTime, 'duration:', duration);
+
         audioRef.current.currentTime = newTime;
         dispatch(setCurrentTime(newTime));
         lastTimeRef.current = newTime;
     };
 
+    const handleFullScreenToggle = () => {
+        if (isFullScreenMode) {
+            if (onCloseFullScreen) {
+                onCloseFullScreen();
+            }
+        } else {
+            if (onOpenFullScreen) {
+                onOpenFullScreen();
+            }
+        }
+    };
+
     if (!active) return null;
 
+    const handleAuthorClick = () => {
+        if (active.authors?.[0]?.id) {
+            navigate(`/author/${active.authors[0].id}`);
+        }
+    };
+
+    const handleAlbumClick = () => {
+        if (active.albumId) {
+            navigate(`/album/${active.albumId}`);
+        }
+    };
+
     return (
-        <Box
-            height="60px"
-            width="100%"
-            position="fixed"
-            bottom={0}
-            display="flex"
-            alignItems="center"
-            padding="0 10px"
-            bgcolor="lightgray"
-            boxSizing="border-box"
-            sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
-        >
-            <IconButton aria-label="previous" onClick={handlePrev} disabled={isFirstTrack}>
-                <SkipPreviousIcon />
-            </IconButton>
-
-            {loading ? (
-                <Box sx={{ padding: '8px' }}>
-                    <CircularProgress size={24} />
-                </Box>
-            ) : (
-                <IconButton aria-label="play-pause" onClick={togglePlay}>
-                    {pause ? <PlayCircleIcon /> : <PauseCircleIcon />}
-                </IconButton>
-            )}
-
-            <IconButton aria-label="next" onClick={handleNext} disabled={isLastTrack && !source?.hasMore}>
-                <SkipNextIcon />
-            </IconButton>
-
-            <Tooltip title={playbackMode === "replace" ? "Режим замены" : "Режим добавления в очередь"}>
-                <IconButton onClick={togglePlaybackMode} color={playbackMode === "append" ? "primary" : "default"}>
-                    {playbackMode === "replace" ? <PlaylistPlayIcon /> : <PlaylistAddIcon />}
-                </IconButton>
-            </Tooltip>
-
-            <Grid container direction="column" sx={{ width: 240, margin: '0 20px' }}>
-                <Box sx={{ fontWeight: 600 }}>{active.title ?? 'Unknown title'}</Box>
+        <>
+            {/* Основной плеер */}
+            <Box
+                height="80px"
+                width="100%"
+                position="fixed"
+                bottom={0}
+                left={0}
+                display="flex"
+                alignItems="center"
+                padding="0 20px"
+                bgcolor="var(--dark-purple)"
+                boxSizing="border-box"
+                sx={{
+                    zIndex: (theme) => theme.zIndex.drawer + 2,
+                    boxShadow: '0 -4px 20px rgba(0,0,0,0.3)',
+                }}
+            >
+                {/* Левая секция */}
                 <Box sx={{
-                    fontSize: 12,
-                    color: 'gray',
                     display: 'flex',
                     alignItems: 'center',
-                    flexWrap: 'nowrap',
-                    whiteSpace: 'nowrap'
+                    gap: 1,
+                    minWidth: 200
                 }}>
-                    {active.authors?.map((author, index) => (
-                        <React.Fragment key={author.id}>
+                    {/* Кнопка перемешивания */}
+                    <IconButton
+                        disableRipple
+                        sx={{
+                            color: '#ff6b35'
+                        }}
+                    >
+                        <Box
+                            component="img"
+                            src={RandomTracksIcon}
+                            sx={{
+                                width: 20,
+                                height: 20,
+                                '&:hover': {
+                                    content: `url(${HoverPlayerRandomPlaying})`
+                                }
+                            }}
+                        />
+                    </IconButton>
+
+                    {/* Кнопка предыдущий трек */}
+                    <IconButton
+                        disableRipple
+                        onClick={handlePrev}
+                        disabled={isFirstTrack}
+                        sx={{
+                            color: '#ff6b35',
+                        }}
+                    >
+                        <Box
+                            component="img"
+                            src={PreviousIcon}
+                            sx={{
+                                width: 28,
+                                height: 28,
+                                opacity: isFirstTrack ? 0.3 : 1,
+                                transition: 'opacity 0.2s ease',
+                                '&:hover': {
+                                    content: `url(${HoverPlayerPreviousIcon})`
+                                }
+                            }}
+                        />
+                    </IconButton>
+
+                    {/* Кнопка play/pause */}
+                    {loading ? (
+                        <Box sx={{ padding: '8px' }}>
+                            <CircularProgress size={24} sx={{ color: '#ff6b35' }} />
+                        </Box>
+                    ) : (
+                        <IconButton
+                            disableRipple
+                            onClick={togglePlay}
+                            sx={{
+                                color: '#ff6b35',
+                                fontSize: '32px',
+                            }}
+                        >
+                            {pause ? (
+                                <Box
+                                    component="img"
+                                    src={PlayerPlayIcon}
+                                    sx={{
+                                        width: 40,
+                                        height: 40,
+                                        transition: 'opacity 0.2s ease',
+                                        '&:hover': {
+                                            content: `url(${HoverPlayerPlayIcon})`
+                                        }
+                                    }}
+                                />
+                            ) : (
+                                <Box
+                                    component="img"
+                                    src={PlayerPauseIcon}
+                                    sx={{
+                                        width: 40,
+                                        height: 40,
+                                        transition: 'opacity 0.2s ease',
+                                        '&:hover': {
+                                            content: `url(${HoverPlayerPauseIcon})`
+                                        }
+                                    }}
+                                />
+                            )}
+                        </IconButton>
+                    )}
+
+                    {/* Кнопка следующий трек */}
+                    <IconButton
+                        disableRipple
+                        onClick={handleNext}
+                        disabled={isLastTrack && !source?.hasMore}
+                        sx={{
+                            color: '#ff6b35',
+                            '&:disabled': { color: 'rgba(255, 255, 255, 0.3)' }
+                        }}
+                    >
+                        <Box
+                            component="img"
+                            src={NextIcon}
+                            sx={{
+                                width: 28,
+                                height: 28,
+                                opacity: isLastTrack ? 0.3 : 1,
+                                transition: 'opacity 0.2s ease',
+                                '&:hover': {
+                                    content: `url(${HoverPlayerNextIcon})`
+                                }
+                            }}
+                        />
+                    </IconButton>
+                </Box>
+
+                {/* Информация о треке */}
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: "15px",
+                    position: 'absolute',
+                    left: '292px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    maxWidth: 'calc(50% - 300px)',
+                    minWidth: '300px',
+                    zIndex: 1
+                }}>
+                    {/* Обложка трека */}
+                    <Box sx={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: '8px',
+                        background: 'linear-gradient(45deg, #ff6b35, #f7931e)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        flexShrink: 0
+                    }}>
+                        {active.imgUrl ? (
+                            <Box
+                                component="img"
+                                src={active.imgUrl}
+                                alt="Track cover"
+                                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                        ) : (
+                            <Box sx={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>
+                                🎵
+                            </Box>
+                        )}
+                    </Box>
+
+                    <Box sx={{
+                        flex: 1,
+                        minWidth: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1
+                    }}>
+                        <Box sx={{
+                            flex: 1,
+                            minWidth: 0
+                        }}>
                             <Typography
-                                onClick={() => route(`/author/${author.id}`)}
                                 sx={{
-                                    color: 'inherit',
-                                    fontSize: "11px",
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: '14px',
                                     whiteSpace: 'nowrap',
-                                    '&:hover': {
-                                        textDecoration: 'underline',
-                                        color: '#1976d2',
-                                        cursor: 'pointer'
-                                    }
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    marginBottom: '4px'
                                 }}
                             >
-                                {author.name}
+                                {active.title ?? 'Unknown title'}
                             </Typography>
-                            {index < active.authors.length - 1 && ', '}
-                        </React.Fragment>
-                    )) || 'Unknown artist'}
-                    <Box component="span" sx={{ mx: 1 }}>•</Box>
-                    <Typography
-                        onClick={() => route(`/album/${active.albumId}`)}
+
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+                                <Typography
+                                    onClick={handleAuthorClick}
+                                    sx={{
+                                        color: 'rgba(255, 255, 255, 0.7)',
+                                        fontSize: '12px',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        cursor: active.authors?.[0]?.id ? 'pointer' : 'default',
+                                        '&:hover': active.authors?.[0]?.id ? {
+                                            color: '#ff6b35',
+                                            textDecoration: 'underline'
+                                        } : {},
+                                        flexShrink: 1,
+                                        minWidth: 0
+                                    }}
+                                >
+                                    {active.authors?.map(author => author.name).join(', ') || 'Unknown artist'}
+                                </Typography>
+
+                                <Box sx={{
+                                    width: '2px',
+                                    height: '2px',
+                                    borderRadius: '50%',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                                    flexShrink: 0
+                                }} />
+
+                                <Typography
+                                    onClick={handleAlbumClick}
+                                    sx={{
+                                        color: 'rgba(255, 255, 255, 0.7)',
+                                        fontSize: '12px',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        cursor: active.albumId ? 'pointer' : 'default',
+                                        '&:hover': active.albumId ? {
+                                            color: '#ff6b35',
+                                            textDecoration: 'underline',
+                                        } : {},
+                                        flexShrink: 1,
+                                        minWidth: 0
+                                    }}
+                                >
+                                    {active.album ?? 'Unknown album'}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        {/* Кнопка добавления в плейлист */}
+                        <IconButton
+                            disableRipple
+                            sx={{
+                                color: '#ff6b35',
+                                flexShrink: 0
+                            }}
+                        >
+                            <Box
+                                component="img"
+                                src={PlayerAddToPlaylistIcon}
+                                sx={{
+                                    width: 20,
+                                    height: 20,
+                                    '&:hover': {
+                                        content: `url(${HoverPlayerAddToPlaylistIcon})`
+                                    }
+                                }}
+                            />
+                        </IconButton>
+                    </Box>
+                </Box>
+
+                {/* Отступ */}
+                <Box sx={{ width: "228px", flexShrink: 0 }} />
+
+                {/* Прогресс бар */}
+                <Box sx={{
+                    position: "absolute",
+                    left: "760px",
+                }}>
+                    <TrackProgress
+                        left={currentTime}
+                        right={duration}
+                        onChange={changeCurrentTime}
+                        disabled={loading}
+                        showTime={true}
+                        width="600px"
+                    />
+                </Box>
+
+                {/* Отступ */}
+                <Box sx={{ width: "300px", flexShrink: 0 }} />
+
+                {/* Правая секция */}
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    minWidth: 200,
+                    justifyContent: 'flex-end',
+                    marginLeft: 'auto',
+                    zIndex: 1
+                }}>
+                    {/* Кнопка громкости */}
+                    <IconButton
+                        disableRipple
+                        onClick={toggleMute}
+                        sx={{ color: '#ff6b35' }}
+                    >
+                        <Box
+                            component="img"
+                            src={isMuted ? PlayerVolumeOffIcon : PlayerVolumeOnIcon}
+                            sx={{ width: 28, height: 28 }}
+                        />
+                    </IconButton>
+
+                    {/* Прогресс бар громкости */}
+                    <TrackProgress
+                        left={isMuted ? 0 : volume}
+                        right={100}
+                        onChange={changeVolume}
+                        showTime={false}
+                        width="130px"
+                    />
+
+                    {/* Кнопка полноэкранного режима */}
+                    <IconButton
+                        disableRipple
+                        onClick={handleFullScreenToggle}
                         sx={{
-                            color: 'inherit',
-                            fontSize: "11px",
-                            whiteSpace: 'nowrap',
+                            color: '#ff6b35',
                             '&:hover': {
-                                textDecoration: 'underline',
-                                color: '#1976d2',
-                                cursor: 'pointer'
+                                '& .default-icon': {
+                                    display: 'none'
+                                },
+                                '& .hover-icon': {
+                                    display: 'block'
+                                }
                             }
                         }}
                     >
-                        {active.album ?? 'Unknown album'}
-                    </Typography>
+                        <Box sx={{ position: 'relative', width: 28, height: 28 }}>
+                            {isFullScreenMode ? (
+                                <>
+                                    <Box
+                                        component="img"
+                                        src={PlayerToggleOffFullModeIcon}
+                                        className="default-icon"
+                                        sx={{
+                                            width: 28,
+                                            height: 28,
+                                            display: 'block',
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0
+                                        }}
+                                    />
+                                    <Box
+                                        component="img"
+                                        src={HoverPlayerToggleOffFullModeIcon}
+                                        className="hover-icon"
+                                        sx={{
+                                            width: 28,
+                                            height: 28,
+                                            display: 'none',
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0
+                                        }}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <Box
+                                        component="img"
+                                        src={PlayerToggleFullMode}
+                                        className="default-icon"
+                                        sx={{
+                                            width: 28,
+                                            height: 28,
+                                            display: 'block',
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0
+                                        }}
+                                    />
+                                    <Box
+                                        component="img"
+                                        src={HoverPlayerToggleFullMode}
+                                        className="hover-icon"
+                                        sx={{
+                                            width: 28,
+                                            height: 28,
+                                            display: 'none',
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0
+                                        }}
+                                    />
+                                </>
+                            )}
+                        </Box>
+                    </IconButton>
                 </Box>
-                <Box sx={{ fontSize: 10, color: 'darkgray' }}>
-                    {currentTrackIndex + 1} из {playlist.length} в очереди
-                </Box>
-            </Grid>
-
-            <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime} disabled={loading} />
-
-            <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-                <VolumeUpIcon sx={{ marginRight: 1 }} />
-                <TrackProgress left={volume} right={100} onChange={changeVolume} />
             </Box>
 
-            {error && <Typography variant="body2" color="error" sx={{ ml: 2 }}>{error}</Typography>}
-        </Box>
+            {/* Отображение ошибок */}
+            {error && (
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: 'white',
+                        ml: 2,
+                        position: 'absolute',
+                        bottom: 90,
+                        left: 20,
+                        backgroundColor: 'var(--dodger-blue)',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        zIndex: (theme) => theme.zIndex.drawer + 3
+                    }}
+                >
+                    {error}
+                </Typography>
+            )}
+        </>
     );
 };
 

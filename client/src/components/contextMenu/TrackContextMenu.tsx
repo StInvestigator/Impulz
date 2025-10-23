@@ -1,3 +1,4 @@
+// TrackContextMenu.tsx
 import { Menu, Snackbar, Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, {useState, useRef} from "react";
@@ -23,7 +24,6 @@ interface TrackContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
     onClose: () => void;
     track: TrackSimpleDto;
-    onAddToPlaylist: (trackId: number) => void;
 }
 
 export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
@@ -104,10 +104,9 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleAddToFavorites = () => {
-        return () =>{
-            if(userId){
-                dispatch(likeTrack({trackId: track.id,userId: userId}))
-            }
+        console.log("Like track");
+        if (userId) {
+            dispatch(likeTrack({ trackId: track.id, userId: userId }));
         }
         onClose();
     };
@@ -138,7 +137,9 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleAddToQueue = () => {
+        // ВАЖНО: вызываем addToQueue до закрытия меню
         addToQueue(track);
+        // Закрываем меню после вызова
         onClose();
     };
 
@@ -243,7 +244,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 >
                     <ContextMenuItem
                         icon={ContextCreatePlaylistIcon}
-                        text={t("title-create-playlist") || "Створити плейліст"}
+                        text={t("title-create-playlist")}
                         onClick={handleCreatePlaylist}
                         isFirst={true}
                     />

@@ -20,12 +20,14 @@ export default function FavoriteTracksPage() {
         dispatch(setCurrentPage(1));
     }, [id, dispatch]);
 
+    const size = 10
+
     useEffect(() => {
         if (id && currentPage >= 1) {
             dispatch(fetchPopularTracksByAuthor({
                 authorId: id,
                 page: currentPage - 1,
-                size: 20
+                size: size
             }));
         }
     }, [dispatch, currentPage, id]);
@@ -39,7 +41,7 @@ export default function FavoriteTracksPage() {
                     {t("authorPage:title-popular-tracks")}
                 </Typography>
                 <Stack spacing={3} mt={3}>
-                    <TrackList tracks={popularTracks}/>
+                    <TrackList tracks={popularTracks} pageSize={size}/>
                 </Stack>
             </Box>
             {shouldShowPagination && (

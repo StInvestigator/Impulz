@@ -2,16 +2,28 @@ package com.example.server.service.elasticsearch;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import co.elastic.clients.json.JsonData;
+import com.example.server.dto.Album.AlbumSimpleDto;
+import com.example.server.dto.Author.AuthorSimpleDto;
+import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.dto.Search.GlobalSearchResult;
+import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.elasticsearch.document.*;
 import com.example.server.elasticsearch.repository.*;
+import com.example.server.service.album.AlbumService;
+import com.example.server.service.author.AuthorService;
+import com.example.server.service.playlist.PlaylistService;
+import com.example.server.service.track.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
+
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -19,27 +31,27 @@ import java.util.List;
 @Slf4j
 public class SearchService {
 
-    private final TrackSearchRepository trackSearchRepository;
-    private final AuthorSearchRepository authorSearchRepository;
-    private final AlbumSearchRepository albumSearchRepository;
-    private final PlaylistSearchRepository playlistSearchRepository;
     private final ElasticsearchOperations elasticsearchOperations;
+    private final TrackService trackService;
+    private final AuthorService authorService;
+    private final AlbumService albumService;
+    private final PlaylistService playlistService;
 
-    public GlobalSearchResult searchAll(String query) {
-        log.info("Searching for: {}", query);
+//    public GlobalSearchResult searchAll(String query) {
+//        log.info("Searching for: {}", query);
+//
+//        String normalized = normalizeQuery(query);
+//        GlobalSearchResult result = new GlobalSearchResult();
+//
+//        result.setTracks(searchTracks(normalized));
+//        result.setAuthors(searchAuthors(normalized));
+//        result.setAlbums(searchAlbums(normalized));
+//        result.setPlaylists(searchPublicPlaylists(normalized));
+//
+//        return result;
+//    }
 
-        String normalized = normalizeQuery(query);
-        GlobalSearchResult result = new GlobalSearchResult();
-
-        result.setTracks(searchTracks(normalized));
-        result.setAuthors(searchAuthors(normalized));
-        result.setAlbums(searchAlbums(normalized));
-        result.setPlaylists(searchPublicPlaylists(normalized));
-
-        return result;
-    }
-
-    private String normalizeQuery(String query) {
+    public String normalizeQuery(String query) {
         if (query == null) return "";
         return query
                 .replaceAll("[\"'*?~!@#$%^&(){}\\[\\]:;<>|\\\\/]", " ")
@@ -57,7 +69,7 @@ public class SearchService {
     }
 
 
-    public List<TrackDocument> searchTracks(String query) {
+    public PageDto<TrackSimpleDto> searchTracks(String query, Pageable pageable) {
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.bool(b -> b
                         .should(s -> s.prefix(p -> p
@@ -76,14 +88,19 @@ public class SearchService {
                                 .type(TextQueryType.BestFields)
                                 .boost(1.0f)
                         ))
-                ))
+                )).withPageable(pageable)
                 .build();
 
         SearchHits<TrackDocument> hits = elasticsearchOperations.search(searchQuery, TrackDocument.class);
-        return hits.getSearchHits().stream().map(hit -> hit.getContent()).toList();
+        return new PageDto<>(trackService.getTracksByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(TrackSimpleDto::fromEntity).toList(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                hits.getTotalHits()
+        );
     }
 
-    public List<AuthorDocument> searchAuthors(String query) {
+    public PageDto<AuthorSimpleDto> searchAuthors(String query, Pageable pageable) {
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.multiMatch(m -> {
                     m.query(query);
@@ -91,14 +108,19 @@ public class SearchService {
                     m.type(multiMatchType(query));
                     if (useFuzziness(query)) m.fuzziness("AUTO");
                     return m;
-                }))
+                })).withPageable(pageable)
                 .build();
 
         SearchHits<AuthorDocument> hits = elasticsearchOperations.search(searchQuery, AuthorDocument.class);
-        return hits.getSearchHits().stream().map(hit -> hit.getContent()).toList();
+        return new PageDto<>(authorService.getAuthorsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(AuthorSimpleDto::fromEntity).toList(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                hits.getTotalHits()
+        );
     }
 
-    public List<AlbumDocument> searchAlbums(String query) {
+    public PageDto<AlbumSimpleDto> searchAlbums(String query, Pageable pageable) {
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.multiMatch(m -> {
                     m.query(query);
@@ -106,14 +128,19 @@ public class SearchService {
                     m.type(multiMatchType(query));
                     if (useFuzziness(query)) m.fuzziness("AUTO");
                     return m;
-                }))
+                })).withPageable(pageable)
                 .build();
 
         SearchHits<AlbumDocument> hits = elasticsearchOperations.search(searchQuery, AlbumDocument.class);
-        return hits.getSearchHits().stream().map(hit -> hit.getContent()).toList();
+        return new PageDto<>(albumService.findAlbumsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(AlbumSimpleDto::fromEntity).toList(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                hits.getTotalHits()
+        );
     }
 
-    public List<PlaylistDocument> searchPlaylists(String query) {
+    public PageDto<PlaylistSimpleDto> searchPlaylists(String query, Pageable pageable) {
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.multiMatch(m -> {
                     m.query(query);
@@ -121,14 +148,19 @@ public class SearchService {
                     m.type(multiMatchType(query));
                     if (useFuzziness(query)) m.fuzziness("AUTO");
                     return m;
-                }))
+                })).withPageable(pageable)
                 .build();
 
         SearchHits<PlaylistDocument> hits = elasticsearchOperations.search(searchQuery, PlaylistDocument.class);
-        return hits.getSearchHits().stream().map(hit -> hit.getContent()).toList();
+        return new PageDto<>(playlistService.findPlaylistsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(PlaylistSimpleDto::fromEntity).toList(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                hits.getTotalHits()
+        );
     }
 
-    public List<PlaylistDocument> searchPublicPlaylists(String query) {
+    public PageDto<PlaylistSimpleDto> searchPublicPlaylists(String query, Pageable pageable) {
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.bool(b -> b
                         .must(m -> m.multiMatch(mm -> {
@@ -139,10 +171,15 @@ public class SearchService {
                             return mm;
                         }))
                         .filter(f -> f.term(t -> t.field("isPublic").value(true)))
-                ))
+                )).withPageable(pageable)
                 .build();
 
         SearchHits<PlaylistDocument> hits = elasticsearchOperations.search(searchQuery, PlaylistDocument.class);
-        return hits.getSearchHits().stream().map(hit -> hit.getContent()).toList();
+        return new PageDto<>(playlistService.findPlaylistsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(PlaylistSimpleDto::fromEntity).toList(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                hits.getTotalHits()
+        );
     }
 }

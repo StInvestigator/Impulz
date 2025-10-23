@@ -1,38 +1,44 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type {GlobalSearchResult} from "../../../models/document/GlobalSearchResult.ts";
-import {$authApi} from "../../../http";
-import type {TrackDocument} from "../../../models/document/TrackDocument.ts";
-import type {AuthorDocument} from "../../../models/document/AuthorDocument.ts";
-import type {AlbumDocument} from "../../../models/document/AlbumDocument.ts";
-import type {PlaylistDocument} from "../../../models/document/PlaylistDocument.ts";
+import { $authApi } from "../../../http";
+import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
+import { setTotalPages } from "../PageSlice.ts";
+import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto.ts";
+import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
+import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 
-export const searchAll = createAsyncThunk<
-    GlobalSearchResult,
-    string,
-    { rejectValue: string }
->(
-    'search/searchAll',
-    async (query, { rejectWithValue }) => {
-        try {
-            const response = await $authApi.get(`/search?q=${encodeURIComponent(query)}`);
-            return response.data;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (e) {
-            return rejectWithValue('Не удалось выполнить поиск');
-        }
-    }
-);
+// export const searchAll = createAsyncThunk<
+//     GlobalSearchResult,
+//     string,
+//     { rejectValue: string }
+// >(
+//     'search/searchAll',
+//     async (query, { rejectWithValue }) => {
+//         try {
+//             const response = await $authApi.get(`/search?q=${encodeURIComponent(query)}`);
+//             return response.data;
+//             // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//         } catch (e) {
+//             return rejectWithValue('Не удалось выполнить поиск');
+//         }
+//     }
+// );
 
 export const searchTracks = createAsyncThunk<
-    TrackDocument[],
-    string,
+    TrackSimpleDto[],
+    { query: string, page?: number; size?: number },
     { rejectValue: string }
 >(
     'search/searchTracks',
-    async (query, { rejectWithValue }) => {
+    async ({ query, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
-            const response = await $authApi.get(`/search/tracks?q=${encodeURIComponent(query)}`);
-            return response.data;
+            const params = new URLSearchParams();
+            params.append('q', encodeURIComponent(query))
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $authApi.get(`/search/tracks?${params}`);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue('Не удалось найти треки');
@@ -41,15 +47,20 @@ export const searchTracks = createAsyncThunk<
 );
 
 export const searchAuthors = createAsyncThunk<
-    AuthorDocument[],
-    string,
+    AuthorSimpleDto[],
+    { query: string, page?: number; size?: number },
     { rejectValue: string }
 >(
     'search/searchAuthors',
-    async (query, { rejectWithValue }) => {
+    async ({ query, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
-            const response = await $authApi.get(`/search/authors?q=${encodeURIComponent(query)}`);
-            return response.data;
+            const params = new URLSearchParams();
+            params.append('q', encodeURIComponent(query))
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+            const response = await $authApi.get(`/search/authors?${params}`);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue('Не удалось найти авторов');
@@ -58,15 +69,20 @@ export const searchAuthors = createAsyncThunk<
 );
 
 export const searchAlbums = createAsyncThunk<
-    AlbumDocument[],
-    string,
+    AlbumSimpleDto[],
+    { query: string, page?: number; size?: number },
     { rejectValue: string }
 >(
     'search/searchAlbums',
-    async (query, { rejectWithValue }) => {
+    async ({ query, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
-            const response = await $authApi.get(`/search/albums?q=${encodeURIComponent(query)}`);
-            return response.data;
+            const params = new URLSearchParams();
+            params.append('q', encodeURIComponent(query))
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+            const response = await $authApi.get(`/search/albums?${params}`);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue('Не удалось найти альбомы');
@@ -75,15 +91,20 @@ export const searchAlbums = createAsyncThunk<
 );
 
 export const searchPublicPlaylists = createAsyncThunk<
-    PlaylistDocument[],
-    string,
+    PlaylistSimpleDto[],
+    { query: string, page?: number; size?: number },
     { rejectValue: string }
 >(
     'search/searchPublicPlaylists',
-    async (query, { rejectWithValue }) => {
+    async ({ query, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
         try {
-            const response = await $authApi.get(`/search/playlists/public?q=${encodeURIComponent(query)}`);
-            return response.data;
+            const params = new URLSearchParams();
+            params.append('q', encodeURIComponent(query))
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+            const response = await $authApi.get(`/search/playlists/public?${params}`);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue('Не удалось найти плейлисты');

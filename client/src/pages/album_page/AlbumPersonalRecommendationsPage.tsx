@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { setCurrentPage } from '../../store/reducers/PageSlice';
 import { Box, Typography } from '@mui/material';
 import MyPagination from '../../components/MyPagination';
-import MediaList from "../../components/lists/MediaList.tsx";
 import { fetchPersonalAlbumsByGenre } from '../../store/reducers/action-creators/album';
 import { useKeycloak } from "@react-keycloak/web";
+import AlbumList from '../../components/lists/AlbumList.tsx';
 
 function AlbumPersonalRecommendationsPage() {
     const { currentPage, totalPages } = useAppSelector((state) => state.page);
@@ -14,7 +14,7 @@ function AlbumPersonalRecommendationsPage() {
     const { keycloak } = useKeycloak();
 
     const dispatch = useAppDispatch();
-    const { albumPersonalRecommendationsByGenre, isLoading, error } = useAppSelector((state) => state.album);
+    const { albumPersonalRecommendationsByGenre } = useAppSelector((state) => state.album);
 
     const userId = keycloak.authenticated ? keycloak.tokenParsed?.sub : null;
 
@@ -57,10 +57,8 @@ function AlbumPersonalRecommendationsPage() {
                 </Typography>
 
                 <Box mt={3}>
-                    <MediaList
-                        medias={albumPersonalRecommendationsByGenre}
-                        isLoading={isLoading}
-                        error={error}
+                    <AlbumList
+                        albums={albumPersonalRecommendationsByGenre}
                     />
                 </Box>
             </Box>

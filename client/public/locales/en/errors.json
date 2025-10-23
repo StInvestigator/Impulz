@@ -4,5 +4,6 @@
   "error-no-tracks-in-playlist": "There are no tracks in this playlist yet",
   "error-playlist-not-found": "Playlist not found",
   "error-playlist-already-exists-in-playlist": "This track is already exists in this album",
-  "error-failed-to-add-track-to-playlist": "Failed to add the track to the playlist"
+  "error-failed-to-add-track-to-playlist": "Failed to add the track to the playlist",
+  "error-track-loading": "Track loading error"
 }

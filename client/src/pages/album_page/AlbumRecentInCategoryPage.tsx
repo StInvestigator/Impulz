@@ -5,8 +5,8 @@ import { setCurrentPage } from '../../store/reducers/PageSlice.ts';
 import { useParams } from "react-router-dom";
 import { Box, Typography } from '@mui/material';
 import MyPagination from '../../components/MyPagination.tsx';
-import MediaList from "../../components/lists/MediaList.tsx";
 import { fetchRecentAlbumsByGenre } from '../../store/reducers/action-creators/album.ts';
+import AlbumList from '../../components/lists/AlbumList.tsx';
 
 function AlbumRecentInCategoryPage() {
     const { currentPage, totalPages } = useAppSelector((state) => state.page);
@@ -15,7 +15,7 @@ function AlbumRecentInCategoryPage() {
     const genreId = Number(id)
 
     const dispatch = useAppDispatch();
-    const { recentAlbumsByGenre, isLoading: albumLoading, error: albumError } = useAppSelector(state => state.album);
+    const { recentAlbumsByGenre } = useAppSelector(state => state.album);
 
     useEffect(() => {
         dispatch(setCurrentPage(1));
@@ -43,10 +43,8 @@ function AlbumRecentInCategoryPage() {
                 </Typography>
 
                 <Box mt={3}>
-                    <MediaList
-                        medias={recentAlbumsByGenre}
-                        isLoading={albumLoading}
-                        error={albumError}
+                    <AlbumList
+                        albums={recentAlbumsByGenre}
                     />
                 </Box>
             </Box>

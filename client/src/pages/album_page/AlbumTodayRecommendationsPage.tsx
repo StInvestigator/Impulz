@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { setCurrentPage } from '../../store/reducers/PageSlice';
 import { Box, Typography } from '@mui/material';
 import MyPagination from '../../components/MyPagination';
-import MediaList from "../../components/lists/MediaList.tsx";
 import { fetchAlbumTodayRecommendations } from '../../store/reducers/action-creators/album';
+import AlbumList from '../../components/lists/AlbumList.tsx';
 
 function AlbumTodayRecommendationsPage() {
     const { currentPage, totalPages } = useAppSelector((state) => state.page);
     const { t } = useTranslation(["main"]);
 
     const dispatch = useAppDispatch();
-    const { albumTodayRecommendations, isLoading, error } = useAppSelector((state) => state.album);
+    const { albumTodayRecommendations } = useAppSelector((state) => state.album);
 
     useEffect(() => {
         dispatch(setCurrentPage(1));
@@ -39,10 +39,7 @@ function AlbumTodayRecommendationsPage() {
                 </Typography>
 
                 <Box mt={3}>
-                    <MediaList
-                        medias={albumTodayRecommendations}
-                        isLoading={isLoading}
-                        error={error}
+                    <AlbumList albums={albumTodayRecommendations}
                     />
                 </Box>
             </Box>

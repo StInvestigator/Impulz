@@ -62,7 +62,7 @@ keycloak:
   realm: ${KEYCLOAK_REALM:Impulz}
   clientId: ${KEYCLOAK_CLIENT_ID:ImpulzServer}
   frontClientId: ${KEYCLOAK_FRONT_CLIENT_ID:ImpulzClient}
-  clientSecret: ${KEYCLOAK_CLIENT_SECRET:bL8ofIdfT3fHDew9bOz8DG1hFrjJ3Y36}
+  clientSecret: ${KEYCLOAK_CLIENT_SECRET:HbSOGYw4THGNmLUCjsa0iN9yjHVQd18H}
   admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
   admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
 

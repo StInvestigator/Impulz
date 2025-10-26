@@ -5,5 +5,8 @@
   "error-playlist-not-found": "Playlist not found",
   "error-playlist-already-exists-in-playlist": "This track is already exists in this album",
   "error-failed-to-add-track-to-playlist": "Failed to add the track to the playlist",
-  "error-track-loading": "Track loading error"
+  "error-track-loading": "Track loading error",
+  "error-page-not-found": "Page not found",
+  "error-page-not-found-description": "Sorry, the page you're looking for doesn't exist or has been moved",
+  "error-contact-support": "If the problem persists, contact support"
 }

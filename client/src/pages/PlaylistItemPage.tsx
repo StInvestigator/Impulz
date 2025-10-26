@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import {Navigate, useParams} from "react-router-dom";
 import { Box, Stack, CircularProgress, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { fetchPlaylistDetails } from "../store/reducers/action-creators/playlist.ts";
@@ -9,6 +9,8 @@ import MyPagination from "../components/MyPagination.tsx";
 import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
 import { fetchTracksByPlaylist } from "../store/reducers/action-creators/tracks.ts";
 import { useTranslation } from "react-i18next";
+import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg"
+import keycloak from "../keycloak.ts";
 
 const PlaylistItemPage = () => {
     const { playlistId } = useParams<{ playlistId: string }>();
@@ -16,6 +18,7 @@ const PlaylistItemPage = () => {
     const { currentPlaylist, isLoading, error } = useAppSelector(state => state.playlist);
     const { currentPage } = useAppSelector(state => state.page);
     const { playTrackList } = usePlayTrack();
+    const currentUserId = keycloak.tokenParsed?.sub;
 
     const id = Number(playlistId)
     const { t } = useTranslation(["other","errors"]);
@@ -26,6 +29,13 @@ const PlaylistItemPage = () => {
             dispatch(fetchPlaylistDetails(playlistId));
         }
     }, [playlistId]);
+
+    if(!isLoading && currentPlaylist && !currentPlaylist.isPublic){
+        const isOwner = currentPlaylist.owner.id === currentUserId;
+        if(!isOwner){
+            return <Navigate to={"/notFound"} replace/>
+        }
+    }
 
     if (isLoading) {
         return (
@@ -92,7 +102,7 @@ const PlaylistItemPage = () => {
                     OwnerImageUrl={ownerImageUrl}
                     trackCount={currentPlaylist.tracks?.length || 0}
                     duration={formatDuration(totalDuration)}
-                    imgUrl={currentPlaylist.imageUrl}
+                    imgUrl={currentPlaylist.imgUrl || PlaylistDefaultImage}
                     handlePlay={handlePlayPlaylist}
                 />
             </Box>

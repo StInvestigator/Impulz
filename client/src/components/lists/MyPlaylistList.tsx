@@ -17,8 +17,9 @@ const MyPlaylistList = () => {
         if (userId) {
             dispatch(fetchPlaylistsOwnByUserId({ userId }));
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
+
+    const reversedPlaylists = playlistsOwnByCurrentUser ? [...playlistsOwnByCurrentUser].reverse() : [];
 
     if (isLoading) {
         return (
@@ -35,18 +36,14 @@ const MyPlaylistList = () => {
 
     return (
         <List disablePadding>
-            {keycloak.authenticated && Array.isArray(playlistsOwnByCurrentUser) && playlistsOwnByCurrentUser.length > 0 ? (
-                playlistsOwnByCurrentUser.map((playlist: PlaylistSimpleDto) => (
+            {keycloak.authenticated && Array.isArray(reversedPlaylists) && reversedPlaylists.length > 0 && (
+                reversedPlaylists.map((playlist: PlaylistSimpleDto) => (
                     <MyPlaylistItem
                         key={playlist.id}
                         playlist={playlist}
                         defaultImage={playlistImage}
                     />
                 ))
-            ) : (
-                <Box padding="8px 16px" color="var(--columbia-blue)" fontSize="14px">
-                    No playlists found
-                </Box>
             )}
         </List>
     );

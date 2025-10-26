@@ -34,4 +34,5 @@ public interface TrackService
     List<Long> getUserFavoriteFromTrackIds(String userId, List<Long> trackIds);
     void like(Long trackId, String userId);
     List<Track> getTracksByIds(List<Long> trackIds);
+    PageDto<TrackSimpleDto> getLikedTracksByUserId(String userId,Pageable pageable);
 }

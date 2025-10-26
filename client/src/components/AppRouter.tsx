@@ -34,6 +34,8 @@ import SearchPlaylistsPage from "../pages/playlists_page/SearchPlaylistsPage.tsx
 import SearchAlbumsPage from "../pages/album_page/SearchAlbumsPage.tsx";
 import SearchAuthorsPage from "../pages/authors_page/SearchAuthorsPage.tsx";
 import MyProfilePage from "../pages/MyProfilePage.tsx";
+import LikedPlaylistPage from "../pages/playlists_page/LikedPlaylistPage.tsx";
+import NotFoundPage from "../pages/NotFoundPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -60,6 +62,7 @@ const AppRouter = () => {
                     <Route path="/author/:id" element={<AuthorProfilePage />} />
                     <Route path="/album/:albumId" element={<AlbumItemPage />} />
                     <Route path="/playlist/:playlistId" element={<PlaylistItemPage />} />
+                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage/> }/>
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/search/:query/authors" element={<SearchAuthorsPage />} />
                     <Route path="/search/:query/tracks" element={<SearchTracksPage />} />
@@ -80,6 +83,7 @@ const AppRouter = () => {
                 <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="/notFound" element={<NotFoundPage/> }/>
             </Routes>
         </Suspense>
     );

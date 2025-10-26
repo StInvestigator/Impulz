@@ -4,24 +4,7 @@ import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts
 import { setTotalPages } from "../PageSlice.ts";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto.ts";
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
-import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
-
-// export const searchAll = createAsyncThunk<
-//     GlobalSearchResult,
-//     string,
-//     { rejectValue: string }
-// >(
-//     'search/searchAll',
-//     async (query, { rejectWithValue }) => {
-//         try {
-//             const response = await $authApi.get(`/search?q=${encodeURIComponent(query)}`);
-//             return response.data;
-//             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//         } catch (e) {
-//             return rejectWithValue('Не удалось выполнить поиск');
-//         }
-//     }
-// );
+import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
 
 export const searchTracks = createAsyncThunk<
     TrackSimpleDto[],
@@ -91,7 +74,7 @@ export const searchAlbums = createAsyncThunk<
 );
 
 export const searchPublicPlaylists = createAsyncThunk<
-    PlaylistSimpleDto[],
+    PlaylistDto[],
     { query: string, page?: number; size?: number },
     { rejectValue: string }
 >(

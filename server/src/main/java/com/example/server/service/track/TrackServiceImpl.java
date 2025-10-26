@@ -207,4 +207,13 @@ public class TrackServiceImpl implements TrackService {
     public List<Track> getTracksByIds(List<Long> trackIds) {
         return trackRepository.findAllById(trackIds);
     }
+
+    @Override
+    public PageDto<TrackSimpleDto> getLikedTracksByUserId(String userId, Pageable pageable) {
+        return new PageDto<>(
+                trackRepository
+                        .findLikedTracksByUserId(userId, pageable)
+                        .map(TrackSimpleDto::fromEntity)
+        );
+    }
 }

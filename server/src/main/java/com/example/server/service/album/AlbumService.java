@@ -29,4 +29,5 @@ public interface AlbumService
     Album upload(AlbumCreationDto metadata, MultipartFile cover, List<MultipartFile> trackFiles, List<MultipartFile> trackCovers);
     Page<AlbumSimpleDto> findFavoriteByUserId(String userId, Pageable pageable);
     List<Album> findAlbumsByIds(List<Long> ids);
+    void like(Long albumId,String userId);
 }

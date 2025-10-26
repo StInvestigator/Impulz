@@ -5,7 +5,7 @@ import {
     fetchAuthorTrackCollaborations,
     fetchTracksByAlbum,
     fetchPopularTracksByGenre,
-    fetchTracksByPlaylist
+    fetchTracksByPlaylist, fetchLikedTracksByUserId
 } from "./action-creators/tracks.ts";
 import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
 
@@ -15,6 +15,7 @@ interface TrackState {
     collaborationTracks: TrackSimpleDto[];
     tracksByAlbum: TrackSimpleDto[];
     popularTracksByGenre: TrackSimpleDto[];
+    likedTracks: TrackSimpleDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -25,6 +26,7 @@ const initialState: TrackState = {
     collaborationTracks: [],
     tracksByAlbum: [],
     popularTracksByGenre: [],
+    likedTracks: [],
     isLoading: false,
     error: null,
 };
@@ -114,7 +116,21 @@ const trackSlice = createSlice({
             .addCase(fetchPopularTracksByGenre.rejected,(state,action)=>{
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке популярных треков по жанру";
-            });
+            })
+
+            .addCase(fetchLikedTracksByUserId.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchLikedTracksByUserId.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.likedTracks = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchLikedTracksByUserId.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке лайкнутых треков";
+            })
     },
 });
 

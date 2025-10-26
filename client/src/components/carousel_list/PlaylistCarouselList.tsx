@@ -1,11 +1,11 @@
 import type { FC } from "react";
 import ListCarousel from "../ListCarousel.tsx";
 import PublicPlaylistSmallItem from "../items/playlist/PublicPlaylistSmallItem.tsx";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import Skeleton from "@mui/material/Skeleton";
+import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
 interface PlaylistListProps {
-  playlists: PlaylistSimpleDto[];
+  playlists: PlaylistDto[];
   isLoading: boolean;
   error: string | null;
   itemWidth: number;

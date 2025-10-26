@@ -107,7 +107,7 @@ export const likeTrack = createAsyncThunk<
         }
         catch (error: unknown)
         {
-            return rejectWithValue(`Failed to add track to playlist : ${error}`);
+            return rejectWithValue(`Failed to like track : ${error}`);
         }
     }
 );
@@ -149,6 +149,31 @@ export const fetchPopularTracksByGenre = createAsyncThunk<
             return response.data.page.content;
         } catch (e: unknown) {
             return rejectWithValue(`Не удалось загрузить треки по жанру : ${e}`);
+        }
+    }
+);
+
+export const fetchLikedTracksByUserId = createAsyncThunk<
+    TrackSimpleDto[],
+    {userId: string, page?: number; size?: number},
+    {rejectValue: string}
+>(
+    "tracks/fetchLikedTracksByUserId",
+    async({userId, page = 0, size = 20}, {rejectWithValue,dispatch}) => {
+        try{
+            const response = await $authApi.get(`/tracks/liked/${userId}`, {
+                params: {
+                    page,
+                    size
+                }
+            });
+            dispatch(setTotalPages(response.data.page.totalPages));
+            return response.data.page.content;
+        } catch (error: unknown) {
+            console.error(`Error fetching liked tracks: ${error}`);
+            return rejectWithValue(
+                `Failed to fetch liked tracks: ${error}`
+            );
         }
     }
 );

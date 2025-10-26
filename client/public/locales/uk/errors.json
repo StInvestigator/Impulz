@@ -5,5 +5,8 @@
   "error-playlist-not-found": "Плейлист не знайден",
   "error-playlist-already-exists-in-playlist": "Цей трек же є в цьому альбомі",
   "error-failed-to-add-track-to-playlist": "Не вдалось додати трек до плейлисту",
-  "error-track-loading": "Помилка завантаження треку"
+  "error-track-loading": "Помилка завантаження треку",
+  "error-page-not-found": "Сторінку не знайдено",
+  "error-page-not-found-description": "На жаль, сторінка, яку Ви шукаєте, не існує або була переміщена",
+  "error-contact-support": "Якщо проблема не зникає, зверніться до служби підтримки"
 }

@@ -87,6 +87,24 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiMenu: {
+            styleOverrides: {
+                paper:{
+                    border: "1px solid #0090FF",
+                },
+                list:{
+                    padding: 0,
+                }
+            }
+        },
+        MuiMenuItem: {
+            styleOverrides: {
+                root:{
+                    border: "1px solid #0090FF",
+                    padding: "12px"
+                }
+            }
+        },
         MuiPaginationItem: {
             styleOverrides: {
                 ellipsis: {

@@ -5,13 +5,25 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useEffect, useState } from "react";
 import { fetchAuthorPlaysByMonth } from "../../store/reducers/action-creators/author";
 import { useTranslation } from "react-i18next";
-import editIcon from "../../assets/edit-icon.svg"
+import additionalIcon from "../../assets/AdditionalIcon.svg";
+import DropdownOptionsMyProfile from "../ui/dropdowns/DropdownOptionsMyProfile";
 
 function MyProfile() {
   const { profile } = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
   const [playsByMonth, setPlaysByMonth] = useState<number>(0);
   const { t } = useTranslation("authorPage");
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     if (profile.authorDto?.id) {
@@ -46,14 +58,18 @@ function MyProfile() {
           height={"100%"}
         />
 
-        <IconButton sx={{ padding: 0, flexShrink: 0, position: "absolute", top: 20, right: 20}}>
-          <Box
-            component="img"
-            src={editIcon}
-            height="28px"
-            width="28px"
-          />
+        <IconButton
+          sx={{ padding: 0, flexShrink: 0, position: "absolute", top: 20, right: 20 }}
+          onClick={handleOpenMenu}
+        >
+          <Box component="img" src={additionalIcon} height="28px" width="28px" />
         </IconButton>
+
+        <DropdownOptionsMyProfile
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
+        />
         {/* Контейнер для фото и имени пользователя */}
         <Box
           display={"flex"}

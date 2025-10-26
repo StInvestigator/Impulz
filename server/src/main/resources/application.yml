@@ -77,6 +77,9 @@ music:
   base-url: ${MUSIC_BASE_URL:https://impulz-bucket-1.s3.us-east-1.amazonaws.com/music/}
 
 app:
+  frontend:
+    cancel-url: ${FRONTEND_ERROR_URL:http://localhost:3000}
+    success-url: ${FRONTEND_SUCCESS_URL:http://localhost:3000}
   temp-dir: ${java.io.tmpdir}/audio_uploads
 
 jwt:
@@ -91,3 +94,7 @@ cloud:
       secret-key: ${AWS_SECRET_ACCESS_KEY}
     region:
       static: ${AWS_REGION:us-east-1}
+
+stripe:
+  secret_key: ${STRIPE_SECRET_KEY}
+  webhook_secret: ${STRIPE_WEBHOOK_SECRET}

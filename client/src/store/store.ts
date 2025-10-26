@@ -8,6 +8,7 @@ import AlbumReducer from "./reducers/AlbumSlice.ts"
 import PageReducer from "./reducers/PageSlice.ts";
 import ProfileReducer from "./reducers/ProfileSlice.ts";
 import SearchReducer from "./reducers/SearchSlice.ts";
+import SubscriptionReducer from "./reducers/SubscriptionSlice.ts";
 
 
 const rootReducer = combineReducers({
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
     album: AlbumReducer,
     page: PageReducer,
     profile: ProfileReducer,
-    search: SearchReducer
+    search: SearchReducer,
+    subscribtion: SubscriptionReducer
 })
 
 export const setupStore = () => {

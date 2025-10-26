@@ -1,12 +1,14 @@
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import type {FC} from "react";
+import {type FC, useEffect, useState} from "react";
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchAlbumDetails } from "../../../store/reducers/action-creators/album.ts";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
+import {AlbumContextMenu} from "../../contextMenu/AlbumContextMenu.tsx";
+import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -18,7 +20,14 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
     const navigate = useAppNavigate();
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
 
+    useEffect(() => {
+        if (contextMenu) {
+            setWasContextMenuOpen(true);
+        }
+    }, [contextMenu]);
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -35,6 +44,11 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
     }
 
     const handleAlbumClick = () => {
+        if (wasContextMenuOpen) {
+            setWasContextMenuOpen(false);
+            return;
+        }
+
         dispatch(fetchAlbumDetails(album.id));
         navigate(`/album/${album.id}`);
     };
@@ -42,10 +56,15 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
     return (
         <Box
             sx={{
-                width: "100%",
                 position: "relative",
+                width: itemWidth || "100%",
+                height: `${itemHeight}px`,
+                display: "flex",
+                flexDirection: "column",
+                transition: 'height 0.2s ease-in-out',
                 cursor: 'pointer',
             }}
+            onContextMenu={(e) => handleContextMenu(e, album.id)}
             onClick={handleAlbumClick}
         >
             <Box
@@ -97,6 +116,12 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
                     </IconButton>
                 </Box>
             </Box>
+
+            <AlbumContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                album={album}
+            />
         </Box>
     );
 };

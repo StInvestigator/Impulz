@@ -17,10 +17,14 @@ import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
 import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
 import {fetchAuthorTracksPaged} from "../store/reducers/action-creators/player.ts";
+import type {AlbumSimpleDto} from "../models/DTO/album/AlbumSimpleDto.ts";
+import type {PlaylistDto} from "../models/PlaylistDto.ts";
 
 let sharedFetchFn: ((page: number, size: number) => Promise<TrackSimpleDto[]>) | null = null;
 let sharedFetchSource: { type: PlayerSource["type"]; id: string | number } | null = null;
 const pendingPageRef = { current: null as number | null };
+
+type PlayableEntity = TrackSimpleDto | AlbumSimpleDto | PlaylistDto;
 
 export const usePlayTrack = () => {
     const dispatch = useAppDispatch();
@@ -80,12 +84,12 @@ export const usePlayTrack = () => {
         }
     };
 
-    const addToQueue = (track: TrackSimpleDto) => {
+    const addTrackToQueue = (track: TrackSimpleDto) => {
         if (!requireAuth()) return;
 
         const isPlayerInitialized = active !== null;
 
-        console.log('🎵 addToQueue:', {
+        console.log('🎵 addTrackToQueue:', {
             track: track.title,
             isPlayerInitialized,
             currentActive: active?.title,
@@ -106,8 +110,86 @@ export const usePlayTrack = () => {
             if (source && (!sharedFetchSource || source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id)) {
                 console.log('🎵 Обновляем shared состояние для текущего источника');
                 const restored = restoreSourceConnection();
-                console.log('🎵 Результат восстановления в addToQueue:', restored);
+                console.log('🎵 Результат восстановления в addTrackToQueue:', restored);
             }
+        }
+    };
+
+    const addAlbumToQueue = async (album: AlbumSimpleDto) => {
+        if (!requireAuth()) return;
+
+        console.log('🎵 addAlbumToQueue:', {
+            album: album.title,
+            tracksCount: album.tracks?.length || 0,
+            isPlayerInitialized: active !== null
+        });
+
+        const albumTracks = album.tracks || [];
+
+        if (albumTracks.length === 0) {
+            console.warn('🎵 Альбом не содержит треков');
+            return;
+        }
+
+        console.log('🎵 Добавляем все треки альбома в очередь:', albumTracks.length);
+
+        if (!active) {
+            console.log('🎵 Начинаем воспроизведение альбома');
+            dispatch(setPlaylist(albumTracks));
+            dispatch(setCurrentTrack(0));
+            dispatch(playTrack());
+        } else {
+            console.log('🎵 Добавляем альбом в конец очереди');
+            dispatch(appendToPlaylist(albumTracks));
+            resetSharedState();
+        }
+    };
+
+    const addPlaylistToQueue = async (playlist: PlaylistDto) => {
+        if (!requireAuth()) return;
+
+        console.log('🎵 addPlaylistToQueue:', {
+            playlist: playlist.title,
+            tracksCount: playlist.tracks?.length || 0,
+            isPlayerInitialized: active !== null
+        });
+
+        const playlistTracks = playlist.tracks || [];
+
+        if (playlistTracks.length === 0) {
+            console.warn('🎵 Плейлист не содержит треков');
+            return;
+        }
+
+        console.log('🎵 Добавляем все треки плейлиста в очередь:', playlistTracks.length);
+
+        if (!active) {
+            console.log('🎵 Начинаем воспроизведение плейлиста');
+            dispatch(setPlaylist(playlistTracks));
+            dispatch(setCurrentTrack(0));
+            dispatch(playTrack());
+        } else {
+            console.log('🎵 Добавляем плейлист в конец очереди');
+            dispatch(appendToPlaylist(playlistTracks));
+            resetSharedState();
+        }
+    };
+
+    const addToQueue = (entity: PlayableEntity, type: 'track' | 'album' | 'playlist' = 'track') => {
+        if (!requireAuth()) return;
+
+        switch (type) {
+            case 'track':
+                addTrackToQueue(entity as TrackSimpleDto);
+                break;
+            case 'album':
+                addAlbumToQueue(entity as AlbumSimpleDto);
+                break;
+            case 'playlist':
+                addPlaylistToQueue(entity as PlaylistDto);
+                break;
+            default:
+                console.warn('🎵 Unknown entity type:', type);
         }
     };
 
@@ -117,7 +199,6 @@ export const usePlayTrack = () => {
         dispatch(setPlaylist(tracks));
         dispatch(setCurrentTrack(startIndex));
     };
-
 
     const loadNextPageToBuffer = useCallback(
         async (
@@ -251,12 +332,12 @@ export const usePlayTrack = () => {
 
         switch (source.type) {
             case "author":
-                { const authorFetchFn = async (page: number, size: number) => {
-                    console.log('🎵 Вызываем fetchAuthorTracksPaged для восстановления:', { authorId: source.id, page, size });
-                    const res = await fetchAuthorTracksPaged(source.id.toString(), page, size);
-                    console.log('🎵 Результат восстановления для автора:', { tracksCount: res.tracks.length });
-                    return res.tracks;
-                };
+            { const authorFetchFn = async (page: number, size: number) => {
+                console.log('🎵 Вызываем fetchAuthorTracksPaged для восстановления:', { authorId: source.id, page, size });
+                const res = await fetchAuthorTracksPaged(source.id.toString(), page, size);
+                console.log('🎵 Результат восстановления для автора:', { tracksCount: res.tracks.length });
+                return res.tracks;
+            };
                 sharedFetchFn = authorFetchFn;
                 sharedFetchSource = { type: source.type, id: source.id };
                 currentFetchFnRef.current = authorFetchFn;

@@ -5,6 +5,8 @@ import medalImage from "../../../assets/medal.svg";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {useNavigate} from "react-router-dom";
 import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
+import {TrackContextMenu} from "../../contextMenu/TrackContextMenu.tsx";
+import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -16,15 +18,22 @@ interface TrackItemProps {
 const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
 
     return (
         <Box
+            onContextMenu={(e) => handleContextMenu(e, track.id)}
             sx={{
                 width: itemWidth || "100%",
                 height: `${itemHeight}px`,
                 position: "relative",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                transition: 'height 0.2s ease-in-out',
+                '&:hover': {
+                    bgcolor: 'rgba(0, 0, 0, 0.04)',
+                },
+                cursor: 'context-menu',
             }}
         >
             <Box
@@ -125,6 +134,12 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                     </IconButton>
                 </Box>
             </Box>
+
+            <TrackContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                track={track}
+            />
         </Box>
     );
 };

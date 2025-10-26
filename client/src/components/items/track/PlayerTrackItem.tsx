@@ -2,6 +2,9 @@ import {Box, IconButton, Typography} from '@mui/material';
 import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
 import AdditionalIcon from "../../../assets/AdditionalIcon.svg";
 import { formatTime } from '../../../utils/timeFormatter';
+import {PlayerTrackContextMenu} from "../../contextMenu/PlayerTrackContextMenu.tsx";
+import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {useEffect, useState} from "react";
 
 interface PlayerTrackItemProps {
     track: TrackSimpleDto;
@@ -9,6 +12,7 @@ interface PlayerTrackItemProps {
     currentTrackIndex: number;
     isActive?: boolean;
     onTrackClick?: () => void;
+    onCloseFullScreen?: () => void;
 }
 
 export const PlayerTrackItem = ({
@@ -16,12 +20,37 @@ export const PlayerTrackItem = ({
                                     index,
                                     currentTrackIndex,
                                     onTrackClick,
+                                    onCloseFullScreen
                                 }: PlayerTrackItemProps) => {
     const isCurrentTrack = index === currentTrackIndex;
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
+
+    useEffect(() => {
+        if (contextMenu) {
+            setWasContextMenuOpen(true);
+        }
+    }, [contextMenu]);
+
+    const handleIconClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        handleContextMenu(e, track.id);
+    };
+
+    const handleTrackClick = () => {
+        if (wasContextMenuOpen) {
+            setWasContextMenuOpen(false);
+            return;
+        }
+
+        if (onTrackClick) {
+            onTrackClick();
+        }
+    };
 
     return (
         <Box
-            onClick={onTrackClick}
+            onClick={handleTrackClick}
             sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -36,7 +65,7 @@ export const PlayerTrackItem = ({
                     backgroundColor: isCurrentTrack
                         ? 'rgba(255,107,53,0.3)'
                         : 'rgba(255,255,255,0.08)',
-                },
+                }
             }}
         >
             <Box
@@ -90,6 +119,7 @@ export const PlayerTrackItem = ({
                     {formatTime(track.durationSec)}
                 </Typography>
                 <IconButton
+                    onClick={handleIconClick}
                     sx={{
                         height: "30px",
                         width: "30px"
@@ -98,6 +128,13 @@ export const PlayerTrackItem = ({
                     <Box height={"20px"} width={"20px"} component={"img"} src={AdditionalIcon}/>
                 </IconButton>
             </Box>
+
+            <PlayerTrackContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                track={track}
+                onCloseFullScreen={onCloseFullScreen}
+            />
         </Box>
     );
 };

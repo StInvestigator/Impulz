@@ -79,7 +79,28 @@ const playerSlice = createSlice({
                 state.pause = wasPlaying ? false : true;
             }
         },
+        removeFromPlaylist: (state, action: PayloadAction<TrackSimpleDto>) => {
+            const trackToRemove = action.payload;
+            const trackIndex = state.playlist.findIndex(t => t.id === trackToRemove.id);
 
+            if (trackIndex !== -1) {
+                state.playlist.splice(trackIndex, 1);
+
+                if (state.currentTrackIndex >= trackIndex) {
+                    if (state.currentTrackIndex > trackIndex) {
+                        state.currentTrackIndex--;
+                    } else if (state.currentTrackIndex === trackIndex) {
+                        if (state.playlist.length > 0) {
+                            state.currentTrackIndex = Math.min(trackIndex, state.playlist.length - 1);
+                            state.active = state.playlist[state.currentTrackIndex];
+                        } else {
+                            state.currentTrackIndex = -1;
+                            state.active = null;
+                        }
+                    }
+                }
+            }
+        },
         appendToPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             if (action.payload.length === 0) return;
 
@@ -187,29 +208,6 @@ const playerSlice = createSlice({
                 state.active = state.playlist[action.payload];
             }
         },
-
-        removeFromPlaylist: (state, action: PayloadAction<number>) => {
-            const indexToRemove = action.payload;
-
-            if (indexToRemove < 0 || indexToRemove >= state.playlist.length) return;
-
-            if (indexToRemove === state.currentTrackIndex) {
-                if (state.playlist.length === 1) {
-                    state.playlist = [];
-                    state.currentTrackIndex = -1;
-                    state.active = null;
-                    state.pause = true;
-                } else if (state.currentTrackIndex === state.playlist.length - 1) {
-                    state.currentTrackIndex--;
-                    state.active = state.playlist[state.currentTrackIndex];
-                }
-            } else if (indexToRemove < state.currentTrackIndex) {
-                state.currentTrackIndex--;
-            }
-
-            state.playlist = state.playlist.filter((_, index) => index !== indexToRemove);
-        },
-
         setDuration: (state, action: PayloadAction<number>) => {
             state.duration = action.payload;
         },
@@ -353,6 +351,7 @@ export const {
     setPlaylist,
     setActive,
     addToPlaylist,
+    removeFromPlaylist,
     appendToPlaylist,
     insertNextInPlaylist,
     setPlaybackMode,
@@ -361,7 +360,6 @@ export const {
     nextTrack,
     prevTrack,
     setCurrentTrack,
-    removeFromPlaylist,
     setDuration,
     setCurrentTime,
     setVolume,

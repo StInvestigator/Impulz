@@ -4,7 +4,7 @@ import React from "react";
 interface ContextMenuItemProps {
     icon: string;
     text: string;
-    onClick: () => void;
+    onClick: (e: React.MouseEvent) => void;
     isFirst?: boolean;
     isLast?: boolean;
     onMouseEnter?: (event: React.MouseEvent<HTMLElement>) => void;

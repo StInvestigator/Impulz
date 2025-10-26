@@ -16,16 +16,18 @@ interface FullScreenPlayerProps {
     pause: boolean;
     onClose: () => void;
     onTrackSelect?: (index: number) => void;
+    onCloseFullScreen?: () => void;
 }
 
 const NAVBAR_HEIGHT = 48;
 
 const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
-                                                               active,
-                                                               playlist,
-                                                               currentTrackIndex,
-                                                               onTrackSelect,
-                                                           }) => {
+    active,
+    playlist,
+    currentTrackIndex,
+    onTrackSelect,
+    onCloseFullScreen
+}) => {
     const { t } = useTranslation("other");
     const dispatch = useAppDispatch();
 
@@ -172,6 +174,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                                 index={currentTrackIndex}
                                 currentTrackIndex={currentTrackIndex}
                                 onTrackClick={handleCurrentTrackClick}
+                                onCloseFullScreen={onCloseFullScreen}
                             />
                         </Box>
 
@@ -217,6 +220,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                                     index={realIndex}
                                     currentTrackIndex={currentTrackIndex}
                                     onTrackClick={() => handleTrackSelection(realIndex)}
+                                    onCloseFullScreen={onCloseFullScreen}
                                 />
                             );
                         })}

@@ -4,7 +4,7 @@ import { type FC, useRef, useState, useLayoutEffect, useCallback } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
-import { useTrackContextMenu } from "../../../hooks/useTrackContextMenu";
+import { useMediaContextMenu } from "../../../hooks/useMediaContextMenu.ts";
 import { useNavigate } from "react-router-dom";
 
 interface TrackItemProps {
@@ -16,7 +16,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useTrackContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
 
     const handlePlay = useCallback(() => {
         playSingle(track);

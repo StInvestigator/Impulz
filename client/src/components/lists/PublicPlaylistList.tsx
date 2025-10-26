@@ -1,8 +1,8 @@
-import type { PlaylistSimpleDto } from '../../models/DTO/PlaylistSimpleDto';
 import PublicPlaylistAverageItem from '../items/playlist/PublicPlaylistAverageItem';
+import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
 interface PublicPlaylistListProps {
-    playlists: PlaylistSimpleDto[];
+    playlists: PlaylistDto[];
 }
 
 function PublicPlaylistList({ playlists }: PublicPlaylistListProps) {

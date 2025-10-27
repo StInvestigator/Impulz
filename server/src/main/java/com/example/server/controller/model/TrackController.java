@@ -1,25 +1,14 @@
 package com.example.server.controller.model;
 
-import com.example.server.data.repository.TrackRepository;
-import com.example.server.dto.Album.AlbumSimpleDto;
-import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Track.*;
-import com.example.server.model.Album;
-import com.example.server.model.Track;
-import com.example.server.service.music.MusicServiceImpl;
-import com.example.server.service.playlist.PlaylistService;
 import com.example.server.service.track.TrackService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j

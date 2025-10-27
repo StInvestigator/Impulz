@@ -1,23 +1,22 @@
 package com.example.server.service.elasticsearch;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
-import co.elastic.clients.json.JsonData;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
-import com.example.server.dto.Search.GlobalSearchResult;
 import com.example.server.dto.Track.TrackSimpleDto;
-import com.example.server.elasticsearch.document.*;
-import com.example.server.elasticsearch.repository.*;
+import com.example.server.model.document.AlbumDocument;
+import com.example.server.model.document.AuthorDocument;
+import com.example.server.model.document.PlaylistDocument;
+import com.example.server.model.document.TrackDocument;
 import com.example.server.service.album.AlbumService;
 import com.example.server.service.author.AuthorService;
 import com.example.server.service.playlist.PlaylistService;
 import com.example.server.service.track.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

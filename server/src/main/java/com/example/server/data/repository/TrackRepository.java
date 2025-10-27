@@ -1,6 +1,5 @@
 package com.example.server.data.repository;
 
-import com.example.server.dto.Track.TrackSimpleDtoWithFavorite;
 import com.example.server.model.Author;
 import com.example.server.model.Track;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,6 @@
 package com.example.server.service.user;
 
 import com.example.server.data.repository.UserRepository;
-import com.example.server.dto.Author.AuthorDto;
 import com.example.server.dto.User.UserDto;
 import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.User;

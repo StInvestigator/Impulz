@@ -4,10 +4,7 @@ import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
-import com.example.server.dto.Playlist.PlaylistSimpleDto;
-import com.example.server.dto.Search.GlobalSearchResult;
 import com.example.server.dto.Track.TrackSimpleDto;
-import com.example.server.elasticsearch.document.*;
 import com.example.server.service.elasticsearch.SearchService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/search")

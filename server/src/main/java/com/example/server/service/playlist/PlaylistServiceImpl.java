@@ -2,7 +2,6 @@ package com.example.server.service.playlist;
 
 import com.example.server.data.repository.PlaylistRepository;
 import com.example.server.data.repository.PlaylistTrackRepository;
-import com.example.server.data.repository.TrackRepository;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
@@ -15,7 +14,6 @@ import com.example.server.service.track.TrackService;
 import com.example.server.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;

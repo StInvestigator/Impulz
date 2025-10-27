@@ -1,10 +1,8 @@
 package com.example.server.controller.model;
 
-import com.example.server.data.repository.PlaylistRepository;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
-import com.example.server.model.Playlist;
 import com.example.server.service.playlist.PlaylistService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

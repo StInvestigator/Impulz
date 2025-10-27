@@ -1,9 +1,9 @@
 package com.example.server.service.elasticsearch.document;
 
-import com.example.server.elasticsearch.document.AlbumDocument;
-import com.example.server.elasticsearch.document.AuthorDocument;
-import com.example.server.elasticsearch.document.PlaylistDocument;
-import com.example.server.elasticsearch.document.TrackDocument;
+import com.example.server.model.document.AlbumDocument;
+import com.example.server.model.document.AuthorDocument;
+import com.example.server.model.document.PlaylistDocument;
+import com.example.server.model.document.TrackDocument;
 import com.example.server.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

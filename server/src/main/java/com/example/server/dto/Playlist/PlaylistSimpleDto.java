@@ -1,12 +1,10 @@
 package com.example.server.dto.Playlist;
 
-import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.Playlist;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
-import java.util.Set;
 
 @Data
 public class PlaylistSimpleDto

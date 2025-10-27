@@ -4,21 +4,17 @@ import com.example.server.dto.Album.AlbumCreationDto;
 import com.example.server.dto.Album.AlbumDto;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Page.PageDto;
-import com.example.server.model.Album;
 import com.example.server.service.album.AlbumService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.KeyValuePair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j

@@ -2,7 +2,6 @@ package com.example.server.dto.Album;
 
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Track.TrackSimpleDto;
-import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.Album;
 import lombok.Data;
 

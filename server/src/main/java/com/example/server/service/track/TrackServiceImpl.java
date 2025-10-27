@@ -6,27 +6,20 @@ import com.example.server.dto.Track.*;
 import com.example.server.model.*;
 import com.example.server.model.id.UserFavoriteTrack;
 import com.example.server.model.key.UserFavoriteTrackKey;
-import com.example.server.service.album.AlbumService;
 import com.example.server.service.author.AuthorService;
-import com.example.server.service.author.AuthorServiceImpl;
 import com.example.server.service.genre.GenreService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.music.MusicService;
 import com.example.server.service.user.UserServiceImpl;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

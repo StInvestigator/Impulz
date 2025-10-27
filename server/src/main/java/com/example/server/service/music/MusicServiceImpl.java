@@ -1,12 +1,10 @@
 package com.example.server.service.music;
 
-import com.example.server.data.AudioMetadata;
+import com.example.server.model.AudioMetadata;
 import com.example.server.data.repository.TrackRepository;
 import com.example.server.model.Track;
 import com.example.server.service.audio.AudioService;
-import com.example.server.service.audio.AudioServiceImpl;
 import com.example.server.service.s3.S3StorageService;
-import com.example.server.service.s3.S3StorageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.util.UUID;
 
 @Slf4j

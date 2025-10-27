@@ -5,10 +5,8 @@ import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.User.UserSimpleDto;
 import com.example.server.model.Author;
-import com.example.server.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Set;

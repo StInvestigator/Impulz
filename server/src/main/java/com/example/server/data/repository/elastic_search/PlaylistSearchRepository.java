@@ -1,6 +1,6 @@
-package com.example.server.elasticsearch.repository;
+package com.example.server.data.repository.elastic_search;
 
-import com.example.server.elasticsearch.document.PlaylistDocument;
+import com.example.server.model.document.PlaylistDocument;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;

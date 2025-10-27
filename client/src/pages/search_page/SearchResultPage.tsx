@@ -34,10 +34,10 @@ const SearchResultsPage = () => {
 
     useEffect(() => {
         if (query) {
-            dispatch(searchAlbums({ query, page: 0, size: 5 }));
+            dispatch(searchAlbums({ query, page: 0, size: 4 }));
             dispatch(searchAuthors({ query, page: 0, size: 5 }));
             dispatch(searchTracks({ query, page: 0, size: 5 }));
-            dispatch(searchPublicPlaylists({ query, page: 0, size: 5 }));
+            dispatch(searchPublicPlaylists({ query, page: 0, size: 4 }));
         }
     }, [query, dispatch]);
 
@@ -95,7 +95,7 @@ const SearchResultsPage = () => {
             {albums.length > 0 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
                             {t("search:title-albums")}
                         </Typography>
                         <Button onClick={() => route(`/search/${query}/albums`)} sx={{
@@ -137,7 +137,7 @@ const SearchResultsPage = () => {
                         </Button>
                     </Box>
                     <Box display={"grid"} mt={3} sx={{
-                        gridTemplateColumns: "repeat(5, 1fr)"
+                        gridTemplateColumns: "repeat(4, 1fr)"
                     }} gap={3}>
                         <PublicPlaylistList playlists={playlists} />
                     </Box>

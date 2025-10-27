@@ -1,22 +1,15 @@
 package com.example.server.controller.model;
 
-import com.example.server.data.repository.AuthorRepository;
 import com.example.server.dto.Author.AuthorDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
-import com.example.server.dto.Track.TrackSimpleDto;
 import com.example.server.dto.User.UserSimpleDto;
-import com.example.server.model.Author;
-import com.example.server.model.Track;
-import com.example.server.model.User;
 import com.example.server.service.author.AuthorService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

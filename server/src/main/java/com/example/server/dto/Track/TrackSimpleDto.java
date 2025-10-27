@@ -1,11 +1,8 @@
 package com.example.server.dto.Track;
 
-import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.model.Album;
-import com.example.server.model.Author;
 import com.example.server.model.Track;
-import com.example.server.model.User;
 import lombok.Data;
 
 import java.util.Set;

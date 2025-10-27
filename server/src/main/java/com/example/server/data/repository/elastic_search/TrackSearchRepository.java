@@ -1,10 +1,10 @@
-package com.example.server.elasticsearch.repository;
+package com.example.server.data.repository.elastic_search;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import com.example.server.elasticsearch.document.TrackDocument;
+import com.example.server.model.document.TrackDocument;
 
 import java.util.List;
 

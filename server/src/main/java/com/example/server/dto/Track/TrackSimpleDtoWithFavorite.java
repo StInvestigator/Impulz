@@ -3,8 +3,6 @@ package com.example.server.dto.Track;
 import com.example.server.model.Track;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class TrackSimpleDtoWithFavorite
 {

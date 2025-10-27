@@ -1,14 +1,11 @@
 package com.example.server.controller.model;
 
-import com.example.server.data.repository.GenreRepository;
 import com.example.server.dto.Genre.GenreSimpleDto;
 import com.example.server.dto.Page.PageDto;
-import com.example.server.model.Genre;
 import com.example.server.service.genre.GenreService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

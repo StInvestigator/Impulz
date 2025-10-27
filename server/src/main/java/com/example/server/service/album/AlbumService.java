@@ -5,10 +5,8 @@ import com.example.server.dto.Album.AlbumDto;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.model.Album;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

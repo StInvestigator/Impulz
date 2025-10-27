@@ -1,11 +1,14 @@
 package com.example.server.service.elasticsearch.document;
 
 import com.example.server.data.repository.*;
-import com.example.server.elasticsearch.document.AlbumDocument;
-import com.example.server.elasticsearch.document.AuthorDocument;
-import com.example.server.elasticsearch.document.PlaylistDocument;
-import com.example.server.elasticsearch.document.TrackDocument;
-import com.example.server.elasticsearch.repository.*;
+import com.example.server.data.repository.elastic_search.AlbumSearchRepository;
+import com.example.server.data.repository.elastic_search.AuthorSearchRepository;
+import com.example.server.data.repository.elastic_search.PlaylistSearchRepository;
+import com.example.server.data.repository.elastic_search.TrackSearchRepository;
+import com.example.server.model.document.AlbumDocument;
+import com.example.server.model.document.AuthorDocument;
+import com.example.server.model.document.PlaylistDocument;
+import com.example.server.model.document.TrackDocument;
 import com.example.server.model.Album;
 import com.example.server.model.Author;
 import com.example.server.model.Playlist;

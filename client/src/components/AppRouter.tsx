@@ -34,6 +34,7 @@ import SearchPlaylistsPage from "../pages/playlists_page/SearchPlaylistsPage.tsx
 import SearchAlbumsPage from "../pages/album_page/SearchAlbumsPage.tsx";
 import SearchAuthorsPage from "../pages/authors_page/SearchAuthorsPage.tsx";
 import MyProfilePage from "../pages/MyProfilePage.tsx";
+import SubscriptionsPage from "../pages/SubscriptionsPage.tsx";
 import LikedPlaylistPage from "../pages/playlists_page/LikedPlaylistPage.tsx";
 import NotFoundPage from "../pages/NotFoundPage.tsx";
 
@@ -69,6 +70,7 @@ const AppRouter = () => {
                     <Route path="/search/:query/albums" element={<SearchAlbumsPage />} />
                     <Route path="/search/:query/playlists" element={<SearchPlaylistsPage />} />
                     <Route path="/officeArtist" element={<OfficeArtistPage />} />
+                    <Route path="/subscriptions" element={<SubscriptionsPage />} />
                 </Route>
 
               

@@ -38,7 +38,8 @@ public class SecurityConfig {
             "/tracks/Recommendations/**",
             "/tracks/MostListenedTracksOfWeek",
             "/authors/BestAuthorsOfMonth",
-            "/music/stream/*"
+            "/music/stream/*",
+            "/payment/webhook"
     };
 
     @Bean

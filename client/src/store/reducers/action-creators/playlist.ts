@@ -5,7 +5,7 @@ import {$api, $authApi} from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopPlaylistsByWeek = createAsyncThunk<
-    PlaylistSimpleDto[],
+    PlaylistDto[],
     { page?: number; size?: number },
     { rejectValue: string }
 >(
@@ -95,7 +95,7 @@ export const fetchPlaylistsOwnByUserId = createAsyncThunk<
 );
 
 export const fetchRecentPlaylistsByGenre = createAsyncThunk<
-    PlaylistSimpleDto[],
+    PlaylistDto[],
     { genreId: number; page?: number; size?: number },
     { rejectValue: string }
 >(

@@ -2,7 +2,7 @@ import { Menu, Snackbar, Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, {useState, useRef} from "react";
 import AddToPlaylistIcon from "../../assets/context/AddToPlaylistIcon.svg";
-import AddToLikedIcon from "../../assets/context/AddToLikedIcon.svg";
+import AddToLikedIcon from "../../assets/context/AddToLikedIcon.png";
 import AddToQueueIcon from "../../assets/context/AddToQueueIcon.svg";
 import GoToAlbumIcon from "../../assets/context/GoToAlbumIcon.svg";
 import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
@@ -136,9 +136,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleAddToQueue = () => {
-        // ВАЖНО: вызываем addToQueue до закрытия меню
         addToQueue(track);
-        // Закрываем меню после вызова
         onClose();
     };
 

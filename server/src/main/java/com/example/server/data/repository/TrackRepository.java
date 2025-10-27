@@ -1,5 +1,6 @@
 package com.example.server.data.repository;
 
+import com.example.server.dto.Track.TrackSimpleDtoWithFavorite;
 import com.example.server.model.Author;
 import com.example.server.model.Track;
 import org.springframework.data.domain.Page;
@@ -183,4 +184,11 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
             "LEFT JOIN FETCH t.genres " +
             "WHERE t.id IN :ids")
     List<Track> findAllWithAuthorsAndAlbumByIds(@Param("ids") List<Long> ids);
+
+    @Query("SELECT t FROM Track t " +
+            "JOIN UserFavoriteTrack uft ON uft.track.id = t.id " +
+            "WHERE uft.user.id = :userId " +
+            "AND t.album.releaseDate <= CURRENT_TIMESTAMP " +
+            "ORDER BY uft.addedAt DESC")
+    Page<Track> findLikedTracksByUserId(@Param("userId") String userId, Pageable pageable);
 }

@@ -4,10 +4,10 @@ import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
 interface PlaylistState {
-    topPlaylists: PlaylistSimpleDto[];
+    topPlaylists: PlaylistDto[];
     currentPlaylist: PlaylistDto | null;
     playlistsOwnByCurrentUser: PlaylistSimpleDto[];
-    recentPlaylistsByGenre: PlaylistSimpleDto[];
+    recentPlaylistsByGenre: PlaylistDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -35,7 +35,7 @@ export const PlaylistSlice = createSlice({
                 state.isLoading = true;
                 state.error = '';
             })
-            .addCase(fetchTopPlaylistsByWeek.fulfilled, (state, action: PayloadAction<PlaylistSimpleDto[]>) => {
+            .addCase(fetchTopPlaylistsByWeek.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.error = '';
                 state.topPlaylists = action.payload;

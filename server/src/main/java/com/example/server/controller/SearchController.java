@@ -3,6 +3,7 @@ package com.example.server.controller;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.dto.Search.GlobalSearchResult;
 import com.example.server.dto.Track.TrackSimpleDto;
@@ -80,7 +81,7 @@ public class SearchController {
     }
 
     @GetMapping("/playlists/public")
-    public ResponseEntity<PageDto<PlaylistSimpleDto>> searchPublicPlaylists(@RequestParam String q, Pageable pageable) {
+    public ResponseEntity<PageDto<PlaylistDto>> searchPublicPlaylists(@RequestParam String q, Pageable pageable) {
         try {
             return ResponseEntity.ok(searchService.searchPublicPlaylists(searchService.normalizeQuery(q), pageable));
         } catch (NotFoundException e) {

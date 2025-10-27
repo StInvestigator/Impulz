@@ -23,6 +23,7 @@ import CreatePlaylistModal from "./ui/CreatePlaylistModal.tsx";
 import {useKeycloak} from "@react-keycloak/web";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { befomeAuthor } from "../store/reducers/action-creators/author.ts";
+import LikedPlaylist from "./items/playlist/LikedPlaylist.tsx";
 
 const buttonsDefault = [
     {
@@ -188,7 +189,15 @@ const Sidebar = memo(() => {
                     }
 
                     {keycloak.authenticated && (
-                        <MyPlaylistList />
+                        <Box
+                            sx={{
+                                marginTop: "-40px",
+                                marginBottom: "100px"
+                            }}
+                        >
+                            <LikedPlaylist/>
+                            <MyPlaylistList/>
+                        </Box>
                     )}
 
                 </Box>

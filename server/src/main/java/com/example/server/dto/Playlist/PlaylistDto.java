@@ -16,7 +16,7 @@ public class PlaylistDto
 {
     private Long id;
     private String title;
-    private String imageUrl;
+    private String imgUrl;
     private Boolean isPublic;
     private UserSimpleDto owner;
     private OffsetDateTime createdAt;
@@ -27,7 +27,7 @@ public class PlaylistDto
         dto.setId(playlist.getId());
         dto.setTitle(playlist.getTitle());
         dto.setCreatedAt(playlist.getCreatedAt());
-        dto.setImageUrl(playlist.getImageUrl());
+        dto.setImgUrl(playlist.getImageUrl());
         dto.setIsPublic(playlist.getIsPublic());
         dto.setOwner(UserSimpleDto.fromEntity(playlist.getOwner()));
         dto.setTracks(playlist.getTracks().stream()

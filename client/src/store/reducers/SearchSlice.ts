@@ -3,13 +3,13 @@ import {searchAlbums, searchAuthors, searchPublicPlaylists, searchTracks } from 
 import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 import type { AuthorSimpleDto } from "../../models/DTO/AuthorSimpleDto.ts";
 import type { AlbumSimpleDto } from "../../models/DTO/album/AlbumSimpleDto.ts";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
+import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
 interface SearchState {
     tracks: TrackSimpleDto[];
     authors: AuthorSimpleDto[];
     albums: AlbumSimpleDto[];
-    playlists: PlaylistSimpleDto[];
+    playlists: PlaylistDto[];
     loading: boolean;
     error: string | null;
     searchQuery: string;

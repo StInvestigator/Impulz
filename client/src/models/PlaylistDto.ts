@@ -4,7 +4,7 @@ import type {TrackSimpleDto} from "./DTO/track/TrackSimpleDto.ts";
 export interface PlaylistDto {
     id: number;
     title: string;
-    imageUrl: string;
+    imgUrl: string;
     isPublic: boolean;
     owner: UserSimpleDto;
     createdAt: Date;

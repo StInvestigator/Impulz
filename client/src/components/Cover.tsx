@@ -1,9 +1,10 @@
-import type { FC } from "react";
+import {useState, type FC } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../assets/play.svg";
 import pushPinImage from "../assets/pushPin.svg";
 import bgCoverImg from "../assets/bg-cover.svg";
 import { useTranslation } from "react-i18next";
+import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg";
 
 interface CoverProps {
     type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album";
@@ -18,21 +19,23 @@ interface CoverProps {
 }
 
 const Cover: FC<CoverProps> = ({
-    type,
-    title = "Без названия",
-    OwnerNames = [],
-    OwnerImageUrl = "",
-    year,
-    trackCount,
-    duration,
-    imgUrl = "",
-    handlePlay
-}) => {
+                                   type,
+                                   title = "Без названия",
+                                   OwnerNames = [],
+                                   OwnerImageUrl = "",
+                                   year,
+                                   trackCount,
+                                   duration,
+                                   imgUrl = "",
+                                   handlePlay
+                               }) => {
     const { t } = useTranslation("other");
+    const [isHovered, setIsHovered] = useState(false);
 
     const safeTitle = title || "Empty";
     const safeOwnerNames = OwnerNames || [];
     const safeOwnerImageUrl = OwnerImageUrl || "";
+    const isDefaultImage = !imgUrl || imgUrl === PlaylistDefaultImage;
 
     return (
         <Box
@@ -59,11 +62,31 @@ const Cover: FC<CoverProps> = ({
                         backgroundImage: `url(${imgUrl})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
+                        backgroundColor: isDefaultImage ? "var(--columbia-blue)" : "transparent",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        position: "relative",
+                        overflow: "hidden",
+                        "&:hover": {
+                            transform: "scale(1.02)",
+                        },
+                        borderRadius: "10px"
                     }}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    onClick={handlePlay}
                 >
                     <IconButton
-                        onClick={handlePlay}
-                        sx={{ padding: 0 }}
+                        sx={{
+                            padding: 0,
+                            opacity: isHovered ? 1 : 0,
+                            transition: "opacity 0.3s ease, transform 0.2s ease",
+                            transform: isHovered ? "scale(1.1)" : "scale(1)",
+                            zIndex: 2,
+                            "&:hover": {
+                                transform: "scale(1.2)",
+                            }
+                        }}
                         disableRipple={true}
                     >
                         <Box
@@ -72,6 +95,9 @@ const Cover: FC<CoverProps> = ({
                             borderRadius={"50%"}
                             width={"80px"}
                             height={"80px"}
+                            sx={{
+                                filter: "drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5))",
+                            }}
                         />
                     </IconButton>
                 </Box>

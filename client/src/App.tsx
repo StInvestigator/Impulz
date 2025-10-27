@@ -126,6 +126,7 @@ const SecuredContent = () => {
                       duration={duration}
                       pause={pause}
                       onClose={handleCloseFullScreenPlayer}
+                      onCloseFullScreen={handleCloseFullScreenPlayer}
                   />
               )}
             </Box>

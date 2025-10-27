@@ -2,14 +2,14 @@ import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 import React, { type FC } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
+import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
 
 interface PlaylistItemProps {
-    playlist: PlaylistSimpleDto;
+    playlist: PlaylistDto
     itemWidth: number;
     color?: "dark" | "light";
 }

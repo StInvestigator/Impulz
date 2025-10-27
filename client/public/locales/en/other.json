@@ -18,13 +18,19 @@
   "title-add-to-playlist": "Add to playlist",
   "title-add-to-liked": "Add to liked",
   "title-add-to-queue": "Add to queue",
+  "title-remove-from-queue": "Remove from queue",
   "title-go-to-author": "Go to author",
   "title-go-to-album": "Go to album",
   "title-copy-track-link": "Copy track link",
+  "title-copy-playlist-link": "Copy playlist link",
+  "title-copy-album-link": "Copy album link",
   "title-link-copied": "Link copied",
   "title-create-playlist": "Create playlist",
   "title-queue": "Queue",
   "title-next-in-queue": "Next in queue",
   "title-clear-queue": "Clear queue",
-  "title-plays": "Plays"
+  "title-plays": "Plays",
+  "title-favorite": "Favorite",
+  "button-go-home": "Go Home",
+  "button-go-back": "Back"
 }

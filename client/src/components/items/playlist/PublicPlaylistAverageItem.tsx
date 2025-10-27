@@ -1,51 +1,61 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
-import React, { type FC } from "react";
+import React, {type FC, useEffect, useState} from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
-import { useAppDispatch } from "../../../hooks/redux.ts";
-import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
-import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
+import { PlaylistContextMenu } from "../../contextMenu/PlaylistContextMenu.tsx";
+import { useMediaContextMenu } from "../../../hooks/useMediaContextMenu.ts";
+import type { PlaylistDto } from "../../../models/PlaylistDto";
 
 interface PlaylistItemProps {
-    playlist: PlaylistSimpleDto;
+    playlist: PlaylistDto;
     itemHeight: number;
-    itemWidth?: number; // optional, аналогично AlbumAverageItem
+    itemWidth?: number;
 }
 
 const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight, itemWidth }) => {
     const { t } = useTranslation('other');
     const { playTrackList } = usePlayTrack();
-    const dispatch = useAppDispatch();
     const navigate = useAppNavigate();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
+
+    useEffect(() => {
+        if (contextMenu) {
+            setWasContextMenuOpen(true);
+        }
+    }, [contextMenu]);
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
-
-        const result = await dispatch(fetchTracksByPlaylist({
-            playlistId: playlist.id,
-            page: 0,
-            size: 1000
-        }));
-
-        if (fetchTracksByPlaylist.fulfilled.match(result)) {
-            playTrackList(result.payload, 0);
-        }
+        playTrackList(playlist.tracks, 0);
     };
 
     const handlePlaylistClick = () => {
+        if (wasContextMenuOpen) {
+            setWasContextMenuOpen(false);
+            return;
+        }
         navigate(`/playlist/${playlist.id}`);
     };
 
     return (
         <Box
             sx={{
-                width: "100%",
                 position: "relative",
+                width: itemWidth || "100%",
+                height: `${itemHeight}px`,
+                display: "flex",
+                flexDirection: "column",
+                transition: 'height 0.2s ease-in-out',
+                '&:hover': {
+                    bgcolor: 'rgba(0, 0, 0, 0.04)',
+                },
                 cursor: 'pointer',
             }}
             onClick={handlePlaylistClick}
+            onContextMenu={(e) => handleContextMenu(e, playlist.id)}
         >
             <Box
                 bgcolor="gray"
@@ -87,7 +97,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
                     </Box>
 
                     <IconButton
-                        onClick={(e) => handlePlayPlaylist(e)}
+                        onClick={handlePlayPlaylist}
                         sx={{ padding: 0 }}
                         disableRipple={true}
                     >
@@ -95,6 +105,12 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
                     </IconButton>
                 </Box>
             </Box>
+
+            <PlaylistContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                playlist={playlist}
+            />
         </Box>
     );
 };

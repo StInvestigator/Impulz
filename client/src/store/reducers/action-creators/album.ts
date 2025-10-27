@@ -194,3 +194,25 @@ export const createAlbum = createAsyncThunk<
     return rejectWithValue("Не удалось создать альбом");
   }
 });
+
+export const likeAlbum = createAsyncThunk<
+    void,
+    { userId : string;albumId : number },
+    { rejectValue: string }
+>(
+    'track/likeAlbum',
+    async({userId,albumId},{rejectWithValue}) => {
+        try {
+            await $authApi.post('/albums/like', null, {
+                params: {
+                    userId: userId,
+                    trackId: albumId.toString()
+                }
+            });
+        }
+        catch (error: unknown)
+        {
+            return rejectWithValue(`Failed to like album : ${error}`);
+        }
+    }
+);

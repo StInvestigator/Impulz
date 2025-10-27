@@ -5,6 +5,7 @@ import co.elastic.clients.json.JsonData;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
+import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.dto.Search.GlobalSearchResult;
 import com.example.server.dto.Track.TrackSimpleDto;
@@ -160,7 +161,7 @@ public class SearchService {
         );
     }
 
-    public PageDto<PlaylistSimpleDto> searchPublicPlaylists(String query, Pageable pageable) {
+    public PageDto<PlaylistDto> searchPublicPlaylists(String query, Pageable pageable) {
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.bool(b -> b
                         .must(m -> m.multiMatch(mm -> {
@@ -175,7 +176,7 @@ public class SearchService {
                 .build();
 
         SearchHits<PlaylistDocument> hits = elasticsearchOperations.search(searchQuery, PlaylistDocument.class);
-        return new PageDto<>(playlistService.findPlaylistsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(PlaylistSimpleDto::fromEntity).toList(),
+        return new PageDto<>(playlistService.findPlaylistsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(PlaylistDto::fromEntity).toList(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),

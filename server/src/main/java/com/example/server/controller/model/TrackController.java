@@ -190,4 +190,22 @@ public class TrackController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    @GetMapping("/liked/{userId}")
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getLikedTracksByUserId(
+            @PathVariable String userId,
+            Pageable pageable) {
+        try {
+            PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
+            pts.setPage(trackService.getLikedTracksByUserId(userId, pageable));
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+                    pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
+            return ResponseEntity.ok(pts);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }

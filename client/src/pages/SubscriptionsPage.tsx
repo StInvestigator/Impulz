@@ -55,9 +55,9 @@ const PLANS: Plan[] = [
 
 const SubscriptionCard: React.FC<{ plan: Plan; onChoose: (priceId: string) => void; loading?: boolean }> = ({ plan, onChoose, loading }) => {
     return (
-        <Card sx={{ width: 320 }}>
+        <Card sx={{ width: 360 }} variant="outlined">
             <CardContent>
-                <Typography variant="h6" component="div" gutterBottom>
+                <Typography variant="h5" component="div" gutterBottom>
                     {plan.title}
                 </Typography>
                 <Typography variant="h4" component="div" sx={{ my: 1 }}>
@@ -88,7 +88,6 @@ const SubscriptionPageInner: React.FC = () => {
 
     const handleChoose = async (priceId: string) => {
         try {
-            // dispatch thunk to create the Checkout Session
             let resultAction
             if(keycloak.tokenParsed?.sub){
                 resultAction = await dispatch(createSubscriptionSession({ priceId: priceId, userId: keycloak.tokenParsed.sub }));
@@ -96,11 +95,9 @@ const SubscriptionPageInner: React.FC = () => {
             else{
                 keycloak.login()
             }
-            // createSubscriptionSession.fulfilled -> payload: { id }
             // @ts-ignore
             const payload: string = resultAction.payload;
             if (!payload) {
-                // failed, error will be in slice
                 return;
             }
 
@@ -135,7 +132,7 @@ const SubscriptionPageInner: React.FC = () => {
 
 
                     <Grid>
-                        <Grid container spacing={3} justifyContent="center">
+                        <Grid container spacing={4} justifyContent="center">
                             {PLANS.map((plan) => (
                                 <Grid key={plan.id}>
                                     <SubscriptionCard plan={plan} onChoose={handleChoose} loading={loading} />

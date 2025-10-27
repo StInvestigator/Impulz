@@ -96,5 +96,5 @@ cloud:
       static: ${AWS_REGION:us-east-1}
 
 stripe:
-  secret_key: ${STRIPE_SECRET_KEY}
-  webhook_secret: ${STRIPE_WEBHOOK_SECRET}
+  secret_key: ${STRIPE_SECRET_KEY:1}
+  webhook_secret: ${STRIPE_WEBHOOK_SECRET:1}

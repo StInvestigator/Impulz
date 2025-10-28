@@ -54,6 +54,8 @@ services:
       retries: 10
 
   keycloak:
+    image: quay.io/keycloak/keycloak:26.1.0
+    container_name: keycloak
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak

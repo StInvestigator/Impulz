@@ -3,7 +3,7 @@ import ListCarousel from "../ListCarousel.tsx";
 import PublicPlaylistSmallItem from "../items/playlist/PublicPlaylistSmallItem.tsx";
 import {
   isAlbumSimpleDto,
-  isPlaylistSimpleDto,
+  isPlaylistDto,
   type MediaItemSimpleDto,
 } from "../../models/DTO/MediaItemSimpleDto.ts";
 import AlbumSmallItem from "../items/album/AlbumSmallItem.tsx";
@@ -47,9 +47,9 @@ const MediaSmallCarouselList: FC<TracklistListProps> = ({
         >
           {
             medias
-                .filter(media => isPlaylistSimpleDto(media) || isAlbumSimpleDto(media))
+                .filter(media => isPlaylistDto(media) || isAlbumSimpleDto(media))
                 .map(media => (
-                    isPlaylistSimpleDto(media) ? (
+                    isPlaylistDto(media) ? (
                         <PublicPlaylistSmallItem
                             key={media.id}
                             playlist={media}

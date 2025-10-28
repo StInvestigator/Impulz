@@ -67,8 +67,8 @@ services:
       KC_PROXY: edge
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME_URL: http://localhost:9090
-      KC_HOSTNAME_ADMIN_URL: http://localhost:9090
+      KC_HOSTNAME_URL: http://keycloak:9090
+      KC_HOSTNAME_ADMIN_URL: http://keycloak:9090
       KC_PROXY_ADDRESS_FORWARDING: "true"
     command: [ "start-dev", "--import-realm" ]
     ports:
@@ -80,6 +80,7 @@ services:
       - ./keycloak_data:/opt/keycloak/data
       - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
     restart: unless-stopped
+
 
   redis:
     image: redis:7-alpine

@@ -54,8 +54,6 @@ services:
       retries: 10
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.1.0
-    container_name: keycloak
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
@@ -67,8 +65,8 @@ services:
       KC_PROXY: edge
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME_URL: http://localhost:9090
-      KC_HOSTNAME_ADMIN_URL: http://localhost:9090
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_PROXY_ADDRESS_FORWARDING: "true"
     command: [ "start-dev", "--import-realm" ]
     ports:

@@ -1,5 +1,6 @@
 import { Box, OutlinedInput, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import { useTranslation } from "react-i18next";
 
 interface Step3Props {
   dateRelease: string;
@@ -7,6 +8,9 @@ interface Step3Props {
 }
 
 const Step3 = ({ dateRelease, setDateRelease }: Step3Props) => {
+
+  const {t} = useTranslation("step3")
+
   return (
     <Box>
       <Typography
@@ -16,7 +20,7 @@ const Step3 = ({ dateRelease, setDateRelease }: Step3Props) => {
         justifyContent={"center"}
         mt={2}
       >
-        Дата, коли альбом стане доступним
+        {t("title-date-release")}
       </Typography>
       <Box
         display={"flex"}
@@ -37,7 +41,7 @@ const Step3 = ({ dateRelease, setDateRelease }: Step3Props) => {
             display={"flex"}
             justifyContent={"center"}
           >
-            вкажіть заплановану дату публікації
+            {t("title-rule-1")}
           </Typography>
         </Box>
         <Box display={"flex"}>
@@ -53,7 +57,7 @@ const Step3 = ({ dateRelease, setDateRelease }: Step3Props) => {
             display={"flex"}
             justifyContent={"center"}
           >
-            релізи проходять модерацію
+            {t("title-rule-2")}
           </Typography>
         </Box>
       </Box>

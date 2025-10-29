@@ -1,6 +1,7 @@
 {
   "error-wrong-playlist-name": "Incorrect playlist name",
   "error-users-playlists-not-found": "User`s playlists not found",
+  "error-no-image": "Please add a picture",
   "error-no-tracks-in-playlist": "There are no tracks in this playlist yet",
   "error-playlist-not-found": "Playlist not found",
   "error-playlist-already-exists-in-playlist": "This track is already exists in this album",

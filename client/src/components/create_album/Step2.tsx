@@ -1,5 +1,6 @@
 import { Box, OutlinedInput, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import { useTranslation } from "react-i18next";
 
 interface Step2Props {
   nameAlbum: string;
@@ -7,6 +8,9 @@ interface Step2Props {
 }
 
 const Step2 = ({ nameAlbum, setNameAlbum }: Step2Props) => {
+
+  const {t} = useTranslation("step2")
+
   return (
     <Box>
       <Typography
@@ -16,7 +20,7 @@ const Step2 = ({ nameAlbum, setNameAlbum }: Step2Props) => {
         justifyContent={"center"}
         mt={2}
       >
-        Дайте назву альбому
+        {t("title-name-the-album")}
       </Typography>
       <Box
         display={"flex"}
@@ -37,7 +41,7 @@ const Step2 = ({ nameAlbum, setNameAlbum }: Step2Props) => {
             display={"flex"}
             justifyContent={"center"}
           >
-            до 100 символів
+            {t("title-rule-1")}
           </Typography>
         </Box>
         <Box display={"flex"}>
@@ -53,7 +57,7 @@ const Step2 = ({ nameAlbum, setNameAlbum }: Step2Props) => {
             display={"flex"}
             justifyContent={"center"}
           >
-            без нецензурних слів
+            {t("title-rule-2")}
           </Typography>
         </Box>
         <Box display={"flex"}>
@@ -69,13 +73,13 @@ const Step2 = ({ nameAlbum, setNameAlbum }: Step2Props) => {
             display={"flex"}
             justifyContent={"center"}
           >
-            з великої, без CAPS LOCK
+            {t("title-rule-3")}
           </Typography>
         </Box>
       </Box>
       <Box mt={3} display={"flex"} justifyContent={"center"}>
         <OutlinedInput
-            placeholder={"Введіть назву альбому"}
+            placeholder={t("title-name-the-album")}
             value={nameAlbum}
             onChange={(e) => setNameAlbum(e.target.value)}
             sx={{

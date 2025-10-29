@@ -3,6 +3,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import addImage from "../../assets/addImage.svg";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Step1Props {
   image: File | null;
@@ -11,6 +12,8 @@ interface Step1Props {
 
 const Step1 = ({ image, setImage }: Step1Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const {t} = useTranslation("step1")
 
   const handleBoxClick = () => {
     fileInputRef.current?.click();
@@ -39,7 +42,7 @@ const Step1 = ({ image, setImage }: Step1Props) => {
         justifyContent="center"
         mt={2}
       >
-        Завантаж обкладинку альбому
+        {t("title-upload-album-cover")}
       </Typography>
 
       <Box
@@ -51,19 +54,19 @@ const Step1 = ({ image, setImage }: Step1Props) => {
         <Box display="flex">
           <CheckIcon sx={{ width: 20, height: 20, color: 'var(--orange-peel)' }} />
           <Typography variant="mainRL" display="flex" justifyContent="center">
-            формат: JPG/PNG
+            {t("title-rule-1")}
           </Typography>
         </Box>
         <Box display="flex">
           <CheckIcon sx={{ width: 20, height: 20, color: 'var(--orange-peel)' }} />
           <Typography variant="mainRL" display="flex" justifyContent="center">
-            розмір: мін. 292×360 px
+            {t("title-rule-2")}
           </Typography>
         </Box>
         <Box display="flex">
           <CheckIcon sx={{ width: 20, height: 20, color: 'var(--orange-peel)' }} />
           <Typography variant="mainRL" display="flex" justifyContent="center">
-            вага файлу: до 5 МБ
+            {t("title-rule-3")}
           </Typography>
         </Box>
       </Box>

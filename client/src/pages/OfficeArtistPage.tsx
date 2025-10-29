@@ -13,12 +13,16 @@ import { createAlbum } from "../store/reducers/action-creators/album";
 import type { TrackCreationFullDto } from "../models/DTO/track/TrackCreationFullDto";
 import AlbumList from "../components/lists/AlbumList";
 import spiraleImg from "../assets/spirale.svg";
+import { useTranslation } from "react-i18next";
 
 function OfficeArtistPage() {
   const {profile} = useAppSelector(state => state.profile);
 
+  const {t} = useTranslation(["officeArtistPage", "errors"])
+
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
+  const [error, setError] = useState("");
 
   const [image, setImage] = useState<File | null>(null);
   const [nameAlbum, setNameAlbum] = useState<string>("");
@@ -33,6 +37,15 @@ function OfficeArtistPage() {
       setActiveStep(1);
     }
   }, [activeStep]);
+
+  const nextStepClick = () => {
+    if(!image){
+      setError(t("errors:error-no-image"))
+      return
+    }
+    setActiveStep(step => step + 1);
+    setError("")
+  }
 
   const createAlbumClick = () => {
     dispatch(createAlbum({
@@ -63,7 +76,7 @@ function OfficeArtistPage() {
           background: "var(--gradient-oranges)",
         }}>
           <Box alignItems={"center"} display={"flex"} flexDirection={"column"} justifyContent={"space-between"} height={"70%"}>
-            <Typography variant={"h1"}>Твоя музика заслуговує бути почутою</Typography>
+            <Typography variant={"h1"}>{t("officeArtistPage:title-h1")}</Typography>
             <Button onClick={() => setOpen(true)} sx={{
               marginTop: "auto",
               padding: "12px 24px",
@@ -71,7 +84,7 @@ function OfficeArtistPage() {
               color: "white",
               borderRadius: "10px",
             }}>
-              <Typography variant={"h2"} color="white">Создать альбом</Typography>
+              <Typography variant={"h2"} color="white">{t("officeArtistPage:button-create-album")}</Typography>
             </Button>
           </Box>
           <Box component={"img"} src={spiraleImg} position={"absolute"} bottom={-150} width={"100%"} zIndex={-1}/>
@@ -86,25 +99,25 @@ function OfficeArtistPage() {
           <Box display="flex">
             <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
             <Typography variant="mainRL" display="flex" justifyContent="center">
-              Завантажуйте лише власні треки або з дозволом автора            
+              {t("officeArtistPage:title-rule-1")}       
             </Typography>
           </Box>
           <Box display="flex">
             <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
             <Typography variant="mainRL" display="flex" justifyContent="center">
-              Усі треки проходять перевірку для дотримення авторства
+              {t("officeArtistPage:title-rule-2")}       
             </Typography>
           </Box>
           <Box display="flex">
             <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
             <Typography variant="mainRL" display="flex" justifyContent="center">
-              Доступне завантаження лише альбомів, навіть з 1 треком
+              {t("officeArtistPage:title-rule-3")}       
             </Typography>
           </Box>
           <Box display="flex">
             <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
             <Typography variant="mainRL" display="flex" justifyContent="center">
-              Формат: MP3, 320 kbps -  для стабільного звуку
+              {t("officeArtistPage:title-rule-4")}       
             </Typography>
           </Box>
         </Box>
@@ -119,6 +132,11 @@ function OfficeArtistPage() {
         {activeStep === 2 && <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />}
         {activeStep === 3 && <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />}
         {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} />}
+        <Box mt={"20px"}>
+          <Typography color="red" variant="mainRL">
+            {error}
+          </Typography>
+        </Box>
         <Box
           display={"grid"}
           sx={{
@@ -139,13 +157,13 @@ function OfficeArtistPage() {
               textTransform: "none",
             }}
           >
-            Назад
+            {t("officeArtistPage:button-back")}
           </Button>
           <Button onClick={() => {
             if (activeStep === 4) {
               createAlbumClick();
             }
-            setActiveStep(step => step + 1);
+            nextStepClick()
           }}
 
             sx={{
@@ -158,7 +176,7 @@ function OfficeArtistPage() {
               textTransform: "none",
             }}
           >
-            {activeStep === 4 ? "Зберегти альбом" : "Далі"}
+            {activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
           </Button>
         </Box>
       </MyModal>

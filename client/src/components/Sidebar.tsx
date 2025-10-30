@@ -16,14 +16,15 @@ import createPlaylistImg from "../assets/sidebar/createPlaylist.svg"
 import befomeAuthorImg from "../assets/sidebar/befomeAuthor.svg"
 import MyPlaylistList from "./lists/MyPlaylistList.tsx";
 import { useTranslation } from 'react-i18next';
-import {useAppNavigate} from "../hooks/useAppNavigate.ts";
-import {memo, Suspense, useState} from "react";
+import { useAppNavigate } from "../hooks/useAppNavigate.ts";
+import { memo, Suspense, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreatePlaylistModal from "./ui/CreatePlaylistModal.tsx";
-import {useKeycloak} from "@react-keycloak/web";
+import { useKeycloak } from "@react-keycloak/web";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { befomeAuthor } from "../store/reducers/action-creators/author.ts";
 import LikedPlaylist from "./items/playlist/LikedPlaylist.tsx";
+import keycloak from "../keycloak.ts";
 
 const buttonsDefault = [
     {
@@ -78,8 +79,14 @@ const ButtonItem: React.FC<ButtonItemProps> = ({ name, icon, path, action }) => 
         if (path) {
             navigate(path);
         } else if (action === "becomeAuthor") {
-            dispatch(befomeAuthor(profile.id));
-            window.location.reload()
+            if (keycloak.authenticated) {
+                dispatch(befomeAuthor(profile.id)).then(() => {
+                    keycloak.updateToken().then(() => window.location.reload())
+                });
+            }
+            else {
+                keycloak.login()
+            }
         }
     };
 
@@ -111,12 +118,12 @@ const ButtonItem: React.FC<ButtonItemProps> = ({ name, icon, path, action }) => 
                 disableRipple
             >
                 <ListItemIcon sx={{ minWidth: 50 }}>
-                    <Box component="img" src={icon} sx={{ width: '50px', height: '50px' }}/>
+                    <Box component="img" src={icon} sx={{ width: '50px', height: '50px' }} />
                 </ListItemIcon>
                 <ListItemText
                     primary={t(`${name}`)}
                     disableTypography
-                    sx={{fontSize:"16px", fontWeight:600 }}
+                    sx={{ fontSize: "16px", fontWeight: 600 }}
                 />
             </ListItemButton>
         </ListItem>
@@ -125,7 +132,7 @@ const ButtonItem: React.FC<ButtonItemProps> = ({ name, icon, path, action }) => 
 
 const Sidebar = memo(() => {
 
-    const {profile} = useAppSelector(state => state.profile);
+    const { profile } = useAppSelector(state => state.profile);
     const { t } = useTranslation('sidebar')
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { keycloak } = useKeycloak();
@@ -154,7 +161,7 @@ const Sidebar = memo(() => {
                 }}
             >
                 <Box sx={{ paddingLeft: "24px" }}>
-                    <List disablePadding sx={{marginTop:"50px"}}>
+                    <List disablePadding sx={{ marginTop: "50px" }}>
                         {buttonsDefault.map(({ name, icon, path }) => (
                             <ButtonItem key={name} name={name} icon={icon} path={path} />
                         ))}
@@ -184,7 +191,7 @@ const Sidebar = memo(() => {
                                 <Box component="img" src={createPlaylistImg} color={"var(--columbia-blue)"} style={{ paddingRight: "10px" }} />
                                 {t("button-create-playlist")}
                             </Button>
-                            <CreatePlaylistModal open={isModalOpen} setOpen={setIsModalOpen}/>
+                            <CreatePlaylistModal open={isModalOpen} setOpen={setIsModalOpen} />
                         </>
                     }
 
@@ -195,8 +202,8 @@ const Sidebar = memo(() => {
                                 marginBottom: "100px"
                             }}
                         >
-                            <LikedPlaylist/>
-                            <MyPlaylistList/>
+                            <LikedPlaylist />
+                            <MyPlaylistList />
                         </Box>
                     )}
 

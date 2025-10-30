@@ -16,7 +16,13 @@ public class UserController {
 
     @GetMapping("/Dto/{id}")
     public UserDto getUserDto(@PathVariable String id) {
-        return userService.getUserDtoById(id);
+        try {
+            return userService.getUserDtoById(id);
+        }
+        catch (Exception e) {
+            log.error(e.getMessage() + " " + id);
+            return null;
+        }
     }
 
     @GetMapping("/simpleDto/{id}")

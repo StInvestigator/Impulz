@@ -1,4 +1,4 @@
-import {MenuItem, Typography, ListItemIcon, Box, type SxProps, type Theme} from "@mui/material";
+import {MenuItem, Typography, ListItemIcon, Box} from "@mui/material";
 import React from "react";
 
 interface ContextMenuItemProps {

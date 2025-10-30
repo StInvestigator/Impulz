@@ -73,8 +73,6 @@ export const ContextMenuItemWithSubmenu: React.FC<ContextMenuItemWithSubmenuProp
                 onMouseLeave={handleMouseLeave}
                 disableRipple
                 sx={{
-                    marginTop: isFirst ? "-8px" : "0px",
-                    marginBottom: isLast ? "-8px" : "0px",
                     borderBottom: isLast ? "none" : "1px solid var(--dodger-blue)",
                     padding: "8px 12px",
                     borderRadius: isFirst ? "7px 7px 0 0" : isLast ? "0 0 7px 7px" : "0",

@@ -213,7 +213,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                     sx={{
                         '& .MuiPaper-root': {
                             marginLeft: '8px !important',
-                        }
+                        },
                     }}
                     PaperProps={{
                         sx: {

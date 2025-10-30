@@ -11,7 +11,7 @@ import MyPagination from "../../components/MyPagination.tsx";
 
 const LikedPlaylistPage = () => {
     const dispatch = useAppDispatch();
-    const { currentPage } = useAppSelector(state => state.page);
+    const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
     const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
 
     const { t } = useTranslation(["other","errors"]);
@@ -19,9 +19,13 @@ const LikedPlaylistPage = () => {
 
     useEffect(() => {
         if(userId){
-            dispatch(fetchLikedTracksByUserId({userId}));
+            dispatch(fetchLikedTracksByUserId({
+                userId,
+                page: currentPage - 1,
+                size: 20
+            }));
         }
-    }, [dispatch, userId]);
+    }, [dispatch, userId, currentPage]);
 
     if (isLoading) {
         return (
@@ -88,12 +92,12 @@ const LikedPlaylistPage = () => {
                 {likedTracks.length > 0 ? (
                     <>
                         <Stack spacing={3}>
-                            <TrackList tracks={likedTracks} />
+                            <TrackList tracks={likedTracks} pageSize={20} />
                         </Stack>
                         <Box component={"section"} marginTop={"60px"}>
                             <MyPagination
                                 currentPage={currentPage}
-                                totalPages={Math.ceil(likedTracks.length / 20)}
+                                totalPages={totalPages}
                             />
                         </Box>
                     </>

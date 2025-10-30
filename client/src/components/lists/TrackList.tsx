@@ -4,7 +4,7 @@ import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 
 interface TrackListProps {
     tracks: TrackSimpleDto[];
-    pageSize?: number
+    pageSize?: number;
 }
 
 const TrackList = ({ tracks, pageSize = 5 }: TrackListProps) => {

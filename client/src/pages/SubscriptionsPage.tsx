@@ -16,6 +16,7 @@ import { createSubscriptionSession } from "../store/reducers/action-creators/sub
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import stripe from "../stripe.ts"
 import keycloak from "../keycloak.ts";
+import logoImg from "../assets/logo.svg"
 
 
 
@@ -55,24 +56,25 @@ const PLANS: Plan[] = [
 
 const SubscriptionCard: React.FC<{ plan: Plan; onChoose: (priceId: string) => void; loading?: boolean }> = ({ plan, onChoose, loading }) => {
     return (
-        <Card sx={{ width: 360 }} variant="outlined">
+        <Card variant="outlined" sx={{borderRadius: "10px", boxShadow: "0px 4px 4px 0px #00000040 inset;"}}>
             <CardContent>
-                <Typography variant="h5" component="div" gutterBottom>
-                    {plan.title}
-                </Typography>
-                <Typography variant="h4" component="div" sx={{ my: 1 }}>
-                    {plan.priceMonthly}
-                </Typography>
+                <Box display={"flex"} justifyContent={"space-between"}>
+                    <Typography fontSize={"20px"} fontWeight={400}>
+                        {plan.title} <br />
+                        {plan.priceMonthly}
+                    </Typography>
+                    <Box component={"img"} width={28} height={28} src={logoImg}/>
+                </Box>
                 <List>
                     {plan.features.map((f) => (
-                        <ListItem key={f} sx={{ py: 0.5 }}>
-                            <Typography variant="body2">{f}</Typography>
+                        <ListItem key={f} sx={{ padding: 0}}>
+                            <Typography variant="mainRS">{f}</Typography>
                         </ListItem>
                     ))}
                 </List>
             </CardContent>
             <CardActions sx={{ justifyContent: "center", pb: 2 }}>
-                <Button variant="contained" onClick={() => onChoose(plan.id)} disabled={loading}>
+                <Button variant="contained" onClick={() => onChoose(plan.id)} disabled={loading} sx={{background: "var(--orange-peel)", color: "var(--dark-purple)", padding: "8px 18px", fontWeight: 700, fontSize: "12px", boxShadow: "none", textTransform: "none"}}>
                     {loading ? <CircularProgress size={20} /> : plan.cta}
                 </Button>
             </CardActions>
@@ -121,35 +123,30 @@ const SubscriptionPageInner: React.FC = () => {
 
 
     return (
-        <Container maxWidth="lg" sx={{ minHeight: "70vh", display: "flex", alignItems: "center" }}>
-            <Box sx={{ width: "100%" }}>
-                <Grid container spacing={3} justifyContent="center">
-                    <Grid>
-                        <Typography variant="h3" align="center" sx={{ mb: 3 }}>
-                            Choose a subscription plan
-                        </Typography>
-                    </Grid>
+        <Box borderRadius={"10px"} sx={{width: "100%", background: "var(--dark-purple)", margin: 0, minHeight: "70vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <Box sx={{ width: "70%" }}>
+                <Box justifyContent="center">
+                    <Typography variant="h1" color="white" sx={{ mb: 5 }}>
+                        Impulz Premium
+                    </Typography>
 
-
-                    <Grid>
-                        <Grid container spacing={4} justifyContent="center">
-                            {PLANS.map((plan) => (
-                                <Grid key={plan.id}>
-                                    <SubscriptionCard plan={plan} onChoose={handleChoose} loading={loading} />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Grid>
-
-
-                    <Grid>
-                        <Typography variant="body2" align="center">
-                            You will be redirected to Stripe-hosted checkout to complete your subscription.
-                        </Typography>
-                    </Grid>
-                </Grid>
+                    <Box
+                        display="grid"
+                        gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))"
+                        gap={4}
+                    >
+                        {PLANS.map((plan) => (
+                            <SubscriptionCard
+                            key={plan.id}
+                            plan={plan}
+                            onChoose={handleChoose}
+                            loading={loading}
+                            />
+                        ))}
+                    </Box>
+                </Box>
             </Box>
-        </Container>
+        </Box>
     );
 };
 

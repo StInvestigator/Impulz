@@ -1,10 +1,14 @@
-import {useState} from "react";
-import {ListItem, ListItemButton, Box, ListItemIcon, ListItemText, Typography} from "@mui/material";
+import {useState, type FC} from "react";
+import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import PlaylistLikedTracks from "../../../assets/PlaylistLikedTracks.svg";
+import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 
-const LikedPlaylist = () => {
+interface AlbumProps {
+    album: AlbumSimpleDto;
+}
+
+const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
     const [hover, setHover] = useState(false);
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
@@ -12,7 +16,7 @@ const LikedPlaylist = () => {
 
     const handleClick = () => {
         setActive(!active);
-        route(`/playlist/liked`);
+        route(`/album/${album.id}`);
     };
 
 
@@ -44,8 +48,8 @@ const LikedPlaylist = () => {
                 <ListItemIcon>
                     <Box
                         component="img"
-                        src={PlaylistLikedTracks}
-                        alt={"Liked"}
+                        src={album.imgUrl}
+                        alt={album.title}
                         sx={{
                             width: 40,
                             height: 40,
@@ -63,7 +67,7 @@ const LikedPlaylist = () => {
                         fontSize: "16px",
                         color: 'inherit',
                     }}
-                    primary={t("title-favorite")}
+                    primary={album.title}
                     secondary={
                         <Box
                             component="span"
@@ -81,7 +85,7 @@ const LikedPlaylist = () => {
                                     color: 'inherit',
                                 }}
                             >
-
+                                {t("title-album")} &middot; {album.tracks?.length || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }
@@ -91,4 +95,4 @@ const LikedPlaylist = () => {
     );
 };
 
-export default LikedPlaylist;
+export default FavAlbumItem;

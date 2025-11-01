@@ -4,7 +4,7 @@
   "error-no-image": "Добавте будь ласка картинку",
   "error-no-tracks-in-playlist": "У цьому плейлисті поки немає треків",
   "error-playlist-not-found": "Плейлист не знайден",
-  "error-playlist-already-exists-in-playlist": "Цей трек же є в цьому альбомі",
+  "error-playlist-already-exists-in-playlist": "Цей трек же є в цьому плейлісті",
   "error-failed-to-add-track-to-playlist": "Не вдалось додати трек до плейлисту",
   "error-track-loading": "Помилка завантаження треку",
   "error-page-not-found": "Сторінку не знайдено",

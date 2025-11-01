@@ -119,6 +119,30 @@ export const fetchPersonalAlbumsByGenre = createAsyncThunk<
   }
 );
 
+export const fetchFavoriteAlbums = createAsyncThunk<
+  AlbumSimpleDto[],
+  { userId: string; page?: number; size?: number },
+  { rejectValue: string }
+>(
+  "albums/fetchFavoriteAlbums",
+  async ({ userId, page = 0, size = 1000 }, { rejectWithValue, dispatch }) => {
+    try {
+      const params = new URLSearchParams();
+      if (page !== undefined) params.append("page", page.toString());
+      if (size !== undefined) params.append("size", size.toString());
+
+      const response = await $authApi.get(
+        `/albums/favoriteByUser/${userId}?${params}`
+      );
+      dispatch(setTotalPages(response.data.totalPages));
+      return response.data.content;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      return rejectWithValue(`Не удалось загрузить альбомы`);
+    }
+  }
+);
+
 export const fetchRecentAlbumsByGenre = createAsyncThunk<
   AlbumSimpleDto[],
   { genreId: number; page?: number; size?: number },
@@ -206,7 +230,7 @@ export const likeAlbum = createAsyncThunk<
             await $authApi.post('/albums/like', null, {
                 params: {
                     userId: userId,
-                    trackId: albumId.toString()
+                    albumId: albumId.toString()
                 }
             });
         }

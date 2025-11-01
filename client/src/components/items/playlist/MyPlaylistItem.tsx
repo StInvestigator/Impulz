@@ -31,7 +31,7 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                     gap: 1,
                     borderRadius: '15px',
                     transition: 'color 0.3s, background-color 0.3s',
-                    padding: "22px 12px",
+                    padding: "12px 12px",
                     color: active ? '#DAE4FB' : (hover ? 'var(--deep-sky-blue)' : '#DAE4FB'),
                     '&:hover': {
                         color: 'var(--deep-sky-blue)',

@@ -137,3 +137,20 @@ export const befomeAuthor = createAsyncThunk<void, string, { rejectValue: string
         }
     }
 );
+
+export const fetchAuthorsByFollower = createAsyncThunk<AuthorSimpleDto[],
+    {followerId: string, page?: number; size?: number }
+>(
+    "authors/fetchAuthorsByFollower",
+    async ({ followerId, page = 0, size = 1000 }, { dispatch }) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
+
+        const response = await $authApi.get(
+            `/authors/byFollower/${followerId}?${params}`
+        );
+        dispatch(setTotalPages(response.data.totalPages))
+        return response.data.content;
+    }
+);

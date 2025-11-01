@@ -25,6 +25,9 @@ import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { befomeAuthor } from "../store/reducers/action-creators/author.ts";
 import LikedPlaylist from "./items/playlist/LikedPlaylist.tsx";
 import keycloak from "../keycloak.ts";
+import MyAlbumList from "./lists/MyAlbumList.tsx";
+import MyFavoritePlaylistList from "./lists/MyFavoritePlaylistList.tsx";
+import MyAuthorList from "./lists/MyAuthorList.tsx";
 
 const buttonsDefault = [
     {
@@ -204,6 +207,9 @@ const Sidebar = memo(() => {
                         >
                             <LikedPlaylist />
                             <MyPlaylistList />
+                            <MyAuthorList />
+                            <MyFavoritePlaylistList />
+                            <MyAlbumList />
                         </Box>
                     )}
 

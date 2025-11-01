@@ -1,29 +1,29 @@
 import { memo, useEffect, useMemo } from "react";
 import { List, CircularProgress, Box } from "@mui/material";
 import playlistImage from "../../assets/PlaylistDefaultImage.svg";
-import MyPlaylistItem from "../items/playlist/MyPlaylistItem.tsx";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
-import { fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
+import { fetchFavoritePlaylists } from "../../store/reducers/action-creators/playlist.ts";
 import { useKeycloak } from "@react-keycloak/web";
 import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
+import MyFavPlaylistsItem from "../items/playlist/MyFavPlaylistItem.tsx";
 
-const MyPlaylistList = () => {
+const MyFavoritePlaylistList = () => {
     const dispatch = useAppDispatch();
-    const { playlistsOwnByCurrentUser, isLoading, error } = useAppSelector(state => state.playlist);
+    const { favoritePlaylists, isLoading, error } = useAppSelector(state => state.playlist);
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
 
     useEffect(() => {
         if (userId) {
-            dispatch(fetchPlaylistsOwnByUserId({ userId }));
+            dispatch(fetchFavoritePlaylists({ userId }));
         }
     }, [userId, dispatch]);
 
-    const reversedPlaylists = useMemo(() => {
-        return Array.isArray(playlistsOwnByCurrentUser) ? [...playlistsOwnByCurrentUser].reverse() : [];
-    }, [playlistsOwnByCurrentUser]);
+    const memoFavoritePlaylists = useMemo(() => {
+        return Array.isArray(favoritePlaylists) ? favoritePlaylists : [];
+    }, [favoritePlaylists]);
 
-    if (isLoading && (!reversedPlaylists || reversedPlaylists.length === 0)) {
+    if (isLoading && (!memoFavoritePlaylists || memoFavoritePlaylists.length === 0)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                 <CircularProgress />
@@ -37,9 +37,9 @@ const MyPlaylistList = () => {
 
     return (
         <List disablePadding>
-            {keycloak.authenticated && Array.isArray(reversedPlaylists) && reversedPlaylists.length > 0 && (
-                reversedPlaylists.map((playlist: PlaylistSimpleDto) => (
-                    <MyPlaylistItem
+            {keycloak.authenticated && memoFavoritePlaylists.length > 0 && (
+                memoFavoritePlaylists.map((playlist: PlaylistSimpleDto) => (
+                    <MyFavPlaylistsItem
                         key={playlist.id}
                         playlist={playlist}
                         defaultImage={playlistImage}
@@ -50,4 +50,4 @@ const MyPlaylistList = () => {
     );
 };
 
-export default memo(MyPlaylistList);
+export default memo(MyFavoritePlaylistList);

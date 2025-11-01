@@ -1,18 +1,18 @@
 import { Menu, Snackbar, Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import AddToLikedIcon from "../../assets/context/AddToLikedIcon.png";
 import AddToQueueIcon from "../../assets/context/AddToQueueIcon.svg";
 import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
 import CopyTrackLinkIcon from "../../assets/context/CopyTrackLinkIcon.svg";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
 import { useAppNavigate } from "../../hooks/useAppNavigate.ts";
-import {useAppDispatch} from "../../hooks/redux.ts";
+import { useAppDispatch } from "../../hooks/redux.ts";
 import keycloak from "../../keycloak.ts";
 import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
-import {usePlayTrack} from "../../hooks/usePlayTrack.tsx";
-import type {AlbumSimpleDto} from "../../models/DTO/album/AlbumSimpleDto.ts";
-import {likeAlbum} from "../../store/reducers/action-creators/album.ts";
+import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
+import type { AlbumSimpleDto } from "../../models/DTO/album/AlbumSimpleDto.ts";
+import { fetchFavoriteAlbums, likeAlbum } from "../../store/reducers/action-creators/album.ts";
 
 interface AlbumContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -21,15 +21,15 @@ interface AlbumContextMenuProps {
 }
 
 export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
-                                                                      contextMenu,
-                                                                      onClose,
-                                                                      album
-                                                                  }) => {
-    const { t } = useTranslation(["other","errors"]);
+    contextMenu,
+    onClose,
+    album
+}) => {
+    const { t } = useTranslation(["other", "errors"]);
     const [toastOpen, setToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [isCreatePlaylistModalOpen,setIsCreatePlaylistModalOpen] = useState(false);
+    const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
     const route = useAppNavigate();
     const dispatch = useAppDispatch();
     const userId = keycloak.tokenParsed?.sub;
@@ -40,8 +40,10 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
     const handleAddToFavorites = (e: React.MouseEvent) => {
         e.stopPropagation();
         console.log("Like album");
-        if(userId){
-            dispatch(likeAlbum({albumId: album.id,userId: userId}))
+        if (userId) {
+            dispatch(likeAlbum({ albumId: album.id, userId: userId })).then(()=>{
+                dispatch(fetchFavoriteAlbums({ userId: userId }))
+            })
         }
         onClose();
     };
@@ -70,7 +72,7 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
 
     const handleAddToQueue = (e: React.MouseEvent) => {
         e.stopPropagation();
-        addToQueue(album,"album");
+        addToQueue(album, "album");
         onClose();
     };
 

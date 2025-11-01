@@ -1,10 +1,16 @@
-import {useState} from "react";
-import {ListItem, ListItemButton, Box, ListItemIcon, ListItemText, Typography} from "@mui/material";
+import { useState, type FC } from "react";
+import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import PlaylistLikedTracks from "../../../assets/PlaylistLikedTracks.svg";
+import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
+import heartImage from "../../../assets/sidebar/heart.svg";
 
-const LikedPlaylist = () => {
+interface PlaylistProps {
+    playlist: PlaylistSimpleDto;
+    defaultImage: string;
+}
+
+const MyFavPlaylistsItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
     const [hover, setHover] = useState(false);
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
@@ -12,7 +18,7 @@ const LikedPlaylist = () => {
 
     const handleClick = () => {
         setActive(!active);
-        route(`/playlist/liked`);
+        route(`/playlist/${playlist.id}`);
     };
 
 
@@ -41,21 +47,52 @@ const LikedPlaylist = () => {
                 }}
                 disableRipple
             >
-                <ListItemIcon>
+                <ListItemIcon
+                    sx={{
+                        position: "relative",
+                        minWidth: 40,
+                        width: 40,
+                        height: 40,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 0,
+                        paddingRight: 2
+                    }}
+                >
                     <Box
                         component="img"
-                        src={PlaylistLikedTracks}
-                        alt={"Liked"}
+                        src={playlist.imgUrl || defaultImage}
+                        alt={playlist.title}
                         sx={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: '8px',
-                            objectFit: 'cover',
-                            transition: 'transform 0.2s ease',
-                            transform: hover ? 'scale(1.1)' : 'scale(1)',
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "8px",
+                            objectFit: "cover",
+                            transition: "transform 0.2s ease",
+                            transform: hover ? "scale(1.1)" : "scale(1)",
+                            display: "block",
+                        }}
+                    />
+
+                    <Box
+                        component="img"
+                        src={heartImage}
+                        alt="favorite"
+                        sx={{
+                            position: "absolute",
+                            bottom: -6,
+                            right: 6,
+                            width: 18,
+                            height: 18,
+                            opacity: 0.95,
+                            pointerEvents: "none",
+                            zIndex: 2,
+                            filter: "drop-shadow(0 0 2px black)",
                         }}
                     />
                 </ListItemIcon>
+
                 <ListItemText
                     disableTypography
                     sx={{
@@ -63,7 +100,7 @@ const LikedPlaylist = () => {
                         fontSize: "16px",
                         color: 'inherit',
                     }}
-                    primary={t("title-favorite")}
+                    primary={playlist.title}
                     secondary={
                         <Box
                             component="span"
@@ -81,7 +118,7 @@ const LikedPlaylist = () => {
                                     color: 'inherit',
                                 }}
                             >
-
+                                {t("title-playlist")} &middot; {playlist.tracksCount || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }
@@ -91,4 +128,4 @@ const LikedPlaylist = () => {
     );
 };
 
-export default LikedPlaylist;
+export default MyFavPlaylistsItem;

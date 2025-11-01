@@ -1,28 +1,31 @@
-import {Box, Button, Typography} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import AuthorProfile from "../components/profiles/AuthorProfile.tsx";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import TrackList from "../components/lists/TrackList.tsx";
 import AlbumList from "../components/lists/AlbumList.tsx";
 import AuthorList from "../components/lists/AuthorList.tsx";
-import {useTranslation} from "react-i18next";
-import {useAppNavigate} from "../hooks/useAppNavigate.ts";
-import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
-import {useEffect} from "react";
-import {fetchPopularTracksByAuthor} from "../store/reducers/action-creators/tracks.ts";
+import { useTranslation } from "react-i18next";
+import { useAppNavigate } from "../hooks/useAppNavigate.ts";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
+import { useEffect } from "react";
+import { fetchPopularTracksByAuthor } from "../store/reducers/action-creators/tracks.ts";
 import {
     checkSubscriptionStatus,
     fetchAuthorDetails,
+    fetchAuthorsByFollower,
     fetchSimilarAuthorsByGenre, subscribeToAuthor, unsubscribeFromAuthor
 } from "../store/reducers/action-creators/author.ts";
-import {fetchAlbumsByAuthor, fetchAuthorAlbumCollaborations} from "../store/reducers/action-creators/album.ts";
+import { fetchAlbumsByAuthor, fetchAuthorAlbumCollaborations } from "../store/reducers/action-creators/album.ts";
+import { useKeycloak } from "@react-keycloak/web";
 
 const AuthorProfilePage = () => {
     const dispatch = useAppDispatch();
-    const {id} = useParams<{ id:string }>();
+    const { id } = useParams<{ id: string }>();
     const route = useAppNavigate();
     const { t } = useTranslation(["authorPage", "other"]);
+    const { keycloak } = useKeycloak();
 
-    const { popularTracks} = useAppSelector(state => state.track);
+    const { popularTracks } = useAppSelector(state => state.track);
     const { currentAuthor } = useAppSelector(state => state.author);
     const { albums } = useAppSelector(state => state.album);
     const { similarAuthors } = useAppSelector(state => state.author);
@@ -37,20 +40,23 @@ const AuthorProfilePage = () => {
             dispatch(fetchAlbumsByAuthor({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: 0, size: 20 }));
-            dispatch(fetchAuthorAlbumCollaborations({authorId: id, page: 0, size: 20 }));
+            dispatch(fetchAuthorAlbumCollaborations({ authorId: id, page: 0, size: 20 }));
 
             dispatch(checkSubscriptionStatus(id));
         }
     }, [dispatch, id]);
 
     const handleSubscription = async () => {
-        if (!id) return;
-
+        if (!id || !keycloak.tokenParsed?.sub) return;
+        const userId = keycloak.tokenParsed?.sub;
         try {
             if (isSubscribed) {
-                await dispatch(unsubscribeFromAuthor(id)).unwrap();
+                dispatch(unsubscribeFromAuthor(id)).unwrap().then(() => {
+                    dispatch(fetchAuthorsByFollower({ followerId: userId }))
+                });
             } else {
                 await dispatch(subscribeToAuthor(id)).unwrap();
+                await dispatch(fetchAuthorsByFollower({ followerId: userId })).unwrap();
             }
         } catch (error) {
             console.error("Ошибка подписки:", error);
@@ -91,7 +97,7 @@ const AuthorProfilePage = () => {
                 <Box display={"grid"} sx={{
                     gridTemplateColumns: "repeat(2, 1fr)"
                 }} gap={3}>
-                    <TrackList tracks={popularTracks}/>
+                    <TrackList tracks={popularTracks} />
                 </Box>
             </Box>
 
@@ -113,7 +119,7 @@ const AuthorProfilePage = () => {
                         {t("other:button-watch-all")}
                     </Button>
                 </Box>
-                <AlbumList albums={albums}/>
+                <AlbumList albums={albums} />
             </Box>
 
             {authorCollaborationsAlbums && authorCollaborationsAlbums.length > 0 && (
@@ -135,11 +141,11 @@ const AuthorProfilePage = () => {
                             {t("other:button-watch-all")}
                         </Button>
                     </Box>
-                    <AlbumList albums={authorCollaborationsAlbums}/>
+                    <AlbumList albums={authorCollaborationsAlbums} />
                 </Box>
             )}
 
-            {similarAuthors.length > 1 &&(
+            {similarAuthors.length > 1 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
                         <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
@@ -158,7 +164,7 @@ const AuthorProfilePage = () => {
                             {t("other:button-watch-all")}
                         </Button>
                     </Box>
-                    <AuthorList authors={similarAuthors}/>
+                    <AuthorList authors={similarAuthors} />
                 </Box>
             )}
 

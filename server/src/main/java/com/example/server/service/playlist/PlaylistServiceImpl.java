@@ -2,13 +2,18 @@ package com.example.server.service.playlist;
 
 import com.example.server.data.repository.PlaylistRepository;
 import com.example.server.data.repository.PlaylistTrackRepository;
+import com.example.server.data.repository.UserFavoritePlaylistRepository;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
 import com.example.server.model.Playlist;
 import com.example.server.model.Track;
 import com.example.server.model.id.PlaylistTrack;
+import com.example.server.model.id.UserFavoriteAlbum;
+import com.example.server.model.id.UserFavoritePlaylist;
 import com.example.server.model.key.PlaylistTrackKey;
+import com.example.server.model.key.UserFavoriteAlbumKey;
+import com.example.server.model.key.UserFavoritePlaylistKey;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.track.TrackService;
 import com.example.server.service.user.UserService;
@@ -30,6 +35,7 @@ import java.util.List;
 public class PlaylistServiceImpl implements PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
+    private final UserFavoritePlaylistRepository userFavoritePlaylistRepository;
     private final TrackService trackService;
     private final UserService userService;
     private final ImageService imageService;
@@ -149,5 +155,15 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public List<Playlist> findPlaylistsByIds(List<Long> ids) {
         return playlistRepository.findAllById(ids);
+    }
+
+    @Override
+    public void like(Long playlistId, String userId) {
+        UserFavoritePlaylist entity = new UserFavoritePlaylist();
+        entity.setId(new UserFavoritePlaylistKey(userId, playlistId));
+        entity.setUser(userService.getUserById(userId));
+        entity.setPlaylist(playlistRepository.findById(playlistId).orElseThrow());
+        entity.setAddedAt(OffsetDateTime.now());
+        userFavoritePlaylistRepository.save(entity);
     }
 }

@@ -1,6 +1,6 @@
+import { memo, useEffect, useMemo } from "react";
 import { List, CircularProgress, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
-import { useEffect } from "react";
 import { fetchFavoriteAlbums } from "../../store/reducers/action-creators/album.ts";
 import { useKeycloak } from "@react-keycloak/web";
 import type { AlbumSimpleDto } from "../../models/DTO/album/AlbumSimpleDto.ts";
@@ -16,9 +16,13 @@ const MyAlbumList = () => {
         if (userId) {
             dispatch(fetchFavoriteAlbums({ userId }));
         }
-    }, [userId]);
+    }, [userId, dispatch]);
 
-    if (isLoading) {
+    const memoFavoriteAlbums = useMemo(() => {
+        return Array.isArray(favoriteAlbums) ? favoriteAlbums : [];
+    }, [favoriteAlbums]);
+
+    if (isLoading && (!memoFavoriteAlbums || memoFavoriteAlbums.length === 0)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                 <CircularProgress />
@@ -30,11 +34,10 @@ const MyAlbumList = () => {
         return <div>Error: {error}</div>;
     }
 
-
     return (
         <List disablePadding>
-            {keycloak.authenticated && Array.isArray(favoriteAlbums) && favoriteAlbums.length > 0 && (
-                favoriteAlbums.map((album: AlbumSimpleDto) => (
+            {keycloak.authenticated && memoFavoriteAlbums.length > 0 && (
+                memoFavoriteAlbums.map((album: AlbumSimpleDto) => (
                     <FavAlbumItem
                         key={album.id}
                         album={album}
@@ -43,7 +46,6 @@ const MyAlbumList = () => {
             )}
         </List>
     );
-
 };
 
-export default MyAlbumList;
+export default memo(MyAlbumList);

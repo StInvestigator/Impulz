@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
-import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
-import {$api, $authApi} from "../../../http";
+import type { PlaylistDto } from "../../../models/PlaylistDto.ts";
+import { $api, $authApi } from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 
 export const fetchTopPlaylistsByWeek = createAsyncThunk<
@@ -79,7 +79,7 @@ export const createPlaylist = createAsyncThunk<
 
 export const fetchPlaylistsOwnByUserId = createAsyncThunk<
     PlaylistSimpleDto[],
-    { userId: string;},
+    { userId: string; },
     { rejectValue: string }
 >(
     'playlists/fetchPlaylistsOwnByUserId',
@@ -90,6 +90,28 @@ export const fetchPlaylistsOwnByUserId = createAsyncThunk<
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue('Не удалось найти плейлисты принадлежащие пользователю');
+        }
+    }
+);
+
+export const fetchFavoritePlaylists = createAsyncThunk<
+    PlaylistSimpleDto[],
+    { userId: string; page?: number; size?: number },
+    { rejectValue: string }
+>(
+    'playlists/fetchFavoritePlaylists',
+    async ({ userId, page = 0, size = 1000 }, { rejectWithValue, dispatch }) => {
+        try {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $authApi.get(`/playlists/favoriteByUser/${userId}?${params}`)
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue(`Не удалось загрузить плейлисты:`);
         }
     }
 );
@@ -146,6 +168,27 @@ export const addTrackToPlaylist = createAsyncThunk<
             }
 
             return rejectWithValue('Failed to add track to playlist');
+        }
+    }
+);
+
+export const likePlaylist = createAsyncThunk<
+    void,
+    { userId: string; playlistId: number },
+    { rejectValue: string }
+>(
+    'track/likePlaylist',
+    async ({ userId, playlistId }, { rejectWithValue }) => {
+        try {
+            await $authApi.post('/playlists/like', null, {
+                params: {
+                    userId: userId,
+                    playlistId: playlistId.toString()
+                }
+            });
+        }
+        catch (error: unknown) {
+            return rejectWithValue(`Failed to like playlist : ${error}`);
         }
     }
 );

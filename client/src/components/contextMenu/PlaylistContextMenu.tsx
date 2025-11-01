@@ -1,16 +1,16 @@
 import { Menu, Snackbar, Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import AddToLikedIcon from "../../assets/context/AddToLikedIcon.png";
 import AddToQueueIcon from "../../assets/context/AddToQueueIcon.svg";
 import CopyTrackLinkIcon from "../../assets/context/CopyTrackLinkIcon.svg";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
-import {useAppDispatch} from "../../hooks/redux.ts";
+import { useAppDispatch } from "../../hooks/redux.ts";
 import keycloak from "../../keycloak.ts";
 import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
-import {usePlayTrack} from "../../hooks/usePlayTrack.tsx";
-import {likeAlbum} from "../../store/reducers/action-creators/album.ts";
-import type {PlaylistDto} from "../../models/PlaylistDto.ts";
+import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
+import type { PlaylistDto } from "../../models/PlaylistDto.ts";
+import { fetchFavoritePlaylists, likePlaylist } from "../../store/reducers/action-creators/playlist.ts";
 
 interface PlaylistContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -19,15 +19,15 @@ interface PlaylistContextMenuProps {
 }
 
 export const PlaylistContextMenu: React.FC<PlaylistContextMenuProps> = ({
-                                                                      contextMenu,
-                                                                      onClose,
-                                                                      playlist
-                                                                  }) => {
-    const { t } = useTranslation(["other","errors"]);
+    contextMenu,
+    onClose,
+    playlist
+}) => {
+    const { t } = useTranslation(["other", "errors"]);
     const [toastOpen, setToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [isCreatePlaylistModalOpen,setIsCreatePlaylistModalOpen] = useState(false);
+    const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
     const dispatch = useAppDispatch();
     const userId = keycloak.tokenParsed?.sub;
     const { addToQueue } = usePlayTrack();
@@ -37,8 +37,10 @@ export const PlaylistContextMenu: React.FC<PlaylistContextMenuProps> = ({
     const handleAddToFavorites = (e: React.MouseEvent) => {
         e.stopPropagation();
         console.log("Like playlist");
-        if(userId){
-            dispatch(likeAlbum({albumId: playlist.id,userId: userId}))
+        if (userId) {
+            dispatch(likePlaylist({ playlistId: playlist.id, userId: userId })).then(() => {
+                dispatch(fetchFavoritePlaylists({ userId: userId }))
+            })
         }
         onClose();
     };
@@ -61,7 +63,7 @@ export const PlaylistContextMenu: React.FC<PlaylistContextMenuProps> = ({
 
     const handleAddToQueue = (e: React.MouseEvent) => {
         e.stopPropagation();
-        addToQueue(playlist,"playlist");
+        addToQueue(playlist, "playlist");
         onClose();
     };
 

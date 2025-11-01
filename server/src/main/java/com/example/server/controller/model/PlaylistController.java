@@ -163,4 +163,18 @@ public class PlaylistController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> addToLiked(@RequestParam("userId") String userId,
+                                        @RequestParam("playlistId") Long playlistId) {
+        try {
+            playlistService.like(playlistId, userId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

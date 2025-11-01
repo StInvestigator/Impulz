@@ -2,14 +2,15 @@ import { useState, type FC } from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
+import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 import heartImage from "../../../assets/sidebar/heart.svg";
 
-interface AlbumProps {
-    album: AlbumSimpleDto;
+interface PlaylistProps {
+    playlist: PlaylistSimpleDto;
+    defaultImage: string;
 }
 
-const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
+const MyFavPlaylistsItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
     const [hover, setHover] = useState(false);
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
@@ -17,7 +18,7 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
 
     const handleClick = () => {
         setActive(!active);
-        route(`/album/${album.id}`);
+        route(`/playlist/${playlist.id}`);
     };
 
 
@@ -61,8 +62,8 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
                 >
                     <Box
                         component="img"
-                        src={album.imgUrl}
-                        alt={album.title}
+                        src={playlist.imgUrl || defaultImage}
+                        alt={playlist.title}
                         sx={{
                             width: "100%",
                             height: "100%",
@@ -91,6 +92,7 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
                         }}
                     />
                 </ListItemIcon>
+
                 <ListItemText
                     disableTypography
                     sx={{
@@ -98,7 +100,7 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
                         fontSize: "16px",
                         color: 'inherit',
                     }}
-                    primary={album.title}
+                    primary={playlist.title}
                     secondary={
                         <Box
                             component="span"
@@ -116,7 +118,7 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
                                     color: 'inherit',
                                 }}
                             >
-                                {t("title-album")} &middot; {album.tracks?.length || 0} {t("title-song")}
+                                {t("title-playlist")} &middot; {playlist.tracksCount || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }
@@ -126,4 +128,4 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
     );
 };
 
-export default FavAlbumItem;
+export default MyFavPlaylistsItem;

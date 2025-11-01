@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import {fetchTopPlaylistsByWeek, fetchPlaylistDetails, fetchPlaylistsOwnByUserId, fetchRecentPlaylistsByGenre} from "./action-creators/playlist.ts";
+import {fetchTopPlaylistsByWeek, fetchPlaylistDetails, fetchPlaylistsOwnByUserId, fetchRecentPlaylistsByGenre, fetchFavoritePlaylists} from "./action-creators/playlist.ts";
 import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
@@ -8,6 +8,7 @@ interface PlaylistState {
     currentPlaylist: PlaylistDto | null;
     playlistsOwnByCurrentUser: PlaylistSimpleDto[];
     recentPlaylistsByGenre: PlaylistDto[];
+    favoritePlaylists: PlaylistSimpleDto[];
     isLoading: boolean;
     error: string | null;
 }
@@ -17,6 +18,7 @@ const initialState: PlaylistState = {
     currentPlaylist: null,
     playlistsOwnByCurrentUser: [],
     recentPlaylistsByGenre: [],
+    favoritePlaylists: [],
     isLoading: false,
     error: null
 }
@@ -83,6 +85,20 @@ export const PlaylistSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchRecentPlaylistsByGenre.rejected,(state,action)=>{
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке новых плейлистов по жанру";
+            })
+            
+             .addCase(fetchFavoritePlaylists.pending,(state) =>{
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchFavoritePlaylists.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.favoritePlaylists = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchFavoritePlaylists.rejected,(state,action)=>{
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке новых плейлистов по жанру";
             });

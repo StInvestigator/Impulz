@@ -15,6 +15,7 @@ import { fetchTopGenres } from "../../store/reducers/action-creators/genre";
 import MySelect from "../ui/MySelect";
 import {fetchTopAuthorsByMonth} from "../../store/reducers/action-creators/author.ts";
 import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
+import { useTranslation } from "react-i18next";
 
 interface TrackItemProps {
   track: TrackCreationFullDto;
@@ -231,6 +232,10 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [error, setError] = useState<string>("");
+
+  const {t} = useTranslation("errors");
+
   // const [searchAuthor, setSearchAuthor] = useState('');
   // const [searchGenre, setSearchGenre] = useState('');
 
@@ -288,6 +293,12 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
   };
 
   const createTrack = () => {
+
+    if(!titleTrack || authorsTrack.length === 0 || genresTrack.length === 0 || !audioFile || !imageFile){
+      setError(t("error-you-have-not-filled-in-all-the-fields"));
+      return;
+    }
+
     const newTrack: TrackCreationFullDto = {
       title: titleTrack,
       authors: authorsTrack,
@@ -598,6 +609,7 @@ const Step4 = ({ tracks, setTracks }: Step4Props) => {
           </Typography>
         </Box>
       </Box>
+      <Typography color="red">{error}</Typography>
     </Box>
   );
 };

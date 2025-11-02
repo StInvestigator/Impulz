@@ -12,8 +12,6 @@ i18n
         backend: {
             loadPath: '/locales/{{lng}}/{{ns}}.json',
         },
-        ns: ['navbar', "sidebar", "main", "footer"],
-        defaultNS: 'main',
         interpolation: {
             escapeValue: false,
         },

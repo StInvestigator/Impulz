@@ -40,7 +40,7 @@ const Cover: FC<CoverProps> = ({
     return (
         <Box
             width={"100%"}
-            height={"450px"}
+            height={"435px"}
             padding={"50px"}
             boxSizing={"border-box"}
             position={"relative"}

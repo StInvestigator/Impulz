@@ -15,7 +15,7 @@ public class UserDto
     private String id;
     private String username;
     private String email;
-    private String imgUrl;
+    private String avatarUrl;
     private Set<AlbumSimpleDto> favouriteAlbums;
     private Set<PlaylistSimpleDto> favouritePlaylists;
     private AuthorDto authorDto = null;
@@ -25,7 +25,7 @@ public class UserDto
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setImgUrl(user.getAvatarUrl());
+        dto.setAvatarUrl(user.getAvatarUrl());
         if (user.getAuthorProfile() != null){
             dto.setAuthorDto(AuthorDto.fromEntity(user.getAuthorProfile()));
         } else{ dto.setAuthorDto(null); }

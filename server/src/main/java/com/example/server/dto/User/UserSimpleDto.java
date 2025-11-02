@@ -9,13 +9,13 @@ public class UserSimpleDto
 {
     private String id;
     private String name;
-    private String imgUrl;
+    private String avatarUrl;
 
     public static UserSimpleDto fromEntity(User user){
         UserSimpleDto dto = new UserSimpleDto();
         dto.setId(user.getId());
         dto.setName(user.getUsername());
-        dto.setImgUrl(user.getAvatarUrl());
+        dto.setAvatarUrl(user.getAvatarUrl());
         return dto;
     }
 }

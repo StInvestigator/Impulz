@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import {Navigate, useParams} from "react-router-dom";
-import { Box, Stack, CircularProgress, Typography } from "@mui/material";
+import {Box, Stack, CircularProgress, Typography, IconButton} from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { fetchPlaylistDetails } from "../store/reducers/action-creators/playlist.ts";
 import Cover from "../components/Cover.tsx";
@@ -11,6 +11,7 @@ import { fetchTracksByPlaylist } from "../store/reducers/action-creators/tracks.
 import { useTranslation } from "react-i18next";
 import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg"
 import keycloak from "../keycloak.ts";
+import additionalIcon from "../assets/AdditionalIcon.svg";
 
 const PlaylistItemPage = () => {
     const { playlistId } = useParams<{ playlistId: string }>();
@@ -94,7 +95,7 @@ const PlaylistItemPage = () => {
 
     return (
         <>
-            <Box component={"section"}>
+            <Box component={"section"} sx={{ position: "relative" }}> {/* Добавьте этот контейнер */}
                 <Cover
                     type={isOwner ? "myPlaylist" : currentPlaylist.isPublic ? "publicPlaylist" : "privatePlaylist"}
                     title={currentPlaylist.title || "Без названия"}
@@ -105,6 +106,20 @@ const PlaylistItemPage = () => {
                     imgUrl={currentPlaylist.imgUrl || PlaylistDefaultImage}
                     handlePlay={handlePlayPlaylist}
                 />
+                <IconButton
+                    sx={{
+                        position: "absolute",
+                        top: 16,
+                        right: 16,
+                        padding: 1,
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        '&:hover': {
+                            backgroundColor: "rgba(255, 255, 255, 1)",
+                        }
+                    }}
+                >
+                    <Box component="img" src={additionalIcon} height="28px" width="28px" />
+                </IconButton>
             </Box>
 
             <Box component={"section"} marginTop={"60px"}>

@@ -10,3 +10,26 @@ export const fetchUserDetails = createAsyncThunk<UserDto,string>(
         return response.data;
     }
 );
+
+export const updateUserProfile = createAsyncThunk(
+    'user/updateUserProfile',
+    async ({ userId, username, imageFile }: {
+        userId: string;
+        username: string;
+        imageFile?: File
+    }) => {
+        const formData = new FormData();
+        formData.append('username', username);
+
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        const response = await $authApi.put(`/users/update/${userId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    }
+);

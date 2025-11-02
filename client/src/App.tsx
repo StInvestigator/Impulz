@@ -62,7 +62,7 @@ const SecuredContent = () => {
   useEffect(() => {
     let attempts = 0;
     const maxAttempts = 5;
-    const retryDelay = 2000; // 2 секунды
+    const retryDelay = 2000;
 
     const tryFetchProfile = () => {
       if (!keycloak.subject) return;
@@ -109,53 +109,66 @@ const SecuredContent = () => {
   if (!initialized) return <div>Loading...</div>;
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Navbar />
-        <Box component="main" display={"flex"}>
-          <Sidebar />
+      <>
+        <ThemeProvider theme={theme}>
           <Box sx={{
-            position: 'relative',
-            width: "calc(100% - 320px)",
-            marginLeft: `320px`,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh'
           }}>
-            {/* Основной контент */}
-            <Box component="article" sx={{
-              marginTop: "48px",
-              padding: "60px 20px 120px 20px",
-              overflowX: 'hidden',
-              display: isFullScreenPlayerOpen ? 'none' : 'block',
-              width: '100%',
-              boxSizing: 'border-box'
-            }}>
-              <ScrollToTop />
-              <AppRouter />
+            <Navbar />
+            <Box component="main" display={"flex"} sx={{ flex: 1 }}> {/* flex: 1 заставляет занимать всё доступное пространство */}
+              <Sidebar />
+              <Box sx={{
+                position: 'relative',
+                width: "calc(100% - 320px)",
+                marginLeft: `320px`,
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                {/* Основной контент */}
+                <Box component="article" sx={{
+                  marginTop: "48px",
+                  padding: "60px 20px 120px 20px",
+                  overflowX: 'hidden',
+                  display: isFullScreenPlayerOpen ? 'none' : 'block',
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  flex: 1
+                }}>
+                  <ScrollToTop />
+                  <AppRouter />
+                </Box>
+
+                {active && isFullScreenPlayerOpen && (
+                    <FullScreenPlayer
+                        active={active}
+                        playlist={playlist}
+                        currentTrackIndex={currentTrackIndex}
+                        currentTime={currentTime}
+                        duration={duration}
+                        pause={pause}
+                        onClose={handleCloseFullScreenPlayer}
+                        onCloseFullScreen={handleCloseFullScreenPlayer}
+                    />
+                )}
+              </Box>
             </Box>
 
-            {/* Полноэкранный плеер внутри основного контейнера */}
-            {active && isFullScreenPlayerOpen && (
-              <FullScreenPlayer
-                active={active}
-                playlist={playlist}
-                currentTrackIndex={currentTrackIndex}
-                currentTime={currentTime}
-                duration={duration}
-                pause={pause}
-                onClose={handleCloseFullScreenPlayer}
+            <MusicPlayer
+                onOpenFullScreen={handleOpenFullScreenPlayer}
                 onCloseFullScreen={handleCloseFullScreenPlayer}
-              />
+                isFullScreenMode={isFullScreenPlayerOpen}
+            />
+
+            {!isFullScreenPlayerOpen && (
+                <Box sx={{ mt: 'auto' }}>
+                  <Footer />
+                </Box>
             )}
           </Box>
-        </Box>
-
-        <MusicPlayer
-          onOpenFullScreen={handleOpenFullScreenPlayer}
-          onCloseFullScreen={handleCloseFullScreenPlayer}
-          isFullScreenMode={isFullScreenPlayerOpen}
-        />
-        {!isFullScreenPlayerOpen && <Footer />}
-      </ThemeProvider>
-    </>
+        </ThemeProvider>
+      </>
   );
 }
 

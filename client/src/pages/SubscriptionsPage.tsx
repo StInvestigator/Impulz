@@ -17,65 +17,64 @@ import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import stripe from "../stripe.ts"
 import keycloak from "../keycloak.ts";
 import logoImg from "../assets/logo.svg"
+import { useTranslation } from "react-i18next";
 
 
 
 type Plan = {
     id: string; // priceId that your backend/Stripe uses
-    title: string;
+    count_months: number;
     priceMonthly: string; // human readable
     features: string[];
-    cta: string;
 };
 
 
 const PLANS: Plan[] = [
     {
         id: "price_1SMVQTGZTpt26MImI2NbtkPr",
-        title: "Impulz Premium 1 Month",
-        priceMonthly: "$4.99 / month",
+        count_months: 1,
+        priceMonthly: "$4.99",
         features: ["Premium status","Developers support"],
-        cta: "Choose",
     },
     {
         id: "price_1SMVTbGZTpt26MImXH1GIzoX",
-        title: "Impulz Premium 3 Months",
-        priceMonthly: "$12.99 / 3 months",
-        features: ["Premium status","Developers support"],
-        cta: "Choose",
+        count_months: 3,
+        priceMonthly: "$12.99",
+        features: ["title-premium-status","title-developer-support"],
     },
     {
         id: "price_1SMVWMGZTpt26MImIdXWrnkq",
-        title: "Impulz Premium 12 Months",
-        priceMonthly: "$49.99 / 12 months",        
-        features: ["Premium status","Developers support"],
-        cta: "Choose",
+        count_months: 12,
+        priceMonthly: "$49.99",        
+        features: ["title-premium-status","title-developer-support"],
     },
 ];
 
 
 const SubscriptionCard: React.FC<{ plan: Plan; onChoose: (priceId: string) => void; loading?: boolean }> = ({ plan, onChoose, loading }) => {
+    const {t} = useTranslation('subscription');
+
     return (
         <Card variant="outlined" sx={{borderRadius: "10px", boxShadow: "0px 4px 4px 0px #00000040 inset;"}}>
             <CardContent>
                 <Box display={"flex"} justifyContent={"space-between"}>
                     <Typography fontSize={"20px"} fontWeight={400}>
-                        {plan.title} <br />
-                        {plan.priceMonthly}
+                        {t("title-impulz-premium") + " " + (plan.count_months === 1 ? t("month_one", {count: plan.count_months}) : plan.count_months === 2 ? t("month_few", {count: plan.count_months}) : t("month_many", {count: plan.count_months}))} <br />
+                        {plan.priceMonthly + " / "+ (plan.count_months === 1 ? t("month_one", {count: plan.count_months}) : plan.count_months === 2 ? t("month_few", {count: plan.count_months}) : t("month_many", {count: plan.count_months}))}
                     </Typography>
                     <Box component={"img"} width={28} height={28} src={logoImg}/>
                 </Box>
                 <List>
                     {plan.features.map((f) => (
                         <ListItem key={f} sx={{ padding: 0}}>
-                            <Typography variant="mainRS">{f}</Typography>
+                            <Typography variant="mainRS">{t(f)}</Typography>
                         </ListItem>
                     ))}
                 </List>
             </CardContent>
             <CardActions sx={{ justifyContent: "center", pb: 2 }}>
                 <Button variant="contained" onClick={() => onChoose(plan.id)} disabled={loading} sx={{background: "var(--orange-peel)", color: "var(--dark-purple)", padding: "8px 18px", fontWeight: 700, fontSize: "12px", boxShadow: "none", textTransform: "none"}}>
-                    {loading ? <CircularProgress size={20} /> : plan.cta}
+                    {loading ? <CircularProgress size={20} /> : t("button-buy")}
                 </Button>
             </CardActions>
         </Card>
@@ -86,6 +85,8 @@ const SubscriptionCard: React.FC<{ plan: Plan; onChoose: (priceId: string) => vo
 const SubscriptionPageInner: React.FC = () => {
     const dispatch = useAppDispatch();
     const { loading, error } = useAppSelector((state) => state.subscribtion);
+
+    const {t} = useTranslation('subscription');
 
 
     const handleChoose = async (priceId: string) => {
@@ -127,7 +128,7 @@ const SubscriptionPageInner: React.FC = () => {
             <Box sx={{ width: "70%" }}>
                 <Box justifyContent="center">
                     <Typography variant="h1" color="white" sx={{ mb: 5 }}>
-                        Impulz Premium
+                        {t('title-impulz-premium')}
                     </Typography>
 
                     <Box

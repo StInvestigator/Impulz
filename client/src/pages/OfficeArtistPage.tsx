@@ -43,6 +43,22 @@ function OfficeArtistPage() {
       setError(t("errors:error-no-image"))
       return
     }
+
+    if(activeStep === 2 && nameAlbum.trim().length === 0){
+      setError(t("errors:error-no-album-name"))
+      return
+    }
+
+    if(activeStep === 3 && dateRelease.trim().length === 0){
+      setError(t("errors:error-no-release-date"))
+      return
+    }
+
+    if(activeStep === 4 && tracks.length === 0){
+      setError(t("errors:error-no-tracks-in-album"))
+      return
+    }
+
     setActiveStep(step => step + 1);
     setError("")
   }
@@ -70,8 +86,8 @@ function OfficeArtistPage() {
   return (
     <>     
       <MyProfile />
-      {profile?.authorDto?.albums && (
-        <>
+      {/* {profile?.authorDto?.albums && (
+        <> */}
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"} marginTop={"20px"} height={"310px"} position={"relative"} overflow={"hidden"} sx={{
           background: "var(--gradient-oranges)",
         }}>
@@ -121,8 +137,8 @@ function OfficeArtistPage() {
             </Typography>
           </Box>
         </Box>
-        </>
-      )}
+        {/* </>
+      )} */}
       <Box component={"section"} marginTop={"20px"} >
           <AlbumList albums={profile?.authorDto?.albums || []}/>
       </Box>

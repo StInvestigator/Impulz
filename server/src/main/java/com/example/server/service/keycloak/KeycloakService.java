@@ -14,4 +14,6 @@ public interface KeycloakService
     void removeRoleFromUser(String userId, String role);
     List<RoleRepresentation> getAllRoles();
     String getUserIdByEmail(String email);
+    void updateUserEmail(String userId, String newEmail);
+    void updateUserUsername(String userId, String newUsername);
 }

@@ -33,6 +33,45 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Value("${keycloak.realm}")
     private String realm;
 
+    @Override
+    public void updateUserEmail(String userId, String newEmail) {
+        try {
+            RealmResource realmResource = keycloak.realm(realm);
+            UserResource userResource = realmResource.users().get(userId);
+
+            UserRepresentation userRep = userResource.toRepresentation();
+            userRep.setEmail(newEmail);
+            userRep.setEmailVerified(false);
+
+            userResource.update(userRep);
+
+            log.info("Email updated in Keycloak for user {}: {}", userId, newEmail);
+
+        } catch (Exception e) {
+            log.error("Failed to update email in Keycloak for user {}: {}", userId, e.getMessage(), e);
+            throw new RuntimeException("Failed to update email in Keycloak: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void updateUserUsername(String userId, String newUsername) {
+        try {
+            RealmResource realmResource = keycloak.realm(realm);
+            UserResource userResource = realmResource.users().get(userId);
+
+            UserRepresentation userRep = userResource.toRepresentation();
+            userRep.setUsername(newUsername);
+
+            userResource.update(userRep);
+
+            log.info("Username updated in Keycloak for user {}: {}", userId, newUsername);
+
+        } catch (Exception e) {
+            log.error("Failed to update username in Keycloak for user {}: {}", userId, e.getMessage(), e);
+            throw new RuntimeException("Failed to update username in Keycloak: " + e.getMessage(), e);
+        }
+    }
+
     public User updateExistingUser(User user, String username, String email) {
         boolean needsUpdate = false;
 

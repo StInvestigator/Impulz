@@ -75,7 +75,7 @@ const UserProfile: FC<UserProfileProps> = ({
               left={300}
               zIndex={1}
               sx={{
-                backgroundImage: `url(${user.imgUrl})`,
+                backgroundImage: `url(${user.avatarUrl})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover"

@@ -550,6 +550,18 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
     return (
         <>
+            <Box sx={{ display: 'none' }}>
+                <img src={HoverPlayerPlayIcon} alt="preload" />
+                <img src={HoverPlayerPauseIcon} alt="preload" />
+                <img src={HoverPlayerNextIcon} alt="preload" />
+                <img src={HoverPlayerPreviousIcon} alt="preload" />
+                <img src={HoverPlayerRandomPlaying} alt="preload" />
+                <img src={HoverPlayerAddToPlaylistIcon} alt="preload" />
+                <img src={HoverPlayerToggleFullMode} alt="preload" />
+                <img src={HoverPlayerToggleOffFullModeIcon} alt="preload" />
+                <img src={PlayerVolumeOffIcon} alt="preload" />
+            </Box>
+
             {/* Основной плеер */}
             <Box
                 height="80px"

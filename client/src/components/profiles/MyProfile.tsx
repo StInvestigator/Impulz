@@ -7,205 +7,264 @@ import { fetchAuthorPlaysByMonth } from "../../store/reducers/action-creators/au
 import { useTranslation } from "react-i18next";
 import additionalIcon from "../../assets/AdditionalIcon.svg";
 import DropdownOptionsMyProfile from "../ui/dropdowns/DropdownOptionsMyProfile";
+import EditProfileModal from "../ui/EditProfileModal.tsx";
+import {usePlayTrack} from "../../hooks/usePlayTrack.tsx";
+import EditEmailAndPasswordModal from "../ui/EditEmailAndPasswordModal.tsx";
 
 function MyProfile() {
-  const { profile } = useAppSelector((state) => state.profile);
-  const dispatch = useAppDispatch();
-  const [playsByMonth, setPlaysByMonth] = useState<number>(0);
-  const { t } = useTranslation("authorPage");
+    const { profile } = useAppSelector((state) => state.profile);
+    const dispatch = useAppDispatch();
+    const [playsByMonth, setPlaysByMonth] = useState<number>(0);
+    const { t } = useTranslation("authorPage");
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isChangeEmailAndPasswordModalOpen, setChangeEmailAndPasswordModalOpen] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const { playAuthorPopularTracks } = usePlayTrack();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+    const handleOpenEditModal = () => {
+        setIsEditModalOpen(true);
+        handleCloseMenu();
+    };
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  useEffect(() => {
-    if (profile.authorDto?.id) {
-      dispatch(fetchAuthorPlaysByMonth(profile.authorDto.id))
-        .unwrap()
-        .then((value) => {
-          setPlaysByMonth(value);
-        })
-        .catch((error) => {
-          console.error("Ошибка при загрузке статистики:", error);
-        });
+    const handleOpenChangeEmailAndPasswordModal = () =>{
+        setChangeEmailAndPasswordModalOpen(true);
+        handleCloseMenu();
     }
-  }, [dispatch, profile.authorDto?.id]);
 
-  return (
-    <>
-      <Box
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        position={"relative"}
-        height={"450px"}
-        sx={{ backgroundColor: "var(--dark-purple)" }}
-      >
-        <Box
-          component={"img"}
-          src={bgCoverImg}
-          position={"absolute"}
-          top={0}
-          left={0}
-          width={"100%"}
-          height={"100%"}
-        />
+    const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-        <IconButton
-          sx={{ padding: 0, flexShrink: 0, position: "absolute", top: 20, right: 20 }}
-          onClick={handleOpenMenu}
-        >
-          <Box component="img" src={additionalIcon} height="28px" width="28px" />
-        </IconButton>
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
 
-        <DropdownOptionsMyProfile
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleCloseMenu}
-        />
-        {/* Контейнер для фото и имени пользователя */}
-        <Box
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          position={"relative"}
-          height={"100%"}
-          width={"700px"}
-        >
-          {/*Имя пользователя*/}
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            bgcolor="var(--columbia-blue)"
-            borderRadius="50%"
-            border="10px solid #FF990099"
-            boxSizing="border-box"
-            height="400px"
-            width="400px"
-            position="absolute"
-            left={0}
-            zIndex={2}
-          >
-            <Typography variant="h2">
-              {profile.authorDto ? profile.authorDto.name : profile.username}
-            </Typography>
-          </Box>
+    const handlePlayClick = async (event: React.MouseEvent) => {
+        event.stopPropagation();
+        if (profile.authorDto?.id) {
+            try {
+                await playAuthorPopularTracks(
+                    profile.authorDto.id,
+                    profile.authorDto.name || profile.username,
+                    3
+                );
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
 
-          {/* Фотография пользователя */}
-          <Box
-            display="flex"
-            bgcolor="var(--dark-purple)"
-            justifyContent="center"
-            alignItems="center"
-            borderRadius="50%"
-            border="5px solid #FF990099"
-            height="400px"
-            width="400px"
-            position="absolute"
-            left={300}
-            zIndex={1}
-            sx={{
-              backgroundImage: `url(${profile.imgUrl})`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-            }}
-          >
-            <IconButton sx={{ padding: 0 }}>
-              <Box
-                component="img"
-                src={playImage}
-                borderRadius="50%"
-                width="80px"
-                height="80px"
-              />
-            </IconButton>
-          </Box>
-        </Box>
+    useEffect(() => {
+        if (profile.authorDto?.id) {
+            dispatch(fetchAuthorPlaysByMonth(profile.authorDto.id))
+                .unwrap()
+                .then((value) => {
+                    setPlaysByMonth(value);
+                })
+                .catch((error) => {
+                    console.error("Ошибка при загрузке статистики:", error);
+                });
+        }
+    }, [dispatch, profile.authorDto?.id]);
 
-        {profile.authorDto && (
+    return (
+        <>
             <Box
-              display="flex"
-              justifyContent="flex-end"
-              flexDirection="column"
-              gap="12px"
-              height="190px"
-              width="85%"
-              position="absolute"
-              bottom={28}
-              zIndex={0}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                position={"relative"}
+                height={"450px"}
+                sx={{ backgroundColor: "var(--dark-purple)" }}
             >
-              <Box
-                height="100%"
-                marginRight={4}
-                display="flex"
-                justifyContent="flex-end"
-                flexDirection="column"
-                gap="16px"
-              >
                 <Box
-                  bgcolor="var(--columbia-blue)"
-                  boxSizing="border-box"
-                  padding="6px 12px"
-                  borderRadius="10px"
-                  marginLeft="auto"
-                  width="40%"
-                  display="flex"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                >
-                  <Box textAlign="center">
-                    <Typography variant="h3">
-                      {profile.authorDto.followersCount}
-                    </Typography>
-                    <Typography variant="mainSbM" fontWeight={700}>
-                      {t("title-subscribers")}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
+                    component={"img"}
+                    src={bgCoverImg}
+                    position={"absolute"}
+                    top={0}
+                    left={0}
+                    width={"100%"}
+                    height={"100%"}
+                />
 
-              <Box
-                bgcolor="var(--columbia-blue)"
-                padding="6px 12px"
-                boxSizing="border-box"
-                borderRadius="10px"
-                marginLeft="auto"
-                width="40%"
-                display="flex"
-                justifyContent="flex-end"
-                alignItems="center"
-              >
-                <Box textAlign="center">
-                  <Typography
-                    variant="h3"
-                    fontSize="24px"
-                    fontFamily={'"Manrope", sans-serif'}
-                    height="24px"
-                  >
-                    {playsByMonth}
-                  </Typography>
-                  <Typography
-                    variant="mainSbM"
-                    fontFamily={'"Manrope", sans-serif'}
-                  >
-                    {t("title-listeners-month")}
-                  </Typography>
+                <IconButton
+                    sx={{ padding: 0, flexShrink: 0, position: "absolute", top: 20, right: 20 }}
+                    onClick={handleOpenMenu}
+                >
+                    <Box component="img" src={additionalIcon} height="28px" width="28px" />
+                </IconButton>
+
+                <DropdownOptionsMyProfile
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleCloseMenu}
+                    onEditProfile={handleOpenEditModal}
+                    onChangeEmailAndPassword={handleOpenChangeEmailAndPasswordModal}
+                />
+
+                {/* Контейнер для фото и имени пользователя */}
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    position={"relative"}
+                    height={"100%"}
+                    width={"700px"}
+                >
+                    {/*Имя пользователя*/}
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        bgcolor="var(--columbia-blue)"
+                        borderRadius="50%"
+                        border="10px solid #FF990099"
+                        boxSizing="border-box"
+                        height="400px"
+                        width="400px"
+                        position="absolute"
+                        left={0}
+                        zIndex={2}
+                    >
+                        <Typography variant="h2">
+                            {profile.authorDto ? profile.authorDto.name : profile.username}
+                        </Typography>
+                    </Box>
+
+                    {/* Фотография пользователя */}
+                    <Box
+                        display="flex"
+                        bgcolor="var(--dark-purple)"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="50%"
+                        border="5px solid #FF990099"
+                        height="400px"
+                        width="400px"
+                        position="absolute"
+                        left={300}
+                        zIndex={1}
+                        sx={{
+                            backgroundImage: `url(${profile.avatarUrl})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease"
+                        }}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        onClick={(e) => handlePlayClick(e)}
+                    >
+                        <IconButton
+                            disableRipple
+                            sx={{
+                                padding: 0,
+                                opacity: isHovered ? 1 : 0,
+                                transition: "opacity 0.3s ease",
+                            }}
+                        >
+                            <Box
+                                component="img"
+                                src={playImage}
+                                borderRadius="50%"
+                                width="80px"
+                                height="80px"
+                                sx={{
+                                    transition: "transform 0.2s ease"
+                                }}
+                            />
+                        </IconButton>
+                    </Box>
                 </Box>
-              </Box>
+
+                {profile.authorDto && (
+                    <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                        flexDirection="column"
+                        gap="12px"
+                        height="190px"
+                        width="85%"
+                        position="absolute"
+                        bottom={28}
+                        zIndex={0}
+                    >
+                        <Box
+                            height="100%"
+                            marginRight={4}
+                            display="flex"
+                            justifyContent="flex-end"
+                            flexDirection="column"
+                            gap="16px"
+                        >
+                            <Box
+                                bgcolor="var(--columbia-blue)"
+                                boxSizing="border-box"
+                                padding="6px 12px"
+                                borderRadius="10px"
+                                marginLeft="auto"
+                                width="40%"
+                                display="flex"
+                                justifyContent="flex-end"
+                                alignItems="center"
+                            >
+                                <Box textAlign="center">
+                                    <Typography variant="h3">
+                                        {profile.authorDto.followersCount}
+                                    </Typography>
+                                    <Typography variant="mainSbM" fontWeight={700}>
+                                        {t("title-subscribers")}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+
+                        <Box
+                            bgcolor="var(--columbia-blue)"
+                            padding="6px 12px"
+                            boxSizing="border-box"
+                            borderRadius="10px"
+                            marginLeft="auto"
+                            width="40%"
+                            display="flex"
+                            justifyContent="flex-end"
+                            alignItems="center"
+                        >
+                            <Box textAlign="center">
+                                <Typography
+                                    variant="h3"
+                                    fontSize="24px"
+                                    fontFamily={'"Manrope", sans-serif'}
+                                    height="24px"
+                                >
+                                    {playsByMonth}
+                                </Typography>
+                                <Typography
+                                    variant="mainSbM"
+                                    fontFamily={'"Manrope", sans-serif'}
+                                >
+                                    {t("title-listeners-month")}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                )}
             </Box>
-          )}
-      </Box>
-    </>
-  );
+
+            <EditProfileModal
+                open={isEditModalOpen}
+                setOpen={setIsEditModalOpen}
+            />
+
+            <EditEmailAndPasswordModal
+                open={isChangeEmailAndPasswordModalOpen}
+                setOpen={setChangeEmailAndPasswordModalOpen}
+            />
+        </>
+    );
 }
 
 export default MyProfile;

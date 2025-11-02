@@ -40,4 +40,14 @@ public class ImageServiceImpl implements ImageService {
         s3StorageService.uploadFromMultipart(file, key);
         return S3_ULR + key;
     }
+
+    @Override
+    public void deleteImage(String imageUrl) {
+        try {
+            String key = imageUrl.replace("https://" + bucketName + ".s3." + region + ".amazonaws.com/", "");
+            s3StorageService.deleteFile(key);
+        } catch (Exception e) {
+            log.error("Failed to delete image from S3: {}", imageUrl, e);
+        }
+    }
 }

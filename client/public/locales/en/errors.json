@@ -9,5 +9,17 @@
   "error-track-loading": "Track loading error",
   "error-page-not-found": "Page not found",
   "error-page-not-found-description": "Sorry, the page you're looking for doesn't exist or has been moved",
-  "error-contact-support": "If the problem persists, contact support"
+  "error-contact-support": "If the problem persists, contact support",
+  "error-empty-username": "Username cannot be empty",
+  "error-unauthorized": "User not authorized",
+  "error-update-profile": "Error updating profile",
+  "error-file-too-large": "File size should not exceed 5 MB",
+  "error-invalid-format": "Please select a file in PNG or JPEG format",
+  "error-image-too-small": "Minimum image size: 400×400 px",
+  "error-invalid-email": "Please enter a valid email address",
+  "error-password-too-short": "Password must be at least 6 characters long",
+  "error-passwords-dont-match": "Passwords do not match",
+  "error-current-password-required": "Current password is required to set new password",
+  "error-no-changes": "No changes to save",
+  "error-update-failed": "Failed to update data"
 }

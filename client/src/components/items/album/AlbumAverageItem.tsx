@@ -13,10 +13,9 @@ import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
-    itemWidth: number;
 }
 
-const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) => {
+const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
     const navigate = useAppNavigate();
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
@@ -57,7 +56,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
         <Box
             sx={{
                 position: "relative",
-                width: itemWidth || "100%",
+                width: "100%",
                 height: `${itemHeight}px`,
                 display: "flex",
                 flexDirection: "column",
@@ -71,7 +70,6 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
                 bgcolor="gray"
                 width="100%"
                 height={`${itemHeight}px`}
-                maxWidth={itemWidth}
                 borderRadius={"10px"}
                 position={"relative"}
                 sx={{
@@ -88,7 +86,6 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight, itemWidth}) =>
                 bottom={0}
                 height={"88px"}
                 width={"100%"}
-                maxWidth={itemWidth}
                 boxSizing={"border-box"}
                 borderRadius={"0 0 10px 10px"}
                 sx={{

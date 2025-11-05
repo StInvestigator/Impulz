@@ -156,32 +156,33 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
     };
 
     const sendPlaybackStats = useCallback(async () => {
-        if (hasSentPlayback.current || !active || !keycloak?.authenticated) return;
+        if (!active || !keycloak?.authenticated || !audioRef.current) return;
 
         const audio = audioRef.current;
-        if (!audio) return;
 
-        const userId =
-            keycloak.tokenParsed?.sub ||
-            keycloak?.subject ||
-            keycloak.idTokenParsed?.sub ||
-            'unknown-user';
+        if (listenedTimeRef.current >= 30) {
+            const userId = keycloak.tokenParsed?.sub || 'unknown-user';
 
-        const stats: PlaybackStats = {
-            trackId: active.id,
-            currentTime: Math.min(audio.currentTime, duration),
-            duration,
-            userId,
-            sessionId: sessionIdRef.current,
-        };
+            const stats: PlaybackStats = {
+                trackId: active.id,
+                currentTime: audio.currentTime,
+                duration: audio.duration || 0,
+                userId,
+                sessionId: sessionIdRef.current,
+            };
 
-        try {
-            await playbackService.sendPlaybackStats(stats);
-            hasSentPlayback.current = true;
-        } catch (err) {
-            console.error('Ошибка отправки статистики:', err);
+            try {
+                console.log('🚀 Отправка статистики на сервер:', stats);
+                await playbackService.sendPlaybackStats(stats);
+                console.log('✅ Статистика отправлена успешно');
+
+                listenedTimeRef.current = 0;
+
+            } catch (err) {
+                console.error('❌ Ошибка отправки статистики:', err);
+            }
         }
-    }, [active, duration]);
+    }, [active?.id]);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -208,6 +209,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
         const activeTrackChanged = lastActiveIdRef.current !== active.id;
         lastActiveIdRef.current = active.id;
+
+        if (activeTrackChanged) {
+            sessionIdRef.current = generateSessionId();
+            hasSentPlayback.current = false;
+            listenedTimeRef.current = 0;
+            lastTimeRef.current = 0;
+
+            console.log('🔄 Смена трека, сброс статистики:', active.id);
+        }
 
         const isOnlyPlaylistChanged =
             !activeTrackChanged &&
@@ -329,11 +339,13 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
                     if (!audio.paused) {
                         const delta = cur - lastTimeRef.current;
-                        if (delta > 0 && delta < 5) listenedTimeRef.current += delta;
+                        if (delta > 0 && delta < 5) {
+                            listenedTimeRef.current += delta;
+                        }
                     }
                     lastTimeRef.current = cur;
 
-                    if (listenedTimeRef.current >= 30) sendPlaybackStats();
+                    sendPlaybackStats();
                 };
 
                 audio.onended = async () => {

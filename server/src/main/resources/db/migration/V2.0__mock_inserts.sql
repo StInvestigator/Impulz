@@ -637,6 +637,100 @@ VALUES
 (96, 70000, 95000, '[Break] instrumental breakdown'),
 (96, 95000, 120000, '[Outro] synth melody fade');
 
+
+INSERT INTO track_plays (track_id, user_id, played_at)
+VALUES
+-- AC/DC - Thunderstruck (ID 31)
+(31, '11111111-1111-4111-8111-111111111112', now() - interval '1 hour'),
+(31, '22222222-2222-4222-8222-222222222223', now() - interval '2 hours'),
+(31, '33333333-3333-4333-8333-333333333334', now() - interval '3 hours'),
+(31, '44444444-4444-4444-8444-444444444446', now() - interval '4 hours'),
+(31, '44444444-4444-4444-8444-444444444447', now() - interval '5 hours'),
+
+-- Queen - Another One Bites The Dust (ID 63)
+(63, '11111111-1111-4111-8111-111111111112', now() - interval '6 hours'),
+(63, '22222222-2222-4222-8222-222222222223', now() - interval '7 hours'),
+(63, '33333333-3333-4333-8333-333333333334', now() - interval '8 hours'),
+(63, '44444444-4444-4444-8444-444444444445', now() - interval '9 hours'),
+(63, '44444444-4444-4444-8444-444444444446', now() - interval '10 hours'),
+
+-- Eminem - Without Me (ID 130)
+(130, '44444444-4444-4444-8444-444444444446', now() - interval '11 hours'),
+(130, '44444444-4444-4444-8444-444444444450', now() - interval '12 hours'),
+(130, '33333333-3333-4333-8333-333333333334', now() - interval '13 hours'),
+(130, '22222222-2222-4222-8222-222222222223', now() - interval '14 hours'),
+(130, '11111111-1111-4111-8111-111111111112', now() - interval '15 hours'),
+
+-- Lady Gaga - Poker Face (ID 96)
+(96, '44444444-4444-4444-8444-444444444447', now() - interval '16 hours'),
+(96, '44444444-4444-4444-8444-444444444449', now() - interval '17 hours'),
+(96, '33333333-3333-4333-8333-333333333334', now() - interval '18 hours'),
+(96, '22222222-2222-4222-8222-222222222223', now() - interval '19 hours'),
+(96, '11111111-1111-4111-8111-111111111112', now() - interval '20 hours'),
+
+-- Beyonce - Crazy In Love (ID 90)
+(90, '44444444-4444-4444-8444-444444444449', now() - interval '21 hours'),
+(90, '44444444-4444-4444-8444-444444444447', now() - interval '22 hours'),
+(90, '44444444-4444-4444-8444-444444444446', now() - interval '23 hours'),
+(90, '33333333-3333-4333-8333-333333333334', now() - interval '1 day'),
+(90, '22222222-2222-4222-8222-222222222223', now() - interval '2 days'),
+
+-- Black Sabbath - Iron Man (ID 78)
+(78, '44444444-4444-4444-8444-444444444445', now() - interval '3 days'),
+(78, '11111111-1111-4111-8111-111111111112', now() - interval '4 days'),
+(78, '22222222-2222-4222-8222-222222222223', now() - interval '5 days'),
+(78, '33333333-3333-4333-8333-333333333334', now() - interval '6 days'),
+(78, '44444444-4444-4444-8444-444444444446', now() - interval '7 days'),
+
+-- 50 Cent - In Da Club (ID 107)
+(107, '44444444-4444-4444-8444-444444444450', now() - interval '8 days'),
+(107, '44444444-4444-4444-8444-444444444446', now() - interval '9 days'),
+(107, '44444444-4444-4444-8444-444444444447', now() - interval '10 days'),
+(107, '33333333-3333-4333-8333-333333333334', now() - interval '11 days'),
+(107, '22222222-2222-4222-8222-222222222223', now() - interval '12 days'),
+
+-- Louis Armstrong - What A Wonderful World (ID 149)
+(149, '44444444-4444-4444-8444-444444444448', now() - interval '13 days'),
+(149, '44444444-4444-4444-8444-444444444449', now() - interval '14 days'),
+(149, '44444444-4444-4444-8444-444444444447', now() - interval '15 days'),
+(149, '33333333-3333-4333-8333-333333333334', now() - interval '16 days'),
+(149, '22222222-2222-4222-8222-222222222223', now() - interval '17 days'),
+
+-- Megadeth - Holy Wars (ID 50)
+(50, '22222222-2222-4222-8222-222222222223', now() - interval '18 days'),
+(50, '44444444-4444-4444-8444-444444444445', now() - interval '19 days'),
+(50, '11111111-1111-4111-8111-111111111112', now() - interval '20 days'),
+(50, '33333333-3333-4333-8333-333333333334', now() - interval '21 days'),
+(50, '44444444-4444-4444-8444-444444444446', now() - interval '22 days'),
+
+-- AC/DC - Highway to Hell (ID 39)
+(39, '11111111-1111-4111-8111-111111111112', now() - interval '23 days'),
+(39, '22222222-2222-4222-8222-222222222223', now() - interval '24 days'),
+(39, '33333333-3333-4333-8333-333333333334', now() - interval '25 days'),
+(39, '44444444-4444-4444-8444-444444444445', now() - interval '26 days'),
+(39, '44444444-4444-4444-8444-444444444446', now() - interval '27 days'),
+
+-- Queen - We Are The Champions (ID 67)
+(67, '33333333-3333-4333-8333-333333333334', now() - interval '28 days'),
+(67, '11111111-1111-4111-8111-111111111112', now() - interval '29 days'),
+(67, '22222222-2222-4222-8222-222222222223', now() - interval '30 days'),
+(67, '44444444-4444-4444-8444-444444444447', now() - interval '31 days'),
+(67, '44444444-4444-4444-8444-444444444449', now() - interval '32 days'),
+
+-- Дополнительные прослушивания для других популярных треков
+(42, '11111111-1111-4111-8111-111111111112', now() - interval '33 days'), -- AC/DC - You Shook Me All Night Long
+(42, '22222222-2222-4222-8222-222222222223', now() - interval '34 days'),
+(62, '33333333-3333-4333-8333-333333333334', now() - interval '35 days'), -- Queen - We Will Rock You
+(62, '44444444-4444-4444-8444-444444444447', now() - interval '36 days'),
+(77, '44444444-4444-4444-8444-444444444445', now() - interval '37 days'), -- Black Sabbath - Paranoid
+(77, '22222222-2222-4222-8222-222222222223', now() - interval '38 days'),
+(95, '44444444-4444-4444-8444-444444444447', now() - interval '39 days'), -- Lady Gaga - Poker Face
+(95, '44444444-4444-4444-8444-444444444449', now() - interval '40 days'),
+(129, '44444444-4444-4444-8444-444444444446', now() - interval '41 days'), -- Eminem - Without Me
+(129, '44444444-4444-4444-8444-444444444450', now() - interval '42 days'),
+(148, '44444444-4444-4444-8444-444444444448', now() - interval '43 days'), -- Louis Armstrong - What A Wonderful World
+(148, '44444444-4444-4444-8444-444444444449', now() - interval '44 days');
+
 SELECT setval(pg_get_serial_sequence('albums', 'id'), (SELECT MAX(id) FROM albums));
 SELECT setval(pg_get_serial_sequence('tracks', 'id'), (SELECT MAX(id) FROM tracks));
 SELECT setval(pg_get_serial_sequence('genres', 'id'), (SELECT MAX(id) FROM genres));

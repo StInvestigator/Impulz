@@ -30,7 +30,7 @@ import {
     updateSourcePage,
     addToPlaylist,
     setSourceHasMore,
-    setPlaybackMode,
+    setPlaybackMode, toggleFullScreenPlayer,
 } from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http';
@@ -66,13 +66,7 @@ const playbackService = {
     },
 };
 
-interface MusicPlayerProps {
-    onOpenFullScreen?: () => void;
-    onCloseFullScreen?: () => void;
-    isFullScreenMode?: boolean;
-}
-
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullScreen,isFullScreenMode = false }) => {
+const MusicPlayer = () => {
     const {
         active,
         playlist,
@@ -82,7 +76,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
         volume,
         currentTrackIndex,
         source,
-        bufferTracks
+        bufferTracks,
+        isFullScreenOpen
     } = useAppSelector((state) => state.player);
 
     const dispatch = useAppDispatch();
@@ -534,15 +529,24 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
         lastTimeRef.current = newTime;
     };
 
-    const handleFullScreenToggle = () => {
-        if (isFullScreenMode) {
-            if (onCloseFullScreen) {
-                onCloseFullScreen();
-            }
-        } else {
-            if (onOpenFullScreen) {
-                onOpenFullScreen();
-            }
+    const handlePlayerClick = (e: React.MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const isControlElement =
+            target.closest('button') ||
+            target.closest('.MuiIconButton-root') ||
+            target.closest('input[type="range"]') ||
+            target.closest('a') ||
+            target.closest('[role="button"]') ||
+            target.closest('p') ||
+            target.closest('span') ||
+            target.tagName === 'BUTTON' ||
+            target.tagName === 'INPUT' ||
+            target.tagName === 'A' ||
+            target.tagName === 'P' ||
+            target.tagName === 'SPAN';
+
+        if (!isControlElement) {
+            dispatch(toggleFullScreenPlayer());
         }
     };
 
@@ -590,6 +594,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                     zIndex: (theme) => theme.zIndex.drawer + 2,
                     boxShadow: '0 -4px 20px rgba(0,0,0,0.3)',
                 }}
+                onClick={handlePlayerClick}
             >
                 {/* Левая секция */}
                 <Box sx={{
@@ -714,17 +719,18 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
                 {/* Информация о треке */}
                 <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: "15px",
-                    position: 'absolute',
-                    left: '292px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    maxWidth: 'calc(50% - 300px)',
-                    minWidth: '300px',
-                    zIndex: 1
-                }}>
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: "15px",
+                        position: 'absolute',
+                        left: '292px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        maxWidth: 'calc(50% - 300px)',
+                        minWidth: '300px',
+                        zIndex: 1
+                    }}
+                >
                     {/* Обложка трека */}
                     <Box sx={{
                         width: 60,
@@ -906,7 +912,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                     {/* Кнопка полноэкранного режима */}
                     <IconButton
                         disableRipple
-                        onClick={handleFullScreenToggle}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(toggleFullScreenPlayer());
+                        }}
                         sx={{
                             color: '#ff6b35',
                             '&:hover': {
@@ -920,7 +929,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                         }}
                     >
                         <Box sx={{ position: 'relative', width: 28, height: 28 }}>
-                            {isFullScreenMode ? (
+                            {isFullScreenOpen ? (
                                 <>
                                     <Box
                                         component="img"

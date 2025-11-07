@@ -1,11 +1,12 @@
-import React from 'react';
-import {Box, Button, Typography} from '@mui/material';
+import React, { useState } from 'react';
+import {Box, Button, Typography, IconButton} from '@mui/material';
+import { PlayArrow, Pause } from '@mui/icons-material';
 import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
 import { motion } from 'framer-motion';
 import PlayerTrackItem from './items/track/PlayerTrackItem.tsx';
 import {useTranslation} from "react-i18next";
 import { useAppDispatch } from '../hooks/redux';
-import { setActive } from "../store/reducers/PlayerSlice.ts";
+import { setActive, setPause } from "../store/reducers/PlayerSlice.ts";
 
 interface FullScreenPlayerProps {
     active: TrackSimpleDto;
@@ -22,14 +23,16 @@ interface FullScreenPlayerProps {
 const NAVBAR_HEIGHT = 48;
 
 const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
-    active,
-    playlist,
-    currentTrackIndex,
-    onTrackSelect,
-    onCloseFullScreen
-}) => {
+                                                               active,
+                                                               playlist,
+                                                               currentTrackIndex,
+                                                               pause,
+                                                               onTrackSelect,
+                                                               onCloseFullScreen
+                                                           }) => {
     const { t } = useTranslation("other");
     const dispatch = useAppDispatch();
+    const [isHovered, setIsHovered] = useState(false);
 
     const nextInQueue = playlist.slice(currentTrackIndex + 1);
 
@@ -45,6 +48,18 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
 
     const handleCurrentTrackClick = () => {
         handleTrackSelection(currentTrackIndex);
+    };
+
+    const handleCoverClick = () => {
+        dispatch(setPause(!pause));
+    };
+
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
     };
 
     return (
@@ -90,28 +105,82 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                         height: '100%',
                         boxSizing: 'border-box',
                         overflow: 'hidden',
-                        borderRadius: "10px"
+                        borderRadius: "10px",
+                        position: 'relative'
                     }}
                 >
-                    {/* Обложка */}
-                    <motion.div
-                        initial={{scale: 0.9, opacity: 0}}
-                        animate={{scale: 1, opacity: 1}}
-                        transition={{duration: 0.4}}
+                    {/* Обложка с hover эффектом */}
+                    <Box
+                        sx={{
+                            position: 'relative',
+                            cursor: 'pointer',
+                            borderRadius: '10px',
+                            overflow: 'hidden'
+                        }}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                        onClick={handleCoverClick}
                     >
-                        <Box
-                            component="img"
-                            src={active.imgUrl ?? '/placeholder-artwork.png'}
-                            alt="album-cover"
-                            sx={{
-                                width: '642px',
-                                height: '634px',
-                                borderRadius: '10px',
-                                boxShadow: '0 0 40px rgba(0,0,0,0.4)',
-                                objectFit: 'cover',
-                            }}
-                        />
-                    </motion.div>
+                        <motion.div
+                            initial={{scale: 0.9, opacity: 0}}
+                            animate={{scale: 1, opacity: 1}}
+                            transition={{duration: 0.4}}
+                        >
+                            <Box
+                                component="img"
+                                src={active.imgUrl ?? '/placeholder-artwork.png'}
+                                alt="album-cover"
+                                sx={{
+                                    width: '642px',
+                                    height: '634px',
+                                    borderRadius: '10px',
+                                    boxShadow: '0 0 40px rgba(0,0,0,0.4)',
+                                    objectFit: 'cover',
+                                    transition: 'filter 0.3s ease',
+                                    filter: isHovered ? 'brightness(0.5)' : 'brightness(1)',
+                                }}
+                            />
+                        </motion.div>
+
+                        {/* Иконка Play/Pause */}
+                        {isHovered && (
+                            <motion.div
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.2 }}
+                                style={{
+                                    position: 'absolute',
+                                    top: '45%',
+                                    left: '45%',
+                                    transform: 'translate(-50%, -50%)',
+                                }}
+                            >
+                                <IconButton
+                                    sx={{
+                                        width: 80,
+                                        height: 80,
+                                        backgroundColor: 'transparent',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                            transform: 'scale(1.1)',
+                                        },
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                        transition: 'all 0.3s ease',
+                                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+                                    }}
+                                    size="large"
+                                >
+                                    {pause ? (
+                                        <PlayArrow sx={{ fontSize: 40, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }} />
+                                    ) : (
+                                        <Pause sx={{ fontSize: 40, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }} />
+                                    )}
+                                </IconButton>
+                            </motion.div>
+                        )}
+                    </Box>
                 </Box>
 
                 {/* Правая часть */}

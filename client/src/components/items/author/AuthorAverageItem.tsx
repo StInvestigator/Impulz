@@ -67,7 +67,14 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
         </Box>
         <IconButton
           onClick={(e) => handlePlayClick(e)}
-          sx={{ padding: 0 }}
+          sx={{
+              padding: 0,
+              transition: 'transform 0.2s ease',
+              '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  transform: 'scale(1.1)',
+              }
+          }}
           disableRipple={true}
         >
           <Box

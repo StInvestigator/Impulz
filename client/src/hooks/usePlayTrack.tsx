@@ -437,7 +437,7 @@ export const usePlayTrack = () => {
     const playAuthorPopularTracks = async (
         authorId: string,
         authorName: string,
-        pageSize: number = 3
+        pageSize: number = 10
     ) => {
         if (!requireAuth()) return;
 

@@ -24,6 +24,7 @@ interface PlayerState {
     playbackMode: "replace" | "append";
     isLoading: boolean;
     isBufferLoading: boolean;
+    isFullScreenOpen: boolean;
 }
 
 const initialState: PlayerState = {
@@ -38,7 +39,8 @@ const initialState: PlayerState = {
     source: null,
     playbackMode: "replace",
     isLoading: false,
-    isBufferLoading: false
+    isBufferLoading: false,
+    isFullScreenOpen: false,
 };
 
 const playerSlice = createSlice({
@@ -55,6 +57,20 @@ const playerSlice = createSlice({
                 state.pause = false;
                 state.currentTime = 0;
             }
+        },
+        openFullScreenPlayer: (state) => {
+            state.isFullScreenOpen = true;
+        },
+
+        closeFullScreenPlayer: (state) => {
+            state.isFullScreenOpen = false;
+        },
+
+        toggleFullScreenPlayer: (state) => {
+            state.isFullScreenOpen = !state.isFullScreenOpen;
+        },
+        setPause: (state, action: PayloadAction<boolean>) => {
+            state.pause = action.payload;
         },
         addToPlaylist: (state, action: PayloadAction<TrackSimpleDto[]>) => {
             if (action.payload.length === 0) return;
@@ -348,8 +364,12 @@ const playerSlice = createSlice({
 });
 
 export const {
+    openFullScreenPlayer,
+    closeFullScreenPlayer,
+    toggleFullScreenPlayer,
     setPlaylist,
     setActive,
+    setPause,
     addToPlaylist,
     removeFromPlaylist,
     appendToPlaylist,

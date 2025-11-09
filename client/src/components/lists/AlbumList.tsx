@@ -11,11 +11,10 @@ const AlbumList:FC<AlbumListProps> = ({albums}) => {
 
     return (
         <Box display="grid" sx={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            justifyContent: "start",
+            gridTemplateColumns: "repeat(5, 1fr)"
         }} gap={3}>
             {albums.map(album =>
-                <AlbumAverageItem key={album.id} album={album} itemHeight={360} itemWidth={360}/>
+                <AlbumAverageItem key={album.id} album={album} itemHeight={360}/>
             )}
         </Box>
     );

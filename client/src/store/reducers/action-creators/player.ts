@@ -22,12 +22,10 @@ export const fetchAuthorTracksPaged = async (authorId: string, page: number, siz
             tracks: tracks,
             totalPages: totalPages
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('🎵 Ошибка API запроса:', {
             url: `/tracks/ByAuthor/Popular/${authorId}`,
-            error: error.message,
-            status: error.response?.status,
-            data: error.response?.data
+            error: error
         });
         throw error;
     }

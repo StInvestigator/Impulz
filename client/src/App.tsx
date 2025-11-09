@@ -11,7 +11,7 @@ import { theme } from "./theme.ts";
 
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MusicPlayer from './components/MusicPlayer.tsx';
 import FullScreenPlayer from './components/FullScreenPlayer.tsx';
 import { $authApi } from "./http";
@@ -19,20 +19,21 @@ import { useAppDispatch, useAppSelector } from './hooks/redux.ts';
 import { fetchUserDetails } from './store/reducers/action-creators/user.ts';
 import { setProfile } from './store/reducers/ProfileSlice.ts';
 import './assets/fonts/fonts.css'
+import { closeFullScreenPlayer } from "./store/reducers/PlayerSlice.ts";
 
 function App() {
   return (
-    <ReactKeycloakProvider
-      authClient={keycloak}
-      initOptions={{
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-      }}
-    >
-      <BrowserRouter>
-        <SecuredContent />
-      </BrowserRouter>
-    </ReactKeycloakProvider>
+      <ReactKeycloakProvider
+          authClient={keycloak}
+          initOptions={{
+            onLoad: 'check-sso',
+            silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+          }}
+      >
+        <BrowserRouter>
+          <SecuredContent />
+        </BrowserRouter>
+      </ReactKeycloakProvider>
   );
 }
 
@@ -42,8 +43,6 @@ const SecuredContent = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [isFullScreenPlayerOpen, setIsFullScreenPlayerOpen] = useState(false);
-
   const {
     active,
     playlist,
@@ -51,6 +50,7 @@ const SecuredContent = () => {
     currentTime,
     duration,
     pause,
+    isFullScreenOpen // ← Получаем из Redux
   } = useAppSelector((state) => state.player);
 
   useEffect(() => {
@@ -60,6 +60,10 @@ const SecuredContent = () => {
   }, [initialized, location, navigate, keycloak]);
 
   useEffect(() => {
+    dispatch(closeFullScreenPlayer());
+  }, [location.pathname, dispatch]);
+
+  useEffect(() => {
     let attempts = 0;
     const maxAttempts = 5;
     const retryDelay = 2000;
@@ -67,34 +71,24 @@ const SecuredContent = () => {
     const tryFetchProfile = () => {
       if (!keycloak.subject) return;
       dispatch(fetchUserDetails(keycloak.subject))
-        .unwrap()
-        .then((user) => {
-          dispatch(setProfile(user));
-        })
-        .catch((error) => {
-          console.error(`Failed to fetch user details (attempt ${attempts + 1}):`, error);
+          .unwrap()
+          .then((user) => {
+            dispatch(setProfile(user));
+          })
+          .catch((error) => {
+            console.error(`Failed to fetch user details (attempt ${attempts + 1}):`, error);
 
-          if (attempts < maxAttempts) {
-            attempts++;
-            setTimeout(tryFetchProfile, retryDelay);
-          } else {
-            console.error('Max attempts reached. Could not fetch user details.');
-          }
-        });
+            if (attempts < maxAttempts) {
+              attempts++;
+              setTimeout(tryFetchProfile, retryDelay);
+            } else {
+              console.error('Max attempts reached. Could not fetch user details.');
+            }
+          });
     };
 
     tryFetchProfile();
   }, [keycloak.subject, dispatch]);
-
-
-
-  const handleOpenFullScreenPlayer = () => {
-    setIsFullScreenPlayerOpen(true);
-  };
-
-  const handleCloseFullScreenPlayer = () => {
-    setIsFullScreenPlayerOpen(false);
-  };
 
   const sendTokenToBackend = async () => {
     try {
@@ -117,7 +111,7 @@ const SecuredContent = () => {
             minHeight: '100vh'
           }}>
             <Navbar />
-            <Box component="main" display={"flex"} sx={{ flex: 1 }}> {/* flex: 1 заставляет занимать всё доступное пространство */}
+            <Box component="main" display={"flex"} sx={{ flex: 1 }}>
               <Sidebar />
               <Box sx={{
                 position: 'relative',
@@ -131,7 +125,7 @@ const SecuredContent = () => {
                   marginTop: "48px",
                   padding: "60px 20px 120px 20px",
                   overflowX: 'hidden',
-                  display: isFullScreenPlayerOpen ? 'none' : 'block',
+                  display: isFullScreenOpen ? 'none' : 'block', // ← Используем из Redux
                   width: '100%',
                   boxSizing: 'border-box',
                   flex: 1
@@ -140,7 +134,7 @@ const SecuredContent = () => {
                   <AppRouter />
                 </Box>
 
-                {active && isFullScreenPlayerOpen && (
+                {active && isFullScreenOpen && ( // ← Используем из Redux
                     <FullScreenPlayer
                         active={active}
                         playlist={playlist}
@@ -148,20 +142,17 @@ const SecuredContent = () => {
                         currentTime={currentTime}
                         duration={duration}
                         pause={pause}
-                        onClose={handleCloseFullScreenPlayer}
-                        onCloseFullScreen={handleCloseFullScreenPlayer}
+                        onClose={() => dispatch(closeFullScreenPlayer())}
+                        onCloseFullScreen={() => dispatch(closeFullScreenPlayer())}
                     />
                 )}
               </Box>
             </Box>
 
-            <MusicPlayer
-                onOpenFullScreen={handleOpenFullScreenPlayer}
-                onCloseFullScreen={handleCloseFullScreenPlayer}
-                isFullScreenMode={isFullScreenPlayerOpen}
-            />
+            {/* Убираем старые пропсы */}
+            <MusicPlayer />
 
-            {!isFullScreenPlayerOpen && (
+            {!isFullScreenOpen && (
                 <Box sx={{ mt: 'auto' }}>
                   <Footer />
                 </Box>

@@ -23,7 +23,7 @@ export default function MySelect({
                                      options,
                                      value,
                                      onChange,
-                                     placeholder = '-не вибрано-',
+                                     placeholder,
                                      width = 589,
                                  }: MySelectProps) {
     const selectedOptions = options.filter((option) =>

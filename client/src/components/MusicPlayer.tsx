@@ -30,7 +30,7 @@ import {
     updateSourcePage,
     addToPlaylist,
     setSourceHasMore,
-    setPlaybackMode,
+    setPlaybackMode, toggleFullScreenPlayer,
 } from '../store/reducers/PlayerSlice';
 import TrackProgress from './TrackProgress';
 import { $authApi } from '../http';
@@ -66,13 +66,7 @@ const playbackService = {
     },
 };
 
-interface MusicPlayerProps {
-    onOpenFullScreen?: () => void;
-    onCloseFullScreen?: () => void;
-    isFullScreenMode?: boolean;
-}
-
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullScreen,isFullScreenMode = false }) => {
+const MusicPlayer = () => {
     const {
         active,
         playlist,
@@ -82,7 +76,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
         volume,
         currentTrackIndex,
         source,
-        bufferTracks
+        bufferTracks,
+        isFullScreenOpen
     } = useAppSelector((state) => state.player);
 
     const dispatch = useAppDispatch();
@@ -156,32 +151,33 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
     };
 
     const sendPlaybackStats = useCallback(async () => {
-        if (hasSentPlayback.current || !active || !keycloak?.authenticated) return;
+        if (!active || !keycloak?.authenticated || !audioRef.current) return;
 
         const audio = audioRef.current;
-        if (!audio) return;
 
-        const userId =
-            keycloak.tokenParsed?.sub ||
-            keycloak?.subject ||
-            keycloak.idTokenParsed?.sub ||
-            'unknown-user';
+        if (listenedTimeRef.current >= 30) {
+            const userId = keycloak.tokenParsed?.sub || 'unknown-user';
 
-        const stats: PlaybackStats = {
-            trackId: active.id,
-            currentTime: Math.min(audio.currentTime, duration),
-            duration,
-            userId,
-            sessionId: sessionIdRef.current,
-        };
+            const stats: PlaybackStats = {
+                trackId: active.id,
+                currentTime: audio.currentTime,
+                duration: audio.duration || 0,
+                userId,
+                sessionId: sessionIdRef.current,
+            };
 
-        try {
-            await playbackService.sendPlaybackStats(stats);
-            hasSentPlayback.current = true;
-        } catch (err) {
-            console.error('Ошибка отправки статистики:', err);
+            try {
+                console.log('🚀 Отправка статистики на сервер:', stats);
+                await playbackService.sendPlaybackStats(stats);
+                console.log('✅ Статистика отправлена успешно');
+
+                listenedTimeRef.current = 0;
+
+            } catch (err) {
+                console.error('❌ Ошибка отправки статистики:', err);
+            }
         }
-    }, [active, duration]);
+    }, [active?.id]);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -208,6 +204,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
         const activeTrackChanged = lastActiveIdRef.current !== active.id;
         lastActiveIdRef.current = active.id;
+
+        if (activeTrackChanged) {
+            sessionIdRef.current = generateSessionId();
+            hasSentPlayback.current = false;
+            listenedTimeRef.current = 0;
+            lastTimeRef.current = 0;
+
+            console.log('🔄 Смена трека, сброс статистики:', active.id);
+        }
 
         const isOnlyPlaylistChanged =
             !activeTrackChanged &&
@@ -329,11 +334,13 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
                     if (!audio.paused) {
                         const delta = cur - lastTimeRef.current;
-                        if (delta > 0 && delta < 5) listenedTimeRef.current += delta;
+                        if (delta > 0 && delta < 5) {
+                            listenedTimeRef.current += delta;
+                        }
                     }
                     lastTimeRef.current = cur;
 
-                    if (listenedTimeRef.current >= 30) sendPlaybackStats();
+                    sendPlaybackStats();
                 };
 
                 audio.onended = async () => {
@@ -522,15 +529,24 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
         lastTimeRef.current = newTime;
     };
 
-    const handleFullScreenToggle = () => {
-        if (isFullScreenMode) {
-            if (onCloseFullScreen) {
-                onCloseFullScreen();
-            }
-        } else {
-            if (onOpenFullScreen) {
-                onOpenFullScreen();
-            }
+    const handlePlayerClick = (e: React.MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const isControlElement =
+            target.closest('button') ||
+            target.closest('.MuiIconButton-root') ||
+            target.closest('input[type="range"]') ||
+            target.closest('a') ||
+            target.closest('[role="button"]') ||
+            target.closest('p') ||
+            target.closest('span') ||
+            target.tagName === 'BUTTON' ||
+            target.tagName === 'INPUT' ||
+            target.tagName === 'A' ||
+            target.tagName === 'P' ||
+            target.tagName === 'SPAN';
+
+        if (!isControlElement) {
+            dispatch(toggleFullScreenPlayer());
         }
     };
 
@@ -578,6 +594,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                     zIndex: (theme) => theme.zIndex.drawer + 2,
                     boxShadow: '0 -4px 20px rgba(0,0,0,0.3)',
                 }}
+                onClick={handlePlayerClick}
             >
                 {/* Левая секция */}
                 <Box sx={{
@@ -702,17 +719,18 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
 
                 {/* Информация о треке */}
                 <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: "15px",
-                    position: 'absolute',
-                    left: '292px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    maxWidth: 'calc(50% - 300px)',
-                    minWidth: '300px',
-                    zIndex: 1
-                }}>
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: "15px",
+                        position: 'absolute',
+                        left: '292px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        maxWidth: 'calc(50% - 300px)',
+                        minWidth: '300px',
+                        zIndex: 1
+                    }}
+                >
                     {/* Обложка трека */}
                     <Box sx={{
                         width: 60,
@@ -894,7 +912,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                     {/* Кнопка полноэкранного режима */}
                     <IconButton
                         disableRipple
-                        onClick={handleFullScreenToggle}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(toggleFullScreenPlayer());
+                        }}
                         sx={{
                             color: '#ff6b35',
                             '&:hover': {
@@ -908,7 +929,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ onOpenFullScreen,onCloseFullS
                         }}
                     >
                         <Box sx={{ position: 'relative', width: 28, height: 28 }}>
-                            {isFullScreenMode ? (
+                            {isFullScreenOpen ? (
                                 <>
                                     <Box
                                         component="img"

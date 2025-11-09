@@ -23,8 +23,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
         try {
             await playAuthorPopularTracks(
                 author.id,
-                author.name,
-                3
+                author.name
             );
         } catch (error) {
             console.error(error);
@@ -75,7 +74,9 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
                         position: "absolute",
                         bottom: 8,
                         right: 8,
+                        transition: 'transform 0.2s ease',
                         '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
                             transform: 'scale(1.1)',
                         }
                     }}

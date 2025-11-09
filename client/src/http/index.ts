@@ -2,11 +2,11 @@ import axios from "axios";
 import keycloak from "../keycloak.ts";
 
 const $api = axios.create({
-    baseURL: "http://localhost:8083/api"
+    baseURL: import.meta.env.VITE_BACKEND_URL
 })
 
 const $authApi = axios.create({
-    baseURL: "http://localhost:8083/api"
+    baseURL: import.meta.env.VITE_BACKEND_URL
 })
 
 $authApi.interceptors.request.use((config) => {

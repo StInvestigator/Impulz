@@ -57,7 +57,7 @@ export const fetchSimilarAuthorsByGenre = createAsyncThunk<AuthorSimpleDto[],
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
             const response = await $authApi.get(
-                `http://localhost:8083/api/authors/SimilarByGenres/${authorId}?${params}`
+                `/authors/SimilarByGenres/${authorId}?${params}`
             );
             dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
@@ -68,7 +68,7 @@ export const fetchAuthorPlaysByMonth = createAsyncThunk<number, string>(
     "author/fetchAuthorPlaysByMonth",
     async (authorId) => {
         const response = await $authApi.get<number>(
-            `http://localhost:8083/api/authors/getCountAuthorPlaysByMonth/${authorId}`
+            `/authors/getCountAuthorPlaysByMonth/${authorId}`
         );
         return response.data;
     }
@@ -83,7 +83,7 @@ export const subscribeToAuthor = createAsyncThunk<
     "author/subscribe",
     async (authorId, { rejectWithValue }) => {
         try {
-            await $authApi.post(`http://localhost:8083/api/authors/${authorId}/subscribe`);
+            await $authApi.post(`/authors/${authorId}/subscribe`);
             return true;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -100,7 +100,7 @@ export const unsubscribeFromAuthor = createAsyncThunk<
     "author/unsubscribe",
     async (authorId, { rejectWithValue }) => {
         try {
-            await $authApi.delete(`http://localhost:8083/api/authors/${authorId}/unsubscribe`);
+            await $authApi.delete(`/authors/${authorId}/unsubscribe`);
             return false;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -117,7 +117,7 @@ export const checkSubscriptionStatus = createAsyncThunk<
     "author/checkSubscription",
     async (authorId, { rejectWithValue }) => {
         try {
-            const response = await $authApi.get(`http://localhost:8083/api/authors/${authorId}/subscription-status`);
+            const response = await $authApi.get(`/authors/${authorId}/subscription-status`);
             return response.data.isSubscribed;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -130,7 +130,7 @@ export const befomeAuthor = createAsyncThunk<void, string, { rejectValue: string
     "author/befomeAuthor",
     async (userId, { rejectWithValue }) => {
         try {
-            await $authApi.get(`http://localhost:8083/api/authors/becomeAuthor/${userId}`);
+            await $authApi.get(`/authors/becomeAuthor/${userId}`);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return rejectWithValue("Не удалось стать автором");

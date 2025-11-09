@@ -78,6 +78,7 @@ music:
 
 app:
   frontend:
+    base-url: ${FRONTEND_BASE_URL:http://localhost:3000}
     cancel-url: ${FRONTEND_ERROR_URL:http://localhost:3000}
     success-url: ${FRONTEND_SUCCESS_URL:http://localhost:3000}
   temp-dir: ${java.io.tmpdir}/audio_uploads

@@ -76,7 +76,7 @@ const PlaylistItemPage = () => {
     const totalDuration = currentPlaylist.tracks?.reduce((acc, track) => acc + (track.durationSec || 0), 0) || 0;
 
     const ownerNames = currentPlaylist.owner ? [currentPlaylist.owner.name] : [];
-    const ownerImageUrl = currentPlaylist.owner?.imgUrl || "";
+    const ownerImageUrl = currentPlaylist.owner?.avatarUrl || "";
     const isOwner = true;
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {

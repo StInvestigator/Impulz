@@ -151,7 +151,8 @@ const MusicPlayer = () => {
     };
 
     const sendPlaybackStats = useCallback(async () => {
-        if (!active || !keycloak?.authenticated || !audioRef.current) return;
+        if (!active || !keycloak?.authenticated || !audioRef.current || hasSentPlayback.current)
+            return;
 
         const audio = audioRef.current;
 
@@ -171,13 +172,13 @@ const MusicPlayer = () => {
                 await playbackService.sendPlaybackStats(stats);
                 console.log('✅ Статистика отправлена успешно');
 
-                listenedTimeRef.current = 0;
-
+                hasSentPlayback.current = true;
             } catch (err) {
                 console.error('❌ Ошибка отправки статистики:', err);
             }
         }
     }, [active?.id]);
+
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -210,9 +211,8 @@ const MusicPlayer = () => {
             hasSentPlayback.current = false;
             listenedTimeRef.current = 0;
             lastTimeRef.current = 0;
-
-            console.log('🔄 Смена трека, сброс статистики:', active.id);
         }
+
 
         const isOnlyPlaylistChanged =
             !activeTrackChanged &&

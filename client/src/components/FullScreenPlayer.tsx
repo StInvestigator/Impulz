@@ -156,6 +156,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                                 }}
                             >
                                 <IconButton
+                                    disableRipple
                                     sx={{
                                         width: 80,
                                         height: 80,
@@ -243,7 +244,6 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                                 index={currentTrackIndex}
                                 currentTrackIndex={currentTrackIndex}
                                 onTrackClick={handleCurrentTrackClick}
-                                onCloseFullScreen={onCloseFullScreen}
                             />
                         </Box>
 

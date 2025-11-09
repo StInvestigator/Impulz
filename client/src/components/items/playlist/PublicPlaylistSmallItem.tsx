@@ -7,6 +7,8 @@ import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
 import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
+import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {PlaylistContextMenu} from "../../contextMenu/PlaylistContextMenu.tsx";
 
 interface PlaylistItemProps {
     playlist: PlaylistDto
@@ -20,7 +22,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
     const route = useAppNavigate()
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
-
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -38,6 +40,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
 
     return (
         <Box
+            onContextMenu={(e) => handleContextMenu(e, playlist.id)}
             onClick={() => route(`/playlist/${playlist.id}`)}
             sx={{
                 width: itemWidth,
@@ -118,6 +121,12 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
                     </Box>
                 </Typography>
             </Box>
+
+            <PlaylistContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                playlist={playlist}
+            />
         </Box>
     );
 };

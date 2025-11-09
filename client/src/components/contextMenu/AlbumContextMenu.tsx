@@ -112,6 +112,7 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
                     },
                     ref: menuRef
                 }}
+                onClick={(e) => e.stopPropagation()}
             >
                 <ContextMenuItem
                     isFirst={true}

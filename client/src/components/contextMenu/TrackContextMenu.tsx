@@ -1,4 +1,4 @@
-import { Menu, Snackbar, Alert } from "@mui/material";
+import {Menu, Snackbar, Alert, Fade} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, {useState, useRef} from "react";
 import AddToPlaylistIcon from "../../assets/context/AddToPlaylistIcon.svg";
@@ -298,17 +298,19 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 open={toastOpen}
                 autoHideDuration={2000}
                 onClose={handleCloseToast}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                TransitionComponent={Fade}
             >
                 <Alert
                     onClose={handleCloseToast}
-                    severity="info"
+                    severity="success"
                     sx={{
-                        backgroundColor: 'var(--dodger-blue)',
+                        width: '100%',
+                        borderRadius: '10px',
+                        fontWeight: 600,
+                        backgroundColor: 'rgba(76, 175, 80, 0.9)',
                         color: 'white',
-                        '& .MuiAlert-icon': {
-                            color: 'white',
-                        }
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
                     }}
                 >
                     {t("title-link-copied")}
@@ -319,23 +321,25 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 open={errorToastOpen}
                 autoHideDuration={3000}
                 onClose={handleCloseErrorToast}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                TransitionComponent={Fade}
             >
                 <Alert
                     onClose={handleCloseErrorToast}
-                    severity="warning"
-                    variant="filled"
+                    severity="error"
                     sx={{
-                        backgroundColor: '#ff9800',
+                        width: '100%',
+                        borderRadius: '10px',
+                        fontWeight: 600,
+                        backgroundColor: 'rgba(244, 67, 54, 0.9)',
                         color: 'white',
-                        '& .MuiAlert-icon': {
-                            color: 'white',
-                        }
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
                     }}
                 >
                     {errorMessage}
                 </Alert>
             </Snackbar>
+
         </>
     );
 };

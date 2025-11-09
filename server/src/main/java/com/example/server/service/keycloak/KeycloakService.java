@@ -6,14 +6,15 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public interface KeycloakService
-{
+
+public interface KeycloakService {
     User createNewUser(String id, String username, String email);
-    User updateExistingUser(User user, String username, String email);
-    void addRoleToUser(String userId, String role);
-    void removeRoleFromUser(String userId, String role);
-    List<RoleRepresentation> getAllRoles();
-    String getUserIdByEmail(String email);
     void updateUserEmail(String userId, String newEmail);
     void updateUserUsername(String userId, String newUsername);
+    void updateUserPassword(String userId, String currentPassword, String newPassword);
+
+    List<RoleRepresentation> getAllRoles();
+    void addRoleToUser(String userId, String roleName);
+    void removeRoleFromUser(String userId, String roleName);
+    String getUserIdByEmail(String email);
 }

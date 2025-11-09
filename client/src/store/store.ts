@@ -9,6 +9,7 @@ import PageReducer from "./reducers/PageSlice.ts";
 import ProfileReducer from "./reducers/ProfileSlice.ts";
 import SearchReducer from "./reducers/SearchSlice.ts";
 import SubscriptionReducer from "./reducers/SubscriptionSlice.ts";
+import UserReducer from "./reducers/UserSlice.ts";
 
 
 const rootReducer = combineReducers({
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
     page: PageReducer,
     profile: ProfileReducer,
     search: SearchReducer,
-    subscribtion: SubscriptionReducer
+    subscribtion: SubscriptionReducer,
+    user: UserReducer
 })
 
 export const setupStore = () => {

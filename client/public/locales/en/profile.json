@@ -13,15 +13,16 @@
   "change-email-password": "Change email and/or password",
   "switch-to-user-profile": "Switch to user profile",
   "copy-page-link": "Copy page link",
-  "edit-email-password": "Edit Email and Password",
+  "edit-email-password": "Edit email and password",
   "email": "Email",
+  "new-email": "New email",
   "enter-new-email": "Enter new email",
-  "change-password": "Change Password",
+  "change-password": "Change password",
   "enter-current-password": "Enter current password",
   "enter-new-password": "Enter new password",
   "confirm-new-password": "Confirm new password",
   "password-requirements": "Password must be at least 6 characters long",
   "changes-saved-successfully": "Changes saved successfully",
-  "saving": "Saving...",
-  "save": "Save"
+  "email-updated-successfully": "Email updated successfully",
+  "password-updated-successfully": "Password updated successfully"
 }

@@ -1,7 +1,6 @@
 import type {FC} from "react";
 import {Box, IconButton, Typography} from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import medalImage from "../../../assets/medal.svg";
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {useNavigate} from "react-router-dom";
 import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
@@ -15,7 +14,7 @@ interface TrackItemProps {
     isMedal?: boolean;
 }
 
-const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isMedal}) => {
+const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track}) => {
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
@@ -49,20 +48,6 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                     flexShrink: 0
                 }}
             >
-                {
-                    isMedal &&
-                    <Box
-                        component="img"
-                        color={"white"}
-                        position={"absolute"}
-                        right={10}
-                        top={10}
-                        src={medalImage}
-                        borderRadius={'50%'}
-                        width={"30px"}
-                        height={"30px"}
-                    />
-                }
             </Box>
             <Box
                 display={"flex"}

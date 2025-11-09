@@ -2,7 +2,6 @@ import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import EditNicknameOrPhotoIcon from "../../../assets/profile-icons/EditNicknameOrPhotoIcon.svg";
 import EditEmailOrPassIcon from "../../../assets/profile-icons/EditEmailOrPassIcon.svg";
 import ProfileUserIcon from "../../../assets/profile-icons/ProfileUserIcon.svg";
-import CopyLinkIcon from "../../../assets/profile-icons/CopyLinkIcon.svg";
 import { useTranslation } from "react-i18next";
 
 interface DropdownMyProfileProps {
@@ -31,12 +30,6 @@ export default function DropdownMyProfile({
         onChangeEmailAndPassword();
         onClose();
     };
-
-  const handleCopyLink = () => {
-    const pageUrl = window.location.href;
-    navigator.clipboard.writeText(pageUrl)
-    onClose();
-  };
 
   return (
       <Menu
@@ -68,12 +61,6 @@ export default function DropdownMyProfile({
           <Box component="img" src={ProfileUserIcon} width={"14px"} height={"14px"} mr={1.5}/>
           <Typography variant="mainRL">
             {t("switch-to-user-profile")}
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={handleCopyLink}>
-          <Box component="img" src={CopyLinkIcon} width={"14px"} height={"14px"} mr={1.5}/>
-          <Typography variant="mainRL">
-            {t("copy-page-link")}
           </Typography>
         </MenuItem>
       </Menu>

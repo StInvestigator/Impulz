@@ -9,6 +9,10 @@ public interface UserService {
     User save(User user);
     User getUserById(String id);
     UserDto getUserDtoById(String id);
-    UserSimpleDto getUserSimpleDtoById(String id);
     UserDto updateUser(String userId, String username, MultipartFile imageFile);
+    UserDto updateEmail(String userId, String newEmail);
+    UserSimpleDto getUserSimpleDtoById(String id);
+    void updatePassword(String userId, String currentPassword, String newPassword);
+    void addRoleToUser(String userId, String role);
+    void removeRoleFromUser(String userId, String role);
 }

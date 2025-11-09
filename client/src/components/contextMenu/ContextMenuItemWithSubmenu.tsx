@@ -160,8 +160,6 @@ export const ContextMenuItemWithSubmenu: React.FC<ContextMenuItemWithSubmenuProp
                         onClick={() => handleSubMenuItemClick(item.onClick)}
                         disableRipple
                         sx={{
-                            marginTop: item.isFirst ? "-8px" : "0px",
-                            marginBottom: item.isLast ? "-8px" : "0px",
                             borderBottom: item.isLast ? "none" : "1px solid var(--dodger-blue)",
                             padding: "8px 12px",
                             borderRadius: item.isFirst ? "7px 7px 0 0" : item.isLast ? "0 0 7px 7px" : "0",

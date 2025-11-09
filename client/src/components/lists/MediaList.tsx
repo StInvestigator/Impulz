@@ -49,7 +49,6 @@ const MediaList: FC<MediaListProps> = ({ medias, isLoading = false, error = null
                             <AlbumAverageItem
                                 key={album.id}
                                 album={album}
-                                itemWidth={290}
                                 itemHeight={360}
                             />
                         )

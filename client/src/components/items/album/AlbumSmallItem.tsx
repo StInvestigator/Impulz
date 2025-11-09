@@ -1,12 +1,14 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import React, { type FC } from "react";
+import React, {type FC} from "react";
 import { useTranslation } from 'react-i18next';
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
+import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {AlbumContextMenu} from "../../contextMenu/AlbumContextMenu.tsx";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -20,7 +22,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
     const route = useAppNavigate();
-
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -38,6 +40,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
 
     return (
         <Box
+            onContextMenu={(e) => handleContextMenu(e, album.id)}
             onClick={() => route(`/album/${album.id}`)}
             sx={{
                 width: itemWidth,
@@ -150,6 +153,11 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                     </Box>
                 </Typography>
             </Box>
+            <AlbumContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                album={album}
+            />
         </Box>
     );
 };

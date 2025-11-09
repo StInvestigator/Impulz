@@ -129,7 +129,7 @@ const LibraryGrid = () => {
             <GridContainer>
                 {elements.map((elem, index) => (
                     <GridItem
-                        onClick={() => navigate('/category', { state: { genreId: elem.id, category: elem.title, categoryUa: elem.titleUa } })}
+                        onClick={() => navigate(`/category/${elem.id}`,)}
                         key={index}
                         colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
                         rowSpan={elem.height}

@@ -1,7 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { GenreSimpleDto } from "../../../models/DTO/GenreSimpleDto";
 import { setTotalPages } from "../PageSlice";
-import {$api} from "../../../http";
+import {$api, $authApi} from "../../../http";
+
+export const fetchGenre = createAsyncThunk<GenreSimpleDto, number>(
+    "author/fetchGenre",
+    async (genreId) => {
+        const response = await $authApi.get(
+            `/genres/simpleDto/${genreId}`
+        );
+        return response.data;
+    }
+);
+
 
 export const fetchTopGenres = createAsyncThunk<
     GenreSimpleDto[],

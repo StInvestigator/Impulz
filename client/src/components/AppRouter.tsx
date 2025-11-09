@@ -45,7 +45,7 @@ const AppRouter = () => {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/library" element={<LibraryPage />} />
                 <Route path="/hello" element={<HelloPage />} />
-                <Route path="/category" element={<CategoryPage />} />
+                <Route path="/category/:id" element={<CategoryPage />} />
                 <Route path="/hitsWeek" element={<HitsWeekPage />} />
                 <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
                 <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />

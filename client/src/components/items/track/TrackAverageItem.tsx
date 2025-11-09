@@ -71,7 +71,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track, isM
                 height={"88px"}
                 boxSizing={"border-box"}
                 sx={{
-                    background: 'rgba(255, 165, 0, 0.15)',
+                    background: 'rgba(65, 51, 18, 0.7)',
                     backdropFilter: 'blur(4px) saturate(120%)',
                     borderRadius: "0 0 10px 10px",
                     border: '1px solid rgba(255, 255, 255, 0.125)',

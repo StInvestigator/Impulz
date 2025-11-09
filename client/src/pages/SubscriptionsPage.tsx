@@ -5,8 +5,6 @@ import {
     Card,
     CardActions,
     CardContent,
-    Container,
-    Grid,
     List,
     ListItem,
     Typography,
@@ -84,7 +82,7 @@ const SubscriptionCard: React.FC<{ plan: Plan; onChoose: (priceId: string) => vo
 
 const SubscriptionPageInner: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { loading, error } = useAppSelector((state) => state.subscribtion);
+    const { loading } = useAppSelector((state) => state.subscribtion);
 
     const {t} = useTranslation('subscription');
 

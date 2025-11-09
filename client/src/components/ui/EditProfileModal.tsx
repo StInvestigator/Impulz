@@ -37,8 +37,8 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
     useEffect(() => {
         if (open && profile) {
             setUsername(profile.authorDto ? profile.authorDto.name : profile.username);
-            if (profile.imgUrl) {
-                setSelectedImage(profile.imgUrl);
+            if (profile.avatarUrl) {
+                setSelectedImage(profile.avatarUrl);
             }
         }
     }, [open, profile]);

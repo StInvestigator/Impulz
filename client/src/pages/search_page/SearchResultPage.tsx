@@ -137,7 +137,7 @@ const SearchResultsPage = () => {
                         </Button>
                     </Box>
                     <Box display={"grid"} mt={3} sx={{
-                        gridTemplateColumns: "repeat(4, 1fr)"
+                        gridTemplateColumns: "repeat(5, 1fr)"
                     }} gap={3}>
                         <PublicPlaylistList playlists={playlists} />
                     </Box>

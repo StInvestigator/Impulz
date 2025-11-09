@@ -1,9 +1,9 @@
-FROM openjdk:17-jdk-alpine as build
+FROM amazoncorretto:17 as build
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
 
-FROM openjdk:17-jdk-alpine
+FROM amazoncorretto:17
 ARG DEPENDENCY=/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF

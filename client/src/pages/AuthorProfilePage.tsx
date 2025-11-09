@@ -38,7 +38,7 @@ const AuthorProfilePage = () => {
         if (id) {
             dispatch(fetchAuthorDetails(id));
             dispatch(fetchAlbumsByAuthor({ authorId: id, page: 0, size: 20 }));
-            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 20 }));
+            dispatch(fetchPopularTracksByAuthor({ authorId: id, page: 0, size: 10 }));
             dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: 0, size: 20 }));
             dispatch(fetchAuthorAlbumCollaborations({ authorId: id, page: 0, size: 20 }));
 

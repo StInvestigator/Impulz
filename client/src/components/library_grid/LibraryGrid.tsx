@@ -1,12 +1,12 @@
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CirclesCard from './CirclesCard';
 import BackdropCircle from './BackdropCircle';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { fetchAllGenres } from '../../store/reducers/action-creators/genre';
 import { useTranslation } from 'react-i18next';
+import { useAppNavigate } from '../../hooks/useAppNavigate';
 
 type Element = {
     id: number;
@@ -61,7 +61,7 @@ const GridItem = styled('div')<{
 
 const LibraryGrid = () => {
 
-    const navigate = useNavigate();
+    const navigate = useAppNavigate();
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [center, setCenter] = useState<{ x: number; y: number } | null>(null);

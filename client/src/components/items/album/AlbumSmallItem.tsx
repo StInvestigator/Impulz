@@ -79,8 +79,10 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                         bottom: 16,
                         right: 16,
                         backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        transition: 'transform 0.2s ease',
                         '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            transform: 'scale(1.1)',
                         }
                     }}
                     disableRipple={true}
@@ -90,6 +92,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                         src={playImage}
                         width={"30px"}
                         height={"30px"}
+                        sx={{ transition: 'transform 0.2s' }}
                     />
                 </IconButton>
             </Box>

@@ -23,6 +23,7 @@ function OfficeArtistPage() {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [image, setImage] = useState<File | null>(null);
   const [nameAlbum, setNameAlbum] = useState<string>("");
@@ -64,6 +65,9 @@ function OfficeArtistPage() {
   }
 
   const createAlbumClick = () => {
+    
+    setIsLoading(true);
+
     dispatch(createAlbum({
       metadata: {
         title: nameAlbum,
@@ -80,7 +84,11 @@ function OfficeArtistPage() {
       coverFile: image ,
       trackFiles: tracks.map(track => track.clientFileName),
       trackCoverFiles: tracks.map(track => track.clientCoverName),
-    }));
+    })).unwrap().then(() => {
+      setOpen(false);
+      setActiveStep(1)
+      window.location.reload();
+    });
   };
 
   return (
@@ -179,9 +187,11 @@ function OfficeArtistPage() {
             if (activeStep === 4) {
               createAlbumClick();
             }
-            nextStepClick()
+            else{
+              nextStepClick()
+            }
           }}
-
+            disabled={isLoading}
             sx={{
               color: "var(--dark-purple)",
               bgcolor: "var(--orange-peel)",
@@ -192,7 +202,7 @@ function OfficeArtistPage() {
               textTransform: "none",
             }}
           >
-            {activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
+            {isLoading ? "Loading..." : activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
           </Button>
         </Box>
       </MyModal>

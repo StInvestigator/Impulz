@@ -11,7 +11,9 @@ services:
       - server
 
   server:
-    build: ./server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     container_name: app_server
     ports:
       - "8083:8083"
@@ -19,11 +21,6 @@ services:
       - ./server/.env
     volumes:
       - ./server/src/main/resources/db/migration:/app/db/migration
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - SPRING_PROFILES_ACTIVE=prod
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
       postgres:
         condition: service_healthy

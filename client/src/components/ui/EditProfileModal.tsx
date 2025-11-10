@@ -32,6 +32,7 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
     const { isLoading, error: updateError } = useSelector((state: RootState) => state.profile);
     const { profile } = useSelector((state: RootState) => state.profile);
     const { keycloak } = useKeycloak();
+    let ifImageChanged = false;
     const userId = keycloak.tokenParsed?.sub;
 
     useEffect(() => {
@@ -61,6 +62,7 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
                         const imageUrl = URL.createObjectURL(file);
                         setSelectedImage(imageUrl);
                         setImageFile(file);
+                        ifImageChanged = true;
                     }
                 };
                 img.src = URL.createObjectURL(file);
@@ -109,7 +111,7 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
             await dispatch(updateUserProfile({
                 userId,
                 username: username.trim(),
-                imageFile: imageFile || undefined
+                imageFile: (ifImageChanged ? imageFile : undefined) || undefined
             })).unwrap();
 
             setOpen(false);

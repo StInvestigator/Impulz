@@ -51,7 +51,6 @@ const TrackBigCarouselList: FC<TrackListProps> = ({
               track={track}
               itemHeight={itemHeight}
               itemWidth={itemWidth}
-              isMedal
             />
           ))}
         </ListCarousel>

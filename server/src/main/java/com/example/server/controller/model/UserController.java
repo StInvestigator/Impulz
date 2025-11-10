@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -34,5 +36,22 @@ public class UserController {
 
         UserDto updatedUser = userService.updateUser(id, username, image);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PutMapping("/updateCredentials/{id}")
+    public ResponseEntity<UserDto> updateCredentials(
+            @PathVariable String id,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String currentPassword,
+            @RequestParam(required = false) String newPassword) {
+
+        if (email == null && (currentPassword == null || newPassword == null)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (email != null) userService.updateEmail(id, email);
+        if (newPassword != null && currentPassword != null) userService.updatePassword(id, currentPassword, newPassword);
+
+        return ResponseEntity.ok(userService.getUserDtoById(id));
     }
 }

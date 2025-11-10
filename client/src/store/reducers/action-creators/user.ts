@@ -25,11 +25,38 @@ export const updateUserProfile = createAsyncThunk(
             formData.append('image', imageFile);
         }
 
-        const response = await $authApi.put(`/users/update/${userId}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+        const response = await $authApi.post(`/users/updateCredentials/${userId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
         });
         return response.data;
     }
 );
+
+
+export const updateUserEmail = createAsyncThunk<UserDto, { userId: string; email: string }>(
+    'user/updateUserEmail',
+    async ({ userId, email }) => {
+        const formData = new FormData();
+        formData.append("email", email);
+
+        const response = await $authApi.put(`/users/updateCredentials/${userId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+        return response.data;
+    }
+);
+
+export const updateUserPassword = createAsyncThunk<UserDto, { userId: string; currentPassword: string; newPassword: string }>(
+    'user/updateUserPassword',
+    async ({ userId, currentPassword, newPassword }) => {
+        const formData = new FormData();
+        formData.append("currentPassword", currentPassword);
+        formData.append("newPassword", newPassword);
+
+        const response = await $authApi.put(`/users/updateCredentials/${userId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+        return response.data;
+    }
+);
+

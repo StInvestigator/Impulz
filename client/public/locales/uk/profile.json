@@ -15,6 +15,7 @@
   "copy-page-link": "Копіювати посилання на сторінку",
   "edit-email-password": "Редагувати email та пароль",
   "email": "Email",
+  "new-email": "Новий email",
   "enter-new-email": "Введіть новий email",
   "change-password": "Змінити пароль",
   "enter-current-password": "Введіть поточний пароль",
@@ -22,6 +23,6 @@
   "confirm-new-password": "Підтвердіть новий пароль",
   "password-requirements": "Пароль має містити щонайменше 6 символів",
   "changes-saved-successfully": "Зміни успішно збережено",
-  "saving": "Збереження...",
-  "save": "Зберегти"
+  "email-updated-successfully": "Email успішно оновлено",
+  "password-updated-successfully": "Пароль успішно оновлено"
 }

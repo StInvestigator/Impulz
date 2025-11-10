@@ -25,7 +25,6 @@ export const PlayerTrackContextMenu: React.FC<PlayerTrackContextMenuProps> = ({
     contextMenu,
     onClose,
     track,
-    onCloseFullScreen
 }) => {
     const { t } = useTranslation(["other","errors"]);
     const route = useAppNavigate();
@@ -43,17 +42,11 @@ export const PlayerTrackContextMenu: React.FC<PlayerTrackContextMenuProps> = ({
     };
 
     const handleGoToAuthor = () => {
-        if (onCloseFullScreen) {
-            onCloseFullScreen();
-        }
         route(`/author/${track.authors[0].id}`);
         onClose();
     };
 
     const handleGoToAlbum = () => {
-        if (onCloseFullScreen) {
-            onCloseFullScreen();
-        }
         route(`/album/${track.albumId}`);
         onClose();
     };

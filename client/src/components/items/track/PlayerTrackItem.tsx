@@ -19,8 +19,7 @@ export const PlayerTrackItem = ({
                                     track,
                                     index,
                                     currentTrackIndex,
-                                    onTrackClick,
-                                    onCloseFullScreen
+                                    onTrackClick
                                 }: PlayerTrackItemProps) => {
     const isCurrentTrack = index === currentTrackIndex;
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
@@ -133,7 +132,6 @@ export const PlayerTrackItem = ({
                 contextMenu={contextMenu}
                 onClose={handleCloseContextMenu}
                 track={track}
-                onCloseFullScreen={onCloseFullScreen}
             />
         </Box>
     );

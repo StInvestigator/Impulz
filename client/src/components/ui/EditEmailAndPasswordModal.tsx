@@ -1,369 +1,307 @@
+import React, { useState, useEffect } from "react";
 import {
     Box,
-    Button,
-    IconButton,
-    Input,
     Modal,
-    Typography
+    Typography,
+    Input,
+    IconButton,
+    Tabs,
+    Tab,
+    Fade,
+    Snackbar,
+    Alert,
 } from "@mui/material";
-import React, {type FC, useState} from "react";
-import cancelIcon from "../../assets/CancelButtonIcon.svg";
-import {useTranslation} from "react-i18next";
-import { useSelector } from "react-redux";
-import type { RootState} from "../../store/store.ts";
-import {useKeycloak} from "@react-keycloak/web";
+import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
+import { LoadingButton } from "@mui/lab";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { updateUserEmail, updateUserPassword } from "../../store/reducers/action-creators/user";
+import { clearUserState } from "../../store/reducers/UserSlice";
 
-interface ModalProps {
-    open: boolean,
-    setOpen: (open: boolean) => void,
+interface EditEmailAndPasswordModalProps {
+    open: boolean;
+    setOpen: (open: boolean) => void;
 }
 
-const EditEmailAndPasswordModal: FC<ModalProps>= ({ open, setOpen }) =>{
-    const {t} = useTranslation(["profile", "errors"]);
+const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ open, setOpen }) => {
+    const { t } = useTranslation(["profile", "errors"]);
+    const dispatch = useAppDispatch();
+    const { user, loading, error, success } = useAppSelector((state) => state.user);
+
+    const [tab, setTab] = useState<"email" | "password">("email");
     const [email, setEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
 
-    const { isLoading } = useSelector((state: RootState) => state.profile);
-    const { keycloak } = useKeycloak();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
-    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(event.target.value);
-        if (error) setError("");
-    };
+    const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
-    const handleCurrentPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCurrentPassword(event.target.value);
-        if (error) setError("");
-    };
-
-    const handleNewPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNewPassword(event.target.value);
-        if (error) setError("");
-    };
-
-    const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setConfirmPassword(event.target.value);
-        if (error) setError("");
-    };
-
-    const validateForm = () => {
-        if (email && !/\S+@\S+\.\S+/.test(email)) {
-            setError(t("errors:error-invalid-email"));
-            return false;
-        }
-
-        if (newPassword && newPassword.length < 6) {
-            setError(t("errors:error-password-too-short"));
-            return false;
-        }
-
-        if (newPassword && newPassword !== confirmPassword) {
-            setError(t("errors:error-passwords-dont-match"));
-            return false;
-        }
-
-        if (newPassword && !currentPassword) {
-            setError(t("errors:error-current-password-required"));
-            return false;
-        }
-
-        return true;
-    };
-
-    const handleSave = async () => {
-        setError("");
-        setSuccess("");
-
-        if (!email && !newPassword) {
-            setError(t("errors:error-no-changes"));
-            return;
-        }
-
-        if (!validateForm()) {
-            return;
-        }
-
-        try {
-            if (email) {
-                await keycloak.updateToken(30);
-                await keycloak.accountManagement();
-            }
-
-            if (newPassword) {
-                console.log("Updating password...");
-            }
-
-            setSuccess(t("profile:changes-saved-successfully"));
-            setTimeout(() => {
-                setOpen(false);
-                setSuccess("");
-                setError("");
-                setEmail("");
-                setCurrentPassword("");
-                setNewPassword("");
-                setConfirmPassword("");
-            }, 2000);
-
-        } catch (e: unknown) {
-            console.error("Ошибка при обновлении данных:", e);
-            setError(t("errors:error-update-failed"));
-        }
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setError("");
-        setSuccess("");
+    const resetForm = () => {
         setEmail("");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
     };
 
-    return(
-        <Modal
-            open={open}
-            onClose={handleClose}
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-        >
-            <Box
-                sx={{
-                    height: "450px",
-                    width: "500px",
-                    backgroundColor: "var(--columbia-blue)",
-                    outline: 'none',
-                    borderRadius: "16px",
-                    padding: "30px",
-                    display: "flex",
-                    flexDirection: "column"
-                }}
+    const handleClose = () => {
+        resetForm();
+        dispatch(clearUserState());
+        setOpen(false);
+    };
+
+    const handleSave = async () => {
+        if (!user) return;
+        dispatch(clearUserState());
+
+        if (tab === "email") {
+            if (!email) {
+                setSnackbarType("error");
+                setSnackbarMessage(t("errors:error-empty-email"));
+                setSnackbarOpen(true);
+                return;
+            }
+            if (!validateEmail(email)) {
+                setSnackbarType("error");
+                setSnackbarMessage(t("errors:error-invalid-email"));
+                setSnackbarOpen(true);
+                return;
+            }
+            await dispatch(updateUserEmail({ userId: user.id, email }));
+        } else {
+            if (!currentPassword) {
+                setSnackbarType("error");
+                setSnackbarMessage(t("errors:error-current-password-required"));
+                setSnackbarOpen(true);
+                return;
+            }
+            if (newPassword.length < 6) {
+                setSnackbarType("error");
+                setSnackbarMessage(t("errors:error-password-too-short"));
+                setSnackbarOpen(true);
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                setSnackbarType("error");
+                setSnackbarMessage(t("errors:error-passwords-dont-match"));
+                setSnackbarOpen(true);
+                return;
+            }
+
+            await dispatch(updateUserPassword({
+                userId: user.id,
+                currentPassword,
+                newPassword,
+            }));
+        }
+    };
+
+    useEffect(() => {
+        if (error) {
+            setSnackbarType("error");
+            setSnackbarMessage(error);
+            setSnackbarOpen(true);
+        }
+        if (success) {
+            setSnackbarType("success");
+            setSnackbarMessage(
+                tab === "email"
+                    ? t("profile:email-updated-successfully")
+                    : t("profile:password-updated-successfully")
+            );
+            setSnackbarOpen(true);
+
+            setTimeout(() => {
+                handleClose();
+            }, 1500);
+        }
+    }, [error, success]);
+
+    return (
+        <>
+            <Modal open={open} onClose={handleClose}>
+                <Fade in={open}>
+                    <Box
+                        sx={{
+                            width: 500,
+                            bgcolor: "var(--columbia-blue)",
+                            borderRadius: 3,
+                            p: 4,
+                            mx: "auto",
+                            mt: "10vh",
+                            outline: "none",
+                            position: "relative",
+                            boxShadow: 10,
+                        }}
+                    >
+                        <IconButton
+                            onClick={handleClose}
+                            sx={{ position: "absolute", top: 16, right: 16 }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+
+                        <Typography
+                            variant="h5"
+                            textAlign="center"
+                            color="var(--dark-purple)"
+                            fontWeight={700}
+                            mb={2}
+                        >
+                            {t("profile:edit-email-password")}
+                        </Typography>
+
+                        <Tabs
+                            value={tab}
+                            onChange={(_, value) => {
+                                setTab(value);
+                                resetForm();
+                                dispatch(clearUserState());
+                            }}
+                            centered
+                            textColor="primary"
+                            indicatorColor="primary"
+                            sx={{ mb: 3 }}
+                        >
+                            <Tab value="email" label={t("profile:email")} />
+                            <Tab value="password" label={t("profile:change-password")} />
+                        </Tabs>
+
+                        {tab === "email" ? (
+                            <Box>
+                                <Typography
+                                    sx={{
+                                        mb: 1,
+                                        color: "var(--dark-purple)",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {t("profile:new-email")}
+                                </Typography>
+                                <Input
+                                    fullWidth
+                                    disableUnderline
+                                    placeholder={t("profile:enter-new-email")}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    sx={{
+                                        border: "1px solid var(--berkeley-blue)",
+                                        borderRadius: "10px",
+                                        backgroundColor: "white",
+                                        height: "46px",
+                                        px: 2,
+                                        mb: 3,
+                                    }}
+                                />
+                            </Box>
+                        ) : (
+                            <Box>
+                                <Input
+                                    fullWidth
+                                    disableUnderline
+                                    type="password"
+                                    placeholder={t("profile:enter-current-password")}
+                                    value={currentPassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    sx={{
+                                        border: "1px solid var(--berkeley-blue)",
+                                        borderRadius: "10px",
+                                        backgroundColor: "white",
+                                        height: "46px",
+                                        px: 2,
+                                        mb: 2,
+                                    }}
+                                />
+                                <Input
+                                    fullWidth
+                                    disableUnderline
+                                    type="password"
+                                    placeholder={t("profile:enter-new-password")}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    sx={{
+                                        border: "1px solid var(--berkeley-blue)",
+                                        borderRadius: "10px",
+                                        backgroundColor: "white",
+                                        height: "46px",
+                                        px: 2,
+                                        mb: 2,
+                                    }}
+                                />
+                                <Input
+                                    fullWidth
+                                    disableUnderline
+                                    type="password"
+                                    placeholder={t("profile:confirm-new-password")}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    sx={{
+                                        border: "1px solid var(--berkeley-blue)",
+                                        borderRadius: "10px",
+                                        backgroundColor: "white",
+                                        height: "46px",
+                                        px: 2,
+                                        mb: 1,
+                                    }}
+                                />
+                            </Box>
+                        )}
+
+                        <LoadingButton
+                            fullWidth
+                            variant="contained"
+                            loading={loading}
+                            onClick={handleSave}
+                            sx={{
+                                mt: 1,
+                                backgroundColor: "var(--orange-peel)",
+                                color: "var(--dark-purple)",
+                                fontWeight: 700,
+                                fontSize: "18px",
+                                borderRadius: "10px",
+                                textTransform: "none",
+                                "&:hover": {
+                                    backgroundColor: "#ffb020",
+                                },
+                            }}
+                        >
+                            {t("profile:save")}
+                        </LoadingButton>
+                    </Box>
+                </Fade>
+            </Modal>
+
+            {/* Нижняя плашка (анимированная как раньше) */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                TransitionComponent={Fade}
             >
-                <IconButton
-                    onClick={handleClose}
-                    disabled={isLoading}
+                <Alert
+                    severity={snackbarType}
+                    onClose={() => setSnackbarOpen(false)}
                     sx={{
-                        height: "20px",
-                        width: "20px",
-                        alignSelf: "self-end",
-                        marginBottom: "15px"
+                        width: "100%",
+                        borderRadius: "10px",
+                        fontWeight: 600,
+                        backgroundColor:
+                            snackbarType === "success"
+                                ? "rgba(76, 175, 80, 0.9)"
+                                : "rgba(244, 67, 54, 0.9)",
+                        color: "white",
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                     }}
                 >
-                    <Box component="img" src={cancelIcon} />
-                </IconButton>
-
-                <Box sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 3,
-                    height: "100%"
-                }}>
-                    <Typography
-                        sx={{
-                            color: "var(--dark-purple)",
-                            fontSize: "24px",
-                            fontWeight: "700",
-                            textAlign: "center",
-                            marginBottom: "10px",
-                        }}
-                    >
-                        {t("profile:edit-email-password")}
-                    </Typography>
-
-                    {/* Email Section */}
-                    <Box>
-                        <Typography
-                            sx={{
-                                color: "var(--dark-purple)",
-                                fontSize: "16px",
-                                fontWeight: "600",
-                                marginBottom: "8px",
-                            }}
-                        >
-                            {t("profile:email")}
-                        </Typography>
-                        <Input
-                            value={email}
-                            onChange={handleEmailChange}
-                            placeholder={t("profile:enter-new-email")}
-                            disableUnderline
-                            disabled={isLoading}
-                            type="email"
-                            sx={{
-                                height: "46px",
-                                width: "100%",
-                                border: "1px solid var(--berkeley-blue)",
-                                borderRadius: "10px",
-                                backgroundColor: "white",
-                                marginBottom: "8px"
-                            }}
-                            inputProps={{
-                                style: {
-                                    padding: "0 12px",
-                                }
-                            }}
-                        />
-                    </Box>
-
-                    {/* Password Section */}
-                    <Box>
-                        <Typography
-                            sx={{
-                                color: "var(--dark-purple)",
-                                fontSize: "16px",
-                                fontWeight: "600",
-                                marginBottom: "8px",
-                            }}
-                        >
-                            {t("profile:change-password")}
-                        </Typography>
-
-                        <Input
-                            value={currentPassword}
-                            onChange={handleCurrentPasswordChange}
-                            placeholder={t("profile:enter-current-password")}
-                            disableUnderline
-                            disabled={isLoading}
-                            type="password"
-                            sx={{
-                                height: "46px",
-                                width: "100%",
-                                border: "1px solid var(--berkeley-blue)",
-                                borderRadius: "10px",
-                                backgroundColor: "white",
-                                marginBottom: "12px"
-                            }}
-                            inputProps={{
-                                style: {
-                                    padding: "0 12px",
-                                }
-                            }}
-                        />
-
-                        <Input
-                            value={newPassword}
-                            onChange={handleNewPasswordChange}
-                            placeholder={t("profile:enter-new-password")}
-                            disableUnderline
-                            disabled={isLoading}
-                            type="password"
-                            sx={{
-                                height: "46px",
-                                width: "100%",
-                                border: "1px solid var(--berkeley-blue)",
-                                borderRadius: "10px",
-                                backgroundColor: "white",
-                                marginBottom: "12px"
-                            }}
-                            inputProps={{
-                                style: {
-                                    padding: "0 12px",
-                                }
-                            }}
-                        />
-
-                        <Input
-                            value={confirmPassword}
-                            onChange={handleConfirmPasswordChange}
-                            placeholder={t("profile:confirm-new-password")}
-                            disableUnderline
-                            disabled={isLoading}
-                            type="password"
-                            sx={{
-                                height: "46px",
-                                width: "100%",
-                                border: "1px solid var(--berkeley-blue)",
-                                borderRadius: "10px",
-                                backgroundColor: "white",
-                                marginBottom: "8px"
-                            }}
-                            inputProps={{
-                                style: {
-                                    padding: "0 12px",
-                                }
-                            }}
-                        />
-                    </Box>
-
-                    {/* Notifications */}
-                    <Typography
-                        sx={{
-                            color: "var(--dark-purple)",
-                            fontSize: "14px",
-                            fontStyle: "italic",
-                            textAlign: "center"
-                        }}
-                    >
-                        {t("profile:password-requirements")}
-                    </Typography>
-
-                    {/* Error and Success Messages */}
-                    {error && (
-                        <Typography
-                            sx={{
-                                color: "red",
-                                fontSize: "14px",
-                                textAlign: "center",
-                                marginBottom: "12px"
-                            }}
-                        >
-                            {error}
-                        </Typography>
-                    )}
-
-                    {success && (
-                        <Typography
-                            sx={{
-                                color: "green",
-                                fontSize: "14px",
-                                textAlign: "center",
-                                marginBottom: "12px"
-                            }}
-                        >
-                            {success}
-                        </Typography>
-                    )}
-
-                    {/* Save Button */}
-                    <Button
-                        onClick={handleSave}
-                        disabled={isLoading}
-                        sx={{
-                            backgroundColor: isLoading ? "gray" : "var(--orange-peel)",
-                            height: "45px",
-                            width: "150px",
-                            borderRadius: "10px",
-                            alignSelf: "center",
-                            marginTop: "10px",
-                            '&:disabled': {
-                                backgroundColor: 'gray',
-                                color: 'white'
-                            }
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                color: isLoading ? "white" : "var(--dark-purple)",
-                                fontSize: "20px",
-                                fontWeight: "700",
-                                fontFamily: "Manrope",
-                                textTransform: "none"
-                            }}
-                        >
-                            {isLoading ? t("profile:saving") : t("profile:save")}
-                        </Typography>
-                    </Button>
-                </Box>
-            </Box>
-        </Modal>
-    )
-}
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+        </>
+    );
+};
 
 export default EditEmailAndPasswordModal;

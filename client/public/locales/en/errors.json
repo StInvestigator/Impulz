@@ -1,6 +1,6 @@
 {
   "error-wrong-playlist-name": "Incorrect playlist name",
-  "error-users-playlists-not-found": "User`s playlists not found",
+  "error-users-playlists-not-found": "User's playlists not found",
   "error-no-image": "Please add a picture",
   "error-no-album-name": "Please enter the album name",
   "error-no-release-date": "Please enter the release date",
@@ -8,7 +8,7 @@
   "error-no-tracks-in-album": "There are no tracks in this album yet",
   "error-no-tracks-in-playlist": "There are no tracks in this playlist yet",
   "error-playlist-not-found": "Playlist not found",
-  "error-playlist-already-exists-in-playlist": "This track is already exists in this album",
+  "error-playlist-already-exists-in-playlist": "This track already exists in this album",
   "error-failed-to-add-track-to-playlist": "Failed to add the track to the playlist",
   "error-track-loading": "Track loading error",
   "error-page-not-found": "Page not found",
@@ -25,5 +25,6 @@
   "error-passwords-dont-match": "Passwords do not match",
   "error-current-password-required": "Current password is required to set new password",
   "error-no-changes": "No changes to save",
-  "error-update-failed": "Failed to update data"
+  "error-update-failed": "Failed to update data",
+  "error-empty-email": "Email cannot be empty"
 }

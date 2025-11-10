@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
 
     @Value("${app.frontend.base-url}")
-    private String frontend_url;
+    private String frontendUrl;
 
     private static final String[] WHITE_LIST = {
             "/", "/login-success",
@@ -68,7 +68,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(frontend_url));
+        config.setAllowedOrigins(List.of(frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));

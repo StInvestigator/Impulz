@@ -20,6 +20,7 @@ interface AlbumState {
     recentAlbumsByGenre: AlbumSimpleDto[];
     favoriteAlbums: AlbumSimpleDto[];
     isLoading: boolean;
+    isSidebarLoading: boolean;
     error: string | null;
 }
 
@@ -32,6 +33,7 @@ const initialState: AlbumState = {
     recentAlbumsByGenre: [],
     favoriteAlbums: [],
     isLoading: false,
+    isSidebarLoading: false,
     error: null,
 };
 
@@ -131,15 +133,18 @@ const albumSlice = createSlice({
 
             .addCase(fetchFavoriteAlbums.pending, (state) => {
                 state.isLoading = true;
+                state.isSidebarLoading = true;
                 state.error = null;
             })
             .addCase(fetchFavoriteAlbums.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.isSidebarLoading = false;
                 state.favoriteAlbums = action.payload;
                 state.error = null;
             })
             .addCase(fetchFavoriteAlbums.rejected, (state, action) => {
                 state.isLoading = false;
+                state.isSidebarLoading = false;
                 state.error = action.payload || "Ошибка при загрузке альбомов";
             });
     },

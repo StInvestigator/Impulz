@@ -8,7 +8,7 @@ import FavAlbumItem from "../items/album/FavAlbumItem.tsx";
 
 const MyAlbumList = () => {
     const dispatch = useAppDispatch();
-    const { favoriteAlbums, isLoading, error } = useAppSelector(state => state.album);
+    const { favoriteAlbums, isSidebarLoading, error } = useAppSelector(state => state.album);
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
 
@@ -22,7 +22,7 @@ const MyAlbumList = () => {
         return Array.isArray(favoriteAlbums) ? favoriteAlbums : [];
     }, [favoriteAlbums]);
 
-    if (isLoading && (!memoFavoriteAlbums || memoFavoriteAlbums.length === 0)) {
+    if (isSidebarLoading && (!memoFavoriteAlbums || memoFavoriteAlbums.length === 0)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                 <CircularProgress />

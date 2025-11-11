@@ -9,7 +9,7 @@ import MyFavPlaylistsItem from "../items/playlist/MyFavPlaylistItem.tsx";
 
 const MyFavoritePlaylistList = () => {
     const dispatch = useAppDispatch();
-    const { favoritePlaylists, isLoading, error } = useAppSelector(state => state.playlist);
+    const { favoritePlaylists, isSidebarLoading, error } = useAppSelector(state => state.playlist);
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
 
@@ -23,7 +23,7 @@ const MyFavoritePlaylistList = () => {
         return Array.isArray(favoritePlaylists) ? favoritePlaylists : [];
     }, [favoritePlaylists]);
 
-    if (isLoading && (!memoFavoritePlaylists || memoFavoritePlaylists.length === 0)) {
+    if (isSidebarLoading && (!memoFavoritePlaylists || memoFavoritePlaylists.length === 0)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                 <CircularProgress />

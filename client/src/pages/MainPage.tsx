@@ -13,8 +13,8 @@ import { useEffect } from "react";
 import { fetchTopPlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
 import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";
-import {fetchAlbumTodayRecommendations, fetchPersonalAlbumsByGenre} from "../store/reducers/action-creators/album.ts";
-import {useKeycloak} from "@react-keycloak/web";
+import { fetchAlbumTodayRecommendations, fetchPersonalAlbumsByGenre } from "../store/reducers/action-creators/album.ts";
+import { useKeycloak } from "@react-keycloak/web";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
@@ -35,45 +35,21 @@ const MainPage = () => {
 
     const userId = isAuthenticated ? keycloak.tokenParsed?.sub : null;
 
-    // Запрашиваем данные только если их нет (или длина === 0)
     useEffect(() => {
-        if (!topTracks || topTracks.length === 0) {
-            dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
-        }
-        if (!topAuthors || topAuthors.length === 0) {
-            dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
-        }
-        if (!topPlaylists || topPlaylists.length === 0) {
-            dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
-        }
-        if (!topFiveGenres || topFiveGenres.length === 0) {
-            dispatch(fetchTopGenres({ page: 0, size: 5 }));
-        }
-        if (!albumTodayRecommendations || albumTodayRecommendations.length === 0) {
-            dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 20 }));
-        }
-        // персональные рекомендации — только если авторизован и нет данных
-        if (isAuthenticated && userId && (!albumPersonalRecommendationsByGenre || albumPersonalRecommendationsByGenre.length === 0)) {
+        dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
+        dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
+        dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
+        dispatch(fetchTopGenres({ page: 0, size: 5 }));
+        dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 20 }));
+        if (userId) {
             dispatch(fetchPersonalAlbumsByGenre({ userId, page: 0, size: 20 }));
         }
-    }, [
-        dispatch,
-        // зависимости — длины и аутентификация, чтобы эффект срабатывал только при реальной нужде
-        topTracks?.length,
-        topAuthors?.length,
-        topPlaylists?.length,
-        topFiveGenres?.length,
-        albumTodayRecommendations?.length,
-        isAuthenticated,
-        userId,
-        albumPersonalRecommendationsByGenre?.length
-    ]);
+    }, [dispatch, isAuthenticated, userId]);
 
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"} />
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
-                {/* Компоненты должны рендерить старые данные, даже если isLoading === true */}
                 <TrackBigCarouselList tracks={topTracks} isLoading={tracksLoading} error={tracksError} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} url={"/hitsWeek"} />
                 <GenreList />
             </Box>
@@ -87,12 +63,12 @@ const MainPage = () => {
                 <TopFiveGenreList genres={topFiveGenres} isLoading={genresLoading} error={genresError} />
             </Box>
             <Box component={"section"} mt={"60px"}>
-                <MediaSmallCarouselList medias={albumTodayRecommendations} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={albumLoading} error={albumError} url={"/albumTodayRecommendations"}/>
+                <MediaSmallCarouselList medias={albumTodayRecommendations} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={albumLoading} error={albumError} url={"/albumTodayRecommendations"} />
             </Box>
             {isAuthenticated && albumPersonalRecommendationsByGenre && albumPersonalRecommendationsByGenre.length > 0 &&
                 (
                     <Box component={"section"} mt={"60px"}>
-                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={albumLoading} error={albumError} url={"/personalAlbumRecommendations"}/>
+                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={albumLoading} error={albumError} url={"/personalAlbumRecommendations"} />
                     </Box>
                 )
             }

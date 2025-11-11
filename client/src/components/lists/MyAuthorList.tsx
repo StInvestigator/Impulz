@@ -8,7 +8,7 @@ import FavAuthorItem from "../items/author/FavAuthorItem.tsx";
 
 const MyAuthorList = () => {
     const dispatch = useAppDispatch();
-    const { authorsByFollower, isLoading, error } = useAppSelector(state => state.author);
+    const { authorsByFollower, isSidebarLoading, error } = useAppSelector(state => state.author);
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
 
@@ -22,7 +22,7 @@ const MyAuthorList = () => {
         return Array.isArray(authorsByFollower) ? authorsByFollower : [];
     }, [authorsByFollower]);
 
-    if (isLoading && (!memoFavoriteAuthors || memoFavoriteAuthors.length === 0)) {
+    if (isSidebarLoading && (!memoFavoriteAuthors || memoFavoriteAuthors.length === 0)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                 <CircularProgress />

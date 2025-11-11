@@ -168,10 +168,11 @@ public class TrackServiceImpl implements TrackService {
         List<Track> tracks = new ArrayList<>();
         creationDtos.forEach(trackCreationDto -> {
             tracks.add(uploadTrack(trackCreationDto,
-                    covers.stream()
-                            .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
-                            .findAny()
-                            .orElse(null),
+                    covers == null ? null :
+                            covers.stream()
+                                    .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
+                                    .findAny()
+                                    .orElse(null),
                     files.stream()
                             .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientFileName()))
                             .findAny()

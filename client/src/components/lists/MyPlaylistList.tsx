@@ -9,7 +9,7 @@ import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 
 const MyPlaylistList = () => {
     const dispatch = useAppDispatch();
-    const { playlistsOwnByCurrentUser, isLoading, error } = useAppSelector(state => state.playlist);
+    const { playlistsOwnByCurrentUser, isSidebarLoading, error } = useAppSelector(state => state.playlist);
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
 
@@ -23,7 +23,7 @@ const MyPlaylistList = () => {
         return Array.isArray(playlistsOwnByCurrentUser) ? [...playlistsOwnByCurrentUser].reverse() : [];
     }, [playlistsOwnByCurrentUser]);
 
-    if (isLoading && (!reversedPlaylists || reversedPlaylists.length === 0)) {
+    if (isSidebarLoading && (!reversedPlaylists || reversedPlaylists.length === 0)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                 <CircularProgress />

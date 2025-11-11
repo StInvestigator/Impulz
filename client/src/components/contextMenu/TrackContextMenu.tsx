@@ -1,6 +1,6 @@
-import {Menu, Snackbar, Alert, Fade} from "@mui/material";
+import { Menu, Snackbar, Alert, Fade } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import AddToPlaylistIcon from "../../assets/context/AddToPlaylistIcon.svg";
 import AddToLikedIcon from "../../assets/context/AddToLikedIcon.png";
 import AddToQueueIcon from "../../assets/context/AddToQueueIcon.svg";
@@ -11,13 +11,13 @@ import ContextCreatePlaylistIcon from "../../assets/context/ContextCreatePlaylis
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
 import { useAppNavigate } from "../../hooks/useAppNavigate.ts";
 import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
-import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
-import {addTrackToPlaylist, fetchPlaylistsOwnByUserId} from "../../store/reducers/action-creators/playlist.ts";
-import {ContextMenuItemWithSubmenu} from "./ContextMenuItemWithSubmenu.tsx";
-import keycloak from "../../keycloak.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
+import { addTrackToPlaylist, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
+import { ContextMenuItemWithSubmenu } from "./ContextMenuItemWithSubmenu.tsx";
 import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
-import {likeTrack} from "../../store/reducers/action-creators/tracks.ts";
-import {usePlayTrack} from "../../hooks/usePlayTrack.tsx";
+import { likeTrack, unlikeTrack } from "../../store/reducers/action-creators/tracks.ts";
+import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
+import { useKeycloak } from "@react-keycloak/web";
 
 interface TrackContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -26,19 +26,21 @@ interface TrackContextMenuProps {
 }
 
 export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
-                                                                      contextMenu,
-                                                                      onClose,
-                                                                      track
-                                                                  }) => {
-    const { t } = useTranslation(["other","errors"]);
+    contextMenu,
+    onClose,
+    track
+}) => {
+    const { keycloak } = useKeycloak();
+    const { t } = useTranslation(["other", "errors"]);
     const [toastOpen, setToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [playlistMenuAnchor, setPlaylistMenuAnchor] = useState<null | HTMLElement>(null);
-    const [isCreatePlaylistModalOpen,setIsCreatePlaylistModalOpen] = useState(false);
+    const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
     const route = useAppNavigate();
     const dispatch = useAppDispatch();
     const { playlistsOwnByCurrentUser } = useAppSelector(state => state.playlist);
+    const { likedIds } = useAppSelector(state => state.liked);
     const userId = keycloak.tokenParsed?.sub;
     const { addToQueue } = usePlayTrack();
 
@@ -71,10 +73,12 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
 
     const handleAddToSpecificPlaylist = (playlistId: number) => {
         return () => {
+            if (!keycloak.authenticated) return keycloak.login()
+
             dispatch(addTrackToPlaylist({ trackId: track.id, playlistId: playlistId }))
                 .unwrap()
                 .then(() => {
-                    if(userId){
+                    if (userId) {
                         dispatch(fetchPlaylistsOwnByUserId({ userId }));
                     }
                     onClose();
@@ -97,15 +101,23 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleCreatePlaylist = () => {
+        if (!keycloak.authenticated) return keycloak.login()
         setIsCreatePlaylistModalOpen(true);
         handlePlaylistMenuClose();
         onClose();
     };
 
     const handleAddToFavorites = () => {
-        console.log("Like track");
+        console.log(likedIds)
         if (userId) {
             dispatch(likeTrack({ trackId: track.id, userId: userId }));
+        }
+        onClose();
+    };
+
+    const handleRemoveFromFavorites = () => {
+        if (userId) {
+            dispatch(unlikeTrack({ trackId: track.id, userId: userId }));
         }
         onClose();
     };
@@ -257,11 +269,19 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                     ))}
                 </Menu>
 
-                <ContextMenuItem
-                    icon={AddToLikedIcon}
-                    text={t("title-add-to-liked")}
-                    onClick={handleAddToFavorites}
-                />
+                {(likedIds && likedIds.includes(track.id) ?
+                    <ContextMenuItem
+                        icon={AddToLikedIcon}
+                        text={t("title-remove-from-liked")}
+                        onClick={handleRemoveFromFavorites}
+                    />
+                    :
+                    <ContextMenuItem
+                        icon={AddToLikedIcon}
+                        text={t("title-add-to-liked")}
+                        onClick={handleAddToFavorites}
+                    />
+                )}
 
                 <ContextMenuItem
                     icon={AddToQueueIcon}

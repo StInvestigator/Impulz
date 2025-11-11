@@ -150,7 +150,7 @@ export const fetchRecentPlaylistsByGenre = createAsyncThunk<
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
-            const response = await $api.get(`/playlists/ByGenre/Recent/${genreId}?${params}`);
+            const response = await $authApi.get(`/playlists/ByGenre/Recent/${genreId}?${params}`);
             dispatch(setTotalPages(response.data.totalPages));
             return response.data.content;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

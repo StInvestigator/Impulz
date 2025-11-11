@@ -25,7 +25,7 @@ export const updateUserProfile = createAsyncThunk(
             formData.append('image', imageFile);
         }
 
-        const response = await $authApi.post(`/users/updateCredentials/${userId}`, formData, {
+        const response = await $authApi.put(`/users/update/${userId}`, formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
         return response.data;

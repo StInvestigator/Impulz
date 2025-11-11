@@ -21,36 +21,34 @@ const SectionSkeleton = ({ height = 180 }: { height?: number }) => (
 
 const CategoryPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentGenre, isLoading: genresLoading, error: genresError } = useAppSelector(state => state.genre);
+  const params = useParams<{ id?: string }>();
+  const genreId = Number(params.id);
+  const { t, i18n } = useTranslation('category');
+  const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
+
+   const { currentGenre, isLoading: genresLoading, error: genresError } = useAppSelector(state => state.genre);
   const { topAuthorsInGenre, isLoading: authorsLoading, error: authorsError } = useAppSelector(state => state.author);
   const { recentAlbumsByGenre, isLoading: albumLoading, error: albumError } = useAppSelector(state => state.album);
   const { popularTracksByGenre, isLoading: tracksLoading, error: tracksError } = useAppSelector(state => state.track);
   const { recentPlaylistsByGenre, isLoading: playlistsLoading, error: playlistsError } = useAppSelector(state => state.playlist);
 
-  const { t, i18n } = useTranslation('category');
-  const params = useParams<{ id?: string }>();
-  const genreId = Number(params.id);
-  const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
+useEffect(() => {
+  if (!genreId) return;
 
-  useEffect(() => {
-    if (!genreId) return;
-    dispatch(fetchGenre(genreId));
-    dispatch(fetchTopAuthorsInGenre({ genreId, page: 0, size: 20 }));
-    dispatch(fetchRecentAlbumsByGenre({ genreId, page: 0, size: 20 }));
-    dispatch(fetchPopularTracksByGenre({ genreId, page: 0, size: 20 }));
-    dispatch(fetchRecentPlaylistsByGenre({ genreId, page: 0, size: 20 }));
-  }, [dispatch, genreId]);
+  dispatch(fetchGenre(genreId));
+  dispatch(fetchTopAuthorsInGenre({ genreId, page: 0, size: 20 }));
+  dispatch(fetchRecentAlbumsByGenre({ genreId, page: 0, size: 20 }));
+  dispatch(fetchPopularTracksByGenre({ genreId, page: 0, size: 20 }));
+  dispatch(fetchRecentPlaylistsByGenre({ genreId, page: 0, size: 20 }));
+}, [dispatch, genreId]);
+
+
+  const shouldShowHeaderSkeleton = authorsLoading && (!topAuthorsInGenre || topAuthorsInGenre.length === 0);
 
   return (
     <>
-      {/* Header / banner */}
-      {genresLoading || genresError ? (
-        <Skeleton
-          variant="rectangular"
-          width="100%"
-          height={285}
-          sx={{ borderRadius: "10px" }}
-        />
+      {shouldShowHeaderSkeleton || genresError ? (
+        <Skeleton variant="rectangular" width="100%" height={285} sx={{ borderRadius: "10px" }} />
       ) : (
         <Box
           sx={{
@@ -82,8 +80,8 @@ const CategoryPage: React.FC = () => {
         </Box>
       )}
 
-      {/* Top authors */}
-      {authorsLoading ? (
+      {/* Top authors: skeleton only if empty AND loading */}
+      { (authorsLoading && (!topAuthorsInGenre || topAuthorsInGenre.length === 0)) ? (
         <SectionSkeleton />
       ) : (
         topAuthorsInGenre && topAuthorsInGenre.length > 0 && (
@@ -102,7 +100,7 @@ const CategoryPage: React.FC = () => {
       )}
 
       {/* Popular tracks */}
-      {tracksLoading ? (
+      { (tracksLoading && (!popularTracksByGenre || popularTracksByGenre.length === 0)) ? (
         <SectionSkeleton />
       ) : (
         popularTracksByGenre && popularTracksByGenre.length > 0 && (
@@ -121,7 +119,7 @@ const CategoryPage: React.FC = () => {
       )}
 
       {/* Recent albums */}
-      {albumLoading ? (
+      { (albumLoading && (!recentAlbumsByGenre || recentAlbumsByGenre.length === 0)) ? (
         <SectionSkeleton />
       ) : (
         recentAlbumsByGenre && recentAlbumsByGenre.length > 0 && (
@@ -139,7 +137,7 @@ const CategoryPage: React.FC = () => {
       )}
 
       {/* Recent playlists */}
-      {playlistsLoading ? (
+      { (playlistsLoading && (!recentPlaylistsByGenre || recentPlaylistsByGenre.length === 0)) ? (
         <SectionSkeleton />
       ) : (
         recentPlaylistsByGenre && recentPlaylistsByGenre.length > 0 && (

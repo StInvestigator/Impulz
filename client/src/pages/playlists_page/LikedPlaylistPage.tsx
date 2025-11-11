@@ -43,19 +43,6 @@ const LikedPlaylistPage = () => {
         );
     }
 
-    if (!likedTracks || likedTracks.length === 0) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography>
-                    {likedTracks && likedTracks.length === 0
-                        ? t("errors:error-no-tracks-in-playlist")
-                        : t("errors:error-playlist-not-found")
-                    }
-                </Typography>
-            </Box>
-        );
-    }
-
     const formatDuration = (totalSeconds: number): string => {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);

@@ -1,11 +1,11 @@
-import type {FC} from "react";
-import {Box, IconButton, Typography} from "@mui/material";
+import type { FC } from "react";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
-import {useNavigate} from "react-router-dom";
-import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
-import {TrackContextMenu} from "../../contextMenu/TrackContextMenu.tsx";
-import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
+import { useNavigate } from "react-router-dom";
+import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
+import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
+import { useMediaContextMenu } from "../../../hooks/useMediaContextMenu.ts";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -14,14 +14,13 @@ interface TrackItemProps {
     isMedal?: boolean;
 }
 
-const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track}) => {
+const TrackAverageItem: FC<TrackItemProps> = ({ itemWidth, itemHeight, track }) => {
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
 
     return (
         <Box
-            onContextMenu={(e) => handleContextMenu(e, track.id)}
             sx={{
                 width: itemWidth || "100%",
                 height: `${itemHeight}px`,
@@ -36,6 +35,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track}) =>
             }}
         >
             <Box
+                onContextMenu={(e) => handleContextMenu(e, track.id)}
                 sx={{
                     backgroundImage: `url(${track.imgUrl})`,
                     backgroundColor: '',
@@ -115,7 +115,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({itemWidth, itemHeight, track}) =>
                         disableRipple={true}
                     >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
-                             height={"30px"}/>
+                            height={"30px"} />
                     </IconButton>
                 </Box>
             </Box>

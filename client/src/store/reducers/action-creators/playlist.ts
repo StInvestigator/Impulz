@@ -94,6 +94,28 @@ export const fetchPlaylistsOwnByUserId = createAsyncThunk<
     }
 );
 
+export const fetchAllPlaylistsDtoOwnByUserId = createAsyncThunk<
+    PlaylistDto[],
+    {userId: string,page?:number,size?:number},
+    {rejectValue: string}
+>(
+    'playlists/fetchAllPlaylistsDtoOwnByUserId',
+    async ({ userId, page = 0, size = 1000 }, { rejectWithValue,dispatch }) => {
+        try {
+            const params = new URLSearchParams();
+            if (page !== undefined) params.append('page', page.toString());
+            if (size !== undefined) params.append('size', size.toString());
+
+            const response = await $authApi.get(`/playlists/AllPlaylistOwnByUser/${userId}?${params}`);
+            console.log("API Response:", response.data);
+            dispatch(setTotalPages(response.data.totalPages))
+            return response.data.content;
+        } catch (e :unknown) {
+            return rejectWithValue(`Не удалось найти плейлисты принадлежащие пользователю: ${e}`);
+        }
+    }
+);
+
 export const fetchFavoritePlaylists = createAsyncThunk<
     PlaylistSimpleDto[],
     { userId: string; page?: number; size?: number },

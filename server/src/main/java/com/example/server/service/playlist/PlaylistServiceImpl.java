@@ -144,6 +144,12 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    public Page<PlaylistDto> getAllPlaylistsDtoByOwnerId(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByOwnerId(ownerId, pageable)
+                .map(PlaylistDto::fromEntity);
+    }
+
+    @Override
       @Cacheable(value = "playlist.findRecentPublicPlaylistsByGenre",
             key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     public PageDto<PlaylistSimpleDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable) {

@@ -114,4 +114,8 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
             nativeQuery = true
     )
     Page<Playlist> findRecentPublicPlaylistsByGenre(@Param("genreId") Long genreId, Pageable pageable);
+
+    @Query("SELECT p FROM Playlist p WHERE p.owner.id = :ownerId ORDER BY p.createdAt DESC")
+    Page<Playlist> findAllByOwnerId(@Param("ownerId") String ownerId, Pageable pageable);
+
 }

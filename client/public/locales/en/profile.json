@@ -24,5 +24,8 @@
   "password-requirements": "Password must be at least 6 characters long",
   "changes-saved-successfully": "Changes saved successfully",
   "email-updated-successfully": "Email updated successfully",
-  "password-updated-successfully": "Password updated successfully"
+  "password-updated-successfully": "Password updated successfully",
+  "title-playlists": "Playlists",
+  "title-liked-tracks": "Favorite tracks",
+  "title-liked-albums": "Favorite albums"
 }

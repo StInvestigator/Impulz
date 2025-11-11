@@ -64,7 +64,6 @@ const MyPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages
             showFirstButton
             showLastButton
             onChange={handlePageChange}
-            // Это работает но mui считает это ошибкой :/ (disableRipple)
             renderItem={(item) => (
                 <PaginationItem
                     {...item}

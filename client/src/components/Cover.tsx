@@ -139,21 +139,65 @@ const Cover: FC<CoverProps> = ({
                         <Typography variant={"mainSbL"} fontSize={"32px"} noWrap sx={{ flexBasis: "50%", minWidth: 0 }}>
                             {safeOwnerNames.join(", ") || "Unknown author"}
                         </Typography>
-                        {year && (
-                            <Typography variant={"mainRL"} fontSize={"24px"}>
-                                {year}
-                            </Typography>
-                        )}
-                        {trackCount !== undefined && trackCount > 0 && (
-                            <Typography variant={"mainRL"} fontSize={"24px"}>
-                                {trackCount} {t("title-songs")}
-                            </Typography>
-                        )}
-                        {duration && (
-                            <Typography variant={"mainRL"} fontSize={"24px"}>
-                                {duration}
-                            </Typography>
-                        )}
+                        <Box
+                            display="grid"
+                            gridTemplateColumns="repeat(2, max-content)"
+                            gridTemplateRows="repeat(2, max-content)"
+                            gap={1}
+                            alignItems="center"
+                        >
+                            {year && (
+                                <Box
+                                    sx={{
+                                        px: 1.5,
+                                        py: 0.5,
+                                        bgcolor: "rgba(255, 255, 255, 0.1)",
+                                        borderRadius: "8px",
+                                        color: "var(--columbia-blue)",
+                                        fontSize: "24px",
+                                        fontWeight: 500,
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    {year}
+                                </Box>
+                            )}
+
+                            {trackCount !== undefined && trackCount > 0 && (
+                                <Box
+                                    sx={{
+                                        px: 1.5,
+                                        py: 0.5,
+                                        bgcolor: "rgba(255, 255, 255, 0.1)",
+                                        borderRadius: "8px",
+                                        color: "var(--columbia-blue)",
+                                        fontSize: "24px",
+                                        fontWeight: 500,
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    {trackCount} {t("title-songs")}
+                                </Box>
+                            )}
+
+                            {duration && (
+                                <Box
+                                    sx={{
+                                        px: 1.5,
+                                        py: 0.5,
+                                        bgcolor: "rgba(255, 255, 255, 0.1)",
+                                        borderRadius: "8px",
+                                        color: "var(--columbia-blue)",
+                                        fontSize: "24px",
+                                        fontWeight: 500,
+                                        gridColumn: "1 / -1",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    {duration}
+                                </Box>
+                            )}
+                        </Box>
                     </Box>
                 </Box>
             </Box>

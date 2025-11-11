@@ -2,7 +2,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import React, { type FC } from "react";
+import React, { type FC, useState } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
@@ -23,6 +23,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -38,10 +39,28 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
         }
     }
 
+    const handleContainerClick = () => {
+        if (!isContextMenuOpen) {
+            route(`/playlist/${playlist.id}`);
+        }
+        setIsContextMenuOpen(false);
+    }
+
+    const handleCustomContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsContextMenuOpen(true);
+        handleContextMenu(e, playlist.id);
+    }
+
+    const handleCloseCustomContextMenu = () => {
+        setIsContextMenuOpen(false);
+        handleCloseContextMenu();
+    }
+
     return (
         <Box
-            onContextMenu={(e) => handleContextMenu(e, playlist.id)}
-            onClick={() => route(`/playlist/${playlist.id}`)}
+            onContextMenu={handleCustomContextMenu}
+            onClick={handleContainerClick}
             sx={{
                 width: itemWidth,
                 boxShadow: "none",
@@ -124,7 +143,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
 
             <PlaylistContextMenu
                 contextMenu={contextMenu}
-                onClose={handleCloseContextMenu}
+                onClose={handleCloseCustomContextMenu}
                 playlist={playlist}
             />
         </Box>

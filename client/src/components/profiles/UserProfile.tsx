@@ -1,7 +1,6 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../assets/play.svg";
 import {type FC } from "react";
-// import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import bgCoverImg from "../../assets/bg-cover.svg";
 import type { UserDto } from "../../models/UserDto";
 
@@ -11,16 +10,7 @@ interface UserProfileProps {
 
 const UserProfile: FC<UserProfileProps> = ({
                                      user,
-                                   }) => {
-  // const { playsByMonth } = useAppSelector((state) => state.author);
-  //const dispatch = useAppDispatch();
-  // const { t } = useTranslation("authorPage");
-
-//   useEffect(() => {
-//     if (user.id) {
-//       dispatch(fetchUser(user.id));
-//     }
-//   }, [dispatch, user.id]);
+}) => {
 
   return (
     <>

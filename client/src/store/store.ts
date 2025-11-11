@@ -6,6 +6,7 @@ import TrackReducer from "./reducers/TrackSlice.ts"
 import GenreReducer from "./reducers/GenreSlice.ts"
 import AlbumReducer from "./reducers/AlbumSlice.ts"
 import PageReducer from "./reducers/PageSlice.ts";
+import LikedReducer from "./reducers/LikedSlice.ts";
 import ProfileReducer from "./reducers/ProfileSlice.ts";
 import SearchReducer from "./reducers/SearchSlice.ts";
 import SubscriptionReducer from "./reducers/SubscriptionSlice.ts";
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
     genre: GenreReducer,
     album: AlbumReducer,
     page: PageReducer,
+    liked: LikedReducer,
     profile: ProfileReducer,
     search: SearchReducer,
     subscribtion: SubscriptionReducer,

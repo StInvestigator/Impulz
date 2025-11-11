@@ -3,13 +3,8 @@ import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
 import CategoryPage from '../pages/CategoryPage.tsx';
 import AuthorProfilePage from "../pages/AuthorProfilePage.tsx";
-import AlbumColaborationPlaylistPage from "../pages/AlbumColaborationPlaylistPage.tsx";
-import AuthorPage from "../pages/AuthorPage.tsx";
-import TopSelectionsPage from "../pages/TopSelectionsPage.tsx";
 import PlaylistItemPage from "../pages/PlaylistItemPage.tsx";
-import FavoriteTracksPage from "../pages/FavoriteTracksPage.tsx";
 import UserProfilePage from "../pages/UserProfilePage.tsx";
-
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import PopularTracksPage from "../pages/tracks_page/PopularTracksPage.tsx";
 import AlbumsInAuthorPage from "../pages/album_page/AlbumsInAuthorPage.tsx";

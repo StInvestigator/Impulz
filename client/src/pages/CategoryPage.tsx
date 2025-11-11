@@ -32,33 +32,18 @@ const CategoryPage: React.FC = () => {
   const { popularTracksByGenre, isLoading: tracksLoading, error: tracksError } = useAppSelector(state => state.track);
   const { recentPlaylistsByGenre, isLoading: playlistsLoading, error: playlistsError } = useAppSelector(state => state.playlist);
 
-  useEffect(() => {
-    if (!genreId) return;
-    if (!currentGenre || currentGenre.id !== genreId) {
-      dispatch(fetchGenre(genreId));
-    }
-  }, [dispatch, genreId, currentGenre]);
+useEffect(() => {
+  if (!genreId) return;
 
-   useEffect(() => {
-    if (!genreId) return;
+  dispatch(fetchGenre(genreId));
+  dispatch(fetchTopAuthorsInGenre({ genreId, page: 0, size: 20 }));
+  dispatch(fetchRecentAlbumsByGenre({ genreId, page: 0, size: 20 }));
+  dispatch(fetchPopularTracksByGenre({ genreId, page: 0, size: 20 }));
+  dispatch(fetchRecentPlaylistsByGenre({ genreId, page: 0, size: 20 }));
+}, [dispatch, genreId]);
 
-    if (!topAuthorsInGenre || topAuthorsInGenre.length === 0) {
-      dispatch(fetchTopAuthorsInGenre({ genreId, page: 0, size: 20 }));
-    }
-    if (!recentAlbumsByGenre || recentAlbumsByGenre.length === 0) {
-      dispatch(fetchRecentAlbumsByGenre({ genreId, page: 0, size: 20 }));
-    }
-    if (!popularTracksByGenre || popularTracksByGenre.length === 0) {
-      dispatch(fetchPopularTracksByGenre({ genreId, page: 0, size: 20 }));
-    }
-    if (!recentPlaylistsByGenre || recentPlaylistsByGenre.length === 0) {
-      dispatch(fetchRecentPlaylistsByGenre({ genreId, page: 0, size: 20 }));
-    }
-  }, [dispatch, genreId,
-      topAuthorsInGenre, recentAlbumsByGenre, popularTracksByGenre, recentPlaylistsByGenre
-  ]);
 
-  const shouldShowHeaderSkeleton = (!currentGenre || currentGenre.id !== genreId) && genresLoading;
+  const shouldShowHeaderSkeleton = authorsLoading && (!topAuthorsInGenre || topAuthorsInGenre.length === 0);
 
   return (
     <>

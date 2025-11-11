@@ -110,8 +110,8 @@ public class AlbumController {
     @PreAuthorize("hasRole('AUTHOR')")
     @PostMapping(value = "/create")
     public ResponseEntity<?> createAlbum(@RequestPart("metadata") AlbumCreationDto metadata,
-                                         @RequestPart(value="cover", required = false) MultipartFile cover,
-                                         @RequestPart(value="trackFiles", required = false) List<MultipartFile> trackFiles,
+                                         @RequestPart(value="cover") MultipartFile cover,
+                                         @RequestPart(value="trackFiles") List<MultipartFile> trackFiles,
                                          @RequestPart(value="trackCovers", required = false) List<MultipartFile> trackCovers) {
         try {
             albumService.upload(metadata, cover, trackFiles, trackCovers);

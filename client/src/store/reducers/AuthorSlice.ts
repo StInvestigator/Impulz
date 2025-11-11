@@ -20,6 +20,7 @@ interface AuthorState {
     topAuthorsInGenre: AuthorSimpleDto[];
     authorsByFollower: AuthorSimpleDto[];
     playsByMonth: number | null;
+    isSidebarLoading: boolean;
     isLoading: boolean;
     error: string | null;
 
@@ -36,6 +37,7 @@ const initialState: AuthorState = {
     authorsByFollower: [],
     playsByMonth: null,
     isLoading: false,
+    isSidebarLoading: false,
     error: null,
 
     subscriptionStatus: {},
@@ -154,15 +156,18 @@ const authorSlice = createSlice({
             
             .addCase(fetchAuthorsByFollower.pending,(state) =>{
                 state.isLoading = true;
+                state.isSidebarLoading = true
                 state.error = null;
             })
             .addCase(fetchAuthorsByFollower.fulfilled,(state,action) =>{
                 state.isLoading = false;
+                state.isSidebarLoading = false
                 state.authorsByFollower = action.payload;
                 state.error = null;
             })
             .addCase(fetchAuthorsByFollower.rejected,(state,action)=>{
                 state.isLoading = false;
+                state.isSidebarLoading = false
                 state.error = action.error.message || "Ошибка при загрузке авторов";
             });;
     },

@@ -13,7 +13,6 @@ const LikedPlaylistPage = () => {
     const dispatch = useAppDispatch();
     const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
     const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
-    const { changed } = useAppSelector(state => state.liked);
 
     const { t } = useTranslation(["other","errors"]);
     const userId = keycloak.tokenParsed?.sub;
@@ -26,7 +25,7 @@ const LikedPlaylistPage = () => {
                 size: 20
             }));
         }
-    }, [dispatch, userId, currentPage, changed]);
+    }, [dispatch, userId, currentPage]);
 
     if (isLoading) {
         return (

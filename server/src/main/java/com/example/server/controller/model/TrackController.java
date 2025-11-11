@@ -1,12 +1,15 @@
 package com.example.server.controller.model;
 
 import com.example.server.dto.Track.*;
+import com.example.server.service.keycloak.KeycloakService;
 import com.example.server.service.track.TrackService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TrackController {
     private final TrackService trackService;
+    private final KeycloakService keycloakService;
 
     @GetMapping("/simpleDto/{id}")
     public TrackSimpleDto getSimpleTrackDto(@PathVariable Long id) {
@@ -29,21 +33,21 @@ public class TrackController {
     }
 
     @GetMapping("/simpleDtoWithFavorite/{id}")
-    public TrackSimpleDtoWithFavorite getSimpleTrackDtoWithFavorite(@PathVariable Long id, String userId) {
-        return trackService.getTrackSimpleDtoById(id, userId);
+    public TrackSimpleDtoWithFavorite getSimpleTrackDtoWithFavorite(@PathVariable Long id) {
+        return trackService.getTrackSimpleDtoById(id, keycloakService.getUserId());
     }
 
     @GetMapping("/DtoWithFavorite/{id}")
-    public TrackDtoWithFavorite getTrackDtoWithFavorite(@PathVariable Long id, String userId) {
-        return trackService.getTrackDtoById(id, userId);
+    public TrackDtoWithFavorite getTrackDtoWithFavorite(@PathVariable Long id) {
+        return trackService.getTrackDtoById(id, keycloakService.getUserId());
     }
 
     @GetMapping("/ByAuthor/Popular/{id}")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getPopularTracksByAuthor(@PathVariable String id, Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getPopularTracksByAuthor(@PathVariable String id, Pageable pageable) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.findPopularTracksByAuthor(id, pageable));
-            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(keycloakService.getUserId(),
                     pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
             return ResponseEntity.ok(pts);
         } catch (EntityNotFoundException e) {
@@ -55,11 +59,11 @@ public class TrackController {
     }
 
     @GetMapping("/Recommendations/Today")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTodayRecommended(Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTodayRecommended(Pageable pageable) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.getRecommendedTracksToday(pageable));
-            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(keycloakService.getUserId(),
                     pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
             return ResponseEntity.ok(pts);
         } catch (EntityNotFoundException e) {
@@ -87,7 +91,7 @@ public class TrackController {
     }
 
     @GetMapping("/MostListenedTracksOfWeek")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getMostListenedTracksByWeek(Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getMostListenedTracksByWeek(Pageable pageable, @RequestParam(required = false) String userId) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.findMostPlayedTracksThisWeek(pageable));
@@ -103,11 +107,11 @@ public class TrackController {
     }
 
     @GetMapping("/ByAuthor/Collaborations/{id}")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.findTracksByAuthorWithMultipleAuthors(id, pageable));
-            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(keycloakService.getUserId(),
                     pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
             return ResponseEntity.ok(pts);
         } catch (EntityNotFoundException e) {
@@ -119,11 +123,11 @@ public class TrackController {
     }
 
     @GetMapping("/ByGenre/Popular/{genreId}")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getPopularByGenre(@PathVariable Long genreId, Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getPopularByGenre(@PathVariable Long genreId, Pageable pageable) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.findPopularTracksByGenre(genreId, pageable));
-            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(keycloakService.getUserId(),
                     pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
             return ResponseEntity.ok(pts);
         } catch (EntityNotFoundException e) {
@@ -135,11 +139,11 @@ public class TrackController {
     }
 
     @GetMapping("/ByAlbum/{albumId}")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTracksByAlbum(@PathVariable Long albumId, Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTracksByAlbum(@PathVariable Long albumId, Pageable pageable) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.findTracksByAlbum(albumId, pageable));
-            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(keycloakService.getUserId(),
                     pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
             return ResponseEntity.ok(pts);
         } catch (EntityNotFoundException e) {
@@ -151,11 +155,11 @@ public class TrackController {
     }
 
     @GetMapping("/ByPlaylist/{playlistId}")
-    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTracksByPlaylist(@PathVariable Long playlistId, Pageable pageable, String userId) {
+    public ResponseEntity<PageTrackSimpleDtoWithFavorite> getTracksByPlaylist(@PathVariable Long playlistId, Pageable pageable) {
         try {
             PageTrackSimpleDtoWithFavorite pts = new PageTrackSimpleDtoWithFavorite();
             pts.setPage(trackService.findTracksByPlaylist(playlistId, pageable));
-            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(userId,
+            pts.setFavoriteIds(trackService.getUserFavoriteFromTrackIds(keycloakService.getUserId(),
                     pts.getPage().getContent().stream().map(TrackSimpleDto::getId).collect(Collectors.toList())));
             return ResponseEntity.ok(pts);
         } catch (EntityNotFoundException e) {
@@ -211,5 +215,4 @@ public class TrackController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 }

@@ -24,6 +24,7 @@ interface TrackItemProps {
   isPlaying: boolean;
   onTogglePlay: (index: number) => void;
   onEnded: (index: number) => void;
+  albumImage: File | null
 }
 
 const TrackItem: React.FC<TrackItemProps> = ({
@@ -34,6 +35,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
   isPlaying,
   onTogglePlay,
   onEnded,
+  albumImage
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [play, setPlay] = useState(false);
@@ -131,7 +133,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
         borderRadius="8px"
         flexShrink={0}
         sx={{
-          backgroundImage: `url(${coverUrl || ""})`,
+          backgroundImage: `url(${coverUrl || (albumImage ? URL.createObjectURL(albumImage) : "")})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -171,9 +173,10 @@ const TrackItem: React.FC<TrackItemProps> = ({
 interface Step4Props {
   tracks: TrackCreationFullDto[];
   setTracks: (tracks: TrackCreationFullDto[]) => void;
+  albumImage: File | null
 }
 
-const Step4: React.FC<Step4Props> = ({ tracks, setTracks }) => {
+const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage }) => {
   const [titleTrack, setTitleTrack] = useState<string>("");
   const [authorsTrack, setAuthorsTrack] = useState<AuthorSimpleDto[]>([]);
   const [genresTrack, setGenresTrack] = useState<GenreSimpleDto[]>([]);
@@ -231,8 +234,8 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks }) => {
 
   const createTrack = () => {
 
-    if(!titleTrack || genresTrack.length === 0 || !audioFile){ 
-      setError(t("error-you-have-not-filled-in-all-the-fields")); 
+    if (!titleTrack || genresTrack.length === 0 || !audioFile) {
+      setError(t("error-you-have-not-filled-in-all-the-fields"));
       return;
     }
 
@@ -290,6 +293,7 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks }) => {
           isPlaying={currentPlaying === index}
           onTogglePlay={handleTogglePlay}
           onEnded={handleEnded}
+          albumImage={albumImage}
         />
       ))}
 
@@ -300,7 +304,7 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks }) => {
       <Box mt={3} display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={"10px"}>
         <Box width={"95%"} margin={"0 auto"} display={"flex"} flexDirection={"column"} gap={"10px"}>
           <Typography variant="h4" color="var(--columbia-blue)">
-            {t("step4:title-track-name")+"*"}
+            {t("step4:title-track-name") + "*"}
           </Typography>
           <OutlinedInput
             placeholder={t("step4:title-track-name")}
@@ -344,7 +348,7 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks }) => {
 
         <Box width={"95%"} margin={"0 auto"} display={"flex"} flexDirection={"column"} gap={"10px"}>
           <Typography variant="h4" color="var(--columbia-blue)">
-            {t("step4:title-genres")+"*"}
+            {t("step4:title-genres") + "*"}
           </Typography>
           <MySelect
             options={genres.map((genre) => ({ label: genre.name, value: genre.id.toString() }))}
@@ -420,7 +424,7 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks }) => {
           ) : (
             <Box width={"80%"} display={"flex"} alignItems={"center"} justifyContent={"center"} flexDirection={"row"} gap={"12px"}>
               <Typography variant="h4" textAlign={"center"}>
-                {t("step4:title-add-audio")+"*"}
+                {t("step4:title-add-audio") + "*"}
               </Typography>
               <Box component={"img"} src={addAudio} alt={"addAudio"} height={"74px"} width={"74px"} />
             </Box>

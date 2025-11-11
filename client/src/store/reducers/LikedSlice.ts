@@ -2,13 +2,11 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 
 interface LikedState {
-    likedIds: number[];
-    changed: boolean
+    likedIds: number[]
 }
 
 const initialState: LikedState = {
-    likedIds: [],
-    changed: false
+    likedIds: []
 };
 
 const likedSlice = createSlice({
@@ -27,11 +25,8 @@ const likedSlice = createSlice({
                 state.likedIds.splice(index, 1);
             }
         },
-        updateChanged: (state) => {
-            state.changed = !state.changed;
-        },
     },
 });
 
-export const { setLiked, addToLiked, removeFromLiked, updateChanged } = likedSlice.actions;
+export const { setLiked, addToLiked, removeFromLiked } = likedSlice.actions;
 export default likedSlice.reducer;

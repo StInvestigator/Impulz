@@ -6,8 +6,10 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { setCurrentPage } from "../../store/reducers/PageSlice";
 import { fetchTopTracksByWeek } from "../../store/reducers/action-creators/tracks";
+import { useKeycloak } from "@react-keycloak/web";
 
 const HitsWeekPage = () => {
+  const { keycloak } = useKeycloak()
   const { currentPage, totalPages } = useAppSelector((state) => state.page);
   const { t } = useTranslation(["main"]);
 
@@ -26,6 +28,7 @@ const HitsWeekPage = () => {
         fetchTopTracksByWeek({
           page: currentPage - 1,
           size: size,
+          userId: keycloak.tokenParsed?.sub ? keycloak.tokenParsed?.sub : null
         })
       );
     }
@@ -40,7 +43,7 @@ const HitsWeekPage = () => {
           {t("title-hits-week")}
         </Typography>
         <Stack spacing={3} mt={3}>
-          <TrackList tracks={topTracks} pageSize={size}/>
+          <TrackList tracks={topTracks} pageSize={size} />
         </Stack>
       </Box>
       {shouldShowPagination && (

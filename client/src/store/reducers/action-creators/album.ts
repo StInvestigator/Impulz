@@ -155,7 +155,7 @@ export const fetchRecentAlbumsByGenre = createAsyncThunk<
       if (page !== undefined) params.append("page", page.toString());
       if (size !== undefined) params.append("size", size.toString());
 
-      const response = await $api.get(
+      const response = await $authApi.get(
         `/albums/ByGenre/Recent/${genreId}?${params}`
       );
       dispatch(setTotalPages(response.data.totalPages));

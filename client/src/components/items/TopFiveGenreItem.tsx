@@ -58,10 +58,10 @@ const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index, genreId}) => {
                         disableRipple
                         sx={{
                             padding: 0,
-                            position: 'relative',
+                            position: 'absolute',
                             width: "160px",
                             height: "160px",
-                            marginLeft: "-640px",
+                            left: -1
                         }}
                         onClick={handlePlay}
                         onMouseEnter={() => setIsDiskHovered(true)}

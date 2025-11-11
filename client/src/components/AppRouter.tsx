@@ -45,25 +45,26 @@ const AppRouter = () => {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/library" element={<LibraryGrid />} />
                 <Route path="/hello" element={<HelloPage />} />
-                <Route path="/genre/:id" element={<CategoryPage />} />
                 <Route path="/hitsWeek" element={<HitsWeekPage />} />
                 <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
                 <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />
                 <Route path="/albumTodayRecommendations" element={<AlbumTodayRecommendationsPage />} />
                 <Route path="/personalAlbumRecommendations" element={<AlbumPersonalRecommendationsPage />} />
-                <Route path="/genre/:id/recent-albums" element={<AlbumRecentInCategoryPage />} />
-                <Route path="/genre/:id/top-authors" element={<BestAuthorsInGenre />} />
-                <Route path="/genre/:id/popular-tracks" element={<BestTracksInGenrePage />} />
-                <Route path="/genre/:id/recent-playlists" element={<PlaylistsRecentCategoryPage />} />
 
 
                 <Route element={<ProtectedRoute />}>
+                    <Route path="/genre/:id" element={<CategoryPage />} />
+                    <Route path="/genre/:id/recent-albums" element={<AlbumRecentInCategoryPage />} />
+                    <Route path="/genre/:id/top-authors" element={<BestAuthorsInGenre />} />
+                    <Route path="/genre/:id/popular-tracks" element={<BestTracksInGenrePage />} />
+                    <Route path="/genre/:id/recent-playlists" element={<PlaylistsRecentCategoryPage />} />
+
+
                     <Route path="/profile" element={<MyProfilePage />} />
                     <Route path="/user/:id" element={<UserProfilePage />} />
-                    <Route path="/author/:id" element={<AuthorProfilePage />} />
                     <Route path="/album/:albumId" element={<AlbumItemPage />} />
                     <Route path="/playlist/:playlistId" element={<PlaylistItemPage />} />
-                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage/> }/>
+                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/search/:query/authors" element={<SearchAuthorsPage />} />
                     <Route path="/search/:query/tracks" element={<SearchTracksPage />} />
@@ -71,21 +72,17 @@ const AppRouter = () => {
                     <Route path="/search/:query/playlists" element={<SearchPlaylistsPage />} />
                     <Route path="/officeArtist" element={<OfficeArtistPage />} />
                     <Route path="/subscriptions" element={<SubscriptionsPage />} />
+
+                    <Route path="/author/:id" element={<AuthorProfilePage />} />
+                    <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
+                    <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
+                    <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
+                    <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
                 </Route>
 
-              
-                <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
-                <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
-                <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
-                <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
-
-                <Route path="/all" element={<AlbumColaborationPlaylistPage />} />
-                <Route path="/allAuthors" element={<AuthorPage />} />
-                <Route path="/allTopSelections" element={<TopSelectionsPage />} />
-                <Route path="/favoriteTracks" element={<FavoriteTracksPage />} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
-                <Route path="/notFound" element={<NotFoundPage/> }/>
+                <Route path="/notFound" element={<NotFoundPage />} />
             </Routes>
         </Suspense>
     );

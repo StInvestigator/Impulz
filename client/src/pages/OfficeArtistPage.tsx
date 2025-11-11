@@ -155,7 +155,7 @@ function OfficeArtistPage() {
         {activeStep === 1 && <Step1 image={image} setImage={setImage} />}
         {activeStep === 2 && <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />}
         {activeStep === 3 && <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />}
-        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} />}
+        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} />}
         <Box mt={"20px"}>
           <Typography color="red" variant="mainRL">
             {error}

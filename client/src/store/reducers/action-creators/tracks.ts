@@ -3,7 +3,7 @@ import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts
 import { $api, $authApi } from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 import type { TrackDto } from "../../../models/TrackDto.ts";
-import { setLiked } from "../LikedSlice.ts";
+import { addToLiked, removeFromLiked, setLiked, updateChanged } from "../LikedSlice.ts";
 
 export const fetchTopTracksByWeek = createAsyncThunk<TrackSimpleDto[],
     { page?: number; size?: number }
@@ -101,7 +101,7 @@ export const likeTrack = createAsyncThunk<
     { rejectValue: string }
 >(
     'track/likeTrack',
-    async ({ userId, trackId }, { rejectWithValue }) => {
+    async ({ userId, trackId }, { rejectWithValue, dispatch }) => {
         try {
             await $authApi.post('/tracks/like', null, {
                 params: {
@@ -109,6 +109,7 @@ export const likeTrack = createAsyncThunk<
                     trackId: trackId.toString()
                 }
             });
+            dispatch(addToLiked(trackId))
         }
         catch (error: unknown) {
             return rejectWithValue(`Failed to like track : ${error}`);
@@ -122,7 +123,7 @@ export const unlikeTrack = createAsyncThunk<
     { rejectValue: string }
 >(
     'track/unlikeTrack',
-    async ({ userId, trackId }, { rejectWithValue }) => {
+    async ({ userId, trackId }, { rejectWithValue, dispatch }) => {
         try {
             await $authApi.post('/tracks/unlike', null, {
                 params: {
@@ -130,6 +131,8 @@ export const unlikeTrack = createAsyncThunk<
                     trackId: trackId.toString()
                 }
             });
+            dispatch(removeFromLiked(trackId))
+            dispatch(updateChanged())
         }
         catch (error: unknown) {
             return rejectWithValue(`Failed to unlike track : ${error}`);

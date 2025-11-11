@@ -197,6 +197,11 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
+    public void unlike(Long trackId, String userId) {
+        userFavoriteTrackRepository.deleteById(new UserFavoriteTrackKey(userId, trackId));
+    }
+
+    @Override
     public List<Track> getTracksByIds(List<Long> trackIds) {
         return trackRepository.findAllById(trackIds);
     }

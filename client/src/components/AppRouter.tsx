@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainPage from "../pages/MainPage.tsx";
 import HelloPage from "../pages/HelloPage.tsx";
-import LibraryPage from '../pages/LibraryPage.tsx';
 import CategoryPage from '../pages/CategoryPage.tsx';
 import AuthorProfilePage from "../pages/AuthorProfilePage.tsx";
 import AlbumColaborationPlaylistPage from "../pages/AlbumColaborationPlaylistPage.tsx";
@@ -37,15 +36,16 @@ import MyProfilePage from "../pages/MyProfilePage.tsx";
 import SubscriptionsPage from "../pages/SubscriptionsPage.tsx";
 import LikedPlaylistPage from "../pages/playlists_page/LikedPlaylistPage.tsx";
 import NotFoundPage from "../pages/NotFoundPage.tsx";
+import LibraryGrid from "../pages/library_grid/LibraryGrid.tsx";
 
 const AppRouter = () => {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
                 <Route path="/" element={<MainPage />} />
-                <Route path="/library" element={<LibraryPage />} />
+                <Route path="/library" element={<LibraryGrid />} />
                 <Route path="/hello" element={<HelloPage />} />
-                <Route path="/category/:id" element={<CategoryPage />} />
+                <Route path="/genre/:id" element={<CategoryPage />} />
                 <Route path="/hitsWeek" element={<HitsWeekPage />} />
                 <Route path="/bestAuthorsMonth" element={<BestAuthorsMonthPage />} />
                 <Route path="/bestPlaylistsWeek" element={<BestPlaylistByWeekPage />} />

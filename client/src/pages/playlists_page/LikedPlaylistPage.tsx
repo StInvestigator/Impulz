@@ -13,6 +13,7 @@ const LikedPlaylistPage = () => {
     const dispatch = useAppDispatch();
     const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
     const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
+    const { changed } = useAppSelector(state => state.liked);
 
     const { t } = useTranslation(["other","errors"]);
     const userId = keycloak.tokenParsed?.sub;
@@ -25,7 +26,7 @@ const LikedPlaylistPage = () => {
                 size: 20
             }));
         }
-    }, [dispatch, userId, currentPage]);
+    }, [dispatch, userId, currentPage, changed]);
 
     if (isLoading) {
         return (
@@ -39,19 +40,6 @@ const LikedPlaylistPage = () => {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
                 <Typography color="error">{error}</Typography>
-            </Box>
-        );
-    }
-
-    if (!likedTracks || likedTracks.length === 0) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography>
-                    {likedTracks && likedTracks.length === 0
-                        ? t("errors:error-no-tracks-in-playlist")
-                        : t("errors:error-playlist-not-found")
-                    }
-                </Typography>
             </Box>
         );
     }

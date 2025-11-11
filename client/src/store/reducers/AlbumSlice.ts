@@ -42,6 +42,10 @@ const albumSlice = createSlice({
         clearAlbums: (state) => {
             state.albums = [];
         },
+        clearFavoriteAlbums: (state) => {
+            state.favoriteAlbums = [];
+            state.error = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -145,5 +149,5 @@ const albumSlice = createSlice({
     },
 });
 
-export const { clearAlbums } = albumSlice.actions;
+export const { clearAlbums,clearFavoriteAlbums } = albumSlice.actions;
 export default albumSlice.reducer;

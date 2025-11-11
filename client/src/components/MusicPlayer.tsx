@@ -8,14 +8,13 @@ import PlayerVolumeOffIcon from '../assets/player/PlayerVolumeOffIcon.svg';
 import PlayerToggleFullMode from '../assets/player/PlayerToggleFullMode.svg';
 import HoverPlayerPlayIcon from '../assets/player/HoverPlayerPlayIcon.svg';
 import PlayerPauseIcon from '../assets/player/PlayerPauseIcon.svg';
-import PlayerAddToPlaylistIcon from '../assets/player/PlayerAddToPlaylistIcon.svg';
 import HoverPlayerToggleFullMode from '../assets/player/HoverPlayerToggleFullMode.svg';
 import HoverPlayerToggleOffFullModeIcon from '../assets/player/HoverPlayerToggleOffFullModeIcon.svg';
 import PlayerToggleOffFullModeIcon from '../assets/player/PlayerToggleOffFullModeIcon.svg';
 import HoverPlayerNextIcon from '../assets/player/HoverPlayerNextIcon.svg';
 import HoverPlayerPreviousIcon from '../assets/player/HoverPlayerPreviousIcon.svg';
 import HoverPlayerRandomPlaying from '../assets/player/HoverPlayerRandomPlaying.svg';
-import HoverPlayerAddToPlaylistIcon from '../assets/player/HoverPlayerAddToPlaylistIcon.svg';
+
 import HoverPlayerPauseIcon from '../assets/player/HoverPlayerPauseIcon.svg';
 import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
@@ -572,7 +571,6 @@ const MusicPlayer = () => {
                 <img src={HoverPlayerNextIcon} alt="preload" />
                 <img src={HoverPlayerPreviousIcon} alt="preload" />
                 <img src={HoverPlayerRandomPlaying} alt="preload" />
-                <img src={HoverPlayerAddToPlaylistIcon} alt="preload" />
                 <img src={HoverPlayerToggleFullMode} alt="preload" />
                 <img src={HoverPlayerToggleOffFullModeIcon} alt="preload" />
                 <img src={PlayerVolumeOffIcon} alt="preload" />
@@ -832,27 +830,6 @@ const MusicPlayer = () => {
                                 </Typography>
                             </Box>
                         </Box>
-
-                        {/* Кнопка добавления в плейлист */}
-                        <IconButton
-                            disableRipple
-                            sx={{
-                                color: '#ff6b35',
-                                flexShrink: 0
-                            }}
-                        >
-                            <Box
-                                component="img"
-                                src={PlayerAddToPlaylistIcon}
-                                sx={{
-                                    width: 20,
-                                    height: 20,
-                                    '&:hover': {
-                                        content: `url(${HoverPlayerAddToPlaylistIcon})`
-                                    }
-                                }}
-                            />
-                        </IconButton>
                     </Box>
                 </Box>
 

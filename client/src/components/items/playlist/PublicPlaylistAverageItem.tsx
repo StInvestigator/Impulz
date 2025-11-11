@@ -7,6 +7,7 @@ import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { PlaylistContextMenu } from "../../contextMenu/PlaylistContextMenu.tsx";
 import { useMediaContextMenu } from "../../../hooks/useMediaContextMenu.ts";
 import type { PlaylistDto } from "../../../models/PlaylistDto";
+import defaultImage from "../../../assets/PlaylistDefaultImage.svg";
 
 interface PlaylistItemProps {
     playlist: PlaylistDto;
@@ -58,19 +59,20 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
             onContextMenu={(e) => handleContextMenu(e, playlist.id)}
         >
             <Box
-                bgcolor="gray"
                 width="100%"
                 height={`${itemHeight}px`}
                 maxWidth={itemWidth}
-                borderRadius={"10px"}
-                position={"relative"}
+                borderRadius="10px"
+                position="relative"
                 sx={{
-                    backgroundImage: `url(${playlist.imgUrl || ""})`,
+                    backgroundColor: playlist.imgUrl ? 'transparent' : 'var(--dark-purple)',
+                    backgroundImage: playlist.imgUrl || defaultImage ? `url(${playlist.imgUrl || defaultImage})` : 'none',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                 }}
             >
             </Box>
+
 
             <Box
                 display={"flex"}

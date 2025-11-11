@@ -140,6 +140,18 @@ public class PlaylistController {
         }
     }
 
+    @GetMapping("/AllPlaylistOwnByUser/{userId}")
+    public ResponseEntity<Page<PlaylistDto>> getAllPlaylistDtoOwnForUser(@PathVariable String userId,Pageable pageable) {
+        try {
+            return ResponseEntity.ok(playlistService.getAllPlaylistsDtoByOwnerId(userId,pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @GetMapping("/favoriteByUser/{userId}")
     public ResponseEntity<Page<PlaylistSimpleDto>> getFavoriteForUser(@PathVariable String userId, Pageable pageable) {
         try {

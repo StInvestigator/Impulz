@@ -1,5 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import {fetchTopPlaylistsByWeek, fetchPlaylistDetails, fetchPlaylistsOwnByUserId, fetchRecentPlaylistsByGenre, fetchFavoritePlaylists} from "./action-creators/playlist.ts";
+import {
+    fetchTopPlaylistsByWeek,
+    fetchPlaylistDetails,
+    fetchPlaylistsOwnByUserId,
+    fetchRecentPlaylistsByGenre,
+    fetchFavoritePlaylists,
+    fetchAllPlaylistsDtoOwnByUserId
+} from "./action-creators/playlist.ts";
 import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
@@ -7,6 +14,7 @@ interface PlaylistState {
     topPlaylists: PlaylistDto[];
     currentPlaylist: PlaylistDto | null;
     playlistsOwnByCurrentUser: PlaylistSimpleDto[];
+    allPlaylistsDtoOwnByUser: PlaylistDto[];
     recentPlaylistsByGenre: PlaylistDto[];
     favoritePlaylists: PlaylistSimpleDto[];
     isLoading: boolean;
@@ -17,6 +25,7 @@ const initialState: PlaylistState = {
     topPlaylists: [],
     currentPlaylist: null,
     playlistsOwnByCurrentUser: [],
+    allPlaylistsDtoOwnByUser: [],
     recentPlaylistsByGenre: [],
     favoritePlaylists: [],
     isLoading: false,
@@ -101,6 +110,20 @@ export const PlaylistSlice = createSlice({
             .addCase(fetchFavoritePlaylists.rejected,(state,action)=>{
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке новых плейлистов по жанру";
+            })
+
+            .addCase(fetchAllPlaylistsDtoOwnByUserId.pending,(state) =>{
+              state.isLoading = true;
+              state.error = null;
+            })
+            .addCase(fetchAllPlaylistsDtoOwnByUserId.fulfilled,(state,action) =>{
+                state.isLoading = false;
+                state.allPlaylistsDtoOwnByUser = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchAllPlaylistsDtoOwnByUserId.rejected,(state,action) =>{
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке всех плейлистов пользователя";
             });
     }
 })

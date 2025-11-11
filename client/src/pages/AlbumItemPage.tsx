@@ -8,6 +8,7 @@ import { fetchAlbumDetails } from "../store/reducers/action-creators/album.ts";
 import { useParams } from "react-router-dom";
 import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
 import { fetchTracksByAlbum } from "../store/reducers/action-creators/tracks.ts";
+import {useTranslation} from "react-i18next";
 
 const AlbumItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
@@ -15,6 +16,7 @@ const AlbumItemPage = () => {
     const dispatch = useAppDispatch();
     const { currentAlbum, isLoading, error } = useAppSelector(state => state.album);
     const { playTrackList } = usePlayTrack();
+    const {t} = useTranslation("other");
 
     const id = Number(albumId)
     
@@ -57,10 +59,11 @@ const AlbumItemPage = () => {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
+
         if (hours > 0) {
-            return `${hours} год ${minutes} хв`;
+            return `${hours} ${t("other:title-hours")} ${minutes} ${t("other:title-minutes")}`;
         }
-        return `${minutes} хв ${seconds} с`;
+        return `${minutes} ${t("other:title-minutes")} ${seconds} ${t("other:title-seconds")}`;
     };
 
     const totalDuration = currentAlbum.tracks?.reduce(

@@ -14,6 +14,7 @@ import { searchAlbums, searchAuthors, searchPublicPlaylists, searchTracks } from
 
 const Navbar = memo(() => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    // eslint-disable-next-line prefer-const
     let [localSearchQuery, setLocalSearchQuery] = useState("");
     const { keycloak } = useKeycloak();
     const { t } = useTranslation("navbar")
@@ -195,9 +196,34 @@ const Navbar = memo(() => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={() => navigate("/profile")}>{t("title-profile")}</MenuItem>
-                                {keycloak.hasRealmRole("AUTHOR") && <MenuItem onClick={() => navigate("/officeArtist")}>{t("title-office-artist")}</MenuItem>}
-                                <MenuItem onClick={handleLogout}>{t("title-logout")}</MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate("/profile");
+                                        handleClose();
+                                    }}
+                                >
+                                    {t("title-profile")}
+                                </MenuItem>
+
+                                {keycloak.hasRealmRole("AUTHOR") && (
+                                    <MenuItem
+                                        onClick={() => {
+                                            navigate("/officeArtist");
+                                            handleClose();
+                                        }}
+                                    >
+                                        {t("title-office-artist")}
+                                    </MenuItem>
+                                )}
+
+                                <MenuItem
+                                    onClick={() => {
+                                        handleLogout();
+                                        handleClose();
+                                    }}
+                                >
+                                    {t("title-logout")}
+                                </MenuItem>
                             </Menu>
                         </>
                     }

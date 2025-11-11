@@ -24,5 +24,8 @@
   "password-requirements": "Пароль має містити щонайменше 6 символів",
   "changes-saved-successfully": "Зміни успішно збережено",
   "email-updated-successfully": "Email успішно оновлено",
-  "password-updated-successfully": "Пароль успішно оновлено"
+  "password-updated-successfully": "Пароль успішно оновлено",
+  "title-playlists": "Плейлісти",
+  "title-liked-tracks": "Улюблені треки",
+  "title-liked-albums": "Улюблені альбоми"
 }

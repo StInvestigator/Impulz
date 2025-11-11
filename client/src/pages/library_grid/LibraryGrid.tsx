@@ -72,8 +72,10 @@ const LibraryGrid = () => {
     const { i18n } = useTranslation();
 
     useEffect(() => {
-        dispatch(fetchAllGenres());
-    }, [dispatch]);
+        if (!allGenres || allGenres.length === 0) {
+            dispatch(fetchAllGenres());
+        }
+    }, [dispatch, allGenres?.length]);
 
     const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
     useEffect(() => {
@@ -129,7 +131,7 @@ const LibraryGrid = () => {
             <GridContainer>
                 {elements.map((elem, index) => (
                     <GridItem
-                        onClick={() => navigate(`/category/${elem.id}`,)}
+                        onClick={() => navigate(`/genre/${elem.id}`,)}
                         key={index}
                         colSpan={elem.width == 1 ? (elem.align == 'center' ? 8 : 6) : elem.width == 2 ? 14 : 20}
                         rowSpan={elem.height}

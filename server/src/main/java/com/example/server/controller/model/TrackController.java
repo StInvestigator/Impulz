@@ -179,6 +179,21 @@ public class TrackController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @PostMapping("/unlike")
+    public ResponseEntity<?> removeFromLiked(@RequestParam("userId") String userId,
+                                             @RequestParam("trackId") Long trackId) {
+        try {
+            trackService.unlike(trackId, userId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @GetMapping("/liked/{userId}")
     public ResponseEntity<PageTrackSimpleDtoWithFavorite> getLikedTracksByUserId(
             @PathVariable String userId,

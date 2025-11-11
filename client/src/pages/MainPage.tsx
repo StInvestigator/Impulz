@@ -33,25 +33,47 @@ const MainPage = () => {
     const { keycloak } = useKeycloak();
     const isAuthenticated = keycloak.authenticated;
 
-
     const userId = isAuthenticated ? keycloak.tokenParsed?.sub : null;
 
+    // Запрашиваем данные только если их нет (или длина === 0)
     useEffect(() => {
-        dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
-        dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
-        dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
-        dispatch(fetchTopGenres({ page: 0, size: 5 }));
-        dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 20 }));
-
-        if (isAuthenticated && userId) {
+        if (!topTracks || topTracks.length === 0) {
+            dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
+        }
+        if (!topAuthors || topAuthors.length === 0) {
+            dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
+        }
+        if (!topPlaylists || topPlaylists.length === 0) {
+            dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
+        }
+        if (!topFiveGenres || topFiveGenres.length === 0) {
+            dispatch(fetchTopGenres({ page: 0, size: 5 }));
+        }
+        if (!albumTodayRecommendations || albumTodayRecommendations.length === 0) {
+            dispatch(fetchAlbumTodayRecommendations({ page: 0, size: 20 }));
+        }
+        // персональные рекомендации — только если авторизован и нет данных
+        if (isAuthenticated && userId && (!albumPersonalRecommendationsByGenre || albumPersonalRecommendationsByGenre.length === 0)) {
             dispatch(fetchPersonalAlbumsByGenre({ userId, page: 0, size: 20 }));
         }
-    }, [dispatch, isAuthenticated, userId]);
-    
+    }, [
+        dispatch,
+        // зависимости — длины и аутентификация, чтобы эффект срабатывал только при реальной нужде
+        topTracks?.length,
+        topAuthors?.length,
+        topPlaylists?.length,
+        topFiveGenres?.length,
+        albumTodayRecommendations?.length,
+        isAuthenticated,
+        userId,
+        albumPersonalRecommendationsByGenre?.length
+    ]);
+
     return (
         <>
             <Box component={"img"} src={mainImage} width={"100%"} draggable={"false"} />
             <Box component={"section"} display={"flex"} gap={3} mt={"60px"}>
+                {/* Компоненты должны рендерить старые данные, даже если isLoading === true */}
                 <TrackBigCarouselList tracks={topTracks} isLoading={tracksLoading} error={tracksError} itemHeight={266} itemWidth={200} variant={"h1"} title={t("main:title-hits-week")} url={"/hitsWeek"} />
                 <GenreList />
             </Box>
@@ -67,32 +89,13 @@ const MainPage = () => {
             <Box component={"section"} mt={"60px"}>
                 <MediaSmallCarouselList medias={albumTodayRecommendations} itemWidth={134} name={t("main:title-recommendation-today")} isLoading={albumLoading} error={albumError} url={"/albumTodayRecommendations"}/>
             </Box>
-            {isAuthenticated && albumPersonalRecommendationsByGenre.length > 0 &&
+            {isAuthenticated && albumPersonalRecommendationsByGenre && albumPersonalRecommendationsByGenre.length > 0 &&
                 (
                     <Box component={"section"} mt={"60px"}>
-                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={playlistsLoading} error={playlistsError} url={"/personalAlbumRecommendations"}/>
+                        <MediaSmallCarouselList medias={albumPersonalRecommendationsByGenre} itemWidth={134} name={t("main:title-watch-for-you")} isLoading={albumLoading} error={albumError} url={"/personalAlbumRecommendations"}/>
                     </Box>
                 )
             }
-            {/* <Box component={"section"} mt={"60px"}>
-                <Box display={"flex"} justifyContent={"space-between"} marginBottom={2} px={3}>
-                    <Typography variant={"h1"} fontSize={"36px"} fontWeight={700}>
-                        {t("main:title-top-selections")}
-                    </Typography>
-                    <Button onClick={() => route("/allTopSelections")} sx={{
-                        height: "32px",
-                        border: "1px solid black",
-                        borderRadius: "10px",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        color: "black",
-                        textTransform: "none"
-                    }}>
-                        {t("other:button-watch-all")}
-                    </Button>
-                </Box>
-                <TopSelectionsList />
-            </Box> */}
         </>
     );
 };

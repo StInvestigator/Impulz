@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import {
     fetchTopTracksByWeek,
     fetchPopularTracksByAuthor,
@@ -7,7 +7,7 @@ import {
     fetchPopularTracksByGenre,
     fetchTracksByPlaylist, fetchLikedTracksByUserId
 } from "./action-creators/tracks.ts";
-import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 
 interface TrackState {
     topTracks: TrackSimpleDto[];
@@ -34,7 +34,14 @@ const initialState: TrackState = {
 const trackSlice = createSlice({
     name: "track",
     initialState,
-    reducers: {},
+    reducers: {
+        removeFromLikedTracks: (state, action: PayloadAction<number>) => {
+            const index: number = state.likedTracks.findIndex(t => t.id == action.payload)
+            if (index > -1) {
+                state.likedTracks.splice(index, 1);
+            }
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTopTracksByWeek.pending, (state) => {
@@ -64,7 +71,7 @@ const trackSlice = createSlice({
             })
 
             .addCase(fetchAuthorTrackCollaborations.pending, (state) => {
-            state.isLoading = true;
+                state.isLoading = true;
             })
             .addCase(fetchAuthorTrackCollaborations.fulfilled, (state, action) => {
                 state.isLoading = false;
@@ -76,62 +83,64 @@ const trackSlice = createSlice({
                 state.error = action.error.message || "Ошибка при загрузке коллабораций";
             })
 
-            .addCase(fetchTracksByAlbum.pending,(state) =>{
+            .addCase(fetchTracksByAlbum.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(fetchTracksByAlbum.fulfilled,(state,action) =>{
+            .addCase(fetchTracksByAlbum.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.tracksByAlbum = action.payload;
                 state.error = null;
             })
-            .addCase(fetchTracksByAlbum.rejected,(state,action) =>{
+            .addCase(fetchTracksByAlbum.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузки треков альбома";
             })
 
-            .addCase(fetchTracksByPlaylist.pending,(state) =>{
+            .addCase(fetchTracksByPlaylist.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(fetchTracksByPlaylist.fulfilled,(state,action) =>{
+            .addCase(fetchTracksByPlaylist.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.tracksByAlbum = action.payload;
                 state.error = null;
             })
-            .addCase(fetchTracksByPlaylist.rejected,(state,action) =>{
+            .addCase(fetchTracksByPlaylist.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || "Ошибка при загрузки треков плейлиста";
             })
 
-            .addCase(fetchPopularTracksByGenre.pending,(state) =>{
+            .addCase(fetchPopularTracksByGenre.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(fetchPopularTracksByGenre.fulfilled,(state,action) =>{
+            .addCase(fetchPopularTracksByGenre.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.popularTracksByGenre = action.payload;
                 state.error = null;
             })
-            .addCase(fetchPopularTracksByGenre.rejected,(state,action)=>{
+            .addCase(fetchPopularTracksByGenre.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке популярных треков по жанру";
             })
 
-            .addCase(fetchLikedTracksByUserId.pending,(state) =>{
+            .addCase(fetchLikedTracksByUserId.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(fetchLikedTracksByUserId.fulfilled,(state,action) =>{
+            .addCase(fetchLikedTracksByUserId.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.likedTracks = action.payload;
                 state.error = null;
             })
-            .addCase(fetchLikedTracksByUserId.rejected,(state,action) =>{
+            .addCase(fetchLikedTracksByUserId.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке лайкнутых треков";
             })
     },
 });
+
+export const { removeFromLikedTracks } = trackSlice.actions;
 
 export default trackSlice.reducer;

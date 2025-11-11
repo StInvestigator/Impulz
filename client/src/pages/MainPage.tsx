@@ -33,10 +33,10 @@ const MainPage = () => {
     const { keycloak } = useKeycloak();
     const isAuthenticated = keycloak.authenticated;
 
-    const userId = isAuthenticated ? keycloak.tokenParsed?.sub : null;
+    const userId: string | null = keycloak.tokenParsed?.sub ? keycloak.tokenParsed?.sub : null;
 
     useEffect(() => {
-        dispatch(fetchTopTracksByWeek({ page: 0, size: 20 }));
+        dispatch(fetchTopTracksByWeek({ page: 0, size: 20, userId: userId }));
         dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
         dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));
         dispatch(fetchTopGenres({ page: 0, size: 5 }));

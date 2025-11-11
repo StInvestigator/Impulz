@@ -3,16 +3,18 @@ import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts
 import { $api, $authApi } from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
 import type { TrackDto } from "../../../models/TrackDto.ts";
-import { addToLiked, removeFromLiked, setLiked, updateChanged } from "../LikedSlice.ts";
+import { addToLiked, removeFromLiked, setLiked } from "../LikedSlice.ts";
+import { removeFromLikedTracks } from "../TrackSlice.ts";
 
 export const fetchTopTracksByWeek = createAsyncThunk<TrackSimpleDto[],
-    { page?: number; size?: number }
+    { page?: number; size?: number; userId: string | null }
 >(
     "tracks/MostListenedTracksOfWeek",
-    async ({ page = 0, size = 20 }, { dispatch }) => {
+    async ({ page = 0, size = 20, userId }, { dispatch }) => {
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
+        if (userId) params.append('userId', userId);
 
         const response = await $api.get(`/tracks/MostListenedTracksOfWeek?${params}`);
         dispatch(setTotalPages(response.data.page.totalPages))
@@ -132,7 +134,7 @@ export const unlikeTrack = createAsyncThunk<
                 }
             });
             dispatch(removeFromLiked(trackId))
-            dispatch(updateChanged())
+            dispatch(removeFromLikedTracks(trackId))
         }
         catch (error: unknown) {
             return rejectWithValue(`Failed to unlike track : ${error}`);
@@ -161,7 +163,7 @@ export const fetchTracksByPlaylist = createAsyncThunk<
 
 export const fetchPopularTracksByGenre = createAsyncThunk<
     TrackSimpleDto[],
-    { genreId: number; page?: number; size?: number },
+    { genreId: number; page?: number; size?: number; },
     { rejectValue: string }
 >(
     "tracks/fetchPopularTracksByGenre",
@@ -171,7 +173,7 @@ export const fetchPopularTracksByGenre = createAsyncThunk<
             if (page !== undefined) params.append('page', page.toString());
             if (size !== undefined) params.append('size', size.toString());
 
-            const response = await $api.get(
+            const response = await $authApi.get(
                 `/tracks/ByGenre/Popular/${genreId}?${params}`
             );
             dispatch(setTotalPages(response.data.page.totalPages));

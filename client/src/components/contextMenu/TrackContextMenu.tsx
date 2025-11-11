@@ -14,10 +14,10 @@ import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
 import { addTrackToPlaylist, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
 import { ContextMenuItemWithSubmenu } from "./ContextMenuItemWithSubmenu.tsx";
-import keycloak from "../../keycloak.ts";
 import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
 import { likeTrack, unlikeTrack } from "../../store/reducers/action-creators/tracks.ts";
 import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
+import { useKeycloak } from "@react-keycloak/web";
 
 interface TrackContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -30,6 +30,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     onClose,
     track
 }) => {
+    const { keycloak } = useKeycloak();
     const { t } = useTranslation(["other", "errors"]);
     const [toastOpen, setToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -72,6 +73,8 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
 
     const handleAddToSpecificPlaylist = (playlistId: number) => {
         return () => {
+            if (!keycloak.authenticated) return keycloak.login()
+
             dispatch(addTrackToPlaylist({ trackId: track.id, playlistId: playlistId }))
                 .unwrap()
                 .then(() => {
@@ -98,6 +101,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleCreatePlaylist = () => {
+        if (!keycloak.authenticated) return keycloak.login()
         setIsCreatePlaylistModalOpen(true);
         handlePlaylistMenuClose();
         onClose();

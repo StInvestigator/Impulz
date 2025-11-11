@@ -15,11 +15,12 @@ function MyProfilePage() {
   const route = useAppNavigate();
 
   const {likedTracks} = useAppSelector(state => state.track)
+  const {changed} = useAppSelector(state => state.liked)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(fetchLikedTracksByUserId({userId: profile.id}))
-  }, [dispatch])
+  }, [dispatch, changed])
   
   return (
     <>

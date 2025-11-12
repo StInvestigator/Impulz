@@ -109,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
                 break;
 
             default:
-                log.info("Unhandled event type: " + type);
+                log.info("Unhandled event type: {}", type);
         }
     }
 

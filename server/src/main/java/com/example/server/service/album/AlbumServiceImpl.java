@@ -65,7 +65,8 @@ public class AlbumServiceImpl implements AlbumService
         albumRepository.deleteById(id);
     }
 
-    @Cacheable(value = "album.recommendedToday")
+    @Cacheable(value = "album.recommendedToday",
+               key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     public PageDto<AlbumSimpleDto> getRecommendedAlbumsToday(Pageable pageable) {
         return new PageDto<>(albumRepository.findRecommendedAlbumsToday(pageable).map(AlbumSimpleDto::fromEntity));
     }

@@ -7,7 +7,7 @@ import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {useContextMenu} from "../../../hooks/useContextMenu.ts";
 import {AlbumContextMenu} from "../../contextMenu/AlbumContextMenu.tsx";
 
 interface AlbumItemProps {
@@ -22,7 +22,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
     const route = useAppNavigate();
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();

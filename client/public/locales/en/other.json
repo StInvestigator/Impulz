@@ -33,5 +33,11 @@
   "title-plays": "Plays",
   "title-favorite": "Favorite",
   "button-go-home": "Go Home",
-  "button-go-back": "Back"
+  "button-go-back": "Back",
+  "title-edit-playlist": "Edit playlist",
+  "title-delete-playlist": "Delete playlist",
+  "title-confirm-delete": "Confirm delete",
+  "text-confirm-delete-playlist": "Are you sure you want to delete the playlist \"{{name}}\"?",
+  "title-cancel": "Cancel",
+  "title-delete": "Delete"
 }

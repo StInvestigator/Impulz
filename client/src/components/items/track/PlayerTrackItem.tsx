@@ -3,7 +3,7 @@ import type {TrackSimpleDto} from "../../../models/DTO/track/TrackSimpleDto.ts";
 import AdditionalIcon from "../../../assets/AdditionalIcon.svg";
 import { formatTime } from '../../../utils/timeFormatter';
 import {PlayerTrackContextMenu} from "../../contextMenu/PlayerTrackContextMenu.tsx";
-import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {useContextMenu} from "../../../hooks/useContextMenu.ts";
 import {useEffect, useState} from "react";
 
 interface PlayerTrackItemProps {
@@ -22,7 +22,7 @@ export const PlayerTrackItem = ({
                                     onTrackClick
                                 }: PlayerTrackItemProps) => {
     const isCurrentTrack = index === currentTrackIndex;
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
     const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
 
     useEffect(() => {

@@ -8,7 +8,7 @@ import { fetchAlbumDetails } from "../../../store/reducers/action-creators/album
 import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
 import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
 import {AlbumContextMenu} from "../../contextMenu/AlbumContextMenu.tsx";
-import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {useContextMenu} from "../../../hooks/useContextMenu.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -19,7 +19,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
     const navigate = useAppNavigate();
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
     const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
 
     useEffect(() => {

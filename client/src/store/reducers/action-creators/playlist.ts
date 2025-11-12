@@ -214,3 +214,41 @@ export const likePlaylist = createAsyncThunk<
         }
     }
 );
+
+export const updatePlaylist = createAsyncThunk<
+    PlaylistDto,
+    { id: number; title: string; imgUrl: string },
+    { rejectValue: string }
+>(
+    'playlists/updatePlaylist',
+    async ({ id, title, imgUrl }, { rejectWithValue }) => {
+        try {
+            const response = await $authApi.put(`/playlists/edit/${id}`, {
+                title,
+                imgUrl
+            });
+
+            return response.data;
+        } catch (e: unknown) {
+            return rejectWithValue(`Не удалось обновить плейлист: ${e}`);
+        }
+    }
+);
+
+export const deletePlaylist = createAsyncThunk<
+    void,
+    number,
+    { rejectValue: string }
+>(
+    'playlists/deletePlaylist',
+    async (id, { rejectWithValue }) => {
+        try {
+            await $authApi.delete(`/playlists/delete/${id}`);
+            return;
+        } catch (e: unknown) {
+            return rejectWithValue(`Не удалось удалить плейлист: ${e}`);
+        }
+    }
+);
+
+

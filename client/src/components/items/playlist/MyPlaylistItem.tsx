@@ -2,10 +2,12 @@ import {useState, type FC} from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
+import {useContextMenu} from "../../../hooks/useContextMenu.ts";
+import {EditPlaylistContextMenu} from "../../contextMenu/EditPlaylistContextMenu.tsx";
+import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
 
 interface PlaylistProps {
-    playlist: PlaylistSimpleDto;
+    playlist: PlaylistDto;
     defaultImage: string;
 }
 
@@ -14,18 +16,24 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
     const { t } = useTranslation('other');
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handleClick = () => {
         setActive(!active);
         route(`/playlist/${playlist.id}`);
     };
 
+    const handleContextMenuClick = (event: React.MouseEvent) => {
+        event.preventDefault();
+        handleContextMenu(event,playlist.id);
+    };
 
     return (
         <ListItem disablePadding>
             <ListItemButton
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
+                onContextMenu={handleContextMenuClick}
                 onClick={handleClick}
                 sx={{
                     gap: 1,
@@ -86,12 +94,17 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                                     color: 'inherit',
                                 }}
                             >
-                                {t("title-playlist")} &middot; {playlist.tracksCount || 0} {t("title-song")}
+                                {t("title-playlist")} &middot; {playlist?.tracks?.length || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }
                 />
             </ListItemButton>
+            <EditPlaylistContextMenu
+                playlist={playlist}
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+            />
         </ListItem>
     );
 };

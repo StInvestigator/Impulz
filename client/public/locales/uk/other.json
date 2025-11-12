@@ -33,5 +33,11 @@
   "title-plays": "Відтворюється",
   "title-favorite": "Улюблене",
   "button-go-home": "На головну",
-  "button-go-back": "Назад"
+  "button-go-back": "Назад",
+  "title-edit-playlist": "Змінити плейлист",
+  "title-delete-playlist": "Видалити плейлист",
+  "title-confirm-delete": "Підтвердити видалення",
+  "text-confirm-delete-playlist": "Ви впевнені, що хочете видалити плейлист \"{{name}}\"?",
+  "title-cancel": "Відмінити",
+  "title-delete": "Видалити"
 }

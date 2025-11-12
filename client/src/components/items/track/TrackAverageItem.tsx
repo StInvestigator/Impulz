@@ -5,7 +5,7 @@ import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useNavigate } from "react-router-dom";
 import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
-import { useMediaContextMenu } from "../../../hooks/useMediaContextMenu.ts";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -17,7 +17,7 @@ interface TrackItemProps {
 const TrackAverageItem: FC<TrackItemProps> = ({ itemWidth, itemHeight, track }) => {
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     return (
         <Box

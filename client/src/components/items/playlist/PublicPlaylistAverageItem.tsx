@@ -5,7 +5,7 @@ import React, {type FC, useEffect, useState} from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { PlaylistContextMenu } from "../../contextMenu/PlaylistContextMenu.tsx";
-import { useMediaContextMenu } from "../../../hooks/useMediaContextMenu.ts";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import type { PlaylistDto } from "../../../models/PlaylistDto";
 import defaultImage from "../../../assets/PlaylistDefaultImage.svg";
 
@@ -19,7 +19,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
     const { t } = useTranslation('other');
     const { playTrackList } = usePlayTrack();
     const navigate = useAppNavigate();
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
     const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
 
     useEffect(() => {

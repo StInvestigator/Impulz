@@ -127,6 +127,22 @@ public class PlaylistServiceImpl implements PlaylistService {
         return entity;
     }
 
+    @Override
+    public Playlist update(Long id, Playlist updatedData) {
+        Playlist existing = playlistRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Playlist not found with id: " + id));
+
+        if (updatedData.getTitle() != null && !updatedData.getTitle().isBlank()) {
+            existing.setTitle(updatedData.getTitle());
+        }
+
+        if (updatedData.getImageUrl() != null && !updatedData.getImageUrl().isBlank()) {
+            existing.setImageUrl(updatedData.getImageUrl());
+        }
+
+        return playlistRepository.save(existing);
+    }
+
 
     @Override
     public Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable) {

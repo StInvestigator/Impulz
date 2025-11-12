@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import {Navigate, useParams} from "react-router-dom";
-import {Box, Stack, CircularProgress, Typography, IconButton} from "@mui/material";
+import { Navigate, useParams } from "react-router-dom";
+import { Box, Stack, CircularProgress, Typography, IconButton } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { fetchPlaylistDetails } from "../store/reducers/action-creators/playlist.ts";
 import Cover from "../components/Cover.tsx";
@@ -9,9 +9,11 @@ import MyPagination from "../components/MyPagination.tsx";
 import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
 import { fetchTracksByPlaylist } from "../store/reducers/action-creators/tracks.ts";
 import { useTranslation } from "react-i18next";
-import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg"
+import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg";
 import keycloak from "../keycloak.ts";
 import additionalIcon from "../assets/AdditionalIcon.svg";
+import { useContextMenu } from "../hooks/useContextMenu.ts";
+import { EditPlaylistContextMenu } from "../components/contextMenu/EditPlaylistContextMenu.tsx";
 
 const PlaylistItemPage = () => {
     const { playlistId } = useParams<{ playlistId: string }>();
@@ -20,21 +22,21 @@ const PlaylistItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
     const { playTrackList } = usePlayTrack();
     const currentUserId = keycloak.tokenParsed?.sub;
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
-    const id = Number(playlistId)
-    const { t } = useTranslation(["other","errors"]);
-
+    const id = Number(playlistId);
+    const { t } = useTranslation(["other", "errors"]);
 
     useEffect(() => {
-        if(playlistId){
+        if (playlistId) {
             dispatch(fetchPlaylistDetails(playlistId));
         }
     }, [playlistId]);
 
-    if(!isLoading && currentPlaylist && !currentPlaylist.isPublic){
+    if (!isLoading && currentPlaylist && !currentPlaylist.isPublic) {
         const isOwner = currentPlaylist.owner.id === currentUserId;
-        if(!isOwner){
-            return <Navigate to={"/notFound"} replace/>
+        if (!isOwner) {
+            return <Navigate to={"/notFound"} replace />;
         }
     }
 
@@ -57,7 +59,7 @@ const PlaylistItemPage = () => {
     if (!currentPlaylist) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography>${t("errors:error-playlist-not-found")}</Typography>
+                <Typography>{t("errors:error-playlist-not-found")}</Typography>
             </Box>
         );
     }
@@ -73,7 +75,8 @@ const PlaylistItemPage = () => {
         return `${minutes} ${t("other:title-minutes")} ${seconds} ${t("other:title-seconds")}`;
     };
 
-    const totalDuration = currentPlaylist.tracks?.reduce((acc, track) => acc + (track.durationSec || 0), 0) || 0;
+    const totalDuration =
+        currentPlaylist.tracks?.reduce((acc, track) => acc + (track.durationSec || 0), 0) || 0;
 
     const ownerNames = currentPlaylist.owner ? [currentPlaylist.owner.name] : [];
     const ownerImageUrl = currentPlaylist.owner?.avatarUrl || "";
@@ -82,22 +85,30 @@ const PlaylistItemPage = () => {
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const result = await dispatch(fetchTracksByPlaylist({
-            playlistId: id,
-            page: 0,
-            size: 1000
-        }));
+        const result = await dispatch(
+            fetchTracksByPlaylist({
+                playlistId: id,
+                page: 0,
+                size: 1000
+            })
+        );
 
         if (fetchTracksByPlaylist.fulfilled.match(result)) {
             playTrackList(result.payload, 0);
         }
-    }
+    };
 
     return (
         <>
-            <Box component={"section"} sx={{ position: "relative" }}> {/* Добавьте этот контейнер */}
+            <Box component={"section"} sx={{ position: "relative" }}>
                 <Cover
-                    type={isOwner ? "myPlaylist" : currentPlaylist.isPublic ? "publicPlaylist" : "privatePlaylist"}
+                    type={
+                        isOwner
+                            ? "myPlaylist"
+                            : currentPlaylist.isPublic
+                                ? "publicPlaylist"
+                                : "privatePlaylist"
+                    }
                     title={currentPlaylist.title || "Без названия"}
                     OwnerNames={ownerNames}
                     OwnerImageUrl={ownerImageUrl}
@@ -106,17 +117,15 @@ const PlaylistItemPage = () => {
                     imgUrl={currentPlaylist.imgUrl || PlaylistDefaultImage}
                     handlePlay={handlePlayPlaylist}
                 />
+
                 <IconButton
                     sx={{
                         position: "absolute",
                         top: 16,
                         right: 16,
                         padding: 1,
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
-                        '&:hover': {
-                            backgroundColor: "rgba(255, 255, 255, 1)",
-                        }
                     }}
+                    onClick={(e) => handleContextMenu(e,currentPlaylist.id)}
                 >
                     <Box component="img" src={additionalIcon} height="28px" width="28px" />
                 </IconButton>
@@ -143,6 +152,12 @@ const PlaylistItemPage = () => {
                     </Box>
                 )}
             </Box>
+
+            <EditPlaylistContextMenu
+                playlist={currentPlaylist}
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+            />
         </>
     );
 };

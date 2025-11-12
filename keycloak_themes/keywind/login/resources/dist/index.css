@@ -796,7 +796,7 @@ select {
 
 .bg-secondary-100 {
     --tw-bg-opacity: 1;
-    background-color: rgb(236 225 255 / var(--tw-bg-opacity))
+    background-color: rgb(215 215 253 / var(--tw-bg-opacity))
 }
 
 .bg-white {

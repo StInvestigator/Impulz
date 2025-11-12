@@ -3,6 +3,7 @@ package com.example.server.controller.model;
 import com.example.server.dto.Page.PageDto;
 import com.example.server.dto.Playlist.PlaylistDto;
 import com.example.server.dto.Playlist.PlaylistSimpleDto;
+import com.example.server.model.Playlist;
 import com.example.server.service.playlist.PlaylistService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,21 @@ public class PlaylistController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<PlaylistDto> editPlaylist(
+            @PathVariable Long id,
+            @RequestBody PlaylistDto playlistDto
+    ) {
+        Playlist playlist = new Playlist();
+        playlist.setTitle(playlistDto.getTitle());
+        playlist.setImageUrl(playlistDto.getImgUrl());
+
+        Playlist updated = playlistService.update(id, playlist);
+
+        return ResponseEntity.ok(PlaylistDto.fromEntity(updated));
+    }
+
 
     @PostMapping("/addTrack")
     public ResponseEntity<?> addTrackToPlaylist(@RequestParam("playlistId") Long playListId,

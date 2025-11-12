@@ -7,7 +7,7 @@ import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
 import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
-import {useMediaContextMenu} from "../../../hooks/useMediaContextMenu.ts";
+import {useContextMenu} from "../../../hooks/useContextMenu.ts";
 import {PlaylistContextMenu} from "../../contextMenu/PlaylistContextMenu.tsx";
 
 interface PlaylistItemProps {
@@ -22,7 +22,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
     const route = useAppNavigate()
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
-    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useMediaContextMenu();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
     const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {

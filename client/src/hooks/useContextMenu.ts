@@ -6,7 +6,7 @@ interface ContextMenuState {
     trackId: number;
 }
 
-export const useMediaContextMenu = () => {
+export const useContextMenu = () => {
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
     const handleContextMenu = (event: React.MouseEvent, trackId: number) => {

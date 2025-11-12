@@ -10,7 +10,7 @@
       <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}">
     </#list>
   </#if>
-
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <#if properties.favicons?has_content>
     <#list properties.favicons?split(" ") as favicon>
       <link href="${url.resourcesPath}/${favicon?split('==')[0]}" rel="${favicon?split('==')[1]}">

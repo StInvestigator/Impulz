@@ -7,6 +7,7 @@
     border-color: #ebebe5
 }
 
+
 :before,
 :after {
     --tw-content: ""
@@ -18,6 +19,7 @@ html {
     -moz-tab-size: 4;
     -o-tab-size: 4;
     tab-size: 4;
+    /* font-family: 'Manrope', sans-serif; */
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
     font-feature-settings: normal;
     font-variation-settings: normal
@@ -25,7 +27,7 @@ html {
 
 body {
     margin: 0;
-    line-height: inherit
+    line-height: inherit;
 }
 
 hr {
@@ -901,7 +903,7 @@ select {
 
 .text-secondary-400 {
     --tw-text-opacity: 1;
-    color: rgb(156 163 175 / var(--tw-text-opacity))
+    color: rgb(116 123 135 / var(--tw-text-opacity))
 }
 
 .text-secondary-600 {

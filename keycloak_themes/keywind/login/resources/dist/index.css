@@ -766,7 +766,7 @@ select {
 
 .border-secondary-200 {
     --tw-border-opacity: 1;
-    border-color: rgb(229 231 235 / var(--tw-border-opacity))
+    border-color: rgb(209 211 215 / var(--tw-border-opacity))
 }
 
 .bg-blue-100 {
@@ -796,7 +796,7 @@ select {
 
 .bg-secondary-100 {
     --tw-bg-opacity: 1;
-    background-color: rgb(243 244 246 / var(--tw-bg-opacity))
+    background-color: rgb(236 225 255 / var(--tw-bg-opacity))
 }
 
 .bg-white {
@@ -908,7 +908,7 @@ select {
 
 .text-secondary-600 {
     --tw-text-opacity: 1;
-    color: rgb(75 85 99 / var(--tw-text-opacity))
+    color: rgb(55 55 79 / var(--tw-text-opacity))
 }
 
 .text-white {
@@ -957,7 +957,7 @@ select {
 }
 
 .hover\:bg-provider-google\/10:hover {
-    background-color: #4285f41a
+    background-color: #fcb64545
 }
 
 .hover\:bg-provider-instagram\/10:hover {
@@ -998,7 +998,7 @@ select {
 
 .hover\:bg-secondary-100:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(243 244 246 / var(--tw-bg-opacity))
+    background-color: rgb(231, 220, 255 / var(--tw-bg-opacity))
 }
 
 .hover\:bg-secondary-200:hover {
@@ -1013,7 +1013,7 @@ select {
 
 .hover\:text-secondary-900:hover {
     --tw-text-opacity: 1;
-    color: rgb(17 24 39 / var(--tw-text-opacity))
+    color: rgb(7 14 29 / var(--tw-text-opacity))
 }
 
 .focus\:border-primary-300:focus {

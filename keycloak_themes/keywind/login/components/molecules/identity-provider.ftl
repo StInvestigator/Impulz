@@ -8,7 +8,7 @@
     <#list providers as provider>
       <#assign colorClass="hover:bg-provider-google/10">
       <a
-        class="${colorClass} border border-secondary-200 flex justify-center py-2 rounded-lg hover:border-transparent w-full"
+        class="${colorClass} border border-secondary-200 flex justify-center py-2 rounded-lg w-full"
         data-provider="${provider.alias}"
         href="${provider.loginUrl}"
         type="button"

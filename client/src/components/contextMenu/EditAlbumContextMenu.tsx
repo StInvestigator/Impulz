@@ -1,4 +1,4 @@
-import { Menu, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
+import { Menu, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
@@ -9,6 +9,7 @@ import type { AppDispatch } from "../../store/store.ts";
 import { useKeycloak } from "@react-keycloak/web";
 import type { AlbumDto } from "../../models/AlbumDto.ts";
 import { deleteAlbum, fetchAlbumsByAuthor, fetchFavoriteAlbums } from "../../store/reducers/action-creators/album.ts";
+import { showAlert } from "../../store/reducers/AlertSlice.ts";
 
 interface EditAlbumContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -17,14 +18,11 @@ interface EditAlbumContextMenuProps {
 }
 
 export const EditAlbumContextMenu: React.FC<EditAlbumContextMenuProps> = ({
-    contextMenu,
-    onClose,
-    album
-}) => {
+                                                                              contextMenu,
+                                                                              onClose,
+                                                                              album
+                                                                          }) => {
     const { t } = useTranslation(["other", "errors"]);
-    const [toastOpen, setToastOpen] = useState(false);
-    const [errorToastOpen, setErrorToastOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -32,17 +30,6 @@ export const EditAlbumContextMenu: React.FC<EditAlbumContextMenuProps> = ({
     const navigate = useNavigate();
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
-
-    const handleCloseToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === "clickaway") return;
-        setToastOpen(false);
-    };
-
-    const handleCloseErrorToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === "clickaway") return;
-        setErrorToastOpen(false);
-        setErrorMessage("");
-    };
 
     const handleDeleteClick = () => {
         setConfirmDeleteOpen(true);
@@ -60,9 +47,15 @@ export const EditAlbumContextMenu: React.FC<EditAlbumContextMenuProps> = ({
             await dispatch(fetchAlbumsByAuthor({ authorId: userId, size: 10 })).unwrap();
             await dispatch(fetchFavoriteAlbums({ userId })).unwrap();
             navigate("/");
+            dispatch(showAlert({
+                message: t("title-album-deleted"),
+                severity: 'info'
+            }));
         } catch (e: unknown) {
-            setErrorMessage(`Error while deleting album: ${e}`);
-            setErrorToastOpen(true);
+            dispatch(showAlert({
+                message: t("errors:error-delete-album"),
+                severity: 'error'
+            }));
         }
     };
 
@@ -159,46 +152,6 @@ export const EditAlbumContextMenu: React.FC<EditAlbumContextMenuProps> = ({
                     </Button>
                 </DialogActions>
             </Dialog>
-
-
-            <Snackbar
-                open={toastOpen}
-                autoHideDuration={2000}
-                onClose={handleCloseToast}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            >
-                <Alert
-                    onClose={handleCloseToast}
-                    severity="info"
-                    sx={{
-                        backgroundColor: "var(--dodger-blue)",
-                        color: "white",
-                        "& .MuiAlert-icon": { color: "white" }
-                    }}
-                >
-                    {t("title-link-copied")}
-                </Alert>
-            </Snackbar>
-
-            <Snackbar
-                open={errorToastOpen}
-                autoHideDuration={3000}
-                onClose={handleCloseErrorToast}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            >
-                <Alert
-                    onClose={handleCloseErrorToast}
-                    severity="warning"
-                    variant="filled"
-                    sx={{
-                        backgroundColor: "#ff9800",
-                        color: "white",
-                        "& .MuiAlert-icon": { color: "white" }
-                    }}
-                >
-                    {errorMessage}
-                </Alert>
-            </Snackbar>
         </>
     );
 };

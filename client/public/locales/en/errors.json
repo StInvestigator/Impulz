@@ -26,5 +26,11 @@
   "error-current-password-required": "Current password is required to set new password",
   "error-no-changes": "No changes to save",
   "error-update-failed": "Failed to update data",
-  "error-empty-email": "Email cannot be empty"
+  "error-empty-email": "Email cannot be empty",
+  "error-playback": "Playback error",
+  "error-subscription": "Subscription error",
+  "error-copy-link": "Copy link error",
+  "error-add-to-liked": "Error adding to favorites",
+  "error-delete-album": "Error deleting album",
+  "error-delete-playlist": "Error deleting playlist"
 }

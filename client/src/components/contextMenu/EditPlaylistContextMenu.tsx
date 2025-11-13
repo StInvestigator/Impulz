@@ -1,4 +1,4 @@
-import { Menu, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
+import { Menu, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { deletePlaylist, fetchFavoritePlaylists, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
 import type { AppDispatch } from "../../store/store.ts";
 import { useKeycloak } from "@react-keycloak/web";
+import { showAlert } from "../../store/reducers/AlertSlice.ts";
 
 interface EditPlaylistContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -24,9 +25,6 @@ export const EditPlaylistContextMenu: React.FC<EditPlaylistContextMenuProps> = (
                                                                                     playlist
                                                                                 }) => {
     const { t } = useTranslation(["other", "errors"]);
-    const [toastOpen, setToastOpen] = useState(false);
-    const [errorToastOpen, setErrorToastOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [isEditPlaylistModalOpen, setIsEditPlaylistModalOpen] = useState(false);
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
@@ -35,17 +33,6 @@ export const EditPlaylistContextMenu: React.FC<EditPlaylistContextMenuProps> = (
     const navigate = useNavigate();
     const { keycloak } = useKeycloak();
     const userId = keycloak.tokenParsed?.sub;
-
-    const handleCloseToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === "clickaway") return;
-        setToastOpen(false);
-    };
-
-    const handleCloseErrorToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === "clickaway") return;
-        setErrorToastOpen(false);
-        setErrorMessage("");
-    };
 
     const handleEditPlaylist = () => {
         setIsEditPlaylistModalOpen(true);
@@ -68,9 +55,16 @@ export const EditPlaylistContextMenu: React.FC<EditPlaylistContextMenuProps> = (
             await dispatch(fetchPlaylistsOwnByUserId({ userId })).unwrap();
             await dispatch(fetchFavoritePlaylists({ userId })).unwrap();
             navigate("/");
+            dispatch(showAlert({
+                message: t("title-playlist-deleted"),
+                severity: 'info'
+            }));
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e: unknown) {
-            setErrorMessage(`Error while deleting playlist: ${e}`);
-            setErrorToastOpen(true);
+            dispatch(showAlert({
+                message: t("errors:error-delete-playlist"),
+                severity: 'error'
+            }));
         }
     };
 
@@ -179,46 +173,6 @@ export const EditPlaylistContextMenu: React.FC<EditPlaylistContextMenuProps> = (
                     </Button>
                 </DialogActions>
             </Dialog>
-
-
-            <Snackbar
-                open={toastOpen}
-                autoHideDuration={2000}
-                onClose={handleCloseToast}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            >
-                <Alert
-                    onClose={handleCloseToast}
-                    severity="info"
-                    sx={{
-                        backgroundColor: "var(--dodger-blue)",
-                        color: "white",
-                        "& .MuiAlert-icon": { color: "white" }
-                    }}
-                >
-                    {t("title-link-copied")}
-                </Alert>
-            </Snackbar>
-
-            <Snackbar
-                open={errorToastOpen}
-                autoHideDuration={3000}
-                onClose={handleCloseErrorToast}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            >
-                <Alert
-                    onClose={handleCloseErrorToast}
-                    severity="warning"
-                    variant="filled"
-                    sx={{
-                        backgroundColor: "#ff9800",
-                        color: "white",
-                        "& .MuiAlert-icon": { color: "white" }
-                    }}
-                >
-                    {errorMessage}
-                </Alert>
-            </Snackbar>
         </>
     );
 };

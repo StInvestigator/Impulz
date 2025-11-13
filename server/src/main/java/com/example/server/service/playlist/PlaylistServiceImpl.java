@@ -172,8 +172,8 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId) {
-        return playlistRepository.findAllByOwnerIdOrderByCreatedAtDesc(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    public List<PlaylistDto> getAllPlaylistsByOwnerId(String ownerId) {
+        return playlistRepository.findAllByOwnerIdOrderByCreatedAtDesc(ownerId).stream().map(PlaylistDto::fromEntity).toList();
     }
 
     @Override

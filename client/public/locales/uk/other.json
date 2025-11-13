@@ -42,5 +42,11 @@
   "text-confirm-delete-playlist": "Ви впевнені, що хочете видалити плейлист \"{{name}}\"?",
   "text-confirm-delete-album": "Ви впевнені, що хочете видалити альбом \"{{name}}\"?",
   "title-cancel": "Відмінити",
-  "title-delete": "Видалити"
+  "title-delete": "Видалити",
+  "title-copy-author-link": "Скопіювати посилання на автора",
+  "title-subscribe": "Підписатися",
+  "title-unsubscribe": "Відписатися",
+  "title-album-deleted": "Альбом успішно видалено",
+  "title-playlist-deleted": "Плейлист успішно видалено",
+  "title-track-added-to-playlist": "Трек додано до плейлиста"
 }

@@ -34,7 +34,6 @@ export const PlayerTrackContextMenu: React.FC<PlayerTrackContextMenuProps> = ({
     const menuRef = useRef<HTMLDivElement>(null);
 
     const handleAddToFavorites = () => {
-        console.log("Like track");
         if (userId) {
             dispatch(likeTrack({ trackId: track.id, userId: userId }));
         }

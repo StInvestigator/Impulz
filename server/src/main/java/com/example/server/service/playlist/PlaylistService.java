@@ -22,7 +22,7 @@ public interface PlaylistService {
     void removeTrackFromPlaylist(Long playlistId, Long trackId);
     Playlist create(String title, String uid, Boolean isPublic, MultipartFile img);
     Playlist update(Long id, String title, Boolean isPublic, MultipartFile img);
-    List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId);
+    List<PlaylistDto> getAllPlaylistsByOwnerId(String ownerId);
     Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable);
     Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable);
     Page<PlaylistDto> getAllPlaylistsDtoByOwnerId(String ownerId, Pageable pageable);

@@ -1,14 +1,13 @@
 import './App.css';
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import { Box } from "@mui/material";
+import { Box, Snackbar, Alert } from "@mui/material";
 import AppRouter from "./components/AppRouter";
 import { BrowserRouter, useLocation, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import { ThemeProvider } from '@mui/material/styles';
 import ScrollToTop from "./components/ScrollToTop.tsx";
 import { theme } from "./theme.ts";
-
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import { useEffect } from "react";
@@ -20,6 +19,7 @@ import { fetchUserDetails } from './store/reducers/action-creators/user.ts';
 import { setProfile } from './store/reducers/ProfileSlice.ts';
 import './assets/fonts/fonts.css'
 import { closeFullScreenPlayer } from "./store/reducers/PlayerSlice.ts";
+import { hideAlert } from './store/reducers/AlertSlice.ts';
 
 function App() {
   return (
@@ -50,8 +50,10 @@ const SecuredContent = () => {
     currentTime,
     duration,
     pause,
-    isFullScreenOpen // ← Получаем из Redux
+    isFullScreenOpen
   } = useAppSelector((state) => state.player);
+
+  const alert = useAppSelector((state) => state.alert);
 
   useEffect(() => {
     if (initialized && keycloak.authenticated && keycloak.token) {
@@ -100,66 +102,97 @@ const SecuredContent = () => {
     }
   };
 
+  const handleCloseAlert = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    dispatch(hideAlert());
+  };
+
   if (!initialized) return <div>Loading...</div>;
 
   return (
-      <>
-        <ThemeProvider theme={theme}>
-          <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh'
-          }}>
-            <Navbar />
-            <Box component="main" display={"flex"} sx={{ flex: 1 }}>
-              <Sidebar />
-              <Box sx={{
-                position: 'relative',
-                width: "calc(100% - 320px)",
-                marginLeft: `320px`,
-                display: 'flex',
-                flexDirection: 'column'
+      <ThemeProvider theme={theme}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh'
+        }}>
+          <Navbar />
+          <Box component="main" display={"flex"} sx={{ flex: 1 }}>
+            <Sidebar />
+            <Box sx={{
+              position: 'relative',
+              width: "calc(100% - 320px)",
+              marginLeft: `320px`,
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <Box component="article" sx={{
+                marginTop: "48px",
+                padding: "60px 20px 120px 20px",
+                overflowX: 'hidden',
+                display: isFullScreenOpen ? 'none' : 'block',
+                width: '100%',
+                boxSizing: 'border-box',
+                flex: 1
               }}>
-                {/* Основной контент */}
-                <Box component="article" sx={{
-                  marginTop: "48px",
-                  padding: "60px 20px 120px 20px",
-                  overflowX: 'hidden',
-                  display: isFullScreenOpen ? 'none' : 'block', // ← Используем из Redux
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  flex: 1
-                }}>
-                  <ScrollToTop />
-                  <AppRouter />
-                </Box>
-
-                {active && isFullScreenOpen && ( // ← Используем из Redux
-                    <FullScreenPlayer
-                        active={active}
-                        playlist={playlist}
-                        currentTrackIndex={currentTrackIndex}
-                        currentTime={currentTime}
-                        duration={duration}
-                        pause={pause}
-                        onClose={() => dispatch(closeFullScreenPlayer())}
-                        onCloseFullScreen={() => dispatch(closeFullScreenPlayer())}
-                    />
-                )}
+                <ScrollToTop />
+                <AppRouter />
               </Box>
+
+              {active && isFullScreenOpen && (
+                  <FullScreenPlayer
+                      active={active}
+                      playlist={playlist}
+                      currentTrackIndex={currentTrackIndex}
+                      currentTime={currentTime}
+                      duration={duration}
+                      pause={pause}
+                      onClose={() => dispatch(closeFullScreenPlayer())}
+                      onCloseFullScreen={() => dispatch(closeFullScreenPlayer())}
+                  />
+              )}
             </Box>
-
-            {/* Убираем старые пропсы */}
-            <MusicPlayer />
-
-            {!isFullScreenOpen && (
-                <Box sx={{ mt: 'auto' }}>
-                  <Footer />
-                </Box>
-            )}
           </Box>
-        </ThemeProvider>
-      </>
+
+          <MusicPlayer />
+
+          {!isFullScreenOpen && (
+              <Box sx={{ mt: 'auto' }}>
+                <Footer />
+              </Box>
+          )}
+
+          <Snackbar
+              open={alert.open}
+              autoHideDuration={3000}
+              onClose={handleCloseAlert}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              sx={{
+                position: 'fixed',
+                bottom: 20,
+                right: 20,
+                zIndex: 9999
+              }}
+          >
+            <Alert
+                onClose={handleCloseAlert}
+                severity={alert.severity}
+                sx={{
+                  backgroundColor: alert.severity === 'info' ? 'var(--dodger-blue)' :
+                      alert.severity === 'error' ? '#ff9800' : undefined,
+                  color: 'white',
+                  '& .MuiAlert-icon': {
+                    color: 'white',
+                  }
+                }}
+            >
+              {alert.message}
+            </Alert>
+          </Snackbar>
+        </Box>
+      </ThemeProvider>
   );
 }
 

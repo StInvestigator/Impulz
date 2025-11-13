@@ -42,5 +42,11 @@
   "text-confirm-delete-playlist": "Are you sure you want to delete the playlist \"{{name}}\"?",
   "text-confirm-delete-album": "Are you sure you want to delete the album \"{{name}}\"?",
   "title-cancel": "Cancel",
-  "title-delete": "Delete"
+  "title-delete": "Delete",
+  "title-copy-author-link": "Copy author link",
+  "title-subscribe": "Subscribe",
+  "title-unsubscribe": "Unsubscribe",
+  "title-album-deleted": "Album successfully deleted",
+  "title-playlist-deleted": "Playlist successfully deleted",
+  "title-track-added-to-playlist": "Track added to playlist"
 }

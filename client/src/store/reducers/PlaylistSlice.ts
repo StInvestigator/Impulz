@@ -13,7 +13,7 @@ import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 interface PlaylistState {
     topPlaylists: PlaylistDto[];
     currentPlaylist: PlaylistDto | null;
-    playlistsOwnByCurrentUser: PlaylistSimpleDto[];
+    playlistsOwnByCurrentUser: PlaylistDto[];
     allPlaylistsDtoOwnByUser: PlaylistDto[];
     recentPlaylistsByGenre: PlaylistDto[];
     favoritePlaylists: PlaylistSimpleDto[];

@@ -25,7 +25,7 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
 
     const handleContextMenuClick = (event: React.MouseEvent) => {
         event.preventDefault();
-        handleContextMenu(event,playlist.id);
+        handleContextMenu(event, playlist.id);
     };
 
     return (
@@ -94,7 +94,7 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                                     color: 'inherit',
                                 }}
                             >
-                                {t("title-playlist")} &middot; {playlist?.tracks?.length || 0} {t("title-song")}
+                                {t("title-playlist")} &middot; {playlist?.tracks.length || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }

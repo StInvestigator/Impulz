@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
-import React, {type FC} from "react";
+import React, { memo, type FC } from "react";
+import {useContextMenu} from "../../../hooks/useContextMenu.ts";
+import {AuthorContextMenu} from "../../contextMenu/AuthorContextMenu.tsx";
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -12,10 +14,11 @@ interface AuthorItemProps {
     color?: "dark" | "light";
 }
 
-const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "light" }) => {
+const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = "light" }) => {
     const navigate = useNavigate();
     const { t } = useTranslation('other');
     const { playAuthorPopularTracks } = usePlayTrack();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handlePlayClick = async (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -34,9 +37,9 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
         navigate(`/author/${author.id}`);
     };
 
-
     return (
         <Box
+            onContextMenu={(e) => handleContextMenu(e, author.id)}
             onClick={handleCardClick}
             sx={{
                 width: itemWidth,
@@ -100,8 +103,14 @@ const AuthorSmallItem: FC<AuthorItemProps> = ({ author, itemWidth, color = "ligh
                 </Typography>
                 <Typography variant="mainRM">{t("title-author")}</Typography>
             </Box>
+
+            <AuthorContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                author={author}
+            />
         </Box>
     );
-};
+});
 
 export default AuthorSmallItem;

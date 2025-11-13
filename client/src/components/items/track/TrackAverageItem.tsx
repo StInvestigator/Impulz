@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { showAlert } from "../../../store/reducers/AlertSlice.ts";
+import {useTranslation} from "react-i18next";
 
 interface TrackItemProps {
     track: TrackSimpleDto;
@@ -18,6 +21,23 @@ const TrackAverageItem: FC<TrackItemProps> = ({ itemWidth, itemHeight, track }) 
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
+    const dispatch = useAppDispatch();
+    const {t} = useTranslation("errors");
+
+    const handlePlayClick = () => {
+        try {
+            playSingle(track);
+        } catch (e : unknown) {
+            dispatch(showAlert({
+                message: `${t("error-playback")}: ${e}`,
+                severity: 'error'
+            }));
+        }
+    };
+
+    const handleAlbumClick = () => {
+        route(`/album/${track.albumId}`);
+    };
 
     return (
         <Box
@@ -89,7 +109,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({ itemWidth, itemHeight, track }) 
                             }}
                         >
                             <Typography
-                                onClick={() => route(`/album/${track.albumId}`)}
+                                onClick={handleAlbumClick}
                                 sx={{
                                     color: "var(--orange-peel)",
                                     '&:hover': {
@@ -111,11 +131,11 @@ const TrackAverageItem: FC<TrackItemProps> = ({ itemWidth, itemHeight, track }) 
                                 transform: "scale(1.2)"
                             }
                         }}
-                        onClick={() => playSingle(track)}
+                        onClick={handlePlayClick}
                         disableRipple={true}
                     >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
-                            height={"30px"} />
+                             height={"30px"} />
                     </IconButton>
                 </Box>
             </Box>

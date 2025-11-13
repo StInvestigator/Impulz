@@ -9,7 +9,7 @@ import TopFiveGenreList from "../components/lists/TopFiveGenreList";
 import { useTranslation } from 'react-i18next';
 import { fetchTopTracksByWeek } from "../store/reducers/action-creators/tracks.ts";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
-import { useEffect } from "react";
+import {useEffect} from "react";
 import { fetchTopPlaylistsByWeek } from "../store/reducers/action-creators/playlist.ts";
 import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
 import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";

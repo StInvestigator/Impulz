@@ -148,7 +148,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/ownForUser/{userId}")
-    public ResponseEntity<List<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId) {
+    public ResponseEntity<List<PlaylistDto>> getOwnForUser(@PathVariable String userId) {
         try {
             return ResponseEntity.ok(playlistService.getAllPlaylistsByOwnerId(userId));
         } catch (EntityNotFoundException e) {

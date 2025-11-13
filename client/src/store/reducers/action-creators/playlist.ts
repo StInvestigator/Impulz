@@ -78,7 +78,7 @@ export const createPlaylist = createAsyncThunk<
 );
 
 export const fetchPlaylistsOwnByUserId = createAsyncThunk<
-    PlaylistSimpleDto[],
+    PlaylistDto[],
     { userId: string; },
     { rejectValue: string }
 >(

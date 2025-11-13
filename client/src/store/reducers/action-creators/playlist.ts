@@ -96,11 +96,11 @@ export const fetchPlaylistsOwnByUserId = createAsyncThunk<
 
 export const fetchAllPlaylistsDtoOwnByUserId = createAsyncThunk<
     PlaylistDto[],
-    {userId: string,page?:number,size?:number},
-    {rejectValue: string}
+    { userId: string, page?: number, size?: number },
+    { rejectValue: string }
 >(
     'playlists/fetchAllPlaylistsDtoOwnByUserId',
-    async ({ userId, page = 0, size = 1000 }, { rejectWithValue,dispatch }) => {
+    async ({ userId, page = 0, size = 1000 }, { rejectWithValue, dispatch }) => {
         try {
             const params = new URLSearchParams();
             if (page !== undefined) params.append('page', page.toString());
@@ -110,7 +110,7 @@ export const fetchAllPlaylistsDtoOwnByUserId = createAsyncThunk<
             console.log("API Response:", response.data);
             dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
-        } catch (e :unknown) {
+        } catch (e: unknown) {
             return rejectWithValue(`Не удалось найти плейлисты принадлежащие пользователю: ${e}`);
         }
     }
@@ -217,20 +217,32 @@ export const likePlaylist = createAsyncThunk<
 
 export const updatePlaylist = createAsyncThunk<
     PlaylistDto,
-    { id: number; title: string; imgUrl: string },
+    { id: number, name: string; isPublic: boolean; imageFile?: File },
     { rejectValue: string }
 >(
     'playlists/updatePlaylist',
-    async ({ id, title, imgUrl }, { rejectWithValue }) => {
+    async ({ id, name, isPublic, imageFile }, { rejectWithValue }) => {
         try {
-            const response = await $authApi.put(`/playlists/edit/${id}`, {
-                title,
-                imgUrl
-            });
+            const formData = new FormData();
+            formData.append('id', id.toString());
+            formData.append('title', name);
+            formData.append('isPublic', isPublic.toString());
 
+            if (imageFile) {
+                formData.append('img', imageFile);
+            }
+
+            console.log("FormData entries: ", Array.from(formData.entries()));
+
+            const response = await $authApi.put('/playlists/update', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             return response.data;
-        } catch (e: unknown) {
-            return rejectWithValue(`Не удалось обновить плейлист: ${e}`);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+            return rejectWithValue('Не удалось обновить плейлист');
         }
     }
 );

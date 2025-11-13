@@ -7,6 +7,7 @@ import com.example.server.model.*;
 import com.example.server.model.id.UserFavoriteTrack;
 import com.example.server.model.key.UserFavoriteTrackKey;
 import com.example.server.service.author.AuthorService;
+import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.genre.GenreService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.music.MusicService;
@@ -31,6 +32,7 @@ public class TrackServiceImpl implements TrackService {
     private final ImageService imageService;
     private final UserFavoriteTrackRepository userFavoriteTrackRepository;
     private final UserServiceImpl userServiceImpl;
+    private final DataSyncService dataSyncService;
 
     public Track getTrackById(Long id) {
         return trackRepository.findById(id).orElseThrow();
@@ -59,6 +61,7 @@ public class TrackServiceImpl implements TrackService {
             "track.findPopularTracksByGenre", "track.findTracksByAlbum", "track.findTracksByPlaylist"}, allEntries = true)
     public void deleteTrack(Track track) {
         trackRepository.delete(track);
+        dataSyncService.deleteTrack(track.getId());
     }
 
     @Cacheable(value = "track.findMostPlayedTracksThisWeek",
@@ -160,6 +163,7 @@ public class TrackServiceImpl implements TrackService {
         entity.setLikes(0L);
         entity.setTotalPlays(0L);
         musicService.uploadMusic(file, entity);
+        dataSyncService.syncTrack(entity);
         return entity;
     }
 

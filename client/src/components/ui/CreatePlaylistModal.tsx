@@ -77,7 +77,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
     };
 
     const handleSave = async () => {
-        if (!playlistName.trim() || playlistName.trim().toLowerCase() === "liked songs") {
+        if (!playlistName.trim()) {
             setError(`${t("errors:error-wrong-playlist-name")}`);
             return;
         }

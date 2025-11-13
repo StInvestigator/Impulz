@@ -21,7 +21,7 @@ public interface PlaylistService {
     void changeTrackPosition(Long playlistId, Long trackId, Integer position);
     void removeTrackFromPlaylist(Long playlistId, Long trackId);
     Playlist create(String title, String uid, Boolean isPublic, MultipartFile img);
-    Playlist update(Long id,Playlist playlist);
+    Playlist update(Long id, String title, Boolean isPublic, MultipartFile img);
     List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId);
     Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable);
     Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable);

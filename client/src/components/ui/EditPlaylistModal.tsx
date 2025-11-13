@@ -10,15 +10,15 @@ import {
     RadioGroup,
     Typography
 } from "@mui/material";
-import React, {type FC, useEffect, useRef, useState} from "react";
+import React, { type FC, useEffect, useRef, useState } from "react";
 import addImage from "../../assets/addImage.svg";
 import cancelIcon from "../../assets/CancelButtonIcon.svg";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import {createPlaylist, fetchPlaylistsOwnByUserId} from "../../store/reducers/action-creators/playlist.ts";
-import type {AppDispatch, RootState} from "../../store/store.ts";
-import {useKeycloak} from "@react-keycloak/web";
-import type {PlaylistDto} from "../../models/PlaylistDto.ts";
+import { updatePlaylist, fetchPlaylistsOwnByUserId, fetchFavoritePlaylists, fetchPlaylistDetails } from "../../store/reducers/action-creators/playlist.ts";
+import type { AppDispatch, RootState } from "../../store/store.ts";
+import { useKeycloak } from "@react-keycloak/web";
+import type { PlaylistDto } from "../../models/PlaylistDto.ts";
 
 interface ModalProps {
     open: boolean;
@@ -89,7 +89,7 @@ const EditPlaylistModal: FC<ModalProps> = ({ open, setOpen, playlist }) => {
     };
 
     const handleSave = async () => {
-        if (!playlistName.trim() || playlistName.trim().toLowerCase() === "liked songs") {
+        if (!playlistName.trim()) {
             setError(`${t("errors:error-wrong-playlist-name")}`);
             return;
         }
@@ -100,17 +100,20 @@ const EditPlaylistModal: FC<ModalProps> = ({ open, setOpen, playlist }) => {
         setError("");
 
         try {
-            const result = await dispatch(createPlaylist({
-                name: playlistName.trim(),
-                isPublic,
-                userId,
-                imageFile: imageFile || undefined,
-            })).unwrap();
+            if (playlist) {
+                const result = await dispatch(updatePlaylist({
+                    id: playlist?.id,
+                    name: playlistName.trim(),
+                    isPublic,
+                    imageFile: imageFile || undefined,
+                })).unwrap();
+                console.log("Плейлист обновлён:", result);
 
-            console.log("Плейлист создан/обновлён:", result);
-
-            if (userId) {
-                await dispatch(fetchPlaylistsOwnByUserId({ userId }));
+                if (userId) {
+                    await dispatch(fetchPlaylistsOwnByUserId({ userId }));
+                    await dispatch(fetchFavoritePlaylists({ userId }));
+                    await dispatch(fetchPlaylistDetails( playlist?.id.toString()));
+                }
             }
 
             setOpen(false);

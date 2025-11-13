@@ -8,7 +8,7 @@ import DeletePlaylistIcon from "../../assets/context/DeleteIcon.svg";
 import EditPlaylistModal from "../ui/EditPlaylistModal.tsx";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { deletePlaylist, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
+import { deletePlaylist, fetchFavoritePlaylists, fetchPlaylistDetails, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
 import type { AppDispatch } from "../../store/store.ts";
 import { useKeycloak } from "@react-keycloak/web";
 
@@ -66,6 +66,7 @@ export const EditPlaylistContextMenu: React.FC<EditPlaylistContextMenuProps> = (
         try {
             await dispatch(deletePlaylist(playlist.id)).unwrap();
             await dispatch(fetchPlaylistsOwnByUserId({ userId })).unwrap();
+            await dispatch(fetchFavoritePlaylists({ userId })).unwrap();
             navigate("/");
         } catch (e: unknown) {
             setErrorMessage(`Error while deleting playlist: ${e}`);

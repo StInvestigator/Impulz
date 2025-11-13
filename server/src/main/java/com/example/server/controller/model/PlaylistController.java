@@ -85,18 +85,21 @@ public class PlaylistController {
         }
     }
 
-    @PutMapping("/edit/{id}")
+    @PutMapping("/update")
     public ResponseEntity<PlaylistDto> editPlaylist(
-            @PathVariable Long id,
-            @RequestBody PlaylistDto playlistDto
-    ) {
-        Playlist playlist = new Playlist();
-        playlist.setTitle(playlistDto.getTitle());
-        playlist.setImageUrl(playlistDto.getImgUrl());
-
-        Playlist updated = playlistService.update(id, playlist);
-
-        return ResponseEntity.ok(PlaylistDto.fromEntity(updated));
+            @RequestPart("id") String id,
+            @RequestPart("title") String title,
+            @RequestPart("isPublic") String isPublic,
+            @RequestPart(value = "img", required = false) MultipartFile image) {
+        try {
+            Playlist updated = playlistService.update(Long.parseLong(id), title, Boolean.parseBoolean(isPublic), image);
+            return ResponseEntity.ok(PlaylistDto.fromEntity(updated));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 
@@ -157,9 +160,9 @@ public class PlaylistController {
     }
 
     @GetMapping("/AllPlaylistOwnByUser/{userId}")
-    public ResponseEntity<Page<PlaylistDto>> getAllPlaylistDtoOwnForUser(@PathVariable String userId,Pageable pageable) {
+    public ResponseEntity<Page<PlaylistDto>> getAllPlaylistDtoOwnForUser(@PathVariable String userId, Pageable pageable) {
         try {
-            return ResponseEntity.ok(playlistService.getAllPlaylistsDtoByOwnerId(userId,pageable));
+            return ResponseEntity.ok(playlistService.getAllPlaylistsDtoByOwnerId(userId, pageable));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

@@ -14,7 +14,9 @@ import com.example.server.model.id.UserFavoritePlaylist;
 import com.example.server.model.key.PlaylistTrackKey;
 import com.example.server.model.key.UserFavoriteAlbumKey;
 import com.example.server.model.key.UserFavoritePlaylistKey;
+import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.image.ImageService;
+import com.example.server.service.s3.S3StorageService;
 import com.example.server.service.track.TrackService;
 import com.example.server.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -39,6 +41,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final TrackService trackService;
     private final UserService userService;
     private final ImageService imageService;
+    private final DataSyncService dataSyncService;
 
     public PlaylistDto getPlaylistDtoById(Long id) {
         return PlaylistDto.fromEntity(playlistRepository.findById(id).orElseThrow());
@@ -50,11 +53,16 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     public void createPlaylist(Playlist playlist) {
         playlistRepository.save(playlist);
+        dataSyncService.syncPlaylist(playlist);
     }
 
     @CacheEvict(cacheNames = {"playlist.findTopPlaylistsByFavorites", "playlist.findRecentPublicPlaylistsByGenre"}, allEntries = true)
+    @Transactional
     public void deletePlaylistById(Long id) {
-        playlistRepository.deleteById(id);
+        Playlist playlist = playlistRepository.findById(id).orElseThrow();
+        imageService.deleteImage(playlist.getImageUrl());
+        playlistRepository.delete(playlist);
+        dataSyncService.deletePlaylist(id);
     }
 
     @Cacheable(value = "playlist.findTopPlaylistsByFavorites",
@@ -124,29 +132,33 @@ public class PlaylistServiceImpl implements PlaylistService {
         entity.setOwner(userService.getUserById(uid));
         entity.setIsPublic(isPublic);
         playlistRepository.save(entity);
+        dataSyncService.syncPlaylist(entity);
         return entity;
     }
 
     @Override
-    public Playlist update(Long id, Playlist updatedData) {
+    public Playlist update(Long id, String title, Boolean isPublic, MultipartFile img) {
         Playlist existing = playlistRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found with id: " + id));
 
-        if (updatedData.getTitle() != null && !updatedData.getTitle().isBlank()) {
-            existing.setTitle(updatedData.getTitle());
+        if (title != null && !title.isBlank()) {
+            existing.setTitle(title);
+        }
+        existing.setIsPublic(isPublic);
+
+        if (img != null) {
+            imageService.deleteImage(existing.getImageUrl());
+            existing.setImageUrl(imageService.uploadImage(img, title));
         }
 
-        if (updatedData.getImageUrl() != null && !updatedData.getImageUrl().isBlank()) {
-            existing.setImageUrl(updatedData.getImageUrl());
-        }
-
+        dataSyncService.syncPlaylist(existing);
         return playlistRepository.save(existing);
     }
 
 
     @Override
     public Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable) {
-        return playlistRepository.findAllByFavoredByUserId(ownerId,pageable).map(PlaylistSimpleDto::fromEntity);
+        return playlistRepository.findAllByFavoredByUserId(ownerId, pageable).map(PlaylistSimpleDto::fromEntity);
     }
 
     @Override
@@ -166,7 +178,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-      @Cacheable(value = "playlist.findRecentPublicPlaylistsByGenre",
+    @Cacheable(value = "playlist.findRecentPublicPlaylistsByGenre",
             key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     public PageDto<PlaylistSimpleDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable) {
         return new PageDto<>(playlistRepository

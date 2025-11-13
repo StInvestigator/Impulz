@@ -10,6 +10,7 @@ import com.example.server.model.Album;
 import com.example.server.model.id.UserFavoriteAlbum;
 import com.example.server.model.key.UserFavoriteAlbumKey;
 import com.example.server.service.author.AuthorService;
+import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.track.TrackService;
 import com.example.server.service.user.UserService;
@@ -37,6 +38,7 @@ public class AlbumServiceImpl implements AlbumService
     private final ImageService imageService;
     private final UserService userService;
     private final UserFavouriteAlbumRepository userFavouriteAlbumRepository;
+    private final DataSyncService dataSyncService;
 
     @Override
     public Album getById(Long id) {
@@ -63,6 +65,7 @@ public class AlbumServiceImpl implements AlbumService
     })
     public void delete(Long id){
         albumRepository.deleteById(id);
+        dataSyncService.deleteAlbum(id);
     }
 
     @Cacheable(value = "album.recommendedToday",
@@ -114,6 +117,8 @@ public class AlbumServiceImpl implements AlbumService
         albumRepository.save(entity);
 
         trackService.uploadTracks(metadata.getTracks(),trackCovers, trackFiles, entity);
+
+        dataSyncService.syncAlbum(entity);
 
         return entity;
     }

@@ -111,7 +111,7 @@ function OfficeArtistPage() {
             <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
               {t("officeArtistPage:title-released-albums")}
             </Typography>
-            <Button onClick={() => route(`/author/${profile.id}/albums`)} sx={{
+            <Button onClick={() => route(`/author/${profile.id}/released`)} sx={{
               height: "32px",
               border: "1px solid black",
               borderRadius: "10px",
@@ -134,7 +134,7 @@ function OfficeArtistPage() {
             <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
               {t("officeArtistPage:title-unreleased-albums")}
             </Typography>
-            <Button onClick={() => route(`/author/${profile.id}/unreleased-albums`)} sx={{
+            <Button onClick={() => route(`/author/${profile.id}/unreleased`)} sx={{
               height: "32px",
               border: "1px solid black",
               borderRadius: "10px",

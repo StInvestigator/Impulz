@@ -34,6 +34,8 @@ import NotFoundPage from "../pages/NotFoundPage.tsx";
 import UserFavoriteAlbumsPage from "../pages/album_page/UserFavoriteAlbumsPage.tsx";
 import UserPlaylistsPage from "../pages/authors_page/UserPlaylistsPage.tsx";
 import LibraryGrid from "../pages/library_grid/LibraryGrid.tsx";
+import AlbumsReleasedPage from "../pages/album_page/AlbumsReleasedPage.tsx";
+import AlbumsUnreleasedPage from "../pages/album_page/AlbumsUnreleasedPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -71,6 +73,9 @@ const AppRouter = () => {
                     <Route path="/search/:query/playlists" element={<SearchPlaylistsPage />} />
                     <Route path="/officeArtist" element={<OfficeArtistPage />} />
                     <Route path="/subscriptions" element={<SubscriptionsPage />} />
+
+                    <Route path="/author/:id/released" element={<AlbumsReleasedPage />} />
+                    <Route path="/author/:id/unreleased" element={<AlbumsUnreleasedPage />} />
 
 
                     <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />

@@ -283,4 +283,18 @@ export const deletePlaylist = createAsyncThunk<
     }
 );
 
-
+export const removeTrackFromPlaylist = createAsyncThunk<
+    void,
+    { playlistId: number; trackId: number },
+    { rejectValue: string }
+>(
+    'track/removeTrackFromPlaylist',
+    async ({ playlistId, trackId }, { rejectWithValue }) => {
+        try {
+            await $authApi.delete(`/playlists/removeTrack/${playlistId}/${trackId}`);
+        }
+        catch (error: unknown) {
+            return rejectWithValue(`Failed to like playlist : ${error}`);
+        }
+    }
+);

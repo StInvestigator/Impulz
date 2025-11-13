@@ -27,13 +27,13 @@ const LikedPlaylistPage = () => {
         }
     }, [dispatch, userId, currentPage]);
 
-    if (isLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <CircularProgress />
-            </Box>
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+    //             <CircularProgress />
+    //         </Box>
+    //     );
+    // }
 
     if (error) {
         return (

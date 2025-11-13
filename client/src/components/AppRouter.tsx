@@ -65,7 +65,6 @@ const AppRouter = () => {
                     <Route path="/playlist/:playlistId" element={<PlaylistItemPage />} />
                     <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
                     <Route path={"/playlist/user-playlists"} element={<UserPlaylistsPage />} />
-                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/search/:query/authors" element={<SearchAuthorsPage />} />
                     <Route path="/search/:query/tracks" element={<SearchTracksPage />} />

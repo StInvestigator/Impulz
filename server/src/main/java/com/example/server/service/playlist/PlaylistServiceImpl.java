@@ -124,7 +124,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     @Transactional
     public void removeTrackFromPlaylist(Long playlistId, Long trackId) {
-        var pt = playlistTrackRepository.findById(new PlaylistTrackKey(playlistId, trackId)).get();
+        var pt = playlistTrackRepository.findById(new PlaylistTrackKey(playlistId, trackId)).orElseThrow();
         playlistRepository.correctTracksPositionsAfterRemovingTrack(playlistId, pt.getPosition());
         playlistTrackRepository.delete(pt);
     }

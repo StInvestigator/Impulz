@@ -1,26 +1,29 @@
 import { useEffect } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import PublicPlaylistAverageItem from "../../components/items/playlist/PublicPlaylistAverageItem.tsx";
 import MyPagination from "../../components/MyPagination.tsx";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux.ts";
 import { fetchAllPlaylistsDtoOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
+import PublicPlaylistList from "../../components/lists/PublicPlaylistList.tsx";
+import { useTranslation } from "react-i18next";
 
 const UserPlaylistsPage = () => {
     const dispatch = useAppDispatch();
     const { profile } = useAppSelector(state => state.profile);
     const { allPlaylistsDtoOwnByUser, isLoading, error } = useAppSelector(state => state.playlist);
     const { currentPage, totalPages } = useAppSelector(state => state.page);
+    const { t } = useTranslation(["profile", "other"]);
 
     useEffect(() => {
         if (profile?.id) {
             dispatch(fetchAllPlaylistsDtoOwnByUserId({
                 userId: profile.id,
                 page: currentPage - 1,
-                size: 4
+                size: 10
             }));
         }
     }, [dispatch, profile?.id, currentPage]);
 
+    const shouldShowPagination = totalPages > 1;
 
     if (isLoading && (!allPlaylistsDtoOwnByUser || allPlaylistsDtoOwnByUser.length === 0)) {
         return (
@@ -47,30 +50,26 @@ const UserPlaylistsPage = () => {
     }
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box
-                display="grid"
-                gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
-                gap={3}
-            >
-                {allPlaylistsDtoOwnByUser.map((playlist) => (
-                    <PublicPlaylistAverageItem
-                        key={playlist.id}
-                        playlist={playlist}
-                        itemHeight={360}
-                    />
-                ))}
-            </Box>
+        <>
+            <Box component={"section"}>
+                <Typography variant="h2">
+                    {t("profile:title-playlists")}
+                </Typography>
 
-            {totalPages > 1 && (
-                <Box component="section" marginTop={4} display="flex" justifyContent="center">
-                    <MyPagination
-                        totalPages={totalPages}
-                        currentPage={currentPage}
-                    />
+                <Box display={"grid"} mt={3} sx={{
+                    gridTemplateColumns: "repeat(5, 1fr)"
+                }} gap={3}>
+                    <PublicPlaylistList playlists={allPlaylistsDtoOwnByUser} />
                 </Box>
-            )}
-        </Box>
+            </Box >
+
+            {shouldShowPagination && (
+                <Box component={"section"} marginTop={"60px"}>
+                    <MyPagination totalPages={totalPages} currentPage={currentPage} />
+                </Box>
+            )
+            }
+        </>
     );
 };
 

@@ -8,11 +8,12 @@ import GoToAlbumIcon from "../../assets/context/GoToAlbumIcon.svg";
 import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
 import CopyTrackLinkIcon from "../../assets/context/CopyTrackLinkIcon.svg";
 import ContextCreatePlaylistIcon from "../../assets/context/ContextCreatePlaylistIcon.svg";
+import DeleteIcon from "../../assets/context/DeleteIcon.svg";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
 import { useAppNavigate } from "../../hooks/useAppNavigate.ts";
 import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
-import { addTrackToPlaylist, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
+import { addTrackToPlaylist, fetchPlaylistDetails, fetchPlaylistsOwnByUserId, removeTrackFromPlaylist } from "../../store/reducers/action-creators/playlist.ts";
 import { ContextMenuItemWithSubmenu } from "./ContextMenuItemWithSubmenu.tsx";
 import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
 import { likeTrack, unlikeTrack } from "../../store/reducers/action-creators/tracks.ts";
@@ -23,12 +24,14 @@ interface TrackContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
     onClose: () => void;
     track: TrackSimpleDto;
+    playlistId?: number
 }
 
 export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     contextMenu,
     onClose,
-    track
+    track,
+    playlistId
 }) => {
     const { keycloak } = useKeycloak();
     const { t } = useTranslation(["other", "errors"]);
@@ -46,6 +49,8 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
 
     const menuRef = useRef<HTMLDivElement>(null);
     const subMenuRef = useRef<HTMLDivElement>(null);
+
+    const canRemove = playlistId && playlistsOwnByCurrentUser.map(p => p.id).includes(playlistId);
 
     const handlePlaylistMenuClose = () => {
         setPlaylistMenuAnchor(null);
@@ -113,6 +118,20 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
             dispatch(likeTrack({ trackId: track.id, userId: userId }));
         }
         onClose();
+    };
+
+    const handleRemoveFromPlaylist = () => {
+        if (canRemove) {
+            dispatch(removeTrackFromPlaylist({ trackId: track.id, playlistId: playlistId }))
+                .unwrap()
+                .then(() => {
+                    dispatch(fetchPlaylistDetails(playlistId.toString()));
+                    if (userId) {
+                        dispatch(fetchPlaylistsOwnByUserId({userId}));
+                    }
+                })
+            onClose();
+        }
     };
 
     const handleRemoveFromFavorites = () => {
@@ -268,6 +287,12 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                         />
                     ))}
                 </Menu>
+
+                {canRemove && <ContextMenuItem
+                    icon={DeleteIcon}
+                    text={t("title-remove-from-playlist")}
+                    onClick={handleRemoveFromPlaylist}
+                />}
 
                 {(likedIds && likedIds.includes(track.id) ?
                     <ContextMenuItem

@@ -32,10 +32,12 @@ import SubscriptionsPage from "../pages/SubscriptionsPage.tsx";
 import LikedPlaylistPage from "../pages/playlists_page/LikedPlaylistPage.tsx";
 import NotFoundPage from "../pages/NotFoundPage.tsx";
 import UserFavoriteAlbumsPage from "../pages/album_page/UserFavoriteAlbumsPage.tsx";
-import UserPlaylistsPage from "../pages/authors_page/UserPlaylistsPage.tsx";
+import UserPlaylistsPage from "../pages/playlists_page/UserPlaylistsPage.tsx";
 import LibraryGrid from "../pages/library_grid/LibraryGrid.tsx";
 import AlbumsReleasedPage from "../pages/album_page/AlbumsReleasedPage.tsx";
 import AlbumsUnreleasedPage from "../pages/album_page/AlbumsUnreleasedPage.tsx";
+import UserFavPlaylistsPage from "../pages/playlists_page/UserFavPlaylistsPage.tsx";
+import FavoriteAuthorsPage from "../pages/authors_page/FavoriteAuthorsPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -65,7 +67,7 @@ const AppRouter = () => {
                     <Route path="/playlist/:playlistId" element={<PlaylistItemPage />} />
                     <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
                     <Route path={"/playlist/user-playlists"} element={<UserPlaylistsPage />} />
-                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
+                    <Route path={"/playlist/user-fav-playlists"} element={<UserFavPlaylistsPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/search/:query/authors" element={<SearchAuthorsPage />} />
                     <Route path="/search/:query/tracks" element={<SearchTracksPage />} />
@@ -76,13 +78,14 @@ const AppRouter = () => {
 
                     <Route path="/author/:id/released" element={<AlbumsReleasedPage />} />
                     <Route path="/author/:id/unreleased" element={<AlbumsUnreleasedPage />} />
+                    <Route path="/authors/favorite" element={<FavoriteAuthorsPage />} />
 
 
                     <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                     <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
                     <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
                     <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
-                    <Route path={"/user/:id/favorite-albums"} element={<UserFavoriteAlbumsPage />} />
+                    <Route path={"/user/favorite-albums"} element={<UserFavoriteAlbumsPage />} />
                     <Route path="/author/:id" element={<AuthorProfilePage />} />
                     <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                     <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />

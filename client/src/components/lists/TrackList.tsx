@@ -5,9 +5,10 @@ import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 interface TrackListProps {
     tracks: TrackSimpleDto[];
     pageSize?: number;
+    playlistId? : number
 }
 
-const TrackList = ({ tracks, pageSize = 5 }: TrackListProps) => {
+const TrackList = ({ tracks, pageSize = 5, playlistId }: TrackListProps) => {
     const { currentPage } = useAppSelector(state => state.page);
 
     if (!tracks || tracks.length === 0) {
@@ -17,7 +18,7 @@ const TrackList = ({ tracks, pageSize = 5 }: TrackListProps) => {
     return (
         <>
             {tracks.map((track, index) =>
-                <TrackSmallItem key={track.id} track={track} index={(currentPage - 1) * pageSize + index} />
+                <TrackSmallItem playlistId={playlistId} key={track.id} track={track} index={(currentPage - 1) * pageSize + index} />
             )}
         </>
     );

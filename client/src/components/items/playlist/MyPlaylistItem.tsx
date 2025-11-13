@@ -1,11 +1,9 @@
-import { useEffect, useState, type FC } from "react";
+import { useState, type FC } from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { EditPlaylistContextMenu } from "../../contextMenu/EditPlaylistContextMenu.tsx";
-import { useAppDispatch } from "../../../hooks/redux.ts";
-import { fetchPlaylistDetails } from "../../../store/reducers/action-creators/playlist.ts";
 import type { PlaylistDto } from "../../../models/PlaylistDto.ts";
 
 interface PlaylistProps {
@@ -17,15 +15,8 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
     const [hover, setHover] = useState(false);
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
-    const dispatch = useAppDispatch();
     const { t } = useTranslation('other');
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
-
-    useEffect(() => {
-        if (playlist.id) {
-            dispatch(fetchPlaylistDetails(playlist.id.toString()));
-        }
-    }, [playlist.id]);
 
     const handleClick = () => {
         setActive(!active);

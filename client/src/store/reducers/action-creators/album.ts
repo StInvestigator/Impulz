@@ -264,6 +264,28 @@ export const likeAlbum = createAsyncThunk<
     }
 );
 
+export const unlikeAlbum = createAsyncThunk<
+    void,
+    { userId : string;albumId : number },
+    { rejectValue: string }
+>(
+    'track/unlikeAlbum',
+    async({userId,albumId},{rejectWithValue}) => {
+        try {
+            await $authApi.post('/albums/unlike', null, {
+                params: {
+                    userId: userId,
+                    albumId: albumId.toString()
+                }
+            });
+        }
+        catch (error: unknown)
+        {
+            return rejectWithValue(`Failed to unlike album : ${error}`);
+        }
+    }
+);
+
 export const deleteAlbum = createAsyncThunk<
   string,
   string,

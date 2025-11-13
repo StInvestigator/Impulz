@@ -73,10 +73,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Cacheable(value = "playlist.findTopPlaylistsByFavorites",
             key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
-    public PageDto<PlaylistSimpleDto> findTopPlaylistsByFavorites(Pageable pageable) {
+    public PageDto<PlaylistDto> findTopPlaylistsByFavorites(Pageable pageable) {
         return new PageDto<>(playlistRepository.
                 findTopPlaylistsByFavorites(pageable).
-                map(PlaylistSimpleDto::fromEntity));
+                map(PlaylistDto::fromEntity));
     }
 
     @Transactional
@@ -167,18 +167,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 
     @Override
-    public Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable) {
-        return playlistRepository.findAllByFavoredByUserId(ownerId, pageable).map(PlaylistSimpleDto::fromEntity);
+    public Page<PlaylistDto> getPlaylistsFavorite(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByFavoredByUserId(ownerId, pageable).map(PlaylistDto::fromEntity);
     }
 
     @Override
-    public List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId) {
-        return playlistRepository.findAllByOwnerIdOrderByCreatedAtDesc(ownerId).stream().map(PlaylistSimpleDto::fromEntity).toList();
+    public List<PlaylistDto> getAllPlaylistsByOwnerId(String ownerId) {
+        return playlistRepository.findAllByOwnerIdOrderByCreatedAtDesc(ownerId).stream().map(PlaylistDto::fromEntity).toList();
     }
 
     @Override
-    public Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable) {
-        return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId, pageable).map(PlaylistSimpleDto::fromEntity);
+    public Page<PlaylistDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable) {
+        return playlistRepository.findAllByOwnerIdAndIsPublicTrue(ownerId, pageable).map(PlaylistDto::fromEntity);
     }
 
     @Override
@@ -190,10 +190,10 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     @Cacheable(value = "playlist.findRecentPublicPlaylistsByGenre",
             key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
-    public PageDto<PlaylistSimpleDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable) {
+    public PageDto<PlaylistDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable) {
         return new PageDto<>(playlistRepository
                 .findRecentPublicPlaylistsByGenre(genreId, pageable)
-                .map(PlaylistSimpleDto::fromEntity));
+                .map(PlaylistDto::fromEntity));
     }
 
     @Override
@@ -209,5 +209,10 @@ public class PlaylistServiceImpl implements PlaylistService {
         entity.setPlaylist(playlistRepository.findById(playlistId).orElseThrow());
         entity.setAddedAt(OffsetDateTime.now());
         userFavoritePlaylistRepository.save(entity);
+    }
+
+    @Override
+    public void unlike(Long playlistId, String userId) {
+        userFavoritePlaylistRepository.deleteById(new UserFavoritePlaylistKey(userId, playlistId));
     }
 }

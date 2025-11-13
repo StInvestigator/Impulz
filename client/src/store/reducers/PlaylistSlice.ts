@@ -7,16 +7,15 @@ import {
     fetchFavoritePlaylists,
     fetchAllPlaylistsDtoOwnByUserId
 } from "./action-creators/playlist.ts";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
 interface PlaylistState {
     topPlaylists: PlaylistDto[];
     currentPlaylist: PlaylistDto | null;
-    playlistsOwnByCurrentUser: PlaylistSimpleDto[];
+    playlistsOwnByCurrentUser: PlaylistDto[];
     allPlaylistsDtoOwnByUser: PlaylistDto[];
     recentPlaylistsByGenre: PlaylistDto[];
-    favoritePlaylists: PlaylistSimpleDto[];
+    favoritePlaylists: PlaylistDto[];
     isLoading: boolean;
     isSidebarLoading: boolean;
     error: string | null;

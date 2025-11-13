@@ -35,7 +35,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/TopPlaylistsByFavorites")
-    public ResponseEntity<PageDto<PlaylistSimpleDto>> findTopPlaylistsByFavorites(Pageable pageable) {
+    public ResponseEntity<PageDto<PlaylistDto>> findTopPlaylistsByFavorites(Pageable pageable) {
         try {
             return ResponseEntity.ok(playlistService.findTopPlaylistsByFavorites(pageable));
         } catch (EntityNotFoundException e) {
@@ -47,7 +47,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/ByGenre/Recent/{genreId}")
-    public ResponseEntity<PageDto<PlaylistSimpleDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
+    public ResponseEntity<PageDto<PlaylistDto>> getRecentByGenre(@PathVariable Long genreId, Pageable pageable) {
         try {
             return ResponseEntity.ok(playlistService.findRecentPublicPlaylistsByGenre(genreId, pageable));
         } catch (EntityNotFoundException e) {
@@ -148,7 +148,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/ownForUser/{userId}")
-    public ResponseEntity<List<PlaylistSimpleDto>> getOwnForUser(@PathVariable String userId) {
+    public ResponseEntity<List<PlaylistDto>> getOwnForUser(@PathVariable String userId) {
         try {
             return ResponseEntity.ok(playlistService.getAllPlaylistsByOwnerId(userId));
         } catch (EntityNotFoundException e) {
@@ -172,7 +172,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/favoriteByUser/{userId}")
-    public ResponseEntity<Page<PlaylistSimpleDto>> getFavoriteForUser(@PathVariable String userId, Pageable pageable) {
+    public ResponseEntity<Page<PlaylistDto>> getFavoriteForUser(@PathVariable String userId, Pageable pageable) {
         try {
             return ResponseEntity.ok(playlistService.getPlaylistsFavorite(userId, pageable));
         } catch (EntityNotFoundException e) {
@@ -184,7 +184,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/publicFromUser/{userId}")
-    public ResponseEntity<Page<PlaylistSimpleDto>> getPublicPlaylistsFromUser(@PathVariable String userId, Pageable pageable) {
+    public ResponseEntity<Page<PlaylistDto>> getPublicPlaylistsFromUser(@PathVariable String userId, Pageable pageable) {
         try {
             return ResponseEntity.ok(playlistService.getPublicPlaylistsByOwnerId(userId, pageable));
         } catch (EntityNotFoundException e) {
@@ -200,6 +200,20 @@ public class PlaylistController {
                                         @RequestParam("playlistId") Long playlistId) {
         try {
             playlistService.like(playlistId, userId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/unlike")
+    public ResponseEntity<?> RemoveFromLiked(@RequestParam("userId") String userId,
+                                             @RequestParam("playlistId") Long playlistId) {
+        try {
+            playlistService.unlike(playlistId, userId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

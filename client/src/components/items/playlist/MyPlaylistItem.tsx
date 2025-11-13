@@ -1,10 +1,12 @@
-import {useState, type FC} from "react";
+import { useEffect, useState, type FC } from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import {useContextMenu} from "../../../hooks/useContextMenu.ts";
-import {EditPlaylistContextMenu} from "../../contextMenu/EditPlaylistContextMenu.tsx";
-import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { EditPlaylistContextMenu } from "../../contextMenu/EditPlaylistContextMenu.tsx";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { fetchPlaylistDetails } from "../../../store/reducers/action-creators/playlist.ts";
+import type { PlaylistDto } from "../../../models/PlaylistDto.ts";
 
 interface PlaylistProps {
     playlist: PlaylistDto;
@@ -15,8 +17,15 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
     const [hover, setHover] = useState(false);
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
+    const dispatch = useAppDispatch();
     const { t } = useTranslation('other');
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
+
+    useEffect(() => {
+        if (playlist.id) {
+            dispatch(fetchPlaylistDetails(playlist.id.toString()));
+        }
+    }, [playlist.id]);
 
     const handleClick = () => {
         setActive(!active);
@@ -25,7 +34,7 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
 
     const handleContextMenuClick = (event: React.MouseEvent) => {
         event.preventDefault();
-        handleContextMenu(event,playlist.id);
+        handleContextMenu(event, playlist.id);
     };
 
     return (
@@ -94,17 +103,17 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                                     color: 'inherit',
                                 }}
                             >
-                                {t("title-playlist")} &middot; {playlist?.tracks?.length || 0} {t("title-song")}
+                                {t("title-playlist")} &middot; {playlist?.tracks.length || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }
                 />
             </ListItemButton>
-            <EditPlaylistContextMenu
-                playlist={playlist}
-                contextMenu={contextMenu}
-                onClose={handleCloseContextMenu}
-            />
+                <EditPlaylistContextMenu
+                    playlist={playlist}
+                    contextMenu={contextMenu}
+                    onClose={handleCloseContextMenu}
+                />
         </ListItem>
     );
 };

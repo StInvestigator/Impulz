@@ -122,9 +122,9 @@ public class AlbumController {
     @PreAuthorize("hasRole('AUTHOR')")
     @PostMapping(value = "/create")
     public ResponseEntity<?> createAlbum(@RequestPart("metadata") AlbumCreationDto metadata,
-                                         @RequestPart(value="cover") MultipartFile cover,
-                                         @RequestPart(value="trackFiles") List<MultipartFile> trackFiles,
-                                         @RequestPart(value="trackCovers", required = false) List<MultipartFile> trackCovers) {
+                                         @RequestPart(value = "cover") MultipartFile cover,
+                                         @RequestPart(value = "trackFiles") List<MultipartFile> trackFiles,
+                                         @RequestPart(value = "trackCovers", required = false) List<MultipartFile> trackCovers) {
         try {
             albumService.upload(metadata, cover, trackFiles, trackCovers);
             return ResponseEntity.ok().build();
@@ -165,6 +165,20 @@ public class AlbumController {
                                         @RequestParam("albumId") Long albumId) {
         try {
             albumService.like(albumId, userId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/unlike")
+    public ResponseEntity<?> removeFromLiked(@RequestParam("userId") String userId,
+                                             @RequestParam("albumId") Long albumId) {
+        try {
+            albumService.unlike(albumId, userId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

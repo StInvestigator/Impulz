@@ -152,4 +152,9 @@ public class AlbumServiceImpl implements AlbumService {
         entity.setAddedAt(OffsetDateTime.now());
         userFavouriteAlbumRepository.save(entity);
     }
+
+    @Override
+    public void unlike(Long albumId, String userId) {
+        userFavouriteAlbumRepository.deleteById(new UserFavoriteAlbumKey(userId, albumId));
+    }
 }

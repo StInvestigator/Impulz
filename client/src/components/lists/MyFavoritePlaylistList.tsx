@@ -4,8 +4,8 @@ import playlistImage from "../../assets/PlaylistDefaultImage.svg";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
 import { fetchFavoritePlaylists } from "../../store/reducers/action-creators/playlist.ts";
 import { useKeycloak } from "@react-keycloak/web";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import MyFavPlaylistsItem from "../items/playlist/MyFavPlaylistItem.tsx";
+import type { PlaylistDto } from "../../models/PlaylistDto.ts";
 
 const MyFavoritePlaylistList = () => {
     const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ const MyFavoritePlaylistList = () => {
     return (
         <List disablePadding>
             {keycloak.authenticated && memoFavoritePlaylists.length > 0 && (
-                memoFavoritePlaylists.map((playlist: PlaylistSimpleDto) => (
+                memoFavoritePlaylists.map((playlist: PlaylistDto) => (
                     <MyFavPlaylistsItem
                         key={playlist.id}
                         playlist={playlist}

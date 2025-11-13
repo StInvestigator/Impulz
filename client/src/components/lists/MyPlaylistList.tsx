@@ -5,7 +5,7 @@ import MyPlaylistItem from "../items/playlist/MyPlaylistItem.tsx";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
 import { fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
 import { useKeycloak } from "@react-keycloak/web";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
+import type { PlaylistDto } from "../../models/PlaylistDto.ts";
 
 const MyPlaylistList = () => {
     const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ const MyPlaylistList = () => {
     return (
         <List disablePadding>
             {keycloak.authenticated && Array.isArray(reversedPlaylists) && reversedPlaylists.length > 0 && (
-                reversedPlaylists.map((playlist: PlaylistSimpleDto) => (
+                reversedPlaylists.map((playlist: PlaylistDto) => (
                     <MyPlaylistItem
                         key={playlist.id}
                         playlist={playlist}

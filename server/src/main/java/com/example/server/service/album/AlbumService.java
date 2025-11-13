@@ -29,4 +29,5 @@ public interface AlbumService
     Page<AlbumSimpleDto> findFavoriteByUserId(String userId, Pageable pageable);
     List<Album> findAlbumsByIds(List<Long> ids);
     void like(Long albumId,String userId);
+    void unlike(Long albumId,String userId);
 }

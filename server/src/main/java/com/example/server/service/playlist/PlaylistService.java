@@ -15,18 +15,19 @@ public interface PlaylistService {
     PlaylistSimpleDto getPlaylistSimpleDtoById(Long id);
     void createPlaylist(Playlist playlist);
     void deletePlaylistById(Long id);
-    PageDto<PlaylistSimpleDto> findTopPlaylistsByFavorites(Pageable pageable);
+    PageDto<PlaylistDto> findTopPlaylistsByFavorites(Pageable pageable);
     void addTrackToPlaylist(Long playlistId, Long trackId);
     void addTrackToPlaylist(String title, String ownerId, Long trackId);
     void changeTrackPosition(Long playlistId, Long trackId, Integer position);
     void removeTrackFromPlaylist(Long playlistId, Long trackId);
     Playlist create(String title, String uid, Boolean isPublic, MultipartFile img);
     Playlist update(Long id, String title, Boolean isPublic, MultipartFile img);
-    List<PlaylistSimpleDto> getAllPlaylistsByOwnerId(String ownerId);
-    Page<PlaylistSimpleDto> getPlaylistsFavorite(String ownerId, Pageable pageable);
-    Page<PlaylistSimpleDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable);
+    List<PlaylistDto> getAllPlaylistsByOwnerId(String ownerId);
+    Page<PlaylistDto> getPlaylistsFavorite(String ownerId, Pageable pageable);
+    Page<PlaylistDto> getPublicPlaylistsByOwnerId(String ownerId, Pageable pageable);
     Page<PlaylistDto> getAllPlaylistsDtoByOwnerId(String ownerId, Pageable pageable);
-    PageDto<PlaylistSimpleDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable);
+    PageDto<PlaylistDto> findRecentPublicPlaylistsByGenre(Long genreId, Pageable pageable);
     List<Playlist> findPlaylistsByIds(List<Long> ids);
     void like(Long playlistId, String userId);
+    void unlike(Long playlistId, String userId);
 }

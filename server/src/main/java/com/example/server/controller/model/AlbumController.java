@@ -122,12 +122,12 @@ public class AlbumController {
         }
     }
 
-    @PreAuthorize("hasRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
+    @PreAuthorize("hasAnyRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
     @DeleteMapping("/delete/{albumId}")
-    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId) {
+    public ResponseEntity<String> deleteAlbum(@PathVariable Long albumId) {
         try {
             albumService.delete(albumId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Success");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

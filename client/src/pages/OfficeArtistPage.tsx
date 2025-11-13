@@ -9,14 +9,16 @@ import Step3 from "../components/create_album/Step3";
 import Step4 from "../components/create_album/Step4";
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { createAlbum } from "../store/reducers/action-creators/album";
+import { createAlbum, fetchAlbumsByAuthor } from "../store/reducers/action-creators/album";
 import type { TrackCreationFullDto } from "../models/DTO/track/TrackCreationFullDto";
 import AlbumList from "../components/lists/AlbumList";
 import spiraleImg from "../assets/spirale.svg";
 import { useTranslation } from "react-i18next";
+import keycloak from "../keycloak";
 
 function OfficeArtistPage() {
   const {profile} = useAppSelector(state => state.profile);
+  const {albums} = useAppSelector(state => state.album);
 
   const {t} = useTranslation(["officeArtistPage", "errors"])
 
@@ -31,6 +33,10 @@ function OfficeArtistPage() {
   const [tracks, setTracks] = useState<TrackCreationFullDto[]>([]);
 
   const dispatch = useAppDispatch();
+
+    useEffect(() => {
+      dispatch(fetchAlbumsByAuthor({authorId: profile.id, size : 10}))
+    }, [dispatch,profile.id])
   
   useEffect(() => {
     if (activeStep > 4 || activeStep < 1) {
@@ -71,11 +77,11 @@ function OfficeArtistPage() {
     dispatch(createAlbum({
       metadata: {
         title: nameAlbum,
-        authorIds: profile.authorDto ? [profile.authorDto.id] : [],
+        authorIds: profile.authorDto ? [profile.id] : [],
         releaseDate: dateRelease,
         tracks: tracks.map(track => ({
           title: track.title,
-          authorIds: track.authors.map(author => author.id.toString()),
+          authorIds: [profile.id].concat(track.authors.map(author => author.id.toString())),
           genreIds: track.genres.map(genre => genre.id),
           clientCoverName: track.clientCoverName?.name || "",
           clientFileName: track.clientFileName?.name || "",
@@ -87,7 +93,6 @@ function OfficeArtistPage() {
     })).unwrap().then(() => {
       setOpen(false);
       setActiveStep(1)
-      window.location.reload();
     });
   };
 
@@ -148,14 +153,14 @@ function OfficeArtistPage() {
         {/* </>
       )} */}
       <Box component={"section"} marginTop={"20px"} >
-          <AlbumList albums={profile?.authorDto?.albums || []}/>
+          <AlbumList albums={albums || []}/>
       </Box>
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />
         {activeStep === 1 && <Step1 image={image} setImage={setImage} />}
         {activeStep === 2 && <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />}
         {activeStep === 3 && <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />}
-        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} />}
+        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} myName={profile.username}/>}
         <Box mt={"20px"}>
           <Typography color="red" variant="mainRL">
             {error}

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg";
 
 interface CoverProps {
-    type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album";
+    type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album" | "myAlbum";
     title: string;
     OwnerNames: string[];
     OwnerImageUrl: string;
@@ -106,7 +106,8 @@ const Cover: FC<CoverProps> = ({
                         {type === "myPlaylist" && t("title-my-playlist")}
                         {type === "publicPlaylist" && t("title-public-playlist")}
                         {type === "privatePlaylist" && t("title-private-playlist")}
-                        {type === "album" && "Альбом"}
+                        {type === "album" && t("title-album")}
+                        {type === "myAlbum" && t("title-my-album")}
                     </Typography>
                     <Typography
                         variant="h1"

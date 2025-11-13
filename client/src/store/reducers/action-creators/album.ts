@@ -240,3 +240,20 @@ export const likeAlbum = createAsyncThunk<
         }
     }
 );
+
+export const deleteAlbum = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>(
+    "albums/deleteAlbum",
+    async (albumId, { rejectWithValue }) => {
+      try {
+        const response = await $authApi.delete(`/albums/delete/${albumId}`);
+        return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
+        return rejectWithValue("Не удалось удальть альбом");
+      }
+    }
+);

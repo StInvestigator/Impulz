@@ -1,6 +1,6 @@
 import MyPagination from "../components/MyPagination.tsx";
 import { useEffect } from "react";
-import { Box, Stack, CircularProgress, Typography } from "@mui/material";
+import { Box, Stack, CircularProgress, Typography, IconButton } from "@mui/material";
 import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
@@ -8,7 +8,11 @@ import { fetchAlbumDetails } from "../store/reducers/action-creators/album.ts";
 import { useParams } from "react-router-dom";
 import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
 import { fetchTracksByAlbum } from "../store/reducers/action-creators/tracks.ts";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
+import keycloak from "../keycloak.ts";
+import { useContextMenu } from "../hooks/useContextMenu.ts";
+import additionalIcon from "../assets/AdditionalIcon.svg";
+import { EditAlbumContextMenu } from "../components/contextMenu/EditAlbumContextMenu.tsx";
 
 const AlbumItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
@@ -16,18 +20,15 @@ const AlbumItemPage = () => {
     const dispatch = useAppDispatch();
     const { currentAlbum, isLoading, error } = useAppSelector(state => state.album);
     const { playTrackList } = usePlayTrack();
-    const {t} = useTranslation("other");
+    const currentUserId = keycloak.tokenParsed?.sub;
+    const { t } = useTranslation(["other", "errors"]);
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const id = Number(albumId)
-    
+
     useEffect(() => {
-        if (albumId) {
-            if (!isNaN(id)) {
-                dispatch(fetchAlbumDetails(id))
-                    .unwrap()
-                    .then((data) => console.log("✅ Album fetched:", data))
-                    .catch((e) => console.error("❌ Album fetch failed:", e));
-            }
+        if (id) {
+            dispatch(fetchAlbumDetails(id))
         }
     }, [dispatch, albumId]);
 
@@ -91,11 +92,16 @@ const AlbumItemPage = () => {
         }
     }
 
+    let isOwner = false;
+    if (currentUserId) {
+        isOwner = currentAlbum.authors.map(a => a.id).includes(currentUserId);
+    }
+
     return (
         <>
-            <Box component="section">
+            <Box component="section" sx={{ position: "relative" }}>
                 <Cover
-                    type="album"
+                    type={isOwner ? "myAlbum" : "album"}
                     title={currentAlbum.title || "Без названия"}
                     OwnerNames={ownerNames}
                     OwnerImageUrl={ownerImageUrl}
@@ -105,6 +111,19 @@ const AlbumItemPage = () => {
                     imgUrl={currentAlbum.imgUrl || ""}
                     handlePlay={handlePlayPlaylist}
                 />
+
+                {isOwner &&
+                    <IconButton
+                        sx={{
+                            position: "absolute",
+                            top: 16,
+                            right: 16,
+                            padding: 1,
+                        }}
+                        onClick={(e) => handleContextMenu(e, Number(currentAlbum.id))}
+                    >
+                        <Box component="img" src={additionalIcon} height="28px" width="28px" />
+                    </IconButton>}
             </Box>
 
             {currentAlbum.tracks?.length > 0 && (
@@ -122,7 +141,13 @@ const AlbumItemPage = () => {
                         />
                     </Box>
                 </>
+
             )}
+            <EditAlbumContextMenu
+                album={currentAlbum}
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+            />
         </>
     );
 };

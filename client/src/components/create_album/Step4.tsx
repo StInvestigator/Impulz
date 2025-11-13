@@ -24,7 +24,8 @@ interface TrackItemProps {
   isPlaying: boolean;
   onTogglePlay: (index: number) => void;
   onEnded: (index: number) => void;
-  albumImage: File | null
+  albumImage: File | null;
+  myName: string
 }
 
 const TrackItem: React.FC<TrackItemProps> = ({
@@ -35,7 +36,8 @@ const TrackItem: React.FC<TrackItemProps> = ({
   isPlaying,
   onTogglePlay,
   onEnded,
-  albumImage
+  albumImage,
+  myName
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [play, setPlay] = useState(false);
@@ -148,7 +150,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
 
         <Box display="flex" flexDirection="row" gap={1} alignItems="center">
           <Typography variant="mainRL" color="white" sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>
-            {track.authors.map((artist) => artist.name).join(", ")}
+            {[myName].concat(track.authors.map((artist) => artist.name).join(", "))}
           </Typography>
 
           <Typography variant="mainRL" color="white" sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>
@@ -173,10 +175,11 @@ const TrackItem: React.FC<TrackItemProps> = ({
 interface Step4Props {
   tracks: TrackCreationFullDto[];
   setTracks: (tracks: TrackCreationFullDto[]) => void;
-  albumImage: File | null
+  albumImage: File | null,
+  myName: string
 }
 
-const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage }) => {
+const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage, myName }) => {
   const [titleTrack, setTitleTrack] = useState<string>("");
   const [authorsTrack, setAuthorsTrack] = useState<AuthorSimpleDto[]>([]);
   const [genresTrack, setGenresTrack] = useState<GenreSimpleDto[]>([]);
@@ -294,6 +297,7 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage }) => {
           onTogglePlay={handleTogglePlay}
           onEnded={handleEnded}
           albumImage={albumImage}
+          myName={myName}
         />
       ))}
 

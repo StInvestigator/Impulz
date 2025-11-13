@@ -37,6 +37,7 @@ import LibraryGrid from "../pages/library_grid/LibraryGrid.tsx";
 import AlbumsReleasedPage from "../pages/album_page/AlbumsReleasedPage.tsx";
 import AlbumsUnreleasedPage from "../pages/album_page/AlbumsUnreleasedPage.tsx";
 import UserFavPlaylistsPage from "../pages/playlists_page/UserFavPlaylistsPage.tsx";
+import FavoriteAuthorsPage from "../pages/authors_page/FavoriteAuthorsPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -77,13 +78,14 @@ const AppRouter = () => {
 
                     <Route path="/author/:id/released" element={<AlbumsReleasedPage />} />
                     <Route path="/author/:id/unreleased" element={<AlbumsUnreleasedPage />} />
+                    <Route path="/authors/favorite" element={<FavoriteAuthorsPage />} />
 
 
                     <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                     <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
                     <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
                     <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
-                    <Route path={"/user/:id/favorite-albums"} element={<UserFavoriteAlbumsPage />} />
+                    <Route path={"/user/favorite-albums"} element={<UserFavoriteAlbumsPage />} />
                     <Route path="/author/:id" element={<AuthorProfilePage />} />
                     <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                     <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />

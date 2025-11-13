@@ -12,6 +12,8 @@ import { fetchFavoriteAlbums } from "../store/reducers/action-creators/album.ts"
 import PublicPlaylistList from "../components/lists/PublicPlaylistList.tsx";
 import { fetchAllPlaylistsDtoOwnByUserId, fetchFavoritePlaylists } from "../store/reducers/action-creators/playlist.ts";
 import { setCurrentPage } from "../store/reducers/PageSlice.ts";
+import AuthorList from "../components/lists/AuthorList.tsx";
+import { fetchAuthorsByFollower } from "../store/reducers/action-creators/author.ts";
 
 function MyProfilePage() {
   const { profile } = useAppSelector(state => state.profile);
@@ -20,6 +22,7 @@ function MyProfilePage() {
   const route = useAppNavigate();
 
   const { likedTracks } = useAppSelector(state => state.track);
+  const { authorsByFollower } = useAppSelector(state => state.author);
   const { favoriteAlbums } = useAppSelector(state => state.album);
   const { allPlaylistsDtoOwnByUser, favoritePlaylists } = useAppSelector(state => state.playlist);
   const dispatch = useAppDispatch()
@@ -31,6 +34,7 @@ function MyProfilePage() {
       dispatch(fetchFavoriteAlbums({ userId: profile.id, size: 5 }));
       dispatch(fetchFavoritePlaylists({ userId: profile.id, size: 5 }));
       dispatch(fetchAllPlaylistsDtoOwnByUserId({ userId: profile.id, size: 5 }));
+      dispatch(fetchAuthorsByFollower({ followerId: profile.id, size: 5 }));
     }
   }, [dispatch, profile.id]);
 
@@ -39,7 +43,7 @@ function MyProfilePage() {
       <MyProfile />
       {likedTracks.length > 0 && <Box component={"section"} mt={"60px"}>
         <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-          <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+          <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
             {t("profile:title-liked-tracks")}
           </Typography>
           <Button onClick={() => route(`/playlist/liked`)} sx={{
@@ -66,10 +70,10 @@ function MyProfilePage() {
       {favoriteAlbums.length > 0 &&
         <Box component={"section"} mt={"60px"}>
           <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+            <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
               {t("profile:title-liked-albums")}
             </Typography>
-            <Button onClick={() => route(`/user/${profile.id}/favorite-albums`)}
+            <Button onClick={() => route(`/user/favorite-albums`)}
               sx={{
                 height: "32px",
                 border: "1px solid black",
@@ -138,6 +142,29 @@ function MyProfilePage() {
           }} gap={3}>
             <PublicPlaylistList playlists={favoritePlaylists} />
           </Box>
+        </Box>
+      )}
+
+      {authorsByFollower.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+              {t("profile:title-liked-authors")}
+            </Typography>
+            <Button onClick={() => route(`/authors/favorite`)} sx={{
+              height: "32px",
+              border: "1px solid black",
+              borderRadius: "10px",
+              backgroundColor: "var(--dark-purple)",
+              color: "var(--columbia-blue)",
+              fontSize: "12px",
+              fontWeight: 600,
+              textTransform: "none"
+            }}>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <AuthorList authors={authorsByFollower} />
         </Box>
       )}
 

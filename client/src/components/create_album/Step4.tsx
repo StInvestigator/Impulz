@@ -24,7 +24,7 @@ interface TrackItemProps {
   isPlaying: boolean;
   onTogglePlay: (index: number) => void;
   onEnded: (index: number) => void;
-  albumImage: File | null;
+  albumImageUrl: string | null;
   myName: string
 }
 
@@ -32,11 +32,10 @@ const TrackItem: React.FC<TrackItemProps> = ({
   track,
   index,
   deleteClick,
-  // editClick,
   isPlaying,
   onTogglePlay,
   onEnded,
-  albumImage,
+  albumImageUrl,
   myName
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -99,7 +98,6 @@ const TrackItem: React.FC<TrackItemProps> = ({
   }, [onEnded, index]);
 
   const onPlayClick = () => {
-    // delegate toggling to parent so it can stop other tracks
     onTogglePlay(index);
   };
 
@@ -135,7 +133,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
         borderRadius="8px"
         flexShrink={0}
         sx={{
-          backgroundImage: `url(${coverUrl || (albumImage ? URL.createObjectURL(albumImage) : "")})`,
+          backgroundImage: coverUrl ? `url(${coverUrl})` : (albumImageUrl ? `url(${albumImageUrl})` : "none"),
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -197,6 +195,18 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage, myName }) 
   const genres = useAppSelector((state) => state.genre.topFiveGenres);
 
   const dispatch = useAppDispatch();
+
+  const [albumImageUrl, setAlbumImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!albumImage) {
+      setAlbumImageUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(albumImage);
+    setAlbumImageUrl(url);
+    return () => { URL.revokeObjectURL(url); };
+  }, [albumImage]);
 
   useEffect(() => {
     dispatch(fetchTopAuthorsByMonth({}));
@@ -296,7 +306,7 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage, myName }) 
           isPlaying={currentPlaying === index}
           onTogglePlay={handleTogglePlay}
           onEnded={handleEnded}
-          albumImage={albumImage}
+          albumImageUrl={albumImageUrl}
           myName={myName}
         />
       ))}

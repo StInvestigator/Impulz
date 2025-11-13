@@ -7,6 +7,7 @@ import Step1 from "../components/create_album/Step1";
 import Step2 from "../components/create_album/Step2";
 import Step3 from "../components/create_album/Step3";
 import Step4 from "../components/create_album/Step4";
+import StepsContainer from "../components/create_album/StepsContainer";
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { createAlbum, fetchAlbumsByAuthor, fetchUnreleasedAlbumsByAuthor } from "../store/reducers/action-creators/album";
@@ -21,7 +22,6 @@ function OfficeArtistPage() {
   const { profile } = useAppSelector(state => state.profile);
   const { albums, unreleasedAuthorAlbums } = useAppSelector(state => state.album);
   const route = useAppNavigate();
-
   const { t } = useTranslation(["officeArtistPage", "other", "errors"])
 
   const [open, setOpen] = useState(false);
@@ -97,7 +97,8 @@ function OfficeArtistPage() {
     })).unwrap().then(() => {
       setOpen(false);
       setActiveStep(1)
-      dispatch(fetchAlbumsByAuthor({authorId: profile.id}))
+      dispatch(fetchAlbumsByAuthor({ authorId: profile.id, size: 10 }))
+      dispatch(fetchUnreleasedAlbumsByAuthor({ authorId: profile.id, size: 10 }))
     });
   };
 
@@ -205,10 +206,12 @@ function OfficeArtistPage() {
 
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />
-        {activeStep === 1 && <Step1 image={image} setImage={setImage} />}
-        {activeStep === 2 && <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />}
-        {activeStep === 3 && <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />}
-        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} myName={profile.username} />}
+        <StepsContainer activeStep={activeStep}>
+          <Step1 image={image} setImage={setImage} />
+          <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />
+          <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />
+          <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} myName={profile.username} />
+        </StepsContainer>
         <Box mt={"20px"}>
           <Typography color="red" variant="mainRL">
             {error}

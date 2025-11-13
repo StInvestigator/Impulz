@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Box, Stack, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import {useAppDispatch, useAppSelector} from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import keycloak from "../../keycloak.ts";
-import {fetchLikedTracksByUserId} from "../../store/reducers/action-creators/tracks.ts";
+import { fetchLikedTracksByUserId } from "../../store/reducers/action-creators/tracks.ts";
 import Cover from "../../components/Cover.tsx";
 import PlaylistLikedTracks from "../../assets/PlaylistLikedTracks.svg";
 import TrackList from "../../components/lists/TrackList.tsx";
@@ -14,11 +14,13 @@ const LikedPlaylistPage = () => {
     const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
     const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
 
-    const { t } = useTranslation(["other","errors"]);
+    const { t } = useTranslation(["other", "errors"]);
     const userId = keycloak.tokenParsed?.sub;
 
+    const shouldShowPagination = totalPages > 1
+
     useEffect(() => {
-        if(userId){
+        if (userId) {
             dispatch(fetchLikedTracksByUserId({
                 userId,
                 page: currentPage - 1,
@@ -27,13 +29,13 @@ const LikedPlaylistPage = () => {
         }
     }, [dispatch, userId, currentPage]);
 
-    // if (isLoading) {
-    //     return (
-    //         <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-    //             <CircularProgress />
-    //         </Box>
-    //     );
-    // }
+    if (isLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     if (error) {
         return (
@@ -81,12 +83,13 @@ const LikedPlaylistPage = () => {
                         <Stack spacing={3}>
                             <TrackList tracks={likedTracks} pageSize={20} />
                         </Stack>
-                        <Box component={"section"} marginTop={"60px"}>
-                            <MyPagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                            />
-                        </Box>
+                        {shouldShowPagination &&
+                            <Box component={"section"} marginTop={"60px"}>
+                                <MyPagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                />
+                            </Box>}
                     </>
                 ) : (
                     <Box display="flex" justifyContent="center" alignItems="center" height="200px">

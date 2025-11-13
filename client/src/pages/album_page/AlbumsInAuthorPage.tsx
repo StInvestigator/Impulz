@@ -34,7 +34,7 @@ const AlbumsInAuthorPage = () => {
                 <Box component={"section"} marginTop={"60px"}>
                     <MyPagination totalPages={totalPages} currentPage={currentPage}/>
                 </Box>
-            )}
+             )}
         </>
     );
 }

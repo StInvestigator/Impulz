@@ -25,7 +25,8 @@
   "changes-saved-successfully": "Changes saved successfully",
   "email-updated-successfully": "Email updated successfully",
   "password-updated-successfully": "Password updated successfully",
-  "title-playlists": "Playlists",
+  "title-playlists": "My playlists",
+  "title-fav-playlists": "Favorite playlists",
   "title-liked-tracks": "Favorite tracks",
   "title-liked-albums": "Favorite albums"
 }

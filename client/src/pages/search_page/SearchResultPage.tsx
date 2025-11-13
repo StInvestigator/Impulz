@@ -34,10 +34,10 @@ const SearchResultsPage = () => {
 
     useEffect(() => {
         if (query) {
-            dispatch(searchAlbums({ query, page: 0, size: 4 }));
+            dispatch(searchAlbums({ query, page: 0, size: 5 }));
             dispatch(searchAuthors({ query, page: 0, size: 5 }));
             dispatch(searchTracks({ query, page: 0, size: 5 }));
-            dispatch(searchPublicPlaylists({ query, page: 0, size: 4 }));
+            dispatch(searchPublicPlaylists({ query, page: 0, size: 5 }));
         }
     }, [query, dispatch]);
 

@@ -10,7 +10,7 @@ import TrackList from "../components/lists/TrackList";
 import AlbumList from "../components/lists/AlbumList.tsx";
 import { fetchFavoriteAlbums } from "../store/reducers/action-creators/album.ts";
 import PublicPlaylistList from "../components/lists/PublicPlaylistList.tsx";
-import { fetchAllPlaylistsDtoOwnByUserId } from "../store/reducers/action-creators/playlist.ts";
+import { fetchAllPlaylistsDtoOwnByUserId, fetchFavoritePlaylists } from "../store/reducers/action-creators/playlist.ts";
 import { setCurrentPage } from "../store/reducers/PageSlice.ts";
 
 function MyProfilePage() {
@@ -21,22 +21,15 @@ function MyProfilePage() {
 
   const { likedTracks } = useAppSelector(state => state.track);
   const { favoriteAlbums } = useAppSelector(state => state.album);
-  const { allPlaylistsDtoOwnByUser } = useAppSelector(state => state.playlist);
+  const { allPlaylistsDtoOwnByUser, favoritePlaylists } = useAppSelector(state => state.playlist);
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(setCurrentPage(1))
-    dispatch(fetchLikedTracksByUserId({ userId: profile.id, size: 10 }))
-  }, [dispatch, profile.id])
-
-  useEffect(() => {
     if (profile.id) {
+      dispatch(setCurrentPage(1))
+      dispatch(fetchLikedTracksByUserId({ userId: profile.id, size: 10 }))
       dispatch(fetchFavoriteAlbums({ userId: profile.id, size: 5 }));
-    }
-  }, [dispatch, profile.id]);
-
-  useEffect(() => {
-    if (profile.id) {
+      dispatch(fetchFavoritePlaylists({ userId: profile.id, size: 5 }));
       dispatch(fetchAllPlaylistsDtoOwnByUserId({ userId: profile.id, size: 5 }));
     }
   }, [dispatch, profile.id]);
@@ -44,7 +37,7 @@ function MyProfilePage() {
   return (
     <>
       <MyProfile />
-      {likedTracks && <Box component={"section"} mt={"60px"}>
+      {likedTracks.length > 0 && <Box component={"section"} mt={"60px"}>
         <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
           <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
             {t("profile:title-liked-tracks")}
@@ -70,13 +63,36 @@ function MyProfilePage() {
       </Box>
       }
 
-      <Box component={"section"} mt={"60px"}>
-        <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-          <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-            {t("profile:title-liked-albums")}
-          </Typography>
-          <Button onClick={() => route(`/user/${profile.id}/favorite-albums`)}
-            sx={{
+      {favoriteAlbums.length > 0 &&
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+              {t("profile:title-liked-albums")}
+            </Typography>
+            <Button onClick={() => route(`/user/${profile.id}/favorite-albums`)}
+              sx={{
+                height: "32px",
+                border: "1px solid black",
+                borderRadius: "10px",
+                backgroundColor: "var(--dark-purple)",
+                color: "var(--columbia-blue)",
+                fontSize: "12px",
+                fontWeight: 600,
+                textTransform: "none"
+              }}>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <AlbumList albums={favoriteAlbums} />
+        </Box>}
+
+      {allPlaylistsDtoOwnByUser.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+              {t("profile:title-playlists")}
+            </Typography>
+            <Button onClick={() => route(`/playlist/user-playlists`)} sx={{
               height: "32px",
               border: "1px solid black",
               borderRadius: "10px",
@@ -86,20 +102,25 @@ function MyProfilePage() {
               fontWeight: 600,
               textTransform: "none"
             }}>
-            {t("other:button-watch-all")}
-          </Button>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <Box display={"grid"} mt={3} sx={{
+            gridTemplateColumns: "repeat(5, 1fr)"
+          }} gap={3}>
+            <PublicPlaylistList playlists={allPlaylistsDtoOwnByUser} />
+          </Box>
         </Box>
-        <AlbumList albums={favoriteAlbums} />
-      </Box>
+      )}
 
-      <Box component={"section"} mt={"60px"}>
-        <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-          <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-            {t("profile:title-playlists")}
-          </Typography>
-          <Button
-            onClick={() => route(`/playlist/user-playlists`)}
-            sx={{
+
+      {favoritePlaylists.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+              {t("profile:title-fav-playlists")}
+            </Typography>
+            <Button onClick={() => route(`/playlist/user-fav-playlists`)} sx={{
               height: "32px",
               border: "1px solid black",
               borderRadius: "10px",
@@ -108,20 +129,17 @@ function MyProfilePage() {
               fontSize: "12px",
               fontWeight: 600,
               textTransform: "none"
-            }}
-          >
-            {t("other:button-watch-all")}
-          </Button>
+            }}>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <Box display={"grid"} mt={3} sx={{
+            gridTemplateColumns: "repeat(5, 1fr)"
+          }} gap={3}>
+            <PublicPlaylistList playlists={favoritePlaylists} />
+          </Box>
         </Box>
-
-        <Box
-          display="grid"
-          gridTemplateColumns="repeat(auto-fill, minmax(260px, 1fr))"
-          gap={3}
-        >
-          <PublicPlaylistList playlists={allPlaylistsDtoOwnByUser} />
-        </Box>
-      </Box>
+      )}
 
     </>
   )

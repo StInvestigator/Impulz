@@ -14,6 +14,7 @@ import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.track.TrackService;
 import com.example.server.service.user.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,8 +31,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AlbumServiceImpl implements AlbumService
-{
+public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository;
     private final AuthorService authorService;
     private final TrackService trackService;
@@ -46,35 +46,37 @@ public class AlbumServiceImpl implements AlbumService
                 .orElseThrow(() -> new RuntimeException("Album not found with id: " + id));
     }
 
-    public AlbumDto getAlbumDtoById(Long id){
+    public AlbumDto getAlbumDtoById(Long id) {
         return AlbumDto.fromEntity(albumRepository.findById(id).orElseThrow());
     }
 
-    public AlbumSimpleDto getAlbumSimpleDtoById(Long id){
+    public AlbumSimpleDto getAlbumSimpleDtoById(Long id) {
         return AlbumSimpleDto.fromEntity(albumRepository.findById(id).orElseThrow());
     }
 
-    public void create(Album album){
+    public void create(Album album) {
         albumRepository.save(album);
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = {"album.recommendedToday","album.byAuthor",
+    @CacheEvict(cacheNames = {"album.recommendedToday", "album.byAuthor",
                     "album.collaborationsByAuthor", "album.collaborationsByAuthor",
                     "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true)
-    })
-    public void delete(Long id){
-        albumRepository.deleteById(id);
+    @Transactional
+    public void delete(Long id) {
+        Album entity = albumRepository.findById(id).orElseThrow();
+        imageService.deleteImage(entity.getImageUrl());
+        trackService.deleteTracks(entity.getTracks());
+        albumRepository.delete(entity);
         dataSyncService.deleteAlbum(id);
     }
 
     @Cacheable(value = "album.recommendedToday",
-               key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
+            key = "'p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     public PageDto<AlbumSimpleDto> getRecommendedAlbumsToday(Pageable pageable) {
         return new PageDto<>(albumRepository.findRecommendedAlbumsToday(pageable).map(AlbumSimpleDto::fromEntity));
     }
 
-    public PageDto<AlbumSimpleDto> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable){
+    public PageDto<AlbumSimpleDto> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable) {
         return new PageDto<>(albumRepository.findPopularAlbumsByUserRecentGenres(userId, pageable).map(AlbumSimpleDto::fromEntity));
     }
 
@@ -83,6 +85,11 @@ public class AlbumServiceImpl implements AlbumService
     @Override
     public PageDto<AlbumSimpleDto> findByAuthor(String authorId, Pageable pageable) {
         return new PageDto<>(albumRepository.findByAuthorsContainingAndReleaseDateLessThanEqual(authorService.getAuthorById(authorId), OffsetDateTime.now(), pageable).map(AlbumSimpleDto::fromEntity));
+    }
+
+    @Override
+    public PageDto<AlbumSimpleDto> findUnreleasedByAuthor(String authorId, Pageable pageable) {
+        return new PageDto<>(albumRepository.findByAuthorsContainingAndReleaseDateGreaterThan(authorService.getAuthorById(authorId), OffsetDateTime.now(), pageable).map(AlbumSimpleDto::fromEntity));
     }
 
     @Cacheable(value = "album.collaborationsByAuthor",
@@ -103,20 +110,23 @@ public class AlbumServiceImpl implements AlbumService
             key = "#genreId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     @Override
     public PageDto<AlbumSimpleDto> findNewAlbumsByGenre(Long genreId, Pageable pageable) {
-        return new PageDto<>(albumRepository.findNewAlbumsByGenre(genreId,pageable).map(AlbumSimpleDto::fromEntity));
+        return new PageDto<>(albumRepository.findNewAlbumsByGenre(genreId, pageable).map(AlbumSimpleDto::fromEntity));
     }
 
     @Override
+    @CacheEvict(cacheNames = {"album.recommendedToday", "album.byAuthor",
+            "album.collaborationsByAuthor", "album.collaborationsByAuthor",
+            "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true)
     public Album upload(AlbumCreationDto metadata, MultipartFile cover, List<MultipartFile> trackFiles, List<MultipartFile> trackCovers) {
         Album entity = new Album();
-        entity.setImageUrl(imageService.uploadImage(cover,metadata.getTitle()));
+        entity.setImageUrl(imageService.uploadImage(cover, metadata.getTitle()));
         entity.setTitle(metadata.getTitle());
         entity.setAuthors(new HashSet<>(authorService.getAuthorsByIds(metadata.getAuthorIds())));
         entity.setCreatedAt(OffsetDateTime.now());
         entity.setReleaseDate(metadata.getReleaseDate().atStartOfDay().atOffset(ZoneOffset.MIN));
         albumRepository.save(entity);
 
-        trackService.uploadTracks(metadata.getTracks(),trackCovers, trackFiles, entity);
+        trackService.uploadTracks(metadata.getTracks(), trackCovers, trackFiles, entity);
 
         dataSyncService.syncAlbum(entity);
 
@@ -125,7 +135,7 @@ public class AlbumServiceImpl implements AlbumService
 
     @Override
     public Page<AlbumSimpleDto> findFavoriteByUserId(String userId, Pageable pageable) {
-        return albumRepository.findAllFavoriteByUserId(userId,pageable).map(AlbumSimpleDto::fromEntity);
+        return albumRepository.findAllFavoriteByUserId(userId, pageable).map(AlbumSimpleDto::fromEntity);
     }
 
     @Override

@@ -17,7 +17,7 @@ const UserFavoriteAlbumsPage = () => {
 
     useEffect(() => {
         if (userId){
-            dispatch(fetchFavoriteAlbums({ userId: userId,page: currentPage - 1,size: 5}));
+            dispatch(fetchFavoriteAlbums({ userId: userId,page: currentPage - 1,size: 10}));
         }
     }, [dispatch, userId,currentPage]);
 

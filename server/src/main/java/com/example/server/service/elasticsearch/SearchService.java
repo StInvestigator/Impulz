@@ -1,6 +1,7 @@
 package com.example.server.service.elasticsearch;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
+import co.elastic.clients.json.JsonData;
 import com.example.server.dto.Album.AlbumSimpleDto;
 import com.example.server.dto.Author.AuthorSimpleDto;
 import com.example.server.dto.Page.PageDto;
@@ -24,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 
 import org.springframework.data.domain.Pageable;
+
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -69,23 +73,23 @@ public class SearchService {
 
 
     public PageDto<TrackSimpleDto> searchTracks(String query, Pageable pageable) {
+
+        OffsetDateTime now = OffsetDateTime.now();
+        String nowIso = now.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(q -> q.bool(b -> b
-                        .should(s -> s.prefix(p -> p
-                                .field("title")
-                                .value(query)
-                                .boost(10.0f)
-                        ))
-                        .should(s -> s.matchPhrase(m -> m
-                                .field("title")
-                                .query(query)
-                                .boost(query.length() > 2 ? 8.0f : 5.0f)
-                        ))
-                        .should(s -> s.multiMatch(m -> m
-                                .query(query)
+                        .minimumShouldMatch("1")
+                        .should(s -> s.prefix(p -> p.field("title").value(query).boost(10.0f)))
+                        .should(s -> s.matchPhrase(m -> m.field("title").query(query)
+                                .boost(query.length() > 2 ? 8.0f : 5.0f)))
+                        .should(s -> s.multiMatch(m -> m.query(query)
                                 .fields("title^5", "authorNames^3", "albumTitle^2", "searchText")
                                 .type(TextQueryType.BestFields)
-                                .boost(1.0f)
+                                .boost(1.0f)))
+                        .filter(f -> f.range(r -> r
+                                .field("releaseDate")
+                                .lte(JsonData.of(nowIso))
                         ))
                 )).withPageable(pageable)
                 .build();
@@ -94,7 +98,7 @@ public class SearchService {
         return new PageDto<>(trackService.getTracksByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(TrackSimpleDto::fromEntity).toList(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                (int) hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
                 hits.getTotalHits()
         );
     }
@@ -114,27 +118,38 @@ public class SearchService {
         return new PageDto<>(authorService.getAuthorsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(AuthorSimpleDto::fromEntity).toList(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                (int) hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
                 hits.getTotalHits()
         );
     }
 
     public PageDto<AlbumSimpleDto> searchAlbums(String query, Pageable pageable) {
+
+        OffsetDateTime now = OffsetDateTime.now();
+        String nowIso = now.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
         NativeQuery searchQuery = NativeQuery.builder()
-                .withQuery(q -> q.multiMatch(m -> {
-                    m.query(query);
-                    m.fields("title^3", "authorNames^2", "searchText");
-                    m.type(multiMatchType(query));
-                    if (useFuzziness(query)) m.fuzziness("AUTO");
-                    return m;
-                })).withPageable(pageable)
+                .withQuery(q -> q.bool(b -> b
+                        .must(m -> m.multiMatch(mm -> {
+                            mm.query(query);
+                            mm.fields("title^3", "authorNames^2", "searchText");
+                            mm.type(multiMatchType(query));
+                            if (useFuzziness(query)) mm.fuzziness("AUTO");
+                            return mm;
+                        }))
+                        .filter(f -> f.range(r -> r
+                                .field("releaseDate")
+                                .lte(JsonData.of(nowIso))
+                        ))
+                ))
+                .withPageable(pageable)
                 .build();
 
         SearchHits<AlbumDocument> hits = elasticsearchOperations.search(searchQuery, AlbumDocument.class);
         return new PageDto<>(albumService.findAlbumsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(AlbumSimpleDto::fromEntity).toList(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                (int) hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
                 hits.getTotalHits()
         );
     }
@@ -154,7 +169,7 @@ public class SearchService {
         return new PageDto<>(playlistService.findPlaylistsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(PlaylistSimpleDto::fromEntity).toList(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                (int) hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
                 hits.getTotalHits()
         );
     }
@@ -177,7 +192,7 @@ public class SearchService {
         return new PageDto<>(playlistService.findPlaylistsByIds(hits.getSearchHits().stream().map(hit -> hit.getContent().getId()).toList()).stream().map(PlaylistDto::fromEntity).toList(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                (int)hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
+                (int) hits.getTotalHits() / pageable.getPageSize() + (hits.getTotalHits() % pageable.getPageSize() != 0 ? 1 : 0),
                 hits.getTotalHits()
         );
     }

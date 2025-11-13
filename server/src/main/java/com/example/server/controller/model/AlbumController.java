@@ -46,6 +46,18 @@ public class AlbumController {
         }
     }
 
+    @GetMapping("/ByAuthor/Unreleased/{id}")
+    public ResponseEntity<PageDto<AlbumSimpleDto>> getUnreleasedAlbumsByAuthor(@PathVariable String id, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(albumService.findUnreleasedByAuthor(id, pageable));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @GetMapping("/ByAuthor/Collaborations/{id}")
     public ResponseEntity<PageDto<AlbumSimpleDto>> getCollaborationsByAuthor(@PathVariable String id, Pageable pageable) {
         try {
@@ -122,12 +134,12 @@ public class AlbumController {
         }
     }
 
-    @PreAuthorize("hasRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
+    @PreAuthorize("hasAnyRole({'AUTHOR', 'MODERATOR', 'ADMIN'})")
     @DeleteMapping("/delete/{albumId}")
-    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId) {
+    public ResponseEntity<String> deleteAlbum(@PathVariable Long albumId) {
         try {
             albumService.delete(albumId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Success");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

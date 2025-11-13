@@ -70,20 +70,6 @@ public class MusicServiceImpl implements MusicService{
         return s3StorageService.fileExists(key);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteMusic(String fileName) {
-        String key = S3_MUSIC_PREFIX + fileName;
-
-        Track track = trackRepository.findTrackByFileUrl(key);
-        if (track == null) {
-            throw new RuntimeException("Track not found: " + fileName);
-        }
-
-        trackRepository.delete(track);
-
-        s3StorageService.deleteFile(key);
-    }
-
     public HeadObjectResponse getHeadObjectResponse(String key){
         return s3StorageService.getHeadObjectResponse(key);
     }

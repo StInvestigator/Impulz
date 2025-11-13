@@ -7,6 +7,7 @@ import com.example.server.model.Track;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TrackService
@@ -17,6 +18,7 @@ public interface TrackService
     TrackSimpleDto getTrackSimpleDtoById(Long id);
     TrackSimpleDtoWithFavorite getTrackSimpleDtoById(Long id, String userId);
     void deleteTrack(Track track);
+    void deleteTracks(Collection<Track> tracks);
     PageDto<TrackSimpleDto> findMostPlayedTracksThisWeek(Pageable pageable);
     PageDto<TrackSimpleDto> getRecommendedTracksToday(Pageable pageable);
     PageDto<TrackSimpleDto> findPopularTrackByUserRecentGenres(String userId, Pageable pageable);

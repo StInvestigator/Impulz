@@ -4,6 +4,7 @@
   "title-song": "піснень",
   "title-author": "Виконавець",
   "title-album": "Альбом",
+  "title-my-album": "Мій Альбом",
   "pagination-next": "Наступна",
   "pagination-previous": "Попередня",
   "pagination-end": "В кінець",
@@ -36,8 +37,10 @@
   "button-go-back": "Назад",
   "title-edit-playlist": "Змінити плейлист",
   "title-delete-playlist": "Видалити плейлист",
+  "title-delete-album": "Видалити альбом",
   "title-confirm-delete": "Підтвердити видалення",
   "text-confirm-delete-playlist": "Ви впевнені, що хочете видалити плейлист \"{{name}}\"?",
+  "text-confirm-delete-album": "Ви впевнені, що хочете видалити альбом \"{{name}}\"?",
   "title-cancel": "Відмінити",
   "title-delete": "Видалити"
 }

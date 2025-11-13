@@ -6,13 +6,15 @@ import {
     fetchAuthorAlbumCollaborations, 
     fetchFavoriteAlbums, 
     fetchPersonalAlbumsByGenre,
-    fetchRecentAlbumsByGenre
+    fetchRecentAlbumsByGenre,
+    fetchUnreleasedAlbumsByAuthor
 } from "./action-creators/album.ts";
 import type {AlbumDto} from "../../models/AlbumDto.ts";
 import type {AlbumSimpleDto} from "../../models/DTO/album/AlbumSimpleDto.ts";
 
 interface AlbumState {
     albums: AlbumSimpleDto[];
+    unreleasedAuthorAlbums: AlbumSimpleDto[];
     currentAlbum: AlbumDto | null;
     authorCollaborationsAlbums: AlbumSimpleDto[];
     albumTodayRecommendations: AlbumSimpleDto[];
@@ -26,6 +28,7 @@ interface AlbumState {
 
 const initialState: AlbumState = {
     albums: [],
+    unreleasedAuthorAlbums: [],
     currentAlbum: null,
     authorCollaborationsAlbums: [],
     albumTodayRecommendations: [],
@@ -61,6 +64,20 @@ const albumSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchAlbumsByAuthor.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload || "Ошибка при загрузке альбомов";
+            })
+
+            .addCase(fetchUnreleasedAlbumsByAuthor.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchUnreleasedAlbumsByAuthor.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.unreleasedAuthorAlbums = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchUnreleasedAlbumsByAuthor.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload || "Ошибка при загрузке альбомов";
             })

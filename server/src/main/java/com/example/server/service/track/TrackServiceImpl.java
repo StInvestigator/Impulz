@@ -11,7 +11,9 @@ import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.genre.GenreService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.music.MusicService;
+import com.example.server.service.s3.S3StorageService;
 import com.example.server.service.user.UserServiceImpl;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,6 +35,7 @@ public class TrackServiceImpl implements TrackService {
     private final UserFavoriteTrackRepository userFavoriteTrackRepository;
     private final UserServiceImpl userServiceImpl;
     private final DataSyncService dataSyncService;
+    private final S3StorageService s3StorageService;
 
     public Track getTrackById(Long id) {
         return trackRepository.findById(id).orElseThrow();
@@ -59,9 +62,25 @@ public class TrackServiceImpl implements TrackService {
     @CacheEvict(cacheNames = {"track.findMostPlayedTracksThisWeek", "track.getRecommendedTracksToday",
             "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors",
             "track.findPopularTracksByGenre", "track.findTracksByAlbum", "track.findTracksByPlaylist"}, allEntries = true)
+    @Transactional
     public void deleteTrack(Track track) {
+        imageService.deleteImage(track.getImageURl());
+        s3StorageService.deleteFile(track.getFileUrl());
         trackRepository.delete(track);
         dataSyncService.deleteTrack(track.getId());
+    }
+
+    @CacheEvict(cacheNames = {"track.findMostPlayedTracksThisWeek", "track.getRecommendedTracksToday",
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors",
+            "track.findPopularTracksByGenre", "track.findTracksByAlbum", "track.findTracksByPlaylist"}, allEntries = true)
+    @Transactional
+    public void deleteTracks(Collection<Track> tracks) {
+        tracks.forEach(track -> {
+            imageService.deleteImage(track.getImageURl());
+            s3StorageService.deleteFile(track.getFileUrl());
+        });
+        trackRepository.deleteAll(tracks);
+        dataSyncService.deleteTracks(tracks.stream().map(Track::getId).toList());
     }
 
     @Cacheable(value = "track.findMostPlayedTracksThisWeek",
@@ -150,7 +169,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     @CacheEvict(cacheNames = {
-            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors"
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors", "track.findPopularTracksByGenre"
     }, allEntries = true)
     public Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album) {
         Track entity = new Track();

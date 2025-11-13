@@ -205,7 +205,7 @@ const Navbar = memo(() => {
                                     {t("title-profile")}
                                 </MenuItem>
 
-                                {keycloak.hasRealmRole("AUTHOR") && (
+                                {/* {keycloak.hasRealmRole("AUTHOR") && (
                                     <MenuItem
                                         onClick={() => {
                                             navigate("/officeArtist");
@@ -214,7 +214,7 @@ const Navbar = memo(() => {
                                     >
                                         {t("title-office-artist")}
                                     </MenuItem>
-                                )}
+                                )} */}
 
                                 <MenuItem
                                     onClick={() => {

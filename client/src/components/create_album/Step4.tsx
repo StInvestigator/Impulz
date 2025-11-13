@@ -24,18 +24,19 @@ interface TrackItemProps {
   isPlaying: boolean;
   onTogglePlay: (index: number) => void;
   onEnded: (index: number) => void;
-  albumImage: File | null
+  albumImageUrl: string | null;
+  myName: string
 }
 
 const TrackItem: React.FC<TrackItemProps> = ({
   track,
   index,
   deleteClick,
-  // editClick,
   isPlaying,
   onTogglePlay,
   onEnded,
-  albumImage
+  albumImageUrl,
+  myName
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [play, setPlay] = useState(false);
@@ -97,7 +98,6 @@ const TrackItem: React.FC<TrackItemProps> = ({
   }, [onEnded, index]);
 
   const onPlayClick = () => {
-    // delegate toggling to parent so it can stop other tracks
     onTogglePlay(index);
   };
 
@@ -133,7 +133,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
         borderRadius="8px"
         flexShrink={0}
         sx={{
-          backgroundImage: `url(${coverUrl || (albumImage ? URL.createObjectURL(albumImage) : "")})`,
+          backgroundImage: coverUrl ? `url(${coverUrl})` : (albumImageUrl ? `url(${albumImageUrl})` : "none"),
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -148,7 +148,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
 
         <Box display="flex" flexDirection="row" gap={1} alignItems="center">
           <Typography variant="mainRL" color="white" sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>
-            {track.authors.map((artist) => artist.name).join(", ")}
+            {[myName].concat(track.authors.map((artist) => artist.name).join(", "))}
           </Typography>
 
           <Typography variant="mainRL" color="white" sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>
@@ -173,10 +173,11 @@ const TrackItem: React.FC<TrackItemProps> = ({
 interface Step4Props {
   tracks: TrackCreationFullDto[];
   setTracks: (tracks: TrackCreationFullDto[]) => void;
-  albumImage: File | null
+  albumImage: File | null,
+  myName: string
 }
 
-const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage }) => {
+const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage, myName }) => {
   const [titleTrack, setTitleTrack] = useState<string>("");
   const [authorsTrack, setAuthorsTrack] = useState<AuthorSimpleDto[]>([]);
   const [genresTrack, setGenresTrack] = useState<GenreSimpleDto[]>([]);
@@ -194,6 +195,18 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage }) => {
   const genres = useAppSelector((state) => state.genre.topFiveGenres);
 
   const dispatch = useAppDispatch();
+
+  const [albumImageUrl, setAlbumImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!albumImage) {
+      setAlbumImageUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(albumImage);
+    setAlbumImageUrl(url);
+    return () => { URL.revokeObjectURL(url); };
+  }, [albumImage]);
 
   useEffect(() => {
     dispatch(fetchTopAuthorsByMonth({}));
@@ -293,7 +306,8 @@ const Step4: React.FC<Step4Props> = ({ tracks, setTracks, albumImage }) => {
           isPlaying={currentPlaying === index}
           onTogglePlay={handleTogglePlay}
           onEnded={handleEnded}
-          albumImage={albumImage}
+          albumImageUrl={albumImageUrl}
+          myName={myName}
         />
       ))}
 

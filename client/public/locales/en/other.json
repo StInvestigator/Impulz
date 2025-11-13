@@ -4,6 +4,7 @@
   "title-song": "song(s)",
   "title-author": "Author",
   "title-album": "Album",
+  "title-my-album": "My Album",
   "pagination-next": "Next",
   "pagination-previous": "Previous",
   "pagination-end": "Last",
@@ -36,8 +37,10 @@
   "button-go-back": "Back",
   "title-edit-playlist": "Edit playlist",
   "title-delete-playlist": "Delete playlist",
+  "title-delete-album": "Delete album",
   "title-confirm-delete": "Confirm delete",
   "text-confirm-delete-playlist": "Are you sure you want to delete the playlist \"{{name}}\"?",
+  "text-confirm-delete-album": "Are you sure you want to delete the album \"{{name}}\"?",
   "title-cancel": "Cancel",
   "title-delete": "Delete"
 }

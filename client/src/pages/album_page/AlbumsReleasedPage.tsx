@@ -8,10 +8,10 @@ import { fetchAlbumsByAuthor } from "../../store/reducers/action-creators/album"
 import {useTranslation} from "react-i18next";
 
 
-const AlbumsInAuthorPage = () => {
+const AlbumsReleasedPage = () => {
     const {currentPage, totalPages} = useAppSelector(state => state.page);
     const {id} = useParams<{ id:string }>();
-    const {t} = useTranslation(["authorPage"]);
+    const {t} = useTranslation(["officeArtistPage"]);
 
     const dispatch = useAppDispatch();
     const { albums } = useAppSelector(state => state.album);
@@ -26,7 +26,7 @@ const AlbumsInAuthorPage = () => {
 
     return (
         <>`
-            <h2>{t("title-author-albums")}</h2>
+            <h2>{t("title-released-albums")}</h2>
             <Box component={"section"} marginTop={"20px"} >
                 <AlbumList albums={albums}/>
             </Box>
@@ -39,4 +39,4 @@ const AlbumsInAuthorPage = () => {
     );
 }
 
-export default AlbumsInAuthorPage
+export default AlbumsReleasedPage

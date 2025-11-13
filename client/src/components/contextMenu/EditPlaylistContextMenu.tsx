@@ -8,7 +8,7 @@ import DeletePlaylistIcon from "../../assets/context/DeleteIcon.svg";
 import EditPlaylistModal from "../ui/EditPlaylistModal.tsx";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { deletePlaylist, fetchFavoritePlaylists, fetchPlaylistDetails, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
+import { deletePlaylist, fetchFavoritePlaylists, fetchPlaylistsOwnByUserId } from "../../store/reducers/action-creators/playlist.ts";
 import type { AppDispatch } from "../../store/store.ts";
 import { useKeycloak } from "@react-keycloak/web";
 

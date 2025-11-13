@@ -33,13 +33,6 @@ const PlaylistItemPage = () => {
         }
     }, [playlistId]);
 
-    if (!isLoading && currentPlaylist && !currentPlaylist.isPublic) {
-        const isOwner = currentPlaylist.owner.id === currentUserId;
-        if (!isOwner) {
-            return <Navigate to={"/notFound"} replace />;
-        }
-    }
-
     if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
@@ -64,6 +57,11 @@ const PlaylistItemPage = () => {
         );
     }
 
+    const isOwner = currentPlaylist.owner.id === currentUserId;
+    if (!isLoading && !currentPlaylist.isPublic && !isOwner) {
+        return <Navigate to={"/notFound"} replace />;
+    }
+
     const formatDuration = (totalSeconds: number): string => {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -80,7 +78,6 @@ const PlaylistItemPage = () => {
 
     const ownerNames = currentPlaylist.owner ? [currentPlaylist.owner.name] : [];
     const ownerImageUrl = currentPlaylist.owner?.avatarUrl || "";
-    const isOwner = true;
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -118,17 +115,18 @@ const PlaylistItemPage = () => {
                     handlePlay={handlePlayPlaylist}
                 />
 
-                <IconButton
-                    sx={{
-                        position: "absolute",
-                        top: 16,
-                        right: 16,
-                        padding: 1,
-                    }}
-                    onClick={(e) => handleContextMenu(e,currentPlaylist.id)}
-                >
-                    <Box component="img" src={additionalIcon} height="28px" width="28px" />
-                </IconButton>
+                {isOwner &&
+                    <IconButton
+                        sx={{
+                            position: "absolute",
+                            top: 16,
+                            right: 16,
+                            padding: 1,
+                        }}
+                        onClick={(e) => handleContextMenu(e, currentPlaylist.id)}
+                    >
+                        <Box component="img" src={additionalIcon} height="28px" width="28px" />
+                    </IconButton>}
             </Box>
 
             <Box component={"section"} marginTop={"60px"}>

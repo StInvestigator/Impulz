@@ -16,6 +16,7 @@ import com.example.server.model.key.UserFavoriteAlbumKey;
 import com.example.server.model.key.UserFavoritePlaylistKey;
 import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.image.ImageService;
+import com.example.server.service.keycloak.KeycloakService;
 import com.example.server.service.s3.S3StorageService;
 import com.example.server.service.track.TrackService;
 import com.example.server.service.user.UserService;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final UserService userService;
     private final ImageService imageService;
     private final DataSyncService dataSyncService;
+    private final KeycloakService keycloakService;
 
     public PlaylistDto getPlaylistDtoById(Long id) {
         return PlaylistDto.fromEntity(playlistRepository.findById(id).orElseThrow());
@@ -60,6 +63,9 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Transactional
     public void deletePlaylistById(Long id) {
         Playlist playlist = playlistRepository.findById(id).orElseThrow();
+        if(!Objects.equals(playlist.getOwner().getId(), keycloakService.getUserId())){
+            throw new SecurityException("Trying to delete different user`s playlist");
+        }
         imageService.deleteImage(playlist.getImageUrl());
         playlistRepository.delete(playlist);
         dataSyncService.deletePlaylist(id);
@@ -140,6 +146,10 @@ public class PlaylistServiceImpl implements PlaylistService {
     public Playlist update(Long id, String title, Boolean isPublic, MultipartFile img) {
         Playlist existing = playlistRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Playlist not found with id: " + id));
+
+        if(!Objects.equals(existing.getOwner().getId(), keycloakService.getUserId())){
+            throw new SecurityException("Trying to update different user`s playlist");
+        }
 
         if (title != null && !title.isBlank()) {
             existing.setTitle(title);

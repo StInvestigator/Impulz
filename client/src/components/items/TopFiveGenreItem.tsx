@@ -95,7 +95,8 @@ const TopFiveGenreItem: FC<GenreItemProps> = ({genre, index, genreId}) => {
                                 '&:hover': {
                                     transform: `translate(-50%, -50%) scale(1.1) ${rotate}`,
                                 },
-                                marginLeft: "-1px"
+                                marginLeft: rotate == "rotate(0deg)" ? "-1.5px" : "-2.2px",
+                                marginTop: rotate == "rotate(0deg)" ? "-1px" : "-2px"
                             }}
                         >
                             <Box

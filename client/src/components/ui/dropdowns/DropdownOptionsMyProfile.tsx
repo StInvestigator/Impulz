@@ -57,12 +57,6 @@ export default function DropdownMyProfile({
             {t("change-email-password")}
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onClose}>
-          <Box component="img" src={ProfileUserIcon} width={"14px"} height={"14px"} mr={1.5}/>
-          <Typography variant="mainRL">
-            {t("switch-to-user-profile")}
-          </Typography>
-        </MenuItem>
       </Menu>
   );
 }

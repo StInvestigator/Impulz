@@ -61,8 +61,8 @@ const AppRouter = () => {
                     <Route path="/user/:id" element={<UserProfilePage />} />
                     <Route path="/album/:albumId" element={<AlbumItemPage />} />
                     <Route path="/playlist/:playlistId" element={<PlaylistItemPage />} />
-                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage/> }/>
-                    <Route path={"/playlist/user-playlists"} element={<UserPlaylistsPage/>}/>
+                    <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
+                    <Route path={"/playlist/user-playlists"} element={<UserPlaylistsPage />} />
                     <Route path={"/playlist/liked"} element={<LikedPlaylistPage />} />
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/search/:query/authors" element={<SearchAuthorsPage />} />
@@ -72,12 +72,12 @@ const AppRouter = () => {
                     <Route path="/officeArtist" element={<OfficeArtistPage />} />
                     <Route path="/subscriptions" element={<SubscriptionsPage />} />
 
-              
-                <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
-                <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
-                <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
-                <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
-                <Route path={"/user/:id/favorite-albums"} element={<UserFavoriteAlbumsPage/>}/>
+
+                    <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
+                    <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
+                    <Route path="/author/:id/collaborations" element={<ColaborationInAuthorPage />} />
+                    <Route path="/author/:id/similarAuthors" element={<SimilarAuthorsPage />} />
+                    <Route path={"/user/:id/favorite-albums"} element={<UserFavoriteAlbumsPage />} />
                     <Route path="/author/:id" element={<AuthorProfilePage />} />
                     <Route path="/author/:id/popularTracks" element={<PopularTracksPage />} />
                     <Route path="/author/:id/albums" element={<AlbumsInAuthorPage />} />
@@ -86,8 +86,8 @@ const AppRouter = () => {
                 </Route>
 
 
-                <Route path="*" element={<NotFoundPage/>} />
-                <Route path="/notFound" element={<NotFoundPage/> }/>
+                <Route path="*" element={<NotFoundPage />} />
+                <Route path="/notFound" element={<NotFoundPage />} />
             </Routes>
         </Suspense>
     );

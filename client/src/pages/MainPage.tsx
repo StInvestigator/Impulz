@@ -15,6 +15,7 @@ import { fetchTopGenres } from "../store/reducers/action-creators/genre.ts";
 import { fetchTopAuthorsByMonth } from "../store/reducers/action-creators/author.ts";
 import { fetchAlbumTodayRecommendations, fetchPersonalAlbumsByGenre } from "../store/reducers/action-creators/album.ts";
 import { useKeycloak } from "@react-keycloak/web";
+import { setCurrentPage } from "../store/reducers/PageSlice.ts";
 
 const MainPage = () => {
     const dispatch = useAppDispatch();
@@ -36,6 +37,7 @@ const MainPage = () => {
     const userId: string | null = keycloak.tokenParsed?.sub ? keycloak.tokenParsed?.sub : null;
 
     useEffect(() => {
+        dispatch(setCurrentPage(1))
         dispatch(fetchTopTracksByWeek({ page: 0, size: 20, userId: userId }));
         dispatch(fetchTopAuthorsByMonth({ page: 0, size: 20 }));
         dispatch(fetchTopPlaylistsByWeek({ page: 0, size: 20 }));

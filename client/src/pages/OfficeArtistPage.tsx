@@ -1,4 +1,4 @@
-import { Box, Button, Typography} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import MyProfile from "../components/profiles/MyProfile";
 import MyModal from "../components/ui/MyModal";
 import { useEffect, useState } from "react";
@@ -14,13 +14,15 @@ import type { TrackCreationFullDto } from "../models/DTO/track/TrackCreationFull
 import AlbumList from "../components/lists/AlbumList";
 import spiraleImg from "../assets/spirale.svg";
 import { useTranslation } from "react-i18next";
-import keycloak from "../keycloak";
+import { useAppNavigate } from "../hooks/useAppNavigate";
+import { setCurrentPage } from "../store/reducers/PageSlice";
 
 function OfficeArtistPage() {
-  const {profile} = useAppSelector(state => state.profile);
-  const {albums} = useAppSelector(state => state.album);
+  const { profile } = useAppSelector(state => state.profile);
+  const { albums } = useAppSelector(state => state.album);
+  const route = useAppNavigate();
 
-  const {t} = useTranslation(["officeArtistPage", "errors"])
+  const { t } = useTranslation(["officeArtistPage", "other", "errors"])
 
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -34,10 +36,11 @@ function OfficeArtistPage() {
 
   const dispatch = useAppDispatch();
 
-    useEffect(() => {
-      dispatch(fetchAlbumsByAuthor({authorId: profile.id, size : 10}))
-    }, [dispatch,profile.id])
-  
+  useEffect(() => {
+    dispatch(setCurrentPage(1))
+    dispatch(fetchAlbumsByAuthor({ authorId: profile.id, size: 10 }))
+  }, [dispatch, profile.id])
+
   useEffect(() => {
     if (activeStep > 4 || activeStep < 1) {
       setOpen(false);
@@ -46,22 +49,22 @@ function OfficeArtistPage() {
   }, [activeStep]);
 
   const nextStepClick = () => {
-    if(!image){
+    if (!image) {
       setError(t("errors:error-no-image"))
       return
     }
 
-    if(activeStep === 2 && nameAlbum.trim().length === 0){
+    if (activeStep === 2 && nameAlbum.trim().length === 0) {
       setError(t("errors:error-no-album-name"))
       return
     }
 
-    if(activeStep === 3 && dateRelease.trim().length === 0){
+    if (activeStep === 3 && dateRelease.trim().length === 0) {
       setError(t("errors:error-no-release-date"))
       return
     }
 
-    if(activeStep === 4 && tracks.length === 0){
+    if (activeStep === 4 && tracks.length === 0) {
       setError(t("errors:error-no-tracks-in-album"))
       return
     }
@@ -71,7 +74,7 @@ function OfficeArtistPage() {
   }
 
   const createAlbumClick = () => {
-    
+
     setIsLoading(true);
 
     dispatch(createAlbum({
@@ -87,7 +90,7 @@ function OfficeArtistPage() {
           clientFileName: track.clientFileName?.name || "",
         })),
       },
-      coverFile: image ,
+      coverFile: image,
       trackFiles: tracks.map(track => track.clientFileName),
       trackCoverFiles: tracks.map(track => track.clientCoverName),
     })).unwrap().then(() => {
@@ -97,70 +100,90 @@ function OfficeArtistPage() {
   };
 
   return (
-    <>     
+    <>
       <MyProfile />
-      {/* {profile?.authorDto?.albums && (
-        <> */}
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} marginTop={"20px"} height={"310px"} position={"relative"} overflow={"hidden"} sx={{
-          background: "var(--gradient-oranges)",
-        }}>
-          <Box alignItems={"center"} display={"flex"} flexDirection={"column"} justifyContent={"space-between"} height={"70%"}>
-            <Typography variant={"h1"}>{t("officeArtistPage:title-h1")}</Typography>
-            <Button onClick={() => setOpen(true)} sx={{
-              marginTop: "auto",
-              padding: "12px 24px",
-              bgcolor: "var(--dark-purple)",
-              color: "white",
+
+      {albums.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+              {t("officeArtistPage:title-albums")}
+            </Typography>
+            <Button onClick={() => route(`/author/${profile.id}/albums`)} sx={{
+              height: "32px",
+              border: "1px solid black",
               borderRadius: "10px",
+              backgroundColor: "var(--dark-purple)",
+              color: "var(--columbia-blue)",
+              fontSize: "12px",
+              fontWeight: 600,
+              textTransform: "none"
             }}>
-              <Typography variant={"h2"} color="white">{t("officeArtistPage:button-create-album")}</Typography>
+              {t("other:button-watch-all")}
             </Button>
           </Box>
-          <Box component={"img"} src={spiraleImg} position={"absolute"} bottom={-150} width={"100%"} zIndex={-1}/>
+          <AlbumList albums={albums} />
         </Box>
-        <Box
-          display="grid"
-          sx={{
-            gridTemplateColumns: "repeat(2, 1fr)",
-          }}
-          mt={2}
-        >
-          <Box display="flex">
-            <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
-            <Typography variant="mainRL" display="flex" justifyContent="center">
-              {t("officeArtistPage:title-rule-1")}       
-            </Typography>
-          </Box>
-          <Box display="flex">
-            <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
-            <Typography variant="mainRL" display="flex" justifyContent="center">
-              {t("officeArtistPage:title-rule-2")}       
-            </Typography>
-          </Box>
-          <Box display="flex">
-            <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
-            <Typography variant="mainRL" display="flex" justifyContent="center">
-              {t("officeArtistPage:title-rule-3")}       
-            </Typography>
-          </Box>
-          <Box display="flex">
-            <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
-            <Typography variant="mainRL" display="flex" justifyContent="center">
-              {t("officeArtistPage:title-rule-4")}       
-            </Typography>
-          </Box>
+      )}
+
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} marginTop={"20px"} height={"310px"} position={"relative"} overflow={"hidden"} sx={{
+        background: "var(--gradient-oranges)",
+      }}>
+        <Box alignItems={"center"} display={"flex"} flexDirection={"column"} justifyContent={"space-between"} height={"70%"}>
+          <Typography variant={"h1"}>{t("officeArtistPage:title-h1")}</Typography>
+          <Button onClick={() => setOpen(true)} sx={{
+            marginTop: "auto",
+            padding: "12px 24px",
+            bgcolor: "var(--dark-purple)",
+            color: "white",
+            borderRadius: "10px",
+          }}>
+            <Typography variant={"h2"} color="white">{t("officeArtistPage:button-create-album")}</Typography>
+          </Button>
         </Box>
-        {/* </>
-      )} */}
-      <Box component={"section"} marginTop={"20px"} >
-          <AlbumList albums={albums || []}/>
+        <Box component={"img"} src={spiraleImg} position={"absolute"} bottom={-150} width={"100%"} zIndex={-1} />
       </Box>
+      <Box
+        display="grid"
+        sx={{
+          gridTemplateColumns: "repeat(2, 1fr)",
+        }}
+        mt={2}
+      >
+        <Box display="flex">
+          <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
+          <Typography variant="mainRL" display="flex" justifyContent="center">
+            {t("officeArtistPage:title-rule-1")}
+          </Typography>
+        </Box>
+        <Box display="flex">
+          <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
+          <Typography variant="mainRL" display="flex" justifyContent="center">
+            {t("officeArtistPage:title-rule-2")}
+          </Typography>
+        </Box>
+        <Box display="flex">
+          <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
+          <Typography variant="mainRL" display="flex" justifyContent="center">
+            {t("officeArtistPage:title-rule-3")}
+          </Typography>
+        </Box>
+        <Box display="flex">
+          <CheckIcon sx={{ width: 28, height: 28, color: '#23BE6E' }} />
+          <Typography variant="mainRL" display="flex" justifyContent="center">
+            {t("officeArtistPage:title-rule-4")}
+          </Typography>
+        </Box>
+      </Box>
+      {/* </>
+      )} */}
+
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />
         {activeStep === 1 && <Step1 image={image} setImage={setImage} />}
         {activeStep === 2 && <Step2 nameAlbum={nameAlbum} setNameAlbum={setNameAlbum} />}
         {activeStep === 3 && <Step3 dateRelease={dateRelease} setDateRelease={setDateRelease} />}
-        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} myName={profile.username}/>}
+        {activeStep === 4 && <Step4 tracks={tracks} setTracks={setTracks} albumImage={image} myName={profile.username} />}
         <Box mt={"20px"}>
           <Typography color="red" variant="mainRL">
             {error}
@@ -192,7 +215,7 @@ function OfficeArtistPage() {
             if (activeStep === 4) {
               createAlbumClick();
             }
-            else{
+            else {
               nextStepClick()
             }
           }}

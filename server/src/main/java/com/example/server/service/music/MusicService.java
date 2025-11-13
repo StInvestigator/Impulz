@@ -11,7 +11,6 @@ public interface MusicService
 {
     Track uploadMusic(MultipartFile file,Track track);
     boolean isMusicExists(String key);
-    void deleteMusic(String fileName);
     HeadObjectResponse getHeadObjectResponse(String key);
     InputStream getInputStream(String key, String range);
 }

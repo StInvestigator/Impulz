@@ -44,6 +44,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteImage(String imageUrl) {
         try {
+            if(imageUrl == null) return;
             String key = imageUrl.replace("https://" + bucketName + ".s3." + region + ".amazonaws.com/", "");
             s3StorageService.deleteFile(key);
         } catch (Exception e) {

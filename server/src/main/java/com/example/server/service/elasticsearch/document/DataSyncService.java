@@ -195,6 +195,10 @@ public class DataSyncService {
         trackSearchRepository.deleteById(trackId);
     }
 
+    public void deleteTracks(Iterable<Long> trackIds) {
+        trackSearchRepository.deleteAllById(trackIds);
+    }
+
     public void deleteAuthor(String authorId) {
         authorSearchRepository.deleteById(authorId);
     }

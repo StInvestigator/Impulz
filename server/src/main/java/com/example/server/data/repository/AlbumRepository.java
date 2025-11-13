@@ -89,6 +89,7 @@ public interface AlbumRepository extends JpaRepository<Album,Long>
     Page<Album> findPopularAlbumsByUserRecentGenres(@Param("userId") String userId, Pageable pageable);
 
     Page<Album> findByAuthorsContainingAndReleaseDateLessThanEqual(Author author, OffsetDateTime date, Pageable pageable);
+    Page<Album> findByAuthorsContainingAndReleaseDateGreaterThan(Author author, OffsetDateTime date, Pageable pageable);
 
     @Query(
             value = "SELECT al.* FROM albums al " +

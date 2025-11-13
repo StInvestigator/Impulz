@@ -87,6 +87,11 @@ public class AlbumServiceImpl implements AlbumService {
         return new PageDto<>(albumRepository.findByAuthorsContainingAndReleaseDateLessThanEqual(authorService.getAuthorById(authorId), OffsetDateTime.now(), pageable).map(AlbumSimpleDto::fromEntity));
     }
 
+    @Override
+    public PageDto<AlbumSimpleDto> findUnreleasedByAuthor(String authorId, Pageable pageable) {
+        return new PageDto<>(albumRepository.findByAuthorsContainingAndReleaseDateGreaterThan(authorService.getAuthorById(authorId), OffsetDateTime.now(), pageable).map(AlbumSimpleDto::fromEntity));
+    }
+
     @Cacheable(value = "album.collaborationsByAuthor",
             key = "#authorId + '::p=' + #pageable.pageNumber + ',s=' + #pageable.pageSize + ',sort=' + (#pageable.sort != null ? #pageable.sort.toString() : '')")
     @Override

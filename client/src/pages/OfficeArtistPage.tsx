@@ -9,7 +9,7 @@ import Step3 from "../components/create_album/Step3";
 import Step4 from "../components/create_album/Step4";
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { createAlbum, fetchAlbumsByAuthor } from "../store/reducers/action-creators/album";
+import { createAlbum, fetchAlbumsByAuthor, fetchUnreleasedAlbumsByAuthor } from "../store/reducers/action-creators/album";
 import type { TrackCreationFullDto } from "../models/DTO/track/TrackCreationFullDto";
 import AlbumList from "../components/lists/AlbumList";
 import spiraleImg from "../assets/spirale.svg";
@@ -19,7 +19,7 @@ import { setCurrentPage } from "../store/reducers/PageSlice";
 
 function OfficeArtistPage() {
   const { profile } = useAppSelector(state => state.profile);
-  const { albums } = useAppSelector(state => state.album);
+  const { albums, unreleasedAuthorAlbums } = useAppSelector(state => state.album);
   const route = useAppNavigate();
 
   const { t } = useTranslation(["officeArtistPage", "other", "errors"])
@@ -39,6 +39,7 @@ function OfficeArtistPage() {
   useEffect(() => {
     dispatch(setCurrentPage(1))
     dispatch(fetchAlbumsByAuthor({ authorId: profile.id, size: 10 }))
+    dispatch(fetchUnreleasedAlbumsByAuthor({ authorId: profile.id, size: 10 }))
   }, [dispatch, profile.id])
 
   useEffect(() => {
@@ -96,6 +97,7 @@ function OfficeArtistPage() {
     })).unwrap().then(() => {
       setOpen(false);
       setActiveStep(1)
+      dispatch(fetchAlbumsByAuthor({authorId: profile.id}))
     });
   };
 
@@ -107,7 +109,7 @@ function OfficeArtistPage() {
         <Box component={"section"} mt={"60px"}>
           <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
             <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-              {t("officeArtistPage:title-albums")}
+              {t("officeArtistPage:title-released-albums")}
             </Typography>
             <Button onClick={() => route(`/author/${profile.id}/albums`)} sx={{
               height: "32px",
@@ -123,6 +125,29 @@ function OfficeArtistPage() {
             </Button>
           </Box>
           <AlbumList albums={albums} />
+        </Box>
+      )}
+
+      {albums.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+              {t("officeArtistPage:title-unreleased-albums")}
+            </Typography>
+            <Button onClick={() => route(`/author/${profile.id}/unreleased-albums`)} sx={{
+              height: "32px",
+              border: "1px solid black",
+              borderRadius: "10px",
+              backgroundColor: "var(--dark-purple)",
+              color: "var(--columbia-blue)",
+              fontSize: "12px",
+              fontWeight: 600,
+              textTransform: "none"
+            }}>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <AlbumList albums={unreleasedAuthorAlbums} />
         </Box>
       )}
 

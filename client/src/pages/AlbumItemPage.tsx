@@ -5,7 +5,7 @@ import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { fetchAlbumDetails } from "../store/reducers/action-creators/album.ts";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate  } from "react-router-dom";
 import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
 import { fetchTracksByAlbum } from "../store/reducers/action-creators/tracks.ts";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,7 @@ import keycloak from "../keycloak.ts";
 import { useContextMenu } from "../hooks/useContextMenu.ts";
 import additionalIcon from "../assets/AdditionalIcon.svg";
 import { EditAlbumContextMenu } from "../components/contextMenu/EditAlbumContextMenu.tsx";
+
 
 const AlbumItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
@@ -49,11 +50,7 @@ const AlbumItemPage = () => {
     }
 
     if (!currentAlbum) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography>Album not found</Typography>
-            </Box>
-        );
+        return <Navigate to="/notFound" replace />;
     }
 
     const formatDuration = (totalSeconds: number): string => {
@@ -95,6 +92,15 @@ const AlbumItemPage = () => {
     let isOwner = false;
     if (currentUserId) {
         isOwner = currentAlbum.authors.map(a => a.id).includes(currentUserId);
+    }
+
+     const releaseDate = currentAlbum.releaseDate
+        ? new Date(currentAlbum.releaseDate)
+        : null;
+    const now = new Date();
+
+    if (releaseDate && releaseDate > now && !isOwner) {
+        return <Navigate to="/notFound" replace />;
     }
 
     return (

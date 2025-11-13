@@ -18,6 +18,7 @@ public class DocumentConversionService
         TrackDocument doc = new TrackDocument();
         doc.setId(track.getId());
         doc.setTitle(track.getTitle());
+        doc.setReleaseDate(track.getAlbum().getReleaseDate());
 
         if(track.getAuthors() != null)
         {
@@ -79,6 +80,7 @@ public class DocumentConversionService
         AlbumDocument doc = new AlbumDocument();
         doc.setId(album.getId());
         doc.setTitle(album.getTitle());
+        doc.setReleaseDate(album.getReleaseDate());
 
         if (album.getAuthors() != null) {
             doc.setAuthorNames(album.getAuthors().stream()

@@ -21,6 +21,7 @@ public interface AlbumService
     PageDto<AlbumSimpleDto> getRecommendedAlbumsToday(Pageable pageable);
     PageDto<AlbumSimpleDto> findPopularAlbumsByUserRecentGenres(String userId, Pageable pageable);
     PageDto<AlbumSimpleDto> findByAuthor(String authorId, Pageable pageable);
+    PageDto<AlbumSimpleDto> findUnreleasedByAuthor(String authorId, Pageable pageable);
     PageDto<AlbumSimpleDto> findCollaborationsByAuthor(String authorId, Pageable pageable);
     PageDto<AlbumSimpleDto> findByAuthorOrderByReleaseDateDesc(String authorId, Pageable pageable);
     PageDto<AlbumSimpleDto> findNewAlbumsByGenre(Long genreId, Pageable pageable);

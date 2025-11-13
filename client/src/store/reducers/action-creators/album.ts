@@ -2,7 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import { $api, $authApi } from "../../../http";
 import type { AlbumDto } from "../../../models/AlbumDto.ts";
-// import { useAppDispatch } from "../../../hooks/redux.ts";
 import { setTotalPages } from "../PageSlice.ts";
 import type { AlbumCreationDto } from "../../../models/DTO/album/AlbumCreationDto.ts";
 
@@ -20,6 +19,30 @@ export const fetchAlbumsByAuthor = createAsyncThunk<
 
       const response = await $authApi.get(
         `/albums/ByAuthor/${authorId}?${params}`
+      );
+      dispatch(setTotalPages(response.data.totalPages));
+      return response.data.content;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      return rejectWithValue(`Не удалось загрузить альбомы`);
+    }
+  }
+);
+
+export const fetchUnreleasedAlbumsByAuthor = createAsyncThunk<
+  AlbumSimpleDto[],
+  { authorId: string; page?: number; size?: number },
+  { rejectValue: string }
+>(
+  "albums/albumsUnreleasedByAuthor",
+  async ({ authorId, page = 0, size = 20 }, { rejectWithValue, dispatch }) => {
+    try {
+      const params = new URLSearchParams();
+      if (page !== undefined) params.append("page", page.toString());
+      if (size !== undefined) params.append("size", size.toString());
+
+      const response = await $authApi.get(
+        `/albums/ByAuthor/Unreleased/${authorId}?${params}`
       );
       dispatch(setTotalPages(response.data.totalPages));
       return response.data.content;

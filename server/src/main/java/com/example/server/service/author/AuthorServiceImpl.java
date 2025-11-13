@@ -11,6 +11,7 @@ import com.example.server.model.Author;
 import com.example.server.model.User;
 import com.example.server.model.id.AuthorFollower;
 import com.example.server.model.key.AuthorFollowerKey;
+import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.keycloak.KeycloakService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,12 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorFollowersRepository authorFollowersRepository;
     private final UserRepository userRepository;
     private final KeycloakService keycloakService;
+    private final DataSyncService dataSyncService;
+
+    @Override
+    public boolean isAuthorWithIdExists(String id) {
+        return authorRepository.existsById(id);
+    }
 
     public Author getAuthorById(String id) {
         return authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
@@ -47,6 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     public void createAuthor(Author author) {
         authorRepository.save(author);
+        dataSyncService.syncAuthor(author);
     }
 
     @CacheEvict(cacheNames = {"author.findFollowers", "author.findSimilarBySharedGenres",
@@ -55,6 +63,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteAuthor(String authorId) {
         authorRepository.deleteById(authorId);
+        dataSyncService.deleteAuthor(authorId);
     }
 
     @Cacheable(value = "author.findFollowers",
@@ -169,5 +178,6 @@ public class AuthorServiceImpl implements AuthorService {
         author.setFollowersCount(0L);
         authorRepository.save(author);
         keycloakService.addRoleToUser(userId,"AUTHOR");
+        dataSyncService.syncAuthor(author);
     }
 }

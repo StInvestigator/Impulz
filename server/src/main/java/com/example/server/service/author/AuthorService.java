@@ -13,6 +13,7 @@ import java.util.Set;
 
 public interface AuthorService
 {
+    boolean isAuthorWithIdExists(String id);
     Author getAuthorById(String id);
     AuthorDto getAuthorDtoById(String id);
     AuthorSimpleDto getAuthorSimpleDtoById(String id);

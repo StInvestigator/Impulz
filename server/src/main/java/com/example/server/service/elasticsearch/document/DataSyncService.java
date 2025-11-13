@@ -5,14 +5,11 @@ import com.example.server.data.repository.elastic_search.AlbumSearchRepository;
 import com.example.server.data.repository.elastic_search.AuthorSearchRepository;
 import com.example.server.data.repository.elastic_search.PlaylistSearchRepository;
 import com.example.server.data.repository.elastic_search.TrackSearchRepository;
+import com.example.server.model.*;
 import com.example.server.model.document.AlbumDocument;
 import com.example.server.model.document.AuthorDocument;
 import com.example.server.model.document.PlaylistDocument;
 import com.example.server.model.document.TrackDocument;
-import com.example.server.model.Album;
-import com.example.server.model.Author;
-import com.example.server.model.Playlist;
-import com.example.server.model.Track;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -26,8 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DataSyncService
-{
+public class DataSyncService {
     private final TrackRepository trackRepository;
     private final AuthorRepository authorRepository;
     private final AlbumRepository albumRepository;
@@ -124,6 +120,13 @@ public class DataSyncService
         } catch (Exception e) {
             log.error("Error syncing author {} to Elasticsearch", author.getId(), e);
         }
+    }
+
+    public void syncAuthor(User user) {
+        Author author = new Author();
+        author.setId(user.getId());
+        author.setUser(user);
+        syncAuthor(author);
     }
 
     public void syncAllAlbums() {

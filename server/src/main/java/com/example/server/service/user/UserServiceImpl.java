@@ -3,12 +3,16 @@ package com.example.server.service.user;
 import com.example.server.data.repository.UserRepository;
 import com.example.server.dto.User.UserDto;
 import com.example.server.dto.User.UserSimpleDto;
+import com.example.server.model.Author;
 import com.example.server.model.User;
+import com.example.server.service.author.AuthorService;
+import com.example.server.service.elasticsearch.document.DataSyncService;
 import com.example.server.service.image.ImageService;
 import com.example.server.service.keycloak.KeycloakService;
 import com.example.server.service.keycloak.KeycloakServiceImpl;
 import com.example.server.service.keycloak.sync.KeycloakSyncServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -23,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ImageService imageService;
     private final KeycloakSyncServiceImpl keycloakSyncService;
+    private final DataSyncService dataSyncService;
+    private final AuthorService authorService;
 
     @Lazy
     private final KeycloakServiceImpl keycloakService;
@@ -44,12 +50,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(String userId, String username, MultipartFile imageFile) {
         User user = getUserById(userId);
 
         if (username != null && !username.equals(user.getUsername())) {
             keycloakSyncService.updateUsername(userId, username);
             user.setUsername(username);
+            if(authorService.isAuthorWithIdExists(userId)) {
+                dataSyncService.syncAuthor(user);
+            }
         }
 
         if (imageFile != null && !imageFile.isEmpty()) {

@@ -94,8 +94,7 @@ const SecuredContent = () => {
 
   const sendTokenToBackend = async () => {
     try {
-      const response = await $authApi.post("/login-success");
-      console.log("user synced successfully: ", response.data);
+      await $authApi.post("/login-success");
     }
     catch (error) {
       console.error("Error sending token to backend:", error);

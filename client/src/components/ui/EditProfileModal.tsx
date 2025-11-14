@@ -45,7 +45,6 @@ const EditProfileModal: FC<ModalProps> = ({ open, setOpen }) => {
     }, [open, profile]);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(1111)
         const files = event.target.files;
         if (files && files.length > 0) {
             const file = files[0];
@@ -108,7 +107,6 @@ const EditProfileModal: FC<ModalProps> = ({ open, setOpen }) => {
         setError("");
 
         try {
-            console.log(imageFile)
             await dispatch(updateUserProfile({
                 userId,
                 username: username.trim(),

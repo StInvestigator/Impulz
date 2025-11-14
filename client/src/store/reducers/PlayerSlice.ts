@@ -303,9 +303,7 @@ const playerSlice = createSlice({
         },
 
         setBufferTracks: (state, action: PayloadAction<TrackSimpleDto[]>) => {
-            console.log('💽 Редьюсер setBufferTracks: устанавливаем', action.payload.length, 'треков');
             state.bufferTracks = action.payload;
-            console.log('💽 Буфер после установки:', state.bufferTracks.length, 'треков');
         },
 
         appendBufferToPlaylist: (state) => {
@@ -330,13 +328,6 @@ const playerSlice = createSlice({
             startIndex?: number;
         }>) => {
             const { source, initialTracks, bufferTracks, startIndex = 0 } = action.payload;
-
-            console.log('💽 Устанавливаем источник с буфером:', {
-                sourceType: source.type,
-                sourceId: source.id,
-                initialTracks: initialTracks.length,
-                bufferTracks: bufferTracks.length
-            });
 
             state.source = source;
             state.playlist = initialTracks;

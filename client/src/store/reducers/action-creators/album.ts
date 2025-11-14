@@ -228,7 +228,6 @@ export const createAlbum = createAsyncThunk<
       });
     }
 
-    console.log("FormData entries: ", Array.from(formData.entries()));
     const response = await $authApi.post("/albums/create", formData, {
       headers: {
         "Content-Type": "multipart/form-data",

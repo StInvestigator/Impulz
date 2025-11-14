@@ -59,27 +59,17 @@ export const usePlayTrack = () => {
 
         const effectiveMode = mode || playbackMode;
 
-        console.log('🎵 playSingle called:', {
-            track: track.title,
-            mode: effectiveMode,
-            currentPlaylistLength: playlist.length,
-            currentTrackIndex
-        });
-
         switch (effectiveMode) {
             case "append":
                 dispatch(addToPlaylist([track]));
-                console.log('🎵 Track appended to playlist');
                 break;
             case "insertNext":
                 dispatch(insertNextInPlaylist([track]));
-                console.log('🎵 Track inserted next');
                 break;
             case "replace":
             default:
                 dispatch(setPlaylist([track]));
                 dispatch(setCurrentTrack(0));
-                console.log('🎵 Playlist replaced with single track');
                 break;
         }
     };
@@ -89,40 +79,20 @@ export const usePlayTrack = () => {
 
         const isPlayerInitialized = active !== null;
 
-        console.log('🎵 addTrackToQueue:', {
-            track: track.title,
-            isPlayerInitialized,
-            currentActive: active?.title,
-            playlistLength: playlist.length,
-            sharedFetchFn: !!sharedFetchFn,
-            sharedFetchSource: sharedFetchSource,
-            currentSource: source
-        });
-
         if (!isPlayerInitialized) {
-            console.log('🎵 Плеер не инициализирован, начинаем воспроизведение');
             dispatch(setPlaylist([track]));
             dispatch(playTrack());
         } else {
-            console.log('🎵 Плеер инициализирован, добавляем в конец очереди');
             dispatch(appendToPlaylist([track]));
 
             if (source && (!sharedFetchSource || source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id)) {
-                console.log('🎵 Обновляем shared состояние для текущего источника');
                 const restored = restoreSourceConnection();
-                console.log('🎵 Результат восстановления в addTrackToQueue:', restored);
             }
         }
     };
 
     const addAlbumToQueue = async (album: AlbumSimpleDto) => {
         if (!requireAuth()) return;
-
-        console.log('🎵 addAlbumToQueue:', {
-            album: album.title,
-            tracksCount: album.tracks?.length || 0,
-            isPlayerInitialized: active !== null
-        });
 
         const albumTracks = album.tracks || [];
 
@@ -131,15 +101,12 @@ export const usePlayTrack = () => {
             return;
         }
 
-        console.log('🎵 Добавляем все треки альбома в очередь:', albumTracks.length);
 
         if (!active) {
-            console.log('🎵 Начинаем воспроизведение альбома');
             dispatch(setPlaylist(albumTracks));
             dispatch(setCurrentTrack(0));
             dispatch(playTrack());
         } else {
-            console.log('🎵 Добавляем альбом в конец очереди');
             dispatch(appendToPlaylist(albumTracks));
             resetSharedState();
         }
@@ -148,12 +115,6 @@ export const usePlayTrack = () => {
     const addPlaylistToQueue = async (playlist: PlaylistDto) => {
         if (!requireAuth()) return;
 
-        console.log('🎵 addPlaylistToQueue:', {
-            playlist: playlist.title,
-            tracksCount: playlist.tracks?.length || 0,
-            isPlayerInitialized: active !== null
-        });
-
         const playlistTracks = playlist.tracks || [];
 
         if (playlistTracks.length === 0) {
@@ -161,15 +122,12 @@ export const usePlayTrack = () => {
             return;
         }
 
-        console.log('🎵 Добавляем все треки плейлиста в очередь:', playlistTracks.length);
 
         if (!active) {
-            console.log('🎵 Начинаем воспроизведение плейлиста');
             dispatch(setPlaylist(playlistTracks));
             dispatch(setCurrentTrack(0));
             dispatch(playTrack());
         } else {
-            console.log('🎵 Добавляем плейлист в конец очереди');
             dispatch(appendToPlaylist(playlistTracks));
             resetSharedState();
         }
@@ -208,16 +166,6 @@ export const usePlayTrack = () => {
             const actualSource = sourceOverride ?? source;
             const actualFetchFn = fetchFnOverride ?? sharedFetchFn;
 
-            console.log('🎵 loadNextPageToBuffer проверка:', {
-                actualSource: !!actualSource,
-                actualFetchFn: !!actualFetchFn,
-                sharedFetchSource,
-                isBufferLoading,
-                typesMatch: actualSource && sharedFetchSource
-                    ? actualSource.type === sharedFetchSource.type && actualSource.id === sharedFetchSource.id
-                    : false
-            });
-
             if (
                 !actualSource ||
                 !actualFetchFn ||
@@ -226,7 +174,6 @@ export const usePlayTrack = () => {
                 actualSource.id !== sharedFetchSource.id ||
                 isBufferLoading
             ) {
-                console.log('🎵 loadNextPageToBuffer: условия не выполнены');
                 return false;
             }
 
@@ -245,11 +192,9 @@ export const usePlayTrack = () => {
             dispatch(setBufferLoading(true));
 
             try {
-                console.log('🎵 Загружаем страницу', nextPage, 'для источника', actualSource.id);
                 const newTracks = await callWithTimeout(actualFetchFn(nextPage, actualSource.size), 10000);
 
                 if (Array.isArray(newTracks) && newTracks.length > 0) {
-                    console.log('🎵 Загружены треки для буфера:', newTracks.length);
                     dispatch(setBufferTracks(newTracks));
                     const hasMore =
                         typeof actualSource.totalPages === "number"
@@ -258,7 +203,6 @@ export const usePlayTrack = () => {
                     dispatch(setSourceHasMore(hasMore));
                     return true;
                 } else {
-                    console.log('🎵 Нет треков для загрузки в буфер');
                     dispatch(setSourceHasMore(false));
                     return false;
                 }
@@ -299,11 +243,6 @@ export const usePlayTrack = () => {
             currentFetchFnRef.current = fetchPageFn;
             sharedFetchFn = fetchPageFn;
             sharedFetchSource = { type: sourceConfig.type, id: sourceConfig.id };
-
-            console.log('🎵 playWithBuffering: установили sharedFetchFn и sharedFetchSource', {
-                type: sourceConfig.type,
-                id: sourceConfig.id
-            });
         }
 
         const newSource: PlayerSource = {
@@ -313,40 +252,24 @@ export const usePlayTrack = () => {
             totalPages: sourceConfig.totalPages ?? Infinity,
         };
 
-        console.log('🎵 playWithBuffering: устанавливаем плейлист без предзагрузки буфера');
 
         dispatch(setSourceWithBuffer({ source: newSource, initialTracks, bufferTracks: [], startIndex }));
     };
 
     const restoreSourceConnection = useCallback(() => {
         if (!source) {
-            console.log('🎵 restoreSourceConnection: source отсутствует');
             return false;
         }
-
-        console.log('🎵 Попытка восстановить соединение с источником:', {
-            sourceType: source.type,
-            sourceId: source.id,
-            currentSharedSource: sharedFetchSource
-        });
 
         switch (source.type) {
             case "author":
             { const authorFetchFn = async (page: number, size: number) => {
-                console.log('🎵 Вызываем fetchAuthorTracksPaged для восстановления:', { authorId: source.id, page, size });
                 const res = await fetchAuthorTracksPaged(source.id.toString(), page, size);
-                console.log('🎵 Результат восстановления для автора:', { tracksCount: res.tracks.length });
                 return res.tracks;
             };
                 sharedFetchFn = authorFetchFn;
                 sharedFetchSource = { type: source.type, id: source.id };
                 currentFetchFnRef.current = authorFetchFn;
-                console.log('🎵 Восстановлено соединение для автора', {
-                    sourceType: source.type,
-                    sourceId: source.id,
-                    sharedFetchFn: !!sharedFetchFn,
-                    sharedFetchSource
-                });
                 return true; }
 
             case "album":
@@ -373,9 +296,7 @@ export const usePlayTrack = () => {
                 source.id === sharedFetchSource.id;
 
             if (source && (!sharedFetchSource || !isSourceMatching)) {
-                console.log('🎵 Источники не совпадают, пытаемся восстановить соединение');
                 const restored = restoreSourceConnection();
-                console.log('🎵 Результат восстановления:', restored);
             }
 
             const shouldLoadBuffer =
@@ -389,34 +310,13 @@ export const usePlayTrack = () => {
 
             const shouldAppendBuffer = tracksLeft === 0 && bufferTracks.length > 0;
 
-            console.log('🎵 useAutoBuffer проверка:', {
-                currentTrackIndex,
-                playlistLength: playlist.length,
-                tracksLeft,
-                hasMore: source?.hasMore,
-                isBufferLoading,
-                bufferTracksCount: bufferTracks.length,
-                shouldLoadBuffer,
-                shouldAppendBuffer,
-                sharedFetchFn: !!sharedFetchFn,
-                sharedFetchSource: sharedFetchSource,
-                isSourceMatching,
-                sourceType: source?.type,
-                sharedSourceType: sharedFetchSource?.type,
-                sourceId: source?.id,
-                sharedSourceId: sharedFetchSource?.id
-            });
-
             if (shouldLoadBuffer) {
-                console.log('🎵 Загружаем следующую страницу в буфер (осталось треков:', tracksLeft, ')');
                 void loadNextPageToBuffer();
             }
 
             if (shouldAppendBuffer) {
-                console.log('🎵 Добавляем буфер в плейлист (последний трек)');
                 const appended = appendBufferToPlaylist();
                 if (appended && source?.hasMore) {
-                    console.log('🎵 Буфер добавлен, загружаем следующую страницу');
                     setTimeout(() => {
                         void loadNextPageToBuffer();
                     }, 300);
@@ -441,17 +341,12 @@ export const usePlayTrack = () => {
     ) => {
         if (!requireAuth()) return;
 
-        console.log('🎵 Начало playAuthorPopularTracks для автора:', authorId);
 
         try {
-            console.log('🎵 Загружаем первую страницу треков...');
             const firstPage = await fetchAuthorTracksPaged(authorId, 0, pageSize);
 
-            console.log('🎵 Ответ от API:', firstPage);
 
             if (firstPage && Array.isArray(firstPage.tracks) && firstPage.tracks.length > 0) {
-                console.log('🎵 Загружены треки первой страницы:', firstPage.tracks.length);
-                console.log('🎵 Устанавливаем плейлист БЕЗ предзагрузки буфера');
 
                 const fetchFn = async (page: number, size: number) => {
                     const res = await fetchAuthorTracksPaged(authorId, page, size);
@@ -520,7 +415,6 @@ export const usePlayTrack = () => {
         sharedFetchFn = fetchFn;
         sharedFetchSource = { type: sourceType, id: sourceId };
         currentFetchFnRef.current = fetchFn;
-        console.log('🎵 Shared state updated:', { type: sourceType, id: sourceId });
     }, []);
 
     return {

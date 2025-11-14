@@ -2,11 +2,11 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 
 interface LikedState {
-    likedIds: number[]
+    likedIds: { [key: number]: boolean }
 }
 
 const initialState: LikedState = {
-    likedIds: []
+    likedIds: {}
 };
 
 const likedSlice = createSlice({
@@ -14,16 +14,14 @@ const likedSlice = createSlice({
     initialState,
     reducers: {
         setLiked: (state, action: PayloadAction<number[]>) => {
-            state.likedIds = action.payload;
+            action.payload.forEach(l =>
+                state.likedIds[l] = true);
         },
         addToLiked: (state, action: PayloadAction<number>) => {
-            state.likedIds.push(action.payload);
+            state.likedIds[action.payload] = true;
         },
         removeFromLiked: (state, action: PayloadAction<number>) => {
-            const index: number = state.likedIds.indexOf(action.payload)
-            if (index > -1) {
-                state.likedIds.splice(index, 1);
-            }
+            state.likedIds[action.payload] = false;
         },
     },
 });

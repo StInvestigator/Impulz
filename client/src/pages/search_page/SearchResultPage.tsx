@@ -34,10 +34,10 @@ const SearchResultsPage = () => {
 
     useEffect(() => {
         if (query) {
-            dispatch(searchAlbums({ query, page: 0, size: 4 }));
+            dispatch(searchAlbums({ query, page: 0, size: 5 }));
             dispatch(searchAuthors({ query, page: 0, size: 5 }));
             dispatch(searchTracks({ query, page: 0, size: 5 }));
-            dispatch(searchPublicPlaylists({ query, page: 0, size: 4 }));
+            dispatch(searchPublicPlaylists({ query, page: 0, size: 5 }));
         }
     }, [query, dispatch]);
 
@@ -95,7 +95,7 @@ const SearchResultsPage = () => {
             {albums.length > 0 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
                             {t("search:title-albums")}
                         </Typography>
                         <Button onClick={() => route(`/search/${query}/albums`)} sx={{
@@ -120,7 +120,7 @@ const SearchResultsPage = () => {
             {playlists.length > 0 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                       <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
                             {t("search:title-playlists")}
                         </Typography>
                         <Button onClick={() => route(`/search/${query}/playlists`)} sx={{
@@ -148,7 +148,7 @@ const SearchResultsPage = () => {
             {authors.length > 0 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
+                       <Typography variant={"h4"} fontSize={"28px"} color="var(--indigo-dye)">
                             {t("search:title-authors")}
                         </Typography>
                         <Button onClick={() => route(`/search/${query}/authors`)} sx={{

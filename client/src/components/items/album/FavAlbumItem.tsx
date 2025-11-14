@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import heartImage from "../../../assets/sidebar/heart.svg";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { FavAlbumContextMenu } from "../../contextMenu/FavAlbumContextMenu.tsx";
 
 interface AlbumProps {
     album: AlbumSimpleDto;
@@ -14,6 +16,7 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
     const { t } = useTranslation('other');
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handleClick = () => {
         setActive(!active);
@@ -24,6 +27,7 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
     return (
         <ListItem disablePadding>
             <ListItemButton
+                onContextMenu={(e) => handleContextMenu(e, album.id)}
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
                 onClick={handleClick}
@@ -122,7 +126,13 @@ const FavAlbumItem: FC<AlbumProps> = ({ album }) => {
                     }
                 />
             </ListItemButton>
+            <FavAlbumContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                album={album}
+            />
         </ListItem>
+
     );
 };
 

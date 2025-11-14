@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { PlaylistSimpleDto } from "../../../models/DTO/PlaylistSimpleDto.ts";
 import type { PlaylistDto } from "../../../models/PlaylistDto.ts";
 import { $api, $authApi } from "../../../http";
 import { setTotalPages } from "../PageSlice.ts";
@@ -117,7 +116,7 @@ export const fetchAllPlaylistsDtoOwnByUserId = createAsyncThunk<
 );
 
 export const fetchFavoritePlaylists = createAsyncThunk<
-    PlaylistSimpleDto[],
+    PlaylistDto[],
     { userId: string; page?: number; size?: number },
     { rejectValue: string }
 >(
@@ -215,6 +214,27 @@ export const likePlaylist = createAsyncThunk<
     }
 );
 
+export const unlikePlaylist = createAsyncThunk<
+    void,
+    { userId: string; playlistId: number },
+    { rejectValue: string }
+>(
+    'track/unlikePlaylist',
+    async ({ userId, playlistId }, { rejectWithValue }) => {
+        try {
+            await $authApi.post('/playlists/unlike', null, {
+                params: {
+                    userId: userId,
+                    playlistId: playlistId.toString()
+                }
+            });
+        }
+        catch (error: unknown) {
+            return rejectWithValue(`Failed to unlike playlist : ${error}`);
+        }
+    }
+);
+
 export const updatePlaylist = createAsyncThunk<
     PlaylistDto,
     { id: number, name: string; isPublic: boolean; imageFile?: File },
@@ -263,4 +283,18 @@ export const deletePlaylist = createAsyncThunk<
     }
 );
 
-
+export const removeTrackFromPlaylist = createAsyncThunk<
+    void,
+    { playlistId: number; trackId: number },
+    { rejectValue: string }
+>(
+    'track/removeTrackFromPlaylist',
+    async ({ playlistId, trackId }, { rejectWithValue }) => {
+        try {
+            await $authApi.delete(`/playlists/removeTrack/${playlistId}/${trackId}`);
+        }
+        catch (error: unknown) {
+            return rejectWithValue(`Failed to like playlist : ${error}`);
+        }
+    }
+);

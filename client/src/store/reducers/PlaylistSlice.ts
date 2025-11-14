@@ -7,7 +7,6 @@ import {
     fetchFavoritePlaylists,
     fetchAllPlaylistsDtoOwnByUserId
 } from "./action-creators/playlist.ts";
-import type { PlaylistSimpleDto } from "../../models/DTO/PlaylistSimpleDto.ts";
 import type {PlaylistDto} from "../../models/PlaylistDto.ts";
 
 interface PlaylistState {
@@ -16,9 +15,10 @@ interface PlaylistState {
     playlistsOwnByCurrentUser: PlaylistDto[];
     allPlaylistsDtoOwnByUser: PlaylistDto[];
     recentPlaylistsByGenre: PlaylistDto[];
-    favoritePlaylists: PlaylistSimpleDto[];
+    favoritePlaylists: PlaylistDto[];
     isLoading: boolean;
     isSidebarLoading: boolean;
+    isMySidebarLoading: boolean;
     error: string | null;
 }
 
@@ -31,6 +31,7 @@ const initialState: PlaylistState = {
     favoritePlaylists: [],
     isLoading: false,
     isSidebarLoading: false,
+    isMySidebarLoading: false,
     error: null
 }
 
@@ -73,19 +74,16 @@ export const PlaylistSlice = createSlice({
             })
 
             .addCase(fetchPlaylistsOwnByUserId.pending,(state) =>{
-                state.isLoading = true;
-                state.isSidebarLoading = true;
+                state.isMySidebarLoading = true;
                 state.error = null;
             })
             .addCase(fetchPlaylistsOwnByUserId.fulfilled,(state,action) =>{
-                state.isLoading = false;
-                state.isSidebarLoading = false;
+                state.isMySidebarLoading = false;
                 state.playlistsOwnByCurrentUser = action.payload;
                 state.error = null;
             })
             .addCase(fetchPlaylistsOwnByUserId.rejected,(state,action) =>{
-                state.isLoading = false;
-                state.isSidebarLoading = false;
+                state.isMySidebarLoading = false;
                 state.error = action.payload || "Ошибка при загрузке плейлистов пользователя"
             })
 
@@ -104,18 +102,15 @@ export const PlaylistSlice = createSlice({
             })
             
              .addCase(fetchFavoritePlaylists.pending,(state) =>{
-                state.isLoading = true;
                 state.isSidebarLoading = true;
                 state.error = null;
             })
             .addCase(fetchFavoritePlaylists.fulfilled,(state,action) =>{
-                state.isLoading = false;
                 state.isSidebarLoading = false;
                 state.favoritePlaylists = action.payload;
                 state.error = null;
             })
             .addCase(fetchFavoritePlaylists.rejected,(state,action)=>{
-                state.isLoading = false;
                 state.isSidebarLoading = false;
                 state.error = action.payload || "Ошибка при загрузке новых плейлистов по жанру";
             })

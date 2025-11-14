@@ -10,9 +10,10 @@ import { useNavigate } from "react-router-dom";
 interface TrackItemProps {
     track: TrackSimpleDto;
     index?: number;
+    playlistId? : number
 }
 
-const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
+const TrackSmallItem: FC<TrackItemProps> = ({ track, index, playlistId }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
     const { playSingle } = usePlayTrack();
@@ -139,6 +140,7 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index }) => {
                 contextMenu={contextMenu}
                 onClose={handleCloseContextMenu}
                 track={track}
+                playlistId={playlistId}
             />
         </>
     );

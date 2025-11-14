@@ -106,51 +106,6 @@ function OfficeArtistPage() {
     <>
       <MyProfile />
 
-      {albums.length > 0 && (
-        <Box component={"section"} mt={"60px"}>
-          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-              {t("officeArtistPage:title-released-albums")}
-            </Typography>
-            <Button onClick={() => route(`/author/${profile.id}/released`)} sx={{
-              height: "32px",
-              border: "1px solid black",
-              borderRadius: "10px",
-              backgroundColor: "var(--dark-purple)",
-              color: "var(--columbia-blue)",
-              fontSize: "12px",
-              fontWeight: 600,
-              textTransform: "none"
-            }}>
-              {t("other:button-watch-all")}
-            </Button>
-          </Box>
-          <AlbumList albums={albums} />
-        </Box>
-      )}
-
-      {albums.length > 0 && (
-        <Box component={"section"} mt={"60px"}>
-          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
-              {t("officeArtistPage:title-unreleased-albums")}
-            </Typography>
-            <Button onClick={() => route(`/author/${profile.id}/unreleased`)} sx={{
-              height: "32px",
-              border: "1px solid black",
-              borderRadius: "10px",
-              backgroundColor: "var(--dark-purple)",
-              color: "var(--columbia-blue)",
-              fontSize: "12px",
-              fontWeight: 600,
-              textTransform: "none"
-            }}>
-              {t("other:button-watch-all")}
-            </Button>
-          </Box>
-          <AlbumList albums={unreleasedAuthorAlbums} />
-        </Box>
-      )}
 
       <Box display={"flex"} justifyContent={"center"} alignItems={"center"} marginTop={"20px"} height={"310px"} position={"relative"} overflow={"hidden"} sx={{
         background: "var(--gradient-oranges)",
@@ -203,6 +158,53 @@ function OfficeArtistPage() {
       </Box>
       {/* </>
       )} */}
+
+      
+      {albums.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+              {t("officeArtistPage:title-released-albums")}
+            </Typography>
+            <Button onClick={() => route(`/author/${profile.id}/released`)} sx={{
+              height: "32px",
+              border: "1px solid black",
+              borderRadius: "10px",
+              backgroundColor: "var(--dark-purple)",
+              color: "var(--columbia-blue)",
+              fontSize: "12px",
+              fontWeight: 600,
+              textTransform: "none"
+            }}>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <AlbumList albums={albums} />
+        </Box>
+      )}
+
+      {unreleasedAuthorAlbums.length > 0 && (
+        <Box component={"section"} mt={"60px"}>
+          <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
+            <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+              {t("officeArtistPage:title-unreleased-albums")}
+            </Typography>
+            <Button onClick={() => route(`/author/${profile.id}/unreleased`)} sx={{
+              height: "32px",
+              border: "1px solid black",
+              borderRadius: "10px",
+              backgroundColor: "var(--dark-purple)",
+              color: "var(--columbia-blue)",
+              fontSize: "12px",
+              fontWeight: 600,
+              textTransform: "none"
+            }}>
+              {t("other:button-watch-all")}
+            </Button>
+          </Box>
+          <AlbumList albums={unreleasedAuthorAlbums} />
+        </Box>
+      )}
 
       <MyModal open={open} setOpen={setOpen}>
         <MyStepper activeStep={activeStep} />

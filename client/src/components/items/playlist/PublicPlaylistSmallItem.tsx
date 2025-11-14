@@ -9,6 +9,7 @@ import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/t
 import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
 import {useContextMenu} from "../../../hooks/useContextMenu.ts";
 import {PlaylistContextMenu} from "../../contextMenu/PlaylistContextMenu.tsx";
+import defaultImage from "../../../assets/PlaylistDefaultImage.svg";
 
 interface PlaylistItemProps {
     playlist: PlaylistDto
@@ -81,7 +82,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
                 bgcolor={"white"}
                 borderRadius={"10px"}
                 sx={{
-                    backgroundImage: `url(${playlist.imgUrl})`,
+                    backgroundImage: `url(${playlist.imgUrl || defaultImage})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     transition: 'transform 0.2s ease',

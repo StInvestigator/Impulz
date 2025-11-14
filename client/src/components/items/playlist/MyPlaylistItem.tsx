@@ -1,10 +1,10 @@
-import {useState, type FC} from "react";
+import { useState, type FC } from "react";
 import { ListItem, ListItemButton, Box, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import {useContextMenu} from "../../../hooks/useContextMenu.ts";
-import {EditPlaylistContextMenu} from "../../contextMenu/EditPlaylistContextMenu.tsx";
-import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { EditPlaylistContextMenu } from "../../contextMenu/EditPlaylistContextMenu.tsx";
+import type { PlaylistDto } from "../../../models/PlaylistDto.ts";
 
 interface PlaylistProps {
     playlist: PlaylistDto;
@@ -100,11 +100,11 @@ const MyPlaylistItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                     }
                 />
             </ListItemButton>
-            <EditPlaylistContextMenu
-                playlist={playlist}
-                contextMenu={contextMenu}
-                onClose={handleCloseContextMenu}
-            />
+                <EditPlaylistContextMenu
+                    playlist={playlist}
+                    contextMenu={contextMenu}
+                    onClose={handleCloseContextMenu}
+                />
         </ListItem>
     );
 };

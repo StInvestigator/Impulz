@@ -31,9 +31,9 @@ const AlbumItemPage = () => {
         if (id) {
             dispatch(fetchAlbumDetails(id))
         }
-    }, [dispatch, albumId]);
+    }, [dispatch, albumId, id]);
 
-    if (isLoading) {
+    if (isLoading || !currentAlbum) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
                 <CircularProgress />
@@ -42,14 +42,6 @@ const AlbumItemPage = () => {
     }
 
     if (error) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <Typography color="error">{error}</Typography>
-            </Box>
-        );
-    }
-
-    if (!currentAlbum) {
         return <Navigate to="/notFound" replace />;
     }
 

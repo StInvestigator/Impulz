@@ -31,15 +31,15 @@ const PlaylistItemPage = () => {
         if (playlistId) {
             dispatch(fetchPlaylistDetails(playlistId));
         }
-    }, [playlistId]);
+    }, [playlistId, dispatch]);
 
-    if (isLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <CircularProgress />
-            </Box>
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+    //             <CircularProgress />
+    //         </Box>
+    //     );
+    // }
 
     if (error) {
         return (
@@ -133,7 +133,7 @@ const PlaylistItemPage = () => {
                 {currentPlaylist.tracks && currentPlaylist.tracks.length > 0 ? (
                     <>
                         <Stack spacing={3}>
-                            <TrackList tracks={currentPlaylist.tracks} />
+                            <TrackList tracks={currentPlaylist.tracks} playlistId={id} />
                         </Stack>
                         <Box component={"section"} marginTop={"60px"}>
                             <MyPagination
@@ -151,11 +151,12 @@ const PlaylistItemPage = () => {
                 )}
             </Box>
 
-            <EditPlaylistContextMenu
-                playlist={currentPlaylist}
-                contextMenu={contextMenu}
-                onClose={handleCloseContextMenu}
-            />
+            {isOwner &&
+                <EditPlaylistContextMenu
+                    playlist={currentPlaylist}
+                    contextMenu={contextMenu}
+                    onClose={handleCloseContextMenu}
+                />}
         </>
     );
 };

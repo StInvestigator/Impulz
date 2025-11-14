@@ -10,7 +10,7 @@ import ScrollToTop from "./components/ScrollToTop.tsx";
 import { theme } from "./theme.ts";
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import keycloak from "./keycloak";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import MusicPlayer from './components/MusicPlayer.tsx';
 import FullScreenPlayer from './components/FullScreenPlayer.tsx';
 import { $authApi } from "./http";
@@ -61,7 +61,7 @@ const SecuredContent = () => {
     }
   }, [initialized, location, navigate, keycloak]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(closeFullScreenPlayer());
   }, [location.pathname, dispatch]);
 

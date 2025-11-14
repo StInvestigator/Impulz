@@ -4,6 +4,8 @@ import { useCallback, type FC } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import type { TrackSimpleDto } from "../../../models/DTO/track/TrackSimpleDto.ts";
 import { useNavigate } from "react-router-dom";
+import { TrackContextMenu } from "../../contextMenu/TrackContextMenu.tsx";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 
 interface TrackTrueSmallItemProps {
     track: TrackSimpleDto;
@@ -15,6 +17,7 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
 
     const { playSingle } = usePlayTrack();
     const route = useNavigate();
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handlePlay = useCallback(() => {
         playSingle(track);
@@ -38,6 +41,7 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
             onClick={handlePlay}>
             {/* Контейнер для изображения трека */}
             <Box
+                onContextMenu={(e) => handleContextMenu(e, track.id)}
                 position="relative"
                 width={itemWidth}
                 height={itemWidth}
@@ -77,7 +81,9 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
             </Box>
 
             {/* Информация о треке */}
-            <Box display="flex" flexDirection="column" mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
+            <Box
+                onContextMenu={(e) => handleContextMenu(e, track.id)}
+                display="flex" flexDirection="column" mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography
                     gutterBottom
                     variant="mainSbL"
@@ -136,6 +142,11 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
                     </Box>
                 </Typography>
             </Box>
+            <TrackContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                track={track}
+            />
         </Box>
     );
 };

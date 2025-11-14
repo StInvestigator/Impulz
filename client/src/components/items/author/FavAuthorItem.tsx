@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import heartImage from "../../../assets/sidebar/heart.svg";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto.ts";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { FavAuthorContextMenu } from "../../contextMenu/FavAuthorContextMenu.tsx";
 
 interface AuthorProps {
     author: AuthorSimpleDto;
@@ -14,6 +16,7 @@ const FavAuthorItem: FC<AuthorProps> = ({ author }) => {
     const [active, setActive] = useState(false);
     const route = useAppNavigate();
     const { t } = useTranslation('other');
+    const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handleClick = () => {
         setActive(!active);
@@ -24,6 +27,7 @@ const FavAuthorItem: FC<AuthorProps> = ({ author }) => {
     return (
         <ListItem disablePadding>
             <ListItemButton
+                onContextMenu={(e) => handleContextMenu(e, author.id)}
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
                 onClick={handleClick}
@@ -122,6 +126,11 @@ const FavAuthorItem: FC<AuthorProps> = ({ author }) => {
                     }
                 />
             </ListItemButton>
+            <FavAuthorContextMenu
+                contextMenu={contextMenu}
+                onClose={handleCloseContextMenu}
+                author={author}
+            />
         </ListItem>
     );
 };

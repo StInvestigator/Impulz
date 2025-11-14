@@ -27,7 +27,8 @@ const MyFavPlaylistsItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
 
     return (
         <ListItem disablePadding>
-            <ListItemButton onContextMenu={(e) => handleContextMenu(e, playlist.id)}
+            <ListItemButton 
+            onContextMenu={(e) => handleContextMenu(e, playlist.id)}
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
                 onClick={handleClick}

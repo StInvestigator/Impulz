@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
-import React, {type FC, useEffect, useState} from "react";
+import React, { type FC, useEffect, useState } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { PlaylistContextMenu } from "../../contextMenu/PlaylistContextMenu.tsx";
@@ -56,9 +56,9 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
                 cursor: 'pointer',
             }}
             onClick={handlePlaylistClick}
-            onContextMenu={(e) => handleContextMenu(e, playlist.id)}
         >
             <Box
+                onContextMenu={(e) => handleContextMenu(e, playlist.id)}
                 width="100%"
                 height={`${itemHeight}px`}
                 maxWidth={itemWidth}
@@ -75,6 +75,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
 
 
             <Box
+                onContextMenu={(e) => handleContextMenu(e, playlist.id)}
                 display={"flex"}
                 padding={"24px"}
                 position={"absolute"}

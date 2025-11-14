@@ -1,14 +1,14 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import React, {type FC} from "react";
+import React, { type FC } from "react";
 import { useTranslation } from 'react-i18next';
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
-import {useContextMenu} from "../../../hooks/useContextMenu.ts";
-import {AlbumContextMenu} from "../../contextMenu/AlbumContextMenu.tsx";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { AlbumContextMenu } from "../../contextMenu/AlbumContextMenu.tsx";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
@@ -40,7 +40,6 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
 
     return (
         <Box
-            onContextMenu={(e) => handleContextMenu(e, album.id)}
             onClick={() => route(`/album/${album.id}`)}
             sx={{
                 width: itemWidth,
@@ -56,6 +55,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
         >
             {/* Контейнер для изображения альбома */}
             <Box
+                onContextMenu={(e) => handleContextMenu(e, album.id)}
                 position="relative"
                 width={itemWidth}
                 height={itemWidth}
@@ -101,7 +101,9 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
             </Box>
 
             {/* Информация об альбоме */}
-            <Box display="flex" flexDirection="column" mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
+            <Box
+                onContextMenu={(e) => handleContextMenu(e, album.id)}
+                display="flex" flexDirection="column" mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography
                     gutterBottom
                     variant="mainSbL"

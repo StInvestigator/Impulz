@@ -4,6 +4,8 @@ import type { FC } from "react";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 import { useNavigate } from "react-router-dom";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { AuthorContextMenu } from "../../contextMenu/AuthorContextMenu.tsx";
 
 interface AuthorItemProps {
   author: AuthorSimpleDto;
@@ -11,6 +13,7 @@ interface AuthorItemProps {
 
 const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
   const navigate = useNavigate();
+  const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
   const { playAuthorPopularTracks } = usePlayTrack();
 
@@ -38,6 +41,7 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
       }}
     >
       <Box
+        onContextMenu={(e) => handleContextMenu(e, author.id)}
         bgcolor="gray"
         mx={"auto"}
         borderRadius={"50%"}
@@ -53,6 +57,7 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
 
       />
       <Box
+        onContextMenu={(e) => handleContextMenu(e, author.id)}
         display="flex"
         justifyContent="space-between"
         padding={"24px"}
@@ -68,12 +73,12 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
         <IconButton
           onClick={(e) => handlePlayClick(e)}
           sx={{
-              padding: 0,
-              transition: 'transform 0.2s ease',
-              '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  transform: 'scale(1.1)',
-              }
+            padding: 0,
+            transition: 'transform 0.2s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              transform: 'scale(1.1)',
+            }
           }}
           disableRipple={true}
         >
@@ -86,6 +91,11 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
           />
         </IconButton>
       </Box>
+      <AuthorContextMenu
+        contextMenu={contextMenu}
+        onClose={handleCloseContextMenu}
+        author={author}
+      />
     </Box>
   );
 };

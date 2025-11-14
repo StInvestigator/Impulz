@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
 
         if (username != null && !username.equals(user.getUsername())) {
-            keycloakSyncService.updateUsername(userId, username);
+            keycloakService.updateUserUsername(userId, username);
             user.setUsername(username);
             if(authorService.isAuthorWithIdExists(userId)) {
                 dataSyncService.syncAuthor(user);
@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService {
         return UserDto.fromEntity(updated);
     }
 
-    public void updatePassword(String userId, String currentPassword, String newPassword) {
-        keycloakService.updateUserPassword(userId, currentPassword, newPassword);
+    public void updatePassword(String userId, String newPassword) {
+        keycloakService.updateUserPassword(userId, newPassword);
     }
 
     @Override

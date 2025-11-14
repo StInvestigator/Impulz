@@ -30,7 +30,6 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
 
     const [tab, setTab] = useState<"email" | "password">("email");
     const [email, setEmail] = useState("");
-    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -42,7 +41,6 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
 
     const resetForm = () => {
         setEmail("");
-        setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
     };
@@ -72,12 +70,6 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
             }
             await dispatch(updateUserEmail({ userId: user.id, email }));
         } else {
-            if (!currentPassword) {
-                setSnackbarType("error");
-                setSnackbarMessage(t("errors:error-current-password-required"));
-                setSnackbarOpen(true);
-                return;
-            }
             if (newPassword.length < 6) {
                 setSnackbarType("error");
                 setSnackbarMessage(t("errors:error-password-too-short"));
@@ -93,7 +85,6 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
 
             await dispatch(updateUserPassword({
                 userId: user.id,
-                currentPassword,
                 newPassword,
             }));
         }
@@ -105,7 +96,7 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
             setSnackbarMessage(error);
             setSnackbarOpen(true);
         }
-        if (success) {
+        if (success && open) {
             setSnackbarType("success");
             setSnackbarMessage(
                 tab === "email"
@@ -114,9 +105,7 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
             );
             setSnackbarOpen(true);
 
-            setTimeout(() => {
-                handleClose();
-            }, 1500);
+            handleClose()
         }
     }, [error, success]);
 
@@ -199,22 +188,6 @@ const EditEmailAndPasswordModal: React.FC<EditEmailAndPasswordModalProps> = ({ o
                             </Box>
                         ) : (
                             <Box>
-                                <Input
-                                    fullWidth
-                                    disableUnderline
-                                    type="password"
-                                    placeholder={t("profile:enter-current-password")}
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    sx={{
-                                        border: "1px solid var(--berkeley-blue)",
-                                        borderRadius: "10px",
-                                        backgroundColor: "white",
-                                        height: "46px",
-                                        px: 2,
-                                        mb: 2,
-                                    }}
-                                />
                                 <Input
                                     fullWidth
                                     disableUnderline

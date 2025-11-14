@@ -45,7 +45,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     @Override
-    public void updateUserPassword(String userId, String currentPassword, String newPassword) {
+    public void updateUserPassword(String userId, String newPassword) {
         RealmResource realmResource = keycloak.realm(realm);
         UserResource userResource = realmResource.users().get(userId);
 

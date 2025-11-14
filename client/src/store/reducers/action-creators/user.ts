@@ -46,11 +46,10 @@ export const updateUserEmail = createAsyncThunk<UserDto, { userId: string; email
     }
 );
 
-export const updateUserPassword = createAsyncThunk<UserDto, { userId: string; currentPassword: string; newPassword: string }>(
+export const updateUserPassword = createAsyncThunk<UserDto, { userId: string; newPassword: string }>(
     'user/updateUserPassword',
-    async ({ userId, currentPassword, newPassword }) => {
+    async ({ userId, newPassword }) => {
         const formData = new FormData();
-        formData.append("currentPassword", currentPassword);
         formData.append("newPassword", newPassword);
 
         const response = await $authApi.put(`/users/updateCredentials/${userId}`, formData, {

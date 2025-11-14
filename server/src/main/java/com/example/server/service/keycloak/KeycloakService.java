@@ -12,7 +12,7 @@ public interface KeycloakService {
     User createNewUser(String id, String username, String email);
     void updateUserEmail(String userId, String newEmail);
     void updateUserUsername(String userId, String newUsername);
-    void updateUserPassword(String userId, String currentPassword, String newPassword);
+    void updateUserPassword(String userId, String newPassword);
     List<RoleRepresentation> getAllRoles();
     void addRoleToUser(String userId, String roleName);
     void removeRoleFromUser(String userId, String roleName);

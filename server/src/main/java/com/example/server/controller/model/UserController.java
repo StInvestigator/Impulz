@@ -42,15 +42,14 @@ public class UserController {
     public ResponseEntity<UserDto> updateCredentials(
             @PathVariable String id,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) String currentPassword,
             @RequestParam(required = false) String newPassword) {
 
-        if (email == null && (currentPassword == null || newPassword == null)) {
+        if (email == null && newPassword == null) {
             return ResponseEntity.badRequest().build();
         }
 
         if (email != null) userService.updateEmail(id, email);
-        if (newPassword != null && currentPassword != null) userService.updatePassword(id, currentPassword, newPassword);
+        if (newPassword != null) userService.updatePassword(id, newPassword);
 
         return ResponseEntity.ok(userService.getUserDtoById(id));
     }

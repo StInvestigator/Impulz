@@ -10,11 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Objects;
 
 @Slf4j
@@ -53,18 +49,18 @@ public class KeycloakSyncServiceImpl implements KeycloakSyncService {
         return user;
     }
 
-    public void updatePassword(String userId, String currentPassword, String newPassword) {
+    public void updatePassword(String userId, String newPassword) {
         if (newPassword == null || newPassword.length() < 6) {
             throw new IllegalArgumentException("Password must be at least 6 characters long");
         }
-        keycloakServiceImpl.updateUserPassword(userId, currentPassword, newPassword);
+        keycloakServiceImpl.updateUserPassword(userId, newPassword);
     }
 
-    public User updateUsername(String userId, String newUsername) {
+    public void updateUsername(String userId, String newUsername) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         user.setUsername(newUsername);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public User updateAvatar(String userId, String avatarUrl) {

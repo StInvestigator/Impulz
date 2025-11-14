@@ -97,7 +97,6 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                 imageFile: imageFile || undefined
             })).unwrap();
 
-            console.log("Плейлист создан:", result);
 
             if (userId) {
                 await dispatch(fetchPlaylistsOwnByUserId({ userId }));

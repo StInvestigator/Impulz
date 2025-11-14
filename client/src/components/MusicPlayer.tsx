@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PreviousIcon from '../assets/player/PlayerPreviousIcon.svg';
 import NextIcon from '../assets/player/PlayerNextIcon.svg';
-import RandomTracksIcon from '../assets/player/PlayerRandomPlayingIcon.svg';
+// import RandomTracksIcon from '../assets/player/PlayerRandomPlayingIcon.svg';
 import PlayerPlayIcon from '../assets/player/PlayerPlayIcon.svg';
 import PlayerVolumeOnIcon from '../assets/player/PlayerVolumeOnIcon.svg';
 import PlayerVolumeOffIcon from '../assets/player/PlayerVolumeOffIcon.svg';
@@ -37,8 +37,8 @@ import keycloak from '../keycloak.ts';
 import { fetchPopularTracksByAuthor, fetchTracksByAlbum } from '../store/reducers/action-creators/tracks.ts';
 import { usePlayTrack } from '../hooks/usePlayTrack';
 import { useNavigate } from "react-router-dom";
-import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
-import {useTranslation} from "react-i18next";
+import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
+import { useTranslation } from "react-i18next";
 
 interface PlaybackStats {
     trackId: number;
@@ -166,15 +166,10 @@ const MusicPlayer = () => {
                 sessionId: sessionIdRef.current,
             };
 
-            try {
-                console.log('🚀 Отправка статистики на сервер:', stats);
-                await playbackService.sendPlaybackStats(stats);
-                console.log('✅ Статистика отправлена успешно');
+            await playbackService.sendPlaybackStats(stats);
 
-                hasSentPlayback.current = true;
-            } catch (err) {
-                console.error('❌ Ошибка отправки статистики:', err);
-            }
+            hasSentPlayback.current = true;
+
         }
     }, [active?.id]);
 
@@ -219,12 +214,10 @@ const MusicPlayer = () => {
             objectUrlRef.current;
 
         if (isOnlyPlaylistChanged) {
-            console.log('🎵 Изменился только плейлист, не пересоздаем аудио');
             return;
         }
 
         if (activeTrackChanged && audioRef.current) {
-            console.log('🎵 Активный трек изменился, очищаем предыдущее аудио');
             audioRef.current.pause();
             audioRef.current.src = '';
             audioRef.current.onloadedmetadata = null;
@@ -263,7 +256,6 @@ const MusicPlayer = () => {
                 }
 
                 if (audioRef.current && objectUrlRef.current === url) {
-                    console.log('🎵 Аудио уже загружено с этим URL, продолжаем воспроизведение');
                     setLoading(false);
                     if (!pause && audioRef.current.paused) {
                         audioRef.current.play().catch(console.error);
@@ -347,14 +339,6 @@ const MusicPlayer = () => {
                     const currentIndex = currentTrackIndexRef.current;
                     const isLastTrack = currentIndex >= currentPlaylist.length - 1;
 
-                    console.log('Трек завершен:', {
-                        isLastTrack,
-                        currentTrackIndex: currentIndex,
-                        playlistLength: currentPlaylist.length,
-                        hasMore: source?.hasMore,
-                        bufferTracksCount: bufferTracks.length
-                    });
-
                     if (!isLastTrack) {
                         dispatch(nextTrack());
                         return;
@@ -363,15 +347,12 @@ const MusicPlayer = () => {
                     const bufferAppended = appendBufferToPlaylist();
 
                     if (bufferAppended) {
-                        console.log('Буфер перемещен, переходим к следующему треку');
                         dispatch(nextTrack());
 
                         if (source?.hasMore) {
-                            console.log('Запускаем загрузку следующей страницы буфера');
                             setTimeout(() => loadNextPageToBuffer(), 500);
                         }
                     } else if (source?.hasMore) {
-                        console.log('Буфер пуст, загружаем следующую страницу напрямую');
 
                         const nextPage = (source.page || 0) + 1;
 
@@ -401,7 +382,6 @@ const MusicPlayer = () => {
                             const newTracks: TrackSimpleDto[] = payload ?? [];
 
                             if (newTracks.length > 0) {
-                                console.log('Загружены новые треки:', newTracks.length);
                                 dispatch(addToPlaylist(newTracks));
                                 dispatch(updateSourcePage());
                                 dispatch(nextTrack());
@@ -410,7 +390,6 @@ const MusicPlayer = () => {
                                     dispatch(setSourceHasMore(false));
                                 }
                             } else {
-                                console.log('Нет новых треков, останавливаем воспроизведение');
                                 dispatch(setSourceHasMore(false));
                             }
                         } catch (error) {
@@ -517,11 +496,9 @@ const MusicPlayer = () => {
 
     const changeCurrentTime = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!audioRef.current) {
-            console.log('🎵 Audio ref is null in changeCurrentTime');
             return;
         }
         const newTime = Number(e.target.value);
-        console.log('🎵 Changing time from', currentTime, 'to', newTime, 'duration:', duration);
 
         audioRef.current.currentTime = newTime;
         dispatch(setCurrentTime(newTime));
@@ -602,7 +579,7 @@ const MusicPlayer = () => {
                     minWidth: 200
                 }}>
                     {/* Кнопка перемешивания */}
-                    <IconButton
+                    {/* <IconButton
                         disableRipple
                         sx={{
                             color: '#ff6b35'
@@ -619,7 +596,7 @@ const MusicPlayer = () => {
                                 }
                             }}
                         />
-                    </IconButton>
+                    </IconButton> */}
 
                     {/* Кнопка предыдущий трек */}
                     <IconButton
@@ -627,6 +604,7 @@ const MusicPlayer = () => {
                         onClick={handlePrev}
                         disabled={isFirstTrack}
                         sx={{
+                            marginLeft: "35px",
                             color: '#ff6b35',
                         }}
                     >
@@ -717,17 +695,17 @@ const MusicPlayer = () => {
 
                 {/* Информация о треке */}
                 <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: "15px",
-                        position: 'absolute',
-                        left: '292px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        maxWidth: 'calc(50% - 300px)',
-                        minWidth: '300px',
-                        zIndex: 1
-                    }}
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: "15px",
+                    position: 'absolute',
+                    left: '292px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    maxWidth: 'calc(50% - 300px)',
+                    minWidth: '300px',
+                    zIndex: 1
+                }}
                 >
                     {/* Обложка трека */}
                     <Box sx={{

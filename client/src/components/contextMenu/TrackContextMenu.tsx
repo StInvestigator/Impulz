@@ -289,7 +289,7 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                     onClick={handleRemoveFromPlaylist}
                 />}
 
-                {(likedIds && likedIds.includes(track.id) ?
+                {(likedIds && likedIds[track.id] ?
                         <ContextMenuItem
                             icon={AddToLikedIcon}
                             text={t("title-remove-from-liked")}

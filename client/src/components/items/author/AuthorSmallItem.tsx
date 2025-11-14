@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import React, { memo, type FC } from "react";
-import {useContextMenu} from "../../../hooks/useContextMenu.ts";
-import {AuthorContextMenu} from "../../contextMenu/AuthorContextMenu.tsx";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { AuthorContextMenu } from "../../contextMenu/AuthorContextMenu.tsx";
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -39,7 +39,6 @@ const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = 
 
     return (
         <Box
-            onContextMenu={(e) => handleContextMenu(e, author.id)}
             onClick={handleCardClick}
             sx={{
                 width: itemWidth,
@@ -55,6 +54,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = 
             }}
         >
             <Box
+                onContextMenu={(e) => handleContextMenu(e, author.id)}
                 position="relative"
                 width={itemWidth}
                 height={itemWidth}
@@ -97,7 +97,8 @@ const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = 
             </Box>
 
             <Box display="flex" flexDirection="column" flexGrow={1} textAlign="center" mt={1}
-                 color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
+                onContextMenu={(e) => handleContextMenu(e, author.id)}
+                color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography gutterBottom variant="mainSbL" noWrap>
                     {author.name}
                 </Typography>

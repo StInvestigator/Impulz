@@ -91,8 +91,8 @@ const Navbar = memo(() => {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <IconButton disableRipple={true} onClick={() => navigate("/")}>
-                        <Box component="img" src={LogoIcon} alt="Impulz" />
+                    <IconButton disableRipple={true} onClick={() => navigate("/")} sx={{height: "30px", widows: "30px"}}>
+                        <Box component="img" src={LogoIcon} alt="Impulz" sx={{height: "30px", widows: "30px"}} />
                     </IconButton>
                     <Box
                         component="form"

@@ -107,7 +107,6 @@ const EditPlaylistModal: FC<ModalProps> = ({ open, setOpen, playlist }) => {
                     isPublic,
                     imageFile: imageFile || undefined,
                 })).unwrap();
-                console.log("Плейлист обновлён:", result);
 
                 if (userId) {
                     await dispatch(fetchPlaylistsOwnByUserId({ userId }));

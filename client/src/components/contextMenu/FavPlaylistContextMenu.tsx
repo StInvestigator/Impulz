@@ -50,11 +50,7 @@ export const FavPlaylistContextMenu: React.FC<FavPlaylistContextMenuProps> = ({
 
         navigator.clipboard.writeText(albumLink)
             .then(() => {
-                console.log("Playlist link copied to clipboard:", albumLink);
                 setToastOpen(true);
-            })
-            .catch(err => {
-                console.error("Failed to copy playlist link:", err);
             });
 
         onClose();

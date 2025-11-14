@@ -6,9 +6,9 @@ import React, { type FC, useState } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
-import type {PlaylistDto} from "../../../models/PlaylistDto.ts";
-import {useContextMenu} from "../../../hooks/useContextMenu.ts";
-import {PlaylistContextMenu} from "../../contextMenu/PlaylistContextMenu.tsx";
+import type { PlaylistDto } from "../../../models/PlaylistDto.ts";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
+import { PlaylistContextMenu } from "../../contextMenu/PlaylistContextMenu.tsx";
 import defaultImage from "../../../assets/PlaylistDefaultImage.svg";
 
 interface PlaylistItemProps {
@@ -60,7 +60,6 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
 
     return (
         <Box
-            onContextMenu={handleCustomContextMenu}
             onClick={handleContainerClick}
             sx={{
                 width: itemWidth,
@@ -76,6 +75,7 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
             }}
         >
             <Box
+                onContextMenu={handleCustomContextMenu}
                 position="relative"
                 width={itemWidth}
                 height={itemWidth}
@@ -118,7 +118,9 @@ const PublicPlaylistSmallItem: FC<PlaylistItemProps> = ({ playlist, itemWidth, c
                 </IconButton>
             </Box>
 
-            <Box display="flex" flexDirection="column" flexGrow={1} mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
+            <Box
+                onContextMenu={handleCustomContextMenu}
+                display="flex" flexDirection="column" flexGrow={1} mt={1} color={color === "dark" ? "var(--dark-purple)" : "var(--orange-peel)"}>
                 <Typography gutterBottom variant="mainSbL" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {playlist.title}
                 </Typography>

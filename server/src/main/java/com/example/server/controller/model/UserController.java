@@ -33,24 +33,28 @@ public class UserController {
             @PathVariable String id,
             @RequestParam String username,
             @RequestParam(required = false) MultipartFile image) {
-
-        UserDto updatedUser = userService.updateUser(id, username, image);
-        return ResponseEntity.ok(updatedUser);
+        try {
+            UserDto updatedUser = userService.updateUser(id, username, image);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping("/updateCredentials/{id}")
     public ResponseEntity<UserDto> updateCredentials(
             @PathVariable String id,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) String currentPassword,
             @RequestParam(required = false) String newPassword) {
 
-        if (email == null && (currentPassword == null || newPassword == null)) {
+        if (email == null && newPassword == null) {
             return ResponseEntity.badRequest().build();
         }
 
         if (email != null) userService.updateEmail(id, email);
-        if (newPassword != null && currentPassword != null) userService.updatePassword(id, currentPassword, newPassword);
+        if (newPassword != null) userService.updatePassword(id, newPassword);
 
         return ResponseEntity.ok(userService.getUserDtoById(id));
     }

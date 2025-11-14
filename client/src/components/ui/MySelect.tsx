@@ -34,10 +34,6 @@ export default function MySelect({
         onChange(newValue.map((item) => item.value));
     };
 
-    const handleInputChange = (_: SyntheticEvent, newInputValue: string) => {
-        console.log('Search input:', newInputValue);
-    };
-
     return (
         <Box sx={{ width }}>
             <Autocomplete<Option, true, false, false>
@@ -46,7 +42,6 @@ export default function MySelect({
                 getOptionLabel={(option) => option.label}
                 value={selectedOptions}
                 onChange={handleChange}
-                onInputChange={handleInputChange}
                 isOptionEqualToValue={(option, val) => option.value === val.value}
                 filterSelectedOptions
                 renderTags={() => null}

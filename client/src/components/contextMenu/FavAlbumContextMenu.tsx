@@ -59,7 +59,6 @@ export const FavAlbumContextMenu: React.FC<FavAlbumContextMenuProps> = ({
 
         navigator.clipboard.writeText(albumLink)
             .then(() => {
-                console.log("Album link copied to clipboard:", albumLink);
                 setToastOpen(true);
             })
             .catch(err => {

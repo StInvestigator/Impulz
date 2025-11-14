@@ -1,13 +1,15 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
 import { useTranslation } from 'react-i18next';
-import React, {type FC, useEffect, useState} from "react";
+import React, { type FC, useEffect, useState } from "react";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { PlaylistContextMenu } from "../../contextMenu/PlaylistContextMenu.tsx";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import type { PlaylistDto } from "../../../models/PlaylistDto";
 import defaultImage from "../../../assets/PlaylistDefaultImage.svg";
+import { fetchTracksByPlaylist } from "../../../store/reducers/action-creators/tracks.ts";
+import { useAppDispatch } from "../../../hooks/redux.ts";
 
 interface PlaylistItemProps {
     playlist: PlaylistDto;
@@ -21,6 +23,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
     const navigate = useAppNavigate();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
     const [wasContextMenuOpen, setWasContextMenuOpen] = useState(false);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (contextMenu) {
@@ -30,7 +33,15 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        playTrackList(playlist.tracks, 0);
+        const result = await dispatch(fetchTracksByPlaylist({
+            playlistId: playlist.id,
+            page: 0,
+            size: 1000
+        }));
+
+        if (fetchTracksByPlaylist.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
+        }
     };
 
     const handlePlaylistClick = () => {
@@ -56,9 +67,9 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
                 cursor: 'pointer',
             }}
             onClick={handlePlaylistClick}
-            onContextMenu={(e) => handleContextMenu(e, playlist.id)}
         >
             <Box
+                onContextMenu={(e) => handleContextMenu(e, playlist.id)}
                 width="100%"
                 height={`${itemHeight}px`}
                 maxWidth={itemWidth}
@@ -75,6 +86,7 @@ const PublicPlaylistAverageItem: FC<PlaylistItemProps> = ({ playlist, itemHeight
 
 
             <Box
+                onContextMenu={(e) => handleContextMenu(e, playlist.id)}
                 display={"flex"}
                 padding={"24px"}
                 position={"absolute"}

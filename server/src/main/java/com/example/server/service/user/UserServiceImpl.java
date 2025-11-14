@@ -51,14 +51,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateUser(String userId, String username, MultipartFile imageFile) {
+    public UserDto updateUser(String userId, String username, MultipartFile imageFile) throws Exception {
         User user = getUserById(userId);
 
         if (username != null && !username.equals(user.getUsername())) {
-            keycloakSyncService.updateUsername(userId, username);
+            keycloakService.updateUserUsername(userId, username);
+            String oldUsername = user.getUsername();
             user.setUsername(username);
             if(authorService.isAuthorWithIdExists(userId)) {
-                dataSyncService.syncAuthor(user);
+                dataSyncService.syncAuthorNewUsername(user, oldUsername);
             }
         }
 
@@ -82,8 +83,8 @@ public class UserServiceImpl implements UserService {
         return UserDto.fromEntity(updated);
     }
 
-    public void updatePassword(String userId, String currentPassword, String newPassword) {
-        keycloakService.updateUserPassword(userId, currentPassword, newPassword);
+    public void updatePassword(String userId, String newPassword) {
+        keycloakService.updateUserPassword(userId, newPassword);
     }
 
     @Override

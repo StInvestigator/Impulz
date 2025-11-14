@@ -61,7 +61,6 @@ export const createPlaylist = createAsyncThunk<
                 formData.append('img', imageFile);
             }
 
-            console.log("FormData entries: ", Array.from(formData.entries()));
 
             const response = await $authApi.post('/playlists/create', formData, {
                 headers: {
@@ -106,7 +105,6 @@ export const fetchAllPlaylistsDtoOwnByUserId = createAsyncThunk<
             if (size !== undefined) params.append('size', size.toString());
 
             const response = await $authApi.get(`/playlists/AllPlaylistOwnByUser/${userId}?${params}`);
-            console.log("API Response:", response.data);
             dispatch(setTotalPages(response.data.totalPages))
             return response.data.content;
         } catch (e: unknown) {
@@ -251,8 +249,6 @@ export const updatePlaylist = createAsyncThunk<
             if (imageFile) {
                 formData.append('img', imageFile);
             }
-
-            console.log("FormData entries: ", Array.from(formData.entries()));
 
             const response = await $authApi.put('/playlists/update', formData, {
                 headers: {

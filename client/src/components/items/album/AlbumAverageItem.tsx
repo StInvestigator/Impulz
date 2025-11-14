@@ -1,21 +1,21 @@
-import {Box, IconButton, Typography} from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import playImage from "../../../assets/play.svg";
-import {type FC, useEffect, useState} from "react";
+import { type FC, useEffect, useState } from "react";
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchAlbumDetails } from "../../../store/reducers/action-creators/album.ts";
-import {usePlayTrack} from "../../../hooks/usePlayTrack.tsx";
-import {fetchTracksByAlbum} from "../../../store/reducers/action-creators/tracks.ts";
-import {AlbumContextMenu} from "../../contextMenu/AlbumContextMenu.tsx";
-import {useContextMenu} from "../../../hooks/useContextMenu.ts";
+import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
+import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
+import { AlbumContextMenu } from "../../contextMenu/AlbumContextMenu.tsx";
+import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 
 interface AlbumItemProps {
     album: AlbumSimpleDto;
     itemHeight: number;
 }
 
-const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
+const AlbumAverageItem: FC<AlbumItemProps> = ({ album, itemHeight }) => {
     const navigate = useAppNavigate();
     const { playTrackList } = usePlayTrack();
     const dispatch = useAppDispatch();
@@ -63,10 +63,10 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
                 transition: 'height 0.2s ease-in-out',
                 cursor: 'pointer',
             }}
-            onContextMenu={(e) => handleContextMenu(e, album.id)}
             onClick={handleAlbumClick}
         >
             <Box
+                onContextMenu={(e) => handleContextMenu(e, album.id)}
                 bgcolor="gray"
                 width="100%"
                 height={`${itemHeight}px`}
@@ -80,6 +80,7 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
             >
             </Box>
             <Box
+                onContextMenu={(e) => handleContextMenu(e, album.id)}
                 display={"flex"}
                 padding={"24px"}
                 position={"absolute"}
@@ -102,14 +103,14 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({album, itemHeight}) => {
                         </Typography>
                     </Box>
                     <IconButton
-                    onClick={(e) => {
-                        handlePlayPlaylist(e)
-                    }}
-                        sx={{padding: 0}}
+                        onClick={(e) => {
+                            handlePlayPlaylist(e)
+                        }}
+                        sx={{ padding: 0 }}
                         disableRipple={true}
                     >
                         <Box component={"img"} src={playImage} borderRadius={'50%'} width={"30px"}
-                             height={"30px"}/>
+                            height={"30px"} />
                     </IconButton>
                 </Box>
             </Box>

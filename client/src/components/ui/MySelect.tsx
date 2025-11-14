@@ -42,7 +42,6 @@ export default function MySelect({
                 getOptionLabel={(option) => option.label}
                 value={selectedOptions}
                 onChange={handleChange}
-                onInputChange={handleInputChange}
                 isOptionEqualToValue={(option, val) => option.value === val.value}
                 filterSelectedOptions
                 renderTags={() => null}

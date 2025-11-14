@@ -62,6 +62,13 @@ public class KeycloakServiceImpl implements KeycloakService {
         RealmResource realmResource = keycloak.realm(realm);
         UserResource userResource = realmResource.users().get(userId);
 
+        List<UserRepresentation> found = realmResource.users().searchByUsername(newUsername, true);
+        if (!found.isEmpty()) {
+            if (found.stream().anyMatch(u -> !u.getId().equals(userId))) {
+                throw new IllegalArgumentException("Username '" + newUsername + "' already exists");
+            }
+        }
+
         UserRepresentation userRep = userResource.toRepresentation();
         userRep.setUsername(newUsername);
         userResource.update(userRep);

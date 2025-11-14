@@ -33,9 +33,14 @@ public class UserController {
             @PathVariable String id,
             @RequestParam String username,
             @RequestParam(required = false) MultipartFile image) {
-
-        UserDto updatedUser = userService.updateUser(id, username, image);
-        return ResponseEntity.ok(updatedUser);
+        try {
+            UserDto updatedUser = userService.updateUser(id, username, image);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping("/updateCredentials/{id}")

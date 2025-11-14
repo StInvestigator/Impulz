@@ -1,5 +1,6 @@
 package com.example.server.service.elasticsearch.document;
 
+import co.elastic.clients.elasticsearch._types.Conflicts;
 import com.example.server.data.repository.*;
 import com.example.server.data.repository.elastic_search.AlbumSearchRepository;
 import com.example.server.data.repository.elastic_search.AuthorSearchRepository;
@@ -16,6 +17,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.UpdateByQueryRequest;
+import co.elastic.clients.elasticsearch.core.UpdateByQueryResponse;
+import co.elastic.clients.json.JsonData;
+
+import java.io.IOException;
+import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +44,7 @@ public class DataSyncService {
     private final PlaylistSearchRepository playlistSearchRepository;
 
     private final DocumentConversionService conversionService;
+    private final ElasticsearchClient elasticsearchClient;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional(readOnly = true)
@@ -127,6 +137,198 @@ public class DataSyncService {
         author.setId(user.getId());
         author.setUser(user);
         syncAuthor(author);
+    }
+
+    public void syncAuthorNewUsername(User user, String oldUsername) throws Exception {
+        Author author = new Author();
+        author.setId(user.getId());
+        author.setUser(user);
+        syncAuthor(author);
+
+        updateTracksAuthorName(oldUsername, author.getUser().getUsername());
+
+        updateAlbumsAuthorName(oldUsername, author.getUser().getUsername());
+
+        updatePlaylistsOwnerName(oldUsername, author.getUser().getUsername());
+    }
+
+    private void updateTracksAuthorName(String oldUsername, String newUsername) throws Exception {
+        String script = """
+                    if (ctx._source.containsKey('authorNames')) {
+                      for (int i = 0; i < ctx._source.authorNames.size(); i++) {
+                        if (ctx._source.authorNames.get(i).equals(params.old)) {
+                          ctx._source.authorNames.set(i, params.new);
+                        }
+                      }
+                    }
+                """;
+
+        UpdateByQueryRequest request = UpdateByQueryRequest.of(b -> b
+                .index("tracks")
+                .conflicts(Conflicts.Proceed)
+                .query(q -> q.term(t -> t.field("authorNames").value(oldUsername)))
+                .script(s -> s.inline(i -> i
+                        .lang("painless")
+                        .source(script)
+                        .params("old", JsonData.of(oldUsername))
+                        .params("new", JsonData.of(newUsername))
+                ))
+                .refresh(true)
+        );
+
+        elasticsearchClient.updateByQuery(request);
+
+        rebuildTracksSearchText(oldUsername, newUsername);
+    }
+
+    private void rebuildTracksSearchText(String oldAuthorName, String newAuthorName) throws Exception {
+        String script = """
+                    StringBuilder sb = new StringBuilder();
+                    if (ctx._source.title != null) { sb.append(ctx._source.title).append(' '); }
+                    if (ctx._source.authorNames != null) {
+                      for (int i = 0; i < ctx._source.authorNames.size(); i++) {
+                        if (ctx._source.authorNames.get(i) != null) {
+                          sb.append(ctx._source.authorNames.get(i)).append(' ');
+                        }
+                      }
+                      sb.append(params.old).append(' ');
+                    }
+                    if (ctx._source.albumTitle != null) { sb.append(ctx._source.albumTitle).append(' '); }
+                    if (ctx._source.genres != null) {
+                      for (int i = 0; i < ctx._source.genres.size(); i++) {
+                        if (ctx._source.genres.get(i) != null) {
+                          sb.append(ctx._source.genres.get(i)).append(' ');
+                        }
+                      }
+                    }
+                    ctx._source.searchText = sb.toString().trim();
+                """;
+
+        UpdateByQueryRequest req = UpdateByQueryRequest.of(b -> b
+                .index("tracks")
+                .conflicts(Conflicts.Proceed)
+                .query(q -> q.term(t -> t.field("authorNames").value(newAuthorName)))
+                .script(s -> s.inline(i -> i
+                        .lang("painless")
+                        .source(script)
+                        .params("old", JsonData.of(oldAuthorName))
+                ))
+                .refresh(true)
+        );
+
+        log.info("Search text updated for tracks count - {}", elasticsearchClient.updateByQuery(req).updated());
+    }
+
+    private void updateAlbumsAuthorName(String oldUsername, String newUsername) throws Exception {
+        String script = """
+                    if (ctx._source.containsKey('authorNames')) {
+                      for (int i = 0; i < ctx._source.authorNames.size(); i++) {
+                        if (ctx._source.authorNames.get(i).equals(params.old)) {
+                          ctx._source.authorNames.set(i, params.new);
+                        }
+                      }
+                    }
+                """;
+
+        UpdateByQueryRequest request = UpdateByQueryRequest.of(b -> b
+                .index("albums")
+                .conflicts(Conflicts.Proceed)
+                .query(q -> q.term(t -> t.field("authorNames").value(oldUsername)))
+                .script(s -> s.inline(i -> i
+                        .lang("painless")
+                        .source(script)
+                        .params("old", JsonData.of(oldUsername))
+                        .params("new", JsonData.of(newUsername))
+                ))
+                .refresh(true)
+        );
+
+        elasticsearchClient.updateByQuery(request);
+
+        rebuildAlbumsSearchText(oldUsername, newUsername);
+    }
+
+    private void rebuildAlbumsSearchText(String oldAuthorName, String newAuthorName) throws Exception {
+        String script = """
+                    StringBuilder sb = new StringBuilder();
+                    if (ctx._source.title != null) { sb.append(ctx._source.title).append(' '); }
+                    if (ctx._source.authorNames != null) {
+                      for (int i = 0; i < ctx._source.authorNames.size(); i++) {
+                        if (ctx._source.authorNames.get(i) != null) {
+                          sb.append(ctx._source.authorNames.get(i)).append(' ');
+                        }
+                      }
+                      sb.append(params.old).append(' ');
+                    }
+                    ctx._source.searchText = sb.toString().trim();
+                """;
+
+        UpdateByQueryRequest req = UpdateByQueryRequest.of(b -> b
+                .index("albums")
+                .conflicts(Conflicts.Proceed)
+                .query(q -> q.term(t -> t.field("authorNames").value(newAuthorName)))
+                .script(s -> s.inline(i -> i
+                        .lang("painless")
+                        .source(script)
+                        .params("old", JsonData.of(oldAuthorName))))
+                .refresh(true)
+        );
+
+        elasticsearchClient.updateByQuery(req);
+        log.info("Search text updated for albums count - {}", elasticsearchClient.updateByQuery(req).updated());
+
+    }
+
+    private void updatePlaylistsOwnerName(String oldUsername, String newUsername) throws Exception {
+        String script = """
+                    if (ctx._source.containsKey('ownerName') && ctx._source.ownerName.equals(params.old)) {
+                        ctx._source.ownerName = params.new;
+                    }
+                """;
+
+        UpdateByQueryRequest request = UpdateByQueryRequest.of(b -> b
+                .index("playlists")
+                .conflicts(Conflicts.Proceed)
+                .query(q -> q.term(t -> t.field("ownerName").value(oldUsername)))
+                .script(s -> s.inline(i -> i
+                        .lang("painless")
+                        .source(script)
+                        .params("old", JsonData.of(oldUsername))
+                        .params("new", JsonData.of(newUsername))
+                ))
+                .refresh(true)
+        );
+
+        elasticsearchClient.updateByQuery(request);
+
+        rebuildPlaylistsSearchText(oldUsername, newUsername);
+    }
+
+    private void rebuildPlaylistsSearchText(String oldOwnerName, String newOwnerName) throws Exception {
+        String script = """
+                    StringBuilder sb = new StringBuilder();
+                    if (ctx._source.title != null) { sb.append(ctx._source.title).append(' '); }
+                    if (ctx._source.ownerName != null) {
+                      sb.append(ctx._source.ownerName).append(' ');
+                      sb.append(params.old).append(' ');
+                    }
+                    ctx._source.searchText = sb.toString().trim();
+                """;
+
+        UpdateByQueryRequest req = UpdateByQueryRequest.of(b -> b
+                .index("playlists")
+                .conflicts(Conflicts.Proceed)
+                .query(q -> q.term(t -> t.field("ownerName").value(newOwnerName)))
+                .script(s -> s.inline(i -> i
+                        .lang("painless")
+                        .source(script)
+                        .params("old", JsonData.of(oldOwnerName))
+                ))
+                .refresh(true)
+        );
+
+        elasticsearchClient.updateByQuery(req);
+        log.info("Search text updated for playlists count - {}", elasticsearchClient.updateByQuery(req).updated());
     }
 
     public void syncAllAlbums() {

@@ -82,7 +82,7 @@ const EditProfileModal: FC<ModalProps> = ({ open, setOpen }) => {
             if (selectedImage.startsWith('blob:')) {
                 URL.revokeObjectURL(selectedImage);
             }
-            setSelectedImage(null);
+            setSelectedImage(profile.avatarUrl || null);
             setImageFile(null);
         }
     };
@@ -208,8 +208,8 @@ const EditProfileModal: FC<ModalProps> = ({ open, setOpen }) => {
                                     disabled={isLoading}
                                     sx={{
                                         position: 'absolute',
-                                        top: '5px',
-                                        right: '5px',
+                                        top: '30px',
+                                        right: '30px',
                                         color: 'white',
                                         backgroundColor: 'rgba(0,0,0,0.5)',
                                         width: '24px',
@@ -306,7 +306,7 @@ const EditProfileModal: FC<ModalProps> = ({ open, setOpen }) => {
                                         marginBottom: "12px"
                                     }}
                                 >
-                                    {error || updateError}
+                                    {error || (updateError?.includes("400") ? "This username is already taken" : updateError)}
                                 </Typography>
                             )}
 

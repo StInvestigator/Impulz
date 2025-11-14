@@ -9,7 +9,7 @@ public interface UserService {
     User save(User user);
     User getUserById(String id);
     UserDto getUserDtoById(String id);
-    UserDto updateUser(String userId, String username, MultipartFile imageFile);
+    UserDto updateUser(String userId, String username, MultipartFile imageFile) throws Exception;
     UserDto updateEmail(String userId, String newEmail);
     UserSimpleDto getUserSimpleDtoById(String id);
     void updatePassword(String userId, String newPassword);

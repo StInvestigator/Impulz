@@ -63,6 +63,8 @@ public class DocumentConversionService
         return sb.toString().trim();
     }
 
+
+
     public AuthorDocument convertToDocument(Author author){
         AuthorDocument doc = new AuthorDocument();
         doc.setId(author.getId());

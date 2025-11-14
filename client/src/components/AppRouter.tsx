@@ -38,6 +38,7 @@ import AlbumsReleasedPage from "../pages/album_page/AlbumsReleasedPage.tsx";
 import AlbumsUnreleasedPage from "../pages/album_page/AlbumsUnreleasedPage.tsx";
 import UserFavPlaylistsPage from "../pages/playlists_page/UserFavPlaylistsPage.tsx";
 import FavoriteAuthorsPage from "../pages/authors_page/FavoriteAuthorsPage.tsx";
+import TrackLinkHandler from "./items/track/TrackLinkHandler.tsx";
 
 const AppRouter = () => {
     return (
@@ -60,6 +61,7 @@ const AppRouter = () => {
                     <Route path="/genre/:id/popular-tracks" element={<BestTracksInGenrePage />} />
                     <Route path="/genre/:id/recent-playlists" element={<PlaylistsRecentCategoryPage />} />
 
+                    <Route path="/track/:trackId" element={<TrackLinkHandler/>}/>
 
                     <Route path="/profile" element={<MyProfilePage />} />
                     <Route path="/user/:id" element={<UserProfilePage />} />

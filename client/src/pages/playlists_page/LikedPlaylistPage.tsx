@@ -8,9 +8,11 @@ import Cover from "../../components/Cover.tsx";
 import PlaylistLikedTracks from "../../assets/PlaylistLikedTracks.svg";
 import TrackList from "../../components/lists/TrackList.tsx";
 import MyPagination from "../../components/MyPagination.tsx";
+import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
 
 const LikedPlaylistPage = () => {
     const dispatch = useAppDispatch();
+    const { playTrackList } = usePlayTrack()
     const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
     const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
 
@@ -29,13 +31,13 @@ const LikedPlaylistPage = () => {
         }
     }, [dispatch, userId, currentPage]);
 
-    if (isLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="400px">
-                <CircularProgress />
-            </Box>
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <Box display="flex" justifyContent="center" alignItems="center" height="400px">
+    //             <CircularProgress />
+    //         </Box>
+    //     );
+    // }
 
     if (error) {
         return (
@@ -60,6 +62,20 @@ const LikedPlaylistPage = () => {
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
+
+        if (userId) {
+            const result = await dispatch(
+                fetchLikedTracksByUserId({
+                    userId: userId,
+                    page: 0,
+                    size: 1000
+                })
+            );
+
+            if (fetchLikedTracksByUserId.fulfilled.match(result)) {
+                playTrackList(result.payload, 0);
+            }
+        }
     }
 
     return (

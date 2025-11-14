@@ -70,6 +70,7 @@ const TrackAverageItem: FC<TrackItemProps> = ({ itemWidth, itemHeight, track }) 
             >
             </Box>
             <Box
+                onContextMenu={(e) => handleContextMenu(e, track.id)}
                 display={"flex"}
                 padding={"24px"}
                 width={"100%"}

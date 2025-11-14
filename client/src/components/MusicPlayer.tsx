@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PreviousIcon from '../assets/player/PlayerPreviousIcon.svg';
 import NextIcon from '../assets/player/PlayerNextIcon.svg';
-import RandomTracksIcon from '../assets/player/PlayerRandomPlayingIcon.svg';
+// import RandomTracksIcon from '../assets/player/PlayerRandomPlayingIcon.svg';
 import PlayerPlayIcon from '../assets/player/PlayerPlayIcon.svg';
 import PlayerVolumeOnIcon from '../assets/player/PlayerVolumeOnIcon.svg';
 import PlayerVolumeOffIcon from '../assets/player/PlayerVolumeOffIcon.svg';
@@ -579,7 +579,7 @@ const MusicPlayer = () => {
                     minWidth: 200
                 }}>
                     {/* Кнопка перемешивания */}
-                    <IconButton
+                    {/* <IconButton
                         disableRipple
                         sx={{
                             color: '#ff6b35'
@@ -596,7 +596,7 @@ const MusicPlayer = () => {
                                 }
                             }}
                         />
-                    </IconButton>
+                    </IconButton> */}
 
                     {/* Кнопка предыдущий трек */}
                     <IconButton
@@ -604,6 +604,7 @@ const MusicPlayer = () => {
                         onClick={handlePrev}
                         disabled={isFirstTrack}
                         sx={{
+                            marginLeft: "35px",
                             color: '#ff6b35',
                         }}
                     >

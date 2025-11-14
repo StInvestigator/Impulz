@@ -139,12 +139,7 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
                             <Box key={author.id} sx={{
                                 display: 'flex', alignItems: 'center', color: 'inherit',
                                 textDecoration: 'none',
-                                '&:hover': {
-                                    textDecoration: 'underline',
-                                    cursor: 'pointer',
-                                }
-                            }}
-                                onClick={() => route(`/author/${author.id}`)}>
+                            }}>
                                 {author.name}
                                 {index < album.authors.length - 1 && (
                                     <Box component="span" sx={{ mx: '4px' }}>,</Box>

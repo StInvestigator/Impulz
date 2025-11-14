@@ -37,10 +37,10 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
                 '&:hover': {
                     backgroundColor: 'rgba(0, 0, 0, 0.04)',
                 }
-            }}
-            onClick={handlePlay}>
+            }}>
             {/* Контейнер для изображения трека */}
             <Box
+                onClick={handlePlay}
                 onContextMenu={(e) => handleContextMenu(e, track.id)}
                 position="relative"
                 width={itemWidth}
@@ -147,7 +147,7 @@ const TrackTrueSmallItem: FC<TrackTrueSmallItemProps> = ({ track, itemWidth, col
                 onClose={handleCloseContextMenu}
                 track={track}
             />
-        </Box>
+        </Box >
     );
 };
 

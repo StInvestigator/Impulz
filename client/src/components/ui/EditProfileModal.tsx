@@ -6,22 +6,22 @@ import {
     Modal,
     Typography
 } from "@mui/material";
-import React, {type FC, useRef, useState, useEffect} from "react";
+import React, { type FC, useRef, useState, useEffect } from "react";
 import addImage from "../../assets/addImage.svg";
 import cancelIcon from "../../assets/CancelButtonIcon.svg";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import type {AppDispatch, RootState} from "../../store/store.ts";
-import {useKeycloak} from "@react-keycloak/web";
-import {updateUserProfile} from "../../store/reducers/action-creators/user";
+import type { AppDispatch, RootState } from "../../store/store.ts";
+import { useKeycloak } from "@react-keycloak/web";
+import { updateUserProfile } from "../../store/reducers/action-creators/user";
 
 interface ModalProps {
     open: boolean,
     setOpen: (open: boolean) => void,
 }
 
-const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
-    const {t} = useTranslation(["profile", "errors"]);
+const EditProfileModal: FC<ModalProps> = ({ open, setOpen }) => {
+    const { t } = useTranslation(["profile", "errors"]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [username, setUsername] = useState("");
@@ -32,7 +32,6 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
     const { isLoading, error: updateError } = useSelector((state: RootState) => state.profile);
     const { profile } = useSelector((state: RootState) => state.profile);
     const { keycloak } = useKeycloak();
-    let ifImageChanged = false;
     const userId = keycloak.tokenParsed?.sub;
 
     useEffect(() => {
@@ -62,7 +61,6 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
                         const imageUrl = URL.createObjectURL(file);
                         setSelectedImage(imageUrl);
                         setImageFile(file);
-                        ifImageChanged = true;
                     }
                 };
                 img.src = URL.createObjectURL(file);
@@ -111,7 +109,7 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
             await dispatch(updateUserProfile({
                 userId,
                 username: username.trim(),
-                imageFile: (ifImageChanged ? imageFile : undefined) || undefined
+                imageFile: imageFile || undefined
             })).unwrap();
 
             setOpen(false);
@@ -132,7 +130,7 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
         }
     };
 
-    return(
+    return (
         <Modal
             open={open}
             onClose={handleClose}
@@ -174,13 +172,13 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
                     height: "100%"
                 }}>
                     {/* Левая часть - аватар */}
-                    <Box sx={{gridColumn: 1}}>
+                    <Box sx={{ gridColumn: 1 }}>
                         <input
                             type="file"
                             accept=".png,.jpeg,.jpg"
                             ref={fileInputRef}
                             onChange={handleFileUpload}
-                            style={{display: 'none'}}
+                            style={{ display: 'none' }}
                             disabled={isLoading}
                         />
 
@@ -263,7 +261,7 @@ const EditProfileModal: FC<ModalProps>= ({ open, setOpen }) =>{
                     </Box>
 
                     {/* Правая часть - форма */}
-                    <Box sx={{gridColumn: 2, display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+                    <Box sx={{ gridColumn: 2, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                         <Box>
                             <Typography
                                 sx={{

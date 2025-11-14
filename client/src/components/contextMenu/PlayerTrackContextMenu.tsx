@@ -7,9 +7,9 @@ import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
 import { useAppNavigate } from "../../hooks/useAppNavigate.ts";
 import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
-import {useAppDispatch} from "../../hooks/redux.ts";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
 import keycloak from "../../keycloak.ts";
-import {likeTrack} from "../../store/reducers/action-creators/tracks.ts";
+import {likeTrack, unlikeTrack} from "../../store/reducers/action-creators/tracks.ts";
 import RemoveFromQueueIcon from "../../assets/context/RemoveFromQueueIcon.svg";
 import {removeFromPlaylist} from "../../store/reducers/PlayerSlice.ts";
 
@@ -30,6 +30,7 @@ export const PlayerTrackContextMenu: React.FC<PlayerTrackContextMenuProps> = ({
     const route = useAppNavigate();
     const dispatch = useAppDispatch();
     const userId = keycloak.tokenParsed?.sub;
+    const { likedIds } = useAppSelector(state => state.liked);
 
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +56,13 @@ export const PlayerTrackContextMenu: React.FC<PlayerTrackContextMenuProps> = ({
         onClose();
     }
 
+     const handleRemoveFromFavorites = () => {
+            if (userId) {
+                dispatch(unlikeTrack({ trackId: track.id, userId: userId }));
+            }
+            onClose();
+        };
+
     return (
         <>
             <Menu
@@ -77,12 +85,19 @@ export const PlayerTrackContextMenu: React.FC<PlayerTrackContextMenuProps> = ({
                     ref: menuRef
                 }}
             >
-                <ContextMenuItem
-                    isFirst={true}
-                    icon={AddToLikedIcon}
-                    text={t("title-add-to-liked")}
-                    onClick={handleAddToFavorites}
-                />
+                {(likedIds && likedIds.includes(track.id) ?
+                        <ContextMenuItem
+                            icon={AddToLikedIcon}
+                            text={t("title-remove-from-liked")}
+                            onClick={handleRemoveFromFavorites}
+                        />
+                        :
+                        <ContextMenuItem
+                            icon={AddToLikedIcon}
+                            text={t("title-add-to-liked")}
+                            onClick={handleAddToFavorites}
+                        />
+                )}
 
                 <ContextMenuItem
                     icon={RemoveFromQueueIcon}

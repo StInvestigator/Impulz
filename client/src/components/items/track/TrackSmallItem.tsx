@@ -136,7 +136,6 @@ const TrackSmallItem: FC<TrackItemProps> = ({ track, index, playlistId }) => {
                 </Box>
             </Box>
 
-            {/* Контекстное меню */}
             <TrackContextMenu
                 contextMenu={contextMenu}
                 onClose={handleCloseContextMenu}

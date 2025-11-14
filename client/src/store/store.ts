@@ -11,6 +11,7 @@ import ProfileReducer from "./reducers/ProfileSlice.ts";
 import SearchReducer from "./reducers/SearchSlice.ts";
 import SubscriptionReducer from "./reducers/SubscriptionSlice.ts";
 import UserReducer from "./reducers/UserSlice.ts";
+import AlertReducer from "./reducers/AlertSlice.ts";
 
 
 const rootReducer = combineReducers({
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
     profile: ProfileReducer,
     search: SearchReducer,
     subscribtion: SubscriptionReducer,
-    user: UserReducer
+    user: UserReducer,
+    alert: AlertReducer
 })
 
 export const setupStore = () => {

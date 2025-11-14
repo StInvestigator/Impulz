@@ -74,7 +74,6 @@ export const fetchAuthorPlaysByMonth = createAsyncThunk<number, string>(
     }
 );
 
-// store/reducers/action-creators/author.ts
 export const subscribeToAuthor = createAsyncThunk<
     boolean,
     string,

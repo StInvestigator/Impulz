@@ -26,5 +26,11 @@
   "error-current-password-required": "Для зміни пароля необхідно ввести поточний пароль",
   "error-no-changes": "Немає змін для збереження",
   "error-update-failed": "Не вдалося оновити дані",
-  "error-email-empty": "Поле email не може бути порожнім"
+  "error-email-empty": "Поле email не може бути порожнім",
+  "error-playback": "Помилка відтворення",
+  "error-subscription": "Помилка підписки",
+  "error-copy-link": "Помилка копіювання посилання",
+  "error-add-to-liked": "Помилка додавання до улюблених",
+  "error-delete-album": "Помилка видалення альбому",
+  "error-delete-playlist": "Помилка видалення плейлиста"
 }

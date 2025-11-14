@@ -1,51 +1,84 @@
 import { Menu } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import React, {useRef, useState} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import AddToLikedIcon from "../../assets/context/AddToLikedIcon.png";
-import AddToQueueIcon from "../../assets/context/AddToQueueIcon.svg";
 import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
 import CopyTrackLinkIcon from "../../assets/context/CopyTrackLinkIcon.svg";
 import { ContextMenuItem } from "./ContextMenuItem.tsx";
 import { useAppNavigate } from "../../hooks/useAppNavigate.ts";
-import { useAppDispatch } from "../../hooks/redux.ts";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
 import keycloak from "../../keycloak.ts";
 import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
-import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
-import type { AlbumSimpleDto } from "../../models/DTO/album/AlbumSimpleDto.ts";
-import { fetchFavoriteAlbums, likeAlbum } from "../../store/reducers/action-creators/album.ts";
-import { showAlert } from "../../store/reducers/AlertSlice.ts";
+import type {AuthorSimpleDto} from "../../models/DTO/AuthorSimpleDto.ts";
+import {subscribeToAuthor, unsubscribeFromAuthor, fetchAuthorsByFollower, checkSubscriptionStatus} from "../../store/reducers/action-creators/author.ts";
+import {showAlert} from "../../store/reducers/AlertSlice.ts";
 
-interface AlbumContextMenuProps {
+interface AuthorContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
     onClose: () => void;
-    album: AlbumSimpleDto;
+    author: AuthorSimpleDto;
 }
 
-export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
-                                                                      contextMenu,
-                                                                      onClose,
-                                                                      album
-                                                                  }) => {
+export const AuthorContextMenu: React.FC<AuthorContextMenuProps> = ({
+                                                                        contextMenu,
+                                                                        onClose,
+                                                                        author
+                                                                    }) => {
     const { t } = useTranslation(["other", "errors"]);
     const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
     const route = useAppNavigate();
     const dispatch = useAppDispatch();
     const userId = keycloak.tokenParsed?.sub;
-    const { addToQueue } = usePlayTrack();
+    const { subscriptionStatus } = useAppSelector(state => state.author);
+
+    const isSubscribed = author?.id ? subscriptionStatus[author.id] : false;
 
     const menuRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        if (author?.id && userId && contextMenu !== null) {
+            dispatch(checkSubscriptionStatus(author.id));
+        }
+    }, [author?.id, userId, contextMenu, dispatch]);
+
     const handleAddToFavorites = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (userId) {
-            dispatch(likeAlbum({ albumId: album.id, userId: userId }))
+        if (userId && author?.id) {
+            const action = isSubscribed ? unsubscribeFromAuthor : subscribeToAuthor;
+
+            dispatch(action(author.id))
                 .unwrap()
                 .then(() => {
-                    dispatch(fetchFavoriteAlbums({ userId: userId }));
+                    if (userId) {
+                        dispatch(fetchAuthorsByFollower({ followerId: userId }));
+                    }
+                    dispatch(checkSubscriptionStatus(author.id));
                 })
                 .catch((error) => {
                     dispatch(showAlert({
-                        message: error || t("errors:error-add-to-liked"),
+                        message: t("error-subscription") || error,
+                        severity: 'error'
+                    }));
+                });
+        }
+        onClose();
+    };
+
+    const handleAuthorLink = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (author?.id) {
+            const authorLink = `${window.location.origin}/author/${author.id}`;
+
+            navigator.clipboard.writeText(authorLink)
+                .then(() => {
+                    dispatch(showAlert({
+                        message: t("title-link-copied"),
+                        severity: 'info'
+                    }));
+                })
+                .catch(e => {
+                    dispatch(showAlert({
+                        message: `${t("error-copy-link")}: ${e}`,
                         severity: 'error'
                     }));
                 });
@@ -55,35 +88,9 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
 
     const handleGoToAuthor = (e: React.MouseEvent) => {
         e.stopPropagation();
-        route(`/author/${album.authors[0].id}`);
-        onClose();
-    };
-
-    const handleCopyAlbumLink = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        const albumLink = `${window.location.origin}/album/${album.id}`;
-
-        navigator.clipboard.writeText(albumLink)
-            .then(() => {
-                dispatch(showAlert({
-                    message: t("title-link-copied"),
-                    severity: 'info'
-                }));
-            })
-            .catch(err => {
-                dispatch(showAlert({
-                    message: t("errors:error-copy-link"),
-                    severity: 'error'
-                }));
-                console.error(`${t("errors:error-copy-link")}:`, err);
-            });
-
-        onClose();
-    };
-
-    const handleAddToQueue = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        addToQueue(album, "album");
+        if (author?.id) {
+            route(`/author/${author.id}`);
+        }
         onClose();
     };
 
@@ -113,14 +120,8 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
                 <ContextMenuItem
                     isFirst={true}
                     icon={AddToLikedIcon}
-                    text={t("title-add-to-liked")}
+                    text={isSubscribed ? t("title-unsubscribe") : t("title-subscribe")}
                     onClick={handleAddToFavorites}
-                />
-
-                <ContextMenuItem
-                    icon={AddToQueueIcon}
-                    text={t("title-add-to-queue")}
-                    onClick={handleAddToQueue}
                 />
 
                 <ContextMenuItem
@@ -131,8 +132,8 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
 
                 <ContextMenuItem
                     icon={CopyTrackLinkIcon}
-                    text={t("title-copy-album-link")}
-                    onClick={handleCopyAlbumLink}
+                    text={t("title-copy-author-link")}
+                    onClick={handleAuthorLink}
                     isLast={true}
                 />
             </Menu>
@@ -141,6 +142,7 @@ export const AlbumContextMenu: React.FC<AlbumContextMenuProps> = ({
                 open={isCreatePlaylistModalOpen}
                 setOpen={setIsCreatePlaylistModalOpen}
             />
+
         </>
     );
 };

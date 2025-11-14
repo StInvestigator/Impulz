@@ -1,4 +1,4 @@
-import { Menu, Snackbar, Alert, Fade } from "@mui/material";
+import { Menu } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import AddToPlaylistIcon from "../../assets/context/AddToPlaylistIcon.svg";
@@ -19,6 +19,7 @@ import CreatePlaylistModal from "../ui/CreatePlaylistModal.tsx";
 import { likeTrack, unlikeTrack } from "../../store/reducers/action-creators/tracks.ts";
 import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
 import { useKeycloak } from "@react-keycloak/web";
+import { showAlert } from "../../store/reducers/AlertSlice.ts";
 
 interface TrackContextMenuProps {
     contextMenu: { mouseX: number; mouseY: number } | null;
@@ -35,9 +36,6 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
 }) => {
     const { keycloak } = useKeycloak();
     const { t } = useTranslation(["other", "errors"]);
-    const [toastOpen, setToastOpen] = useState(false);
-    const [errorToastOpen, setErrorToastOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [playlistMenuAnchor, setPlaylistMenuAnchor] = useState<null | HTMLElement>(null);
     const [isCreatePlaylistModalOpen, setIsCreatePlaylistModalOpen] = useState(false);
     const route = useAppNavigate();
@@ -86,20 +84,27 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                     if (userId) {
                         dispatch(fetchPlaylistsOwnByUserId({ userId }));
                     }
-                    onClose();
+                    dispatch(showAlert({
+                        message: t("title-track-added-to-playlist"),
+                        severity: 'info'
+                    }));
                 })
                 .catch((error) => {
+                    let errorMessage;
                     if (error === 'Track already exists in playlist') {
-                        setErrorMessage(`${t("errors:error-playlist-already-exists-in-playlist")}`);
-                        setErrorToastOpen(true);
+                        errorMessage = t("errors:error-playlist-already-exists-in-playlist");
                     } else if (error === 'Playlist or track not found') {
-                        setErrorMessage(`${t("errors:error-playlist-not-found")}`);
-                        setErrorToastOpen(true);
+                        errorMessage = t("errors:error-playlist-not-found");
                     } else {
-                        setErrorMessage(`${t("errors:error-failed-to-add-track-to-playlist")}`);
-                        setErrorToastOpen(true);
+                        errorMessage = t("errors:error-failed-to-add-track-to-playlist");
                     }
 
+                    dispatch(showAlert({
+                        message: errorMessage,
+                        severity: 'error'
+                    }));
+                })
+                .finally(() => {
                     onClose();
                 });
         };
@@ -113,7 +118,6 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
     };
 
     const handleAddToFavorites = () => {
-        console.log(likedIds)
         if (userId) {
             dispatch(likeTrack({ trackId: track.id, userId: userId }));
         }
@@ -156,34 +160,25 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
 
         navigator.clipboard.writeText(trackLink)
             .then(() => {
-                console.log("Track link copied to clipboard:", trackLink);
-                setToastOpen(true);
+                dispatch(showAlert({
+                    message: t("title-link-copied"),
+                    severity: 'info'
+                }));
             })
-            .catch(err => {
-                console.error("Failed to copy track link:", err);
+            .catch(error => {
+                dispatch(showAlert({
+                    message: t("errors:error-copy-link") || error,
+                    severity: 'error'
+                }));
+            })
+            .finally(() => {
+                onClose();
             });
-
-        onClose();
     };
 
     const handleAddToQueue = () => {
         addToQueue(track);
         onClose();
-    };
-
-    const handleCloseToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setToastOpen(false);
-    };
-
-    const handleCloseErrorToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setErrorToastOpen(false);
-        setErrorMessage("");
     };
 
     return (
@@ -295,17 +290,17 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 />}
 
                 {(likedIds && likedIds.includes(track.id) ?
-                    <ContextMenuItem
-                        icon={AddToLikedIcon}
-                        text={t("title-remove-from-liked")}
-                        onClick={handleRemoveFromFavorites}
-                    />
-                    :
-                    <ContextMenuItem
-                        icon={AddToLikedIcon}
-                        text={t("title-add-to-liked")}
-                        onClick={handleAddToFavorites}
-                    />
+                        <ContextMenuItem
+                            icon={AddToLikedIcon}
+                            text={t("title-remove-from-liked")}
+                            onClick={handleRemoveFromFavorites}
+                        />
+                        :
+                        <ContextMenuItem
+                            icon={AddToLikedIcon}
+                            text={t("title-add-to-liked")}
+                            onClick={handleAddToFavorites}
+                        />
                 )}
 
                 <ContextMenuItem
@@ -338,53 +333,6 @@ export const TrackContextMenu: React.FC<TrackContextMenuProps> = ({
                 open={isCreatePlaylistModalOpen}
                 setOpen={setIsCreatePlaylistModalOpen}
             />
-
-            <Snackbar
-                open={toastOpen}
-                autoHideDuration={2000}
-                onClose={handleCloseToast}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                TransitionComponent={Fade}
-            >
-                <Alert
-                    onClose={handleCloseToast}
-                    severity="success"
-                    sx={{
-                        width: '100%',
-                        borderRadius: '10px',
-                        fontWeight: 600,
-                        backgroundColor: 'rgba(76, 175, 80, 0.9)',
-                        color: 'white',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                    }}
-                >
-                    {t("title-link-copied")}
-                </Alert>
-            </Snackbar>
-
-            <Snackbar
-                open={errorToastOpen}
-                autoHideDuration={3000}
-                onClose={handleCloseErrorToast}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                TransitionComponent={Fade}
-            >
-                <Alert
-                    onClose={handleCloseErrorToast}
-                    severity="error"
-                    sx={{
-                        width: '100%',
-                        borderRadius: '10px',
-                        fontWeight: 600,
-                        backgroundColor: 'rgba(244, 67, 54, 0.9)',
-                        color: 'white',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                    }}
-                >
-                    {errorMessage}
-                </Alert>
-            </Snackbar>
-
         </>
     );
 };

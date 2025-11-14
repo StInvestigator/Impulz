@@ -37,7 +37,20 @@ export const fetchTrackDetails = createAsyncThunk<TrackDto,
                 return rejectWithValue("Не удалось загрузить информацию о треке");
             }
         }
-    )
+    );
+
+export const fetchTrackSimpleById = createAsyncThunk<TrackSimpleDto, number>(
+    "tracks/fetchTrackSimpleById",
+    async (trackId, { rejectWithValue }) => {
+        try {
+            const response = await $authApi.get(`/tracks/simpleDto/${trackId}`);
+            return response.data;
+        } catch (error: unknown) {
+            return rejectWithValue(`Не удалось загрузить информацию о треке: ${error}`);
+        }
+    }
+);
+
 
 export const fetchPopularTracksByAuthor = createAsyncThunk<
     TrackSimpleDto[],

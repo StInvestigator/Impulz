@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PreviousIcon from '../assets/player/PlayerPreviousIcon.svg';
 import NextIcon from '../assets/player/PlayerNextIcon.svg';
-// import RandomTracksIcon from '../assets/player/PlayerRandomPlayingIcon.svg';
 import PlayerPlayIcon from '../assets/player/PlayerPlayIcon.svg';
 import PlayerVolumeOnIcon from '../assets/player/PlayerVolumeOnIcon.svg';
 import PlayerVolumeOffIcon from '../assets/player/PlayerVolumeOffIcon.svg';
@@ -75,7 +74,6 @@ const MusicPlayer = () => {
         volume,
         currentTrackIndex,
         source,
-        bufferTracks,
         isFullScreenOpen
     } = useAppSelector((state) => state.player);
 
@@ -105,6 +103,18 @@ const MusicPlayer = () => {
 
     const playlistRef = useRef(playlist);
     const currentTrackIndexRef = useRef(currentTrackIndex);
+    const [isFromLink, setIsFromLink] = useState(false);
+
+
+    useEffect(() => {
+        if (window.location.pathname.startsWith("/track/")) {
+            setIsFromLink(true);
+        } else {
+            setIsFromLink(false);
+        }
+    }, [window.location.pathname]);
+
+
 
     useEffect(() => {
         playlistRef.current = playlist;
@@ -293,10 +303,11 @@ const MusicPlayer = () => {
                     if (!mounted || !isMountedRef.current) return;
                     setLoading(false);
 
-                    audio.play().catch((err) => {
-                        console.error('Ошибка автовоспроизведения:', err);
-                        setError('Ошибка воспроизведения аудио');
-                    });
+                    if (!isFromLink) {
+                        audio.play().catch((err) => {
+                            console.warn("Autoplay blocked:", err);
+                        });
+                    }
                 };
 
                 audio.onplay = () => {

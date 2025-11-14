@@ -15,10 +15,11 @@ import {
 } from "../store/reducers/PlayerSlice.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
-import type {TrackSimpleDto} from "../models/DTO/track/TrackSimpleDto.ts";
-import {fetchAuthorTracksPaged} from "../store/reducers/action-creators/player.ts";
-import type {AlbumSimpleDto} from "../models/DTO/album/AlbumSimpleDto.ts";
-import type {PlaylistDto} from "../models/PlaylistDto.ts";
+import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
+import { fetchAuthorTracksPaged } from "../store/reducers/action-creators/player.ts";
+import type { AlbumSimpleDto } from "../models/DTO/album/AlbumSimpleDto.ts";
+import type { PlaylistDto } from "../models/PlaylistDto.ts";
+import { fetchTracksByAlbum, fetchTracksByPlaylist } from "../store/reducers/action-creators/tracks.ts";
 
 let sharedFetchFn: ((page: number, size: number) => Promise<TrackSimpleDto[]>) | null = null;
 let sharedFetchSource: { type: PlayerSource["type"]; id: string | number } | null = null;
@@ -29,7 +30,7 @@ type PlayableEntity = TrackSimpleDto | AlbumSimpleDto | PlaylistDto;
 export const usePlayTrack = () => {
     const dispatch = useAppDispatch();
     const { keycloak } = useKeycloak();
-    const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading,active } =
+    const { playbackMode, source, playlist, currentTrackIndex, bufferTracks, isBufferLoading, active } =
         useAppSelector((state) => state.player);
 
     const currentFetchFnRef = useRef<((page: number, size: number) => Promise<TrackSimpleDto[]>) | null>(null);
@@ -97,10 +98,11 @@ export const usePlayTrack = () => {
         const albumTracks = album.tracks || [];
 
         if (albumTracks.length === 0) {
-            console.warn('🎵 Альбом не содержит треков');
             return;
         }
 
+        //for liked
+        dispatch(fetchTracksByAlbum({ albumId: album.id }))
 
         if (!active) {
             dispatch(setPlaylist(albumTracks));
@@ -118,10 +120,11 @@ export const usePlayTrack = () => {
         const playlistTracks = playlist.tracks || [];
 
         if (playlistTracks.length === 0) {
-            console.warn('🎵 Плейлист не содержит треков');
             return;
         }
 
+        //for liked
+        dispatch(fetchTracksByPlaylist({ playlistId: playlist.id }))
 
         if (!active) {
             dispatch(setPlaylist(playlistTracks));
@@ -146,8 +149,6 @@ export const usePlayTrack = () => {
             case 'playlist':
                 addPlaylistToQueue(entity as PlaylistDto);
                 break;
-            default:
-                console.warn('🎵 Unknown entity type:', type);
         }
     };
 
@@ -263,21 +264,21 @@ export const usePlayTrack = () => {
 
         switch (source.type) {
             case "author":
-            { const authorFetchFn = async (page: number, size: number) => {
-                const res = await fetchAuthorTracksPaged(source.id.toString(), page, size);
-                return res.tracks;
-            };
-                sharedFetchFn = authorFetchFn;
-                sharedFetchSource = { type: source.type, id: source.id };
-                currentFetchFnRef.current = authorFetchFn;
-                return true; }
+                {
+                    const authorFetchFn = async (page: number, size: number) => {
+                        const res = await fetchAuthorTracksPaged(source.id.toString(), page, size);
+                        return res.tracks;
+                    };
+                    sharedFetchFn = authorFetchFn;
+                    sharedFetchSource = { type: source.type, id: source.id };
+                    currentFetchFnRef.current = authorFetchFn;
+                    return true;
+                }
 
             case "album":
-                console.warn('🎵 Не удалось восстановить соединение для альбома - нужна исходная fetch функция');
                 return false;
 
             default:
-                console.warn('🎵 Неизвестный тип источника:', source.type);
                 return false;
         }
     }, [source]);
@@ -368,8 +369,6 @@ export const usePlayTrack = () => {
                     },
                     fetchFn
                 );
-            } else {
-                console.warn('🎵 Не удалось загрузить треки для автора', authorId);
             }
         } catch (e) {
             console.error('🎵 Ошибка загрузки треков автора:', e);

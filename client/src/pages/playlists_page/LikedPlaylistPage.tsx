@@ -3,7 +3,7 @@ import { Box, Stack, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import keycloak from "../../keycloak.ts";
-import { fetchLikedTracksByUserId } from "../../store/reducers/action-creators/tracks.ts";
+import { fetchLikedTracksByUserId, fetchLikedTracksByUserIdForPlayer } from "../../store/reducers/action-creators/tracks.ts";
 import Cover from "../../components/Cover.tsx";
 import PlaylistLikedTracks from "../../assets/PlaylistLikedTracks.svg";
 import TrackList from "../../components/lists/TrackList.tsx";
@@ -14,7 +14,7 @@ const LikedPlaylistPage = () => {
     const dispatch = useAppDispatch();
     const { playTrackList } = usePlayTrack()
     const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
-    const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
+    const { likedTracks, error } = useAppSelector(state => state.track);
 
     const { t } = useTranslation(["other", "errors"]);
     const userId = keycloak.tokenParsed?.sub;
@@ -65,14 +65,14 @@ const LikedPlaylistPage = () => {
 
         if (userId) {
             const result = await dispatch(
-                fetchLikedTracksByUserId({
+                fetchLikedTracksByUserIdForPlayer({
                     userId: userId,
                     page: 0,
                     size: 1000
                 })
             );
 
-            if (fetchLikedTracksByUserId.fulfilled.match(result)) {
+            if (fetchLikedTracksByUserIdForPlayer.fulfilled.match(result)) {
                 playTrackList(result.payload, 0);
             }
         }

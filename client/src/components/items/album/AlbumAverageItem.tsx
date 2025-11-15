@@ -6,7 +6,7 @@ import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchAlbumDetails } from "../../../store/reducers/action-creators/album.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
-import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
+import { fetchTracksByAlbumForPlayer } from "../../../store/reducers/action-creators/tracks.ts";
 import { AlbumContextMenu } from "../../contextMenu/AlbumContextMenu.tsx";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 
@@ -31,13 +31,13 @@ const AlbumAverageItem: FC<AlbumItemProps> = ({ album, itemHeight }) => {
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const result = await dispatch(fetchTracksByAlbum({
+        const result = await dispatch(fetchTracksByAlbumForPlayer({
             albumId: album.id,
             page: 0,
             size: 1000
         }));
 
-        if (fetchTracksByAlbum.fulfilled.match(result)) {
+        if (fetchTracksByAlbumForPlayer.fulfilled.match(result)) {
             playTrackList(result.payload, 0);
         }
     }

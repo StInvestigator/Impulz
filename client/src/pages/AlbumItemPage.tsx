@@ -1,13 +1,13 @@
 import MyPagination from "../components/MyPagination.tsx";
 import { useEffect } from "react";
-import { Box, Stack, CircularProgress, Typography, IconButton } from "@mui/material";
+import { Box, Stack, CircularProgress, IconButton } from "@mui/material";
 import TrackList from "../components/lists/TrackList.tsx";
 import Cover from "../components/Cover.tsx";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { fetchAlbumDetails } from "../store/reducers/action-creators/album.ts";
 import { useParams, Navigate  } from "react-router-dom";
 import { usePlayTrack } from "../hooks/usePlayTrack.tsx";
-import { fetchTracksByAlbum } from "../store/reducers/action-creators/tracks.ts";
+import { fetchTracksByAlbumForPlayer } from "../store/reducers/action-creators/tracks.ts";
 import { useTranslation } from "react-i18next";
 import keycloak from "../keycloak.ts";
 import { useContextMenu } from "../hooks/useContextMenu.ts";
@@ -70,13 +70,13 @@ const AlbumItemPage = () => {
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const result = await dispatch(fetchTracksByAlbum({
+        const result = await dispatch(fetchTracksByAlbumForPlayer({
             albumId: id,
             page: 0,
             size: 1000
         }));
 
-        if (fetchTracksByAlbum.fulfilled.match(result)) {
+        if (fetchTracksByAlbumForPlayer.fulfilled.match(result)) {
             playTrackList(result.payload, 0);
         }
     }

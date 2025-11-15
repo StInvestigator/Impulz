@@ -20,7 +20,7 @@ import { fetchAuthorTracksPaged } from "../store/reducers/action-creators/player
 import type { AlbumSimpleDto } from "../models/DTO/album/AlbumSimpleDto.ts";
 import type { PlaylistDto } from "../models/PlaylistDto.ts";
 import {
-    fetchTracksByAlbum,
+    // fetchTracksByAlbum,
     fetchTracksByPlaylist, fetchTrackSimpleById
 } from "../store/reducers/action-creators/tracks.ts";
 
@@ -124,7 +124,7 @@ export const usePlayTrack = () => {
             return;
         }
 
-        dispatch(fetchTracksByAlbum({ albumId: album.id }))
+        // dispatch(fetchTracksByAlbum({ albumId: album.id }))
 
         if (!active) {
             dispatch(setPlaylist(albumTracks));
@@ -254,7 +254,6 @@ export const usePlayTrack = () => {
         initialTracks: TrackSimpleDto[],
         sourceConfig: Omit<PlayerSource, "page" | "hasMore" | "totalPages"> & { name?: string; totalPages?: number },
         fetchPageFn: (page: number, size: number) => Promise<TrackSimpleDto[]>,
-        startIndex: number = 0
     ) => {
         if (!requireAuth()) return;
 
@@ -275,7 +274,7 @@ export const usePlayTrack = () => {
         };
 
 
-        dispatch(setSourceWithBuffer({ source: newSource, initialTracks, bufferTracks: [], startIndex }));
+        dispatch(setSourceWithBuffer({ source: newSource, initialTracks, bufferTracks: [] }));
     };
 
     const restoreSourceConnection = useCallback(() => {

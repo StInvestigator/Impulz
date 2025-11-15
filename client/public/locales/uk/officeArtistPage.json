@@ -9,5 +9,6 @@
     "title-rule-4": "Формат: MP3, 320 kbps - для стабільного звуку",
     "button-next": "Далі",
     "button-back": "Назад",
-    "button-save-album": "Зберегти альбом"
+    "button-save-album": "Зберегти альбом",
+    "title-success": "Альбом було успішно створено"
 }

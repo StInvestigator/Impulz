@@ -9,5 +9,6 @@
     "title-rule-4": "Format: MP3, 320 kbps - for stable sound",
     "button-next": "Next",
     "button-back": "Back",
-    "button-save-album": "Save album"
+    "button-save-album": "Save album",
+    "title-success": "Album was successfully created"
 }

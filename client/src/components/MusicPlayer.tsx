@@ -101,6 +101,7 @@ const MusicPlayer = () => {
     const isFirstTrack = currentTrackIndex <= 0;
     const lastActiveIdRef = useRef<number | null>(null);
 
+
     const playlistRef = useRef(playlist);
     const currentTrackIndexRef = useRef(currentTrackIndex);
     const [isFromLink, setIsFromLink] = useState(false);
@@ -194,7 +195,7 @@ const MusicPlayer = () => {
                 audioRef.current = null;
             }
             if (objectUrlRef.current) {
-                URL.revokeObjectURL(objectUrlRef.current);
+                // URL.revokeObjectURL(objectUrlRef.current);
                 objectUrlRef.current = null;
             }
         };
@@ -240,7 +241,7 @@ const MusicPlayer = () => {
             audioRef.current = null;
 
             if (objectUrlRef.current) {
-                URL.revokeObjectURL(objectUrlRef.current);
+                // URL.revokeObjectURL(objectUrlRef.current);
                 objectUrlRef.current = null;
             }
         }
@@ -283,7 +284,7 @@ const MusicPlayer = () => {
                     audioRef.current.onerror = null;
                 }
 
-                if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+                // if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
 
                 objectUrlRef.current = url;
                 const audio = new Audio();

@@ -59,8 +59,8 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @CacheEvict(cacheNames = {"album.recommendedToday", "album.byAuthor",
-                    "album.collaborationsByAuthor", "album.collaborationsByAuthor",
-                    "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true)
+            "album.collaborationsByAuthor", "album.collaborationsByAuthor",
+            "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true)
     @Transactional
     public void delete(Long id) {
         Album entity = albumRepository.findById(id).orElseThrow();
@@ -114,9 +114,9 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    @CacheEvict(cacheNames = {"album.recommendedToday", "album.byAuthor",
-            "album.collaborationsByAuthor", "album.collaborationsByAuthor",
-            "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true)
+    @CacheEvict(cacheNames = {"album.byAuthor",
+            "album.collaborationsByAuthor", "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true, beforeInvocation = true)
+    @Transactional
     public Album upload(AlbumCreationDto metadata, MultipartFile cover, List<MultipartFile> trackFiles, List<MultipartFile> trackCovers) {
         Album entity = new Album();
         entity.setImageUrl(imageService.uploadImage(cover, metadata.getTitle()));

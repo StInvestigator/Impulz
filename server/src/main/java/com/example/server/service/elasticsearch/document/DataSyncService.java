@@ -24,6 +24,7 @@ import co.elastic.clients.elasticsearch.core.UpdateByQueryResponse;
 import co.elastic.clients.json.JsonData;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 import java.util.ArrayList;
@@ -98,6 +99,16 @@ public class DataSyncService {
             log.debug("Synced track {} to Elasticsearch", track.getId());
         } catch (Exception e) {
             log.error("Error syncing track {} to Elasticsearch", track.getId(), e);
+        }
+    }
+
+    public void syncTracks(Collection<Track> tracks) {
+        try {
+            List<TrackDocument> documents = tracks.stream().map(conversionService::convertToDocument).toList();
+            trackSearchRepository.saveAll(documents);
+            log.debug("Synced tracks amount {} to Elasticsearch", tracks.size());
+        } catch (Exception e) {
+            log.error("Error syncing tracks amount {} to Elasticsearch", tracks.size(), e);
         }
     }
 

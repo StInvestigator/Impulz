@@ -6,7 +6,7 @@
   "error-no-release-date": "Please enter the release date",
   "error-you-have-not-filled-in-all-the-fields": "You have not filled in all the fields",
   "error-no-tracks-in-album": "There are no tracks in this album yet",
-  "error-creating-album": "Error occured while creating album, try again",
+  "error-creating-album": "Error occured while creating album, or it was created partialy, check your albums or try again",
   "error-no-tracks-in-playlist": "There are no tracks in this playlist yet",
   "error-playlist-not-found": "Playlist not found",
   "error-playlist-already-exists-in-playlist": "This track already exists in this album",

@@ -170,7 +170,8 @@ public class TrackServiceImpl implements TrackService {
     @Override
     @CacheEvict(cacheNames = {
             "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors", "track.findPopularTracksByGenre"
-    }, allEntries = true)
+    }, allEntries = true, beforeInvocation = true)
+    @Transactional
     public Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album) {
         Track entity = new Track();
         entity.setImageURl(cover != null ? imageService.uploadImage(cover, creationDto.getTitle()) : null);
@@ -187,21 +188,45 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
+    @CacheEvict(cacheNames = {
+            "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors", "track.findPopularTracksByGenre"
+    }, allEntries = true, beforeInvocation = true)
+    @Transactional
     public List<Track> uploadTracks(List<TrackCreationDto> creationDtos, List<MultipartFile> covers, List<MultipartFile> files, Album album) {
         List<Track> tracks = new ArrayList<>();
         creationDtos.forEach(trackCreationDto -> {
-            tracks.add(uploadTrack(trackCreationDto,
-                    covers == null ? null :
-                            covers.stream()
-                                    .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
-                                    .findAny()
-                                    .orElse(null),
-                    files.stream()
-                            .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientFileName()))
-                            .findAny()
-                            .orElseThrow(),
-                    album));
+
+            MultipartFile foundCover = null;
+            if (covers != null) {
+                foundCover = covers.stream()
+                        .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientCoverName()))
+                        .findAny()
+                        .orElse(null);
+                if (foundCover != null) {
+                    files.remove(foundCover);
+                }
+            }
+
+            MultipartFile foundFile = files.stream()
+                    .filter(c -> c != null && Objects.equals(c.getOriginalFilename(), trackCreationDto.getClientFileName()))
+                    .findFirst()
+                    .orElseThrow();
+            files.remove(foundFile);
+
+            Track entity = new Track();
+            entity.setImageURl(foundCover != null ? imageService.uploadImage(foundCover, trackCreationDto.getTitle()) : null);
+            entity.setTitle(trackCreationDto.getTitle());
+            entity.setGenres(new HashSet<>(genreService.getGenresByIds(trackCreationDto.getGenreIds())));
+            entity.setAuthors(new HashSet<>(authorService.getAuthorsByIds(trackCreationDto.getAuthorIds())));
+            entity.setAlbum(album);
+            entity.setCreatedAt(OffsetDateTime.now());
+            entity.setLikes(0L);
+            entity.setTotalPlays(0L);
+            musicService.uploadMusic(foundFile, entity);
+
+            tracks.add(entity);
         });
+        dataSyncService.syncTracks(tracks);
         return tracks;
     }
 

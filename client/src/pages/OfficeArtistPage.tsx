@@ -110,6 +110,8 @@ function OfficeArtistPage() {
     }).catch(() => {
       setOpen(false);
       setActiveStep(1);
+      dispatch(fetchAlbumsByAuthor({ authorId: profile.id, size: 10 }))
+      dispatch(fetchUnreleasedAlbumsByAuthor({ authorId: profile.id, size: 10 }))
       setIsLoading(false);
       setSnackbarMessage(t("errors:error-creating-album"))
       setSnackbarType("error")
@@ -275,13 +277,13 @@ function OfficeArtistPage() {
               textTransform: "none",
             }}
           >
-            {isLoading ? t("authorPage:button-save-album") : activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
+            {isLoading ? t("authorPage:button-loading") : activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
           </Button>
         </Box>
       </MyModal>
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
+        autoHideDuration={10000}
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         TransitionComponent={Fade}

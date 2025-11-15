@@ -22,7 +22,7 @@ function OfficeArtistPage() {
   const { profile } = useAppSelector(state => state.profile);
   const { albums, unreleasedAuthorAlbums } = useAppSelector(state => state.album);
   const route = useAppNavigate();
-  const { t } = useTranslation(["officeArtistPage", "other", "errors"])
+  const { t } = useTranslation(["officeArtistPage", "authorPage", "other", "errors"])
 
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -34,9 +34,9 @@ function OfficeArtistPage() {
   const [dateRelease, setDateRelease] = useState<string>("");
   const [tracks, setTracks] = useState<TrackCreationFullDto[]>([]);
 
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
-    const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -103,11 +103,14 @@ function OfficeArtistPage() {
       setActiveStep(1)
       dispatch(fetchAlbumsByAuthor({ authorId: profile.id, size: 10 }))
       dispatch(fetchUnreleasedAlbumsByAuthor({ authorId: profile.id, size: 10 }))
-    }).then(()=>{
+    }).then(() => {
       setSnackbarMessage(t("officeArtistPage:title-success"))
       setSnackbarType("success")
       setSnackbarOpen(true)
-    }).catch(()=>{
+    }).catch(() => {
+      setOpen(false);
+      setActiveStep(1);
+      setIsLoading(false);
       setSnackbarMessage(t("errors:error-creating-album"))
       setSnackbarType("error")
       setSnackbarOpen(true)
@@ -272,7 +275,7 @@ function OfficeArtistPage() {
               textTransform: "none",
             }}
           >
-            {isLoading ? "Loading..." : activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
+            {isLoading ? t("authorPage:button-save-album") : activeStep === 4 ? t("officeArtistPage:button-save-album") : t("officeArtistPage:button-next")}
           </Button>
         </Box>
       </MyModal>

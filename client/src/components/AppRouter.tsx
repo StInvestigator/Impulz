@@ -39,6 +39,8 @@ import AlbumsUnreleasedPage from "../pages/album_page/AlbumsUnreleasedPage.tsx";
 import UserFavPlaylistsPage from "../pages/playlists_page/UserFavPlaylistsPage.tsx";
 import FavoriteAuthorsPage from "../pages/authors_page/FavoriteAuthorsPage.tsx";
 import TrackLinkHandler from "./items/track/TrackLinkHandler.tsx";
+import PaymentSuccessPage from "../pages/PaymentSuccessPage.tsx";
+import PaymentErrorPage from "../pages/PaymentErrorPage.tsx";
 
 const AppRouter = () => {
     return (
@@ -62,6 +64,8 @@ const AppRouter = () => {
                     <Route path="/genre/:id/recent-playlists" element={<PlaylistsRecentCategoryPage />} />
 
                     <Route path="/track/:trackId" element={<TrackLinkHandler/>}/>
+                    <Route path="/payment-success" element={<PaymentSuccessPage/>}/>
+                    <Route path="/payment-error" element={<PaymentErrorPage/>}/>
 
                     <Route path="/profile" element={<MyProfilePage />} />
                     <Route path="/user/:id" element={<UserProfilePage />} />

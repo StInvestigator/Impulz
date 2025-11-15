@@ -1,0 +1,10 @@
+{
+  "success": "Success",
+  "success-text": "The subscription was successfully issued",
+  "success-text2": "Our team is very grateful for your support",
+  "success-text3": "We hope you continue to enjoy using our service",
+  "error": "Error",
+  "error-text": "An error occurred while issuing your subscription",
+  "error-text2": "We apologize for the inconvenience, you can try again later",
+  "error-text3": "If the error persists, contact the support team or the bank."
+}

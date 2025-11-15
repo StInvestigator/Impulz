@@ -50,8 +50,8 @@ const Navbar = memo(() => {
         localSearchQuery = localSearchQuery.trim();
         dispatch(setSearchQuery(localSearchQuery));
         if (localSearchQuery) {
-            dispatch(searchAlbums({ query: localSearchQuery, page: 0, size: 4 }));
-            dispatch(searchPublicPlaylists({ query: localSearchQuery, page: 0, size: 4 }));
+            dispatch(searchAlbums({ query: localSearchQuery, page: 0, size: 5 }));
+            dispatch(searchPublicPlaylists({ query: localSearchQuery, page: 0, size: 5 }));
             dispatch(searchTracks({ query: localSearchQuery, page: 0, size: 5 }));
             dispatch(searchAuthors({ query: localSearchQuery, page: 0, size: 5 }));
             navigate(`/search?q=${encodeURIComponent(localSearchQuery.trim())}`);

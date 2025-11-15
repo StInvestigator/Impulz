@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MyPagination from "../../components/MyPagination.tsx";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
@@ -30,9 +30,14 @@ const SimilarAuthorsPage = () => {
 
     return (
         <>
-            <h2>{t("title-similar-author")}</h2>
-            <Box component={"section"} marginTop={"20px"} >
-                <AuthorList authors={similarAuthors} />
+            <Box component={"section"}>
+                <Typography variant="h2">
+                    {t("title-similar-author")}
+                </Typography>
+
+                <Box mt={3}>
+                    <AuthorList authors={similarAuthors} />
+                </Box>
             </Box>
             {shouldShowPagination && (
                 <Box component={"section"} marginTop={"60px"}>

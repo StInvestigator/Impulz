@@ -27,7 +27,7 @@ const CategoryPage: React.FC = () => {
   const { t, i18n } = useTranslation('category');
   const isUkrainian = i18n.language?.toLowerCase().startsWith('uk');
 
-  const { currentGenre, isLoading: genresLoading, error: genresError } = useAppSelector(state => state.genre);
+  const { currentGenre, error: genresError } = useAppSelector(state => state.genre);
   const { topAuthorsInGenre, isLoading: authorsLoading, error: authorsError } = useAppSelector(state => state.author);
   const { recentAlbumsByGenre, isLoading: albumLoading, error: albumError } = useAppSelector(state => state.album);
   const { popularTracksByGenre, isFetchByGenreLoading: tracksLoading, error: tracksError } = useAppSelector(state => state.track);

@@ -1,7 +1,6 @@
 import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import EditNicknameOrPhotoIcon from "../../../assets/profile-icons/EditNicknameOrPhotoIcon.svg";
 import EditEmailOrPassIcon from "../../../assets/profile-icons/EditEmailOrPassIcon.svg";
-import ProfileUserIcon from "../../../assets/profile-icons/ProfileUserIcon.svg";
 import { useTranslation } from "react-i18next";
 
 interface DropdownMyProfileProps {

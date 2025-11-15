@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 
-const TrackLinkHandler = () => {
-    const { trackId } = useParams<{ trackId: string }>();
+const TrackLinkHandler: React.FC = () => {
+    const { trackId } = useParams<{ trackId?: string }>();
     const { playTrackById } = usePlayTrack();
     const navigate = useNavigate();
     const hasProcessed = useRef(false);
@@ -34,6 +34,8 @@ const TrackLinkHandler = () => {
 
         handleTrackPlay();
     }, [trackId, playTrackById, navigate]);
+   
+    return null;
 };
 
 export default TrackLinkHandler;

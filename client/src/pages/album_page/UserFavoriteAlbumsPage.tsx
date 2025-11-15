@@ -12,7 +12,7 @@ const UserFavoriteAlbumsPage = () => {
     const { t } = useTranslation(["profile"]);
     const { currentPage, totalPages } = useAppSelector(state => state.page);
     const dispatch = useAppDispatch();
-    const { favoriteAlbums, isLoading, error } = useAppSelector(state => state.album);
+    const { favoriteAlbums, isLoading } = useAppSelector(state => state.album);
     const userId = keycloak.tokenParsed?.sub;
 
     useEffect(() => {

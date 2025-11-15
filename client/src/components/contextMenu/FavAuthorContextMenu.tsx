@@ -1,6 +1,6 @@
 import { Menu } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import AddToLikedIcon from "../../assets/context/AddToLikedIcon.png";
 import GotoAuthorIcon from "../../assets/context/GoToAuthorIcon.svg";
 import CopyTrackLinkIcon from "../../assets/context/CopyTrackLinkIcon.svg";

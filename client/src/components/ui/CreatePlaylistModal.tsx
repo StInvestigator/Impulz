@@ -90,7 +90,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
         setError("");
 
         try {
-            const result = await dispatch(createPlaylist({
+             await dispatch(createPlaylist({
                 name: playlistName.trim(),
                 isPublic,
                 userId,

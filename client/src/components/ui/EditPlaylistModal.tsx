@@ -101,7 +101,7 @@ const EditPlaylistModal: FC<ModalProps> = ({ open, setOpen, playlist }) => {
 
         try {
             if (playlist) {
-                const result = await dispatch(updatePlaylist({
+                await dispatch(updatePlaylist({
                     id: playlist?.id,
                     name: playlistName.trim(),
                     isPublic,

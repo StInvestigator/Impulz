@@ -3,6 +3,7 @@ import playImage from "../../assets/play.svg";
 import {type FC } from "react";
 import bgCoverImg from "../../assets/bg-cover.svg";
 import type { UserDto } from "../../models/UserDto";
+import defaultImage from "../../assets/profile_icon.svg"
 
 interface UserProfileProps {
   user: UserDto;
@@ -65,7 +66,7 @@ const UserProfile: FC<UserProfileProps> = ({
               left={300}
               zIndex={1}
               sx={{
-                backgroundImage: `url(${user.avatarUrl})`,
+                backgroundImage: `url(${user.avatarUrl || defaultImage})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover"

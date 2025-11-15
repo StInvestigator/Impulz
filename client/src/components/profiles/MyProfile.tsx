@@ -194,7 +194,7 @@ function MyProfile() {
                             left={300}
                             zIndex={1}
                             sx={{
-                                backgroundImage: profile.avatarUrl ? `url(${profile.avatarUrl})` : ProfileIcon,
+                                backgroundImage: `url(${profile.avatarUrl || ProfileIcon})`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "center",
                                 backgroundSize: "cover",

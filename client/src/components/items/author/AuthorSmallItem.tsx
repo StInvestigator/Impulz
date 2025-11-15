@@ -9,6 +9,7 @@ import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { AuthorContextMenu } from "../../contextMenu/AuthorContextMenu.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
 import { fetchPopularTracksByAuthorForPlayer } from "../../../store/reducers/action-creators/tracks.ts";
+import profileDefault from "../../../assets/profile_icon.svg"
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -63,7 +64,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = 
                 height={itemWidth}
                 borderRadius={"50%"}
                 sx={{
-                    backgroundImage: `url(${author.imgUrl})`,
+                    backgroundImage: `url(${author.imgUrl || profileDefault})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundColor: "white",

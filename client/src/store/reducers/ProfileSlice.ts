@@ -6,6 +6,7 @@ interface ProfileState {
     profile: UserDto;
     isLoading: boolean;
     error: string | null;
+    errorLoadingUserInfo: string | null;
 }
 
 const initialState: ProfileState = {
@@ -19,6 +20,7 @@ const initialState: ProfileState = {
     },
     isLoading: false,
     error: null,
+    errorLoadingUserInfo: null,
 };
 
 const profileSlice = createSlice({
@@ -42,7 +44,7 @@ const profileSlice = createSlice({
         builder
             .addCase(fetchUserDetails.pending, (state) => {
                 state.isLoading = true;
-                state.error = null;
+                state.errorLoadingUserInfo = null;
             })
             .addCase(fetchUserDetails.fulfilled, (state, action) => {
                 state.isLoading = false;
@@ -50,7 +52,7 @@ const profileSlice = createSlice({
             })
             .addCase(fetchUserDetails.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = action.error.message || "Ошибка при загрузке профиля";
+                state.errorLoadingUserInfo = action.error.message || "Ошибка при загрузке профиля";
             })
 
             .addCase(updateUserProfile.pending, (state) => {

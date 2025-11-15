@@ -9,6 +9,7 @@ import bgCoverImg from "../../assets/bg-cover.svg";
 import keycloak from "../../keycloak";
 import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
 import { fetchPopularTracksByAuthorForPlayer } from "../../store/reducers/action-creators/tracks.ts";
+import profileDefault from "../../assets/profile_icon.svg"
 
 interface AuthorProfileProps {
   author: AuthorDto;
@@ -115,7 +116,7 @@ const AuthorProfile: FC<AuthorProfileProps> = ({
             left={300}
             zIndex={1}
             sx={{
-              backgroundImage: `url(${author.imgUrl})`,
+              backgroundImage: `url(${author.imgUrl || profileDefault})`,
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               backgroundSize: "cover",

@@ -5,6 +5,7 @@ import pushPinImage from "../assets/pushPin.svg";
 import bgCoverImg from "../assets/bg-cover.svg";
 import { useTranslation } from "react-i18next";
 import PlaylistDefaultImage from "../assets/PlaylistDefaultImage.svg";
+import profileDefault from "../assets/profile_icon.svg"
 
 interface CoverProps {
     type: "myPlaylist" | "publicPlaylist" | "privatePlaylist" | "album" | "myAlbum";
@@ -34,7 +35,7 @@ const Cover: FC<CoverProps> = ({
 
     const safeTitle = title || "Empty";
     const safeOwnerNames = OwnerNames || [];
-    const safeOwnerImageUrl = OwnerImageUrl || "";
+    const safeOwnerImageUrl = OwnerImageUrl || profileDefault;
     const isDefaultImage = !imgUrl || imgUrl === PlaylistDefaultImage;
 
     return (

@@ -8,8 +8,10 @@ import { useTranslation } from "react-i18next";
 import additionalIcon from "../../assets/AdditionalIcon.svg";
 import DropdownOptionsMyProfile from "../ui/dropdowns/DropdownOptionsMyProfile";
 import EditProfileModal from "../ui/EditProfileModal.tsx";
-import {usePlayTrack} from "../../hooks/usePlayTrack.tsx";
+import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
 import EditEmailAndPasswordModal from "../ui/EditEmailAndPasswordModal.tsx";
+import { fetchPopularTracksByAuthorForPlayer } from "../../store/reducers/action-creators/tracks.ts";
+import ProfileIcon from "../../assets/profile_icon.svg"
 
 function MyProfile() {
     const { profile } = useAppSelector((state) => state.profile);
@@ -21,14 +23,14 @@ function MyProfile() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isChangeEmailAndPasswordModalOpen, setChangeEmailAndPasswordModalOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-    const { playAuthorPopularTracks } = usePlayTrack();
+    const { playTrackList } = usePlayTrack();
 
     const handleOpenEditModal = () => {
         setIsEditModalOpen(true);
         handleCloseMenu();
     };
 
-    const handleOpenChangeEmailAndPasswordModal = () =>{
+    const handleOpenChangeEmailAndPasswordModal = () => {
         setChangeEmailAndPasswordModalOpen(true);
         handleCloseMenu();
     }
@@ -44,14 +46,13 @@ function MyProfile() {
     const handlePlayClick = async (event: React.MouseEvent) => {
         event.stopPropagation();
         if (profile.authorDto?.id) {
-            try {
-                await playAuthorPopularTracks(
-                    profile.authorDto.id,
-                    profile.authorDto.name || profile.username,
-                    3
-                );
-            } catch (error) {
-                console.error(error);
+            const result = await dispatch(fetchPopularTracksByAuthorForPlayer({
+                authorId: profile.authorDto?.id,
+                size: 1000
+            }));
+
+            if (fetchPopularTracksByAuthorForPlayer.fulfilled.match(result)) {
+                playTrackList(result.payload, 0);
             }
         }
     };
@@ -134,50 +135,73 @@ function MyProfile() {
                     </Box>
 
                     {/* Фотография пользователя */}
-                    <Box
-                        display="flex"
-                        bgcolor="var(--dark-purple)"
-                        justifyContent="center"
-                        alignItems="center"
-                        borderRadius="50%"
-                        border="5px solid #FF990099"
-                        height="400px"
-                        width="400px"
-                        position="absolute"
-                        left={300}
-                        zIndex={1}
-                        sx={{
-                            backgroundImage: `url(${profile.avatarUrl})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            cursor: "pointer",
-                            transition: "all 0.3s ease"
-                        }}
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                        onClick={(e) => handlePlayClick(e)}
-                    >
-                        <IconButton
-                            disableRipple
+                    {profile.authorDto ?
+                        <Box
+                            display="flex"
+                            bgcolor="var(--dark-purple)"
+                            justifyContent="center"
+                            alignItems="center"
+                            borderRadius="50%"
+                            border="5px solid #FF990099"
+                            height="400px"
+                            width="400px"
+                            position="absolute"
+                            left={300}
+                            zIndex={1}
                             sx={{
-                                padding: 0,
-                                opacity: isHovered ? 1 : 0,
-                                transition: "opacity 0.3s ease",
+                                backgroundImage:`url(${profile.avatarUrl || ProfileIcon})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                cursor: "pointer",
+                                transition: "all 0.3s ease"
                             }}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                            onClick={(e) => handlePlayClick(e)}
                         >
-                            <Box
-                                component="img"
-                                src={playImage}
-                                borderRadius="50%"
-                                width="80px"
-                                height="80px"
+                            <IconButton
+                                disableRipple
                                 sx={{
-                                    transition: "transform 0.2s ease"
+                                    padding: 0,
+                                    opacity: isHovered ? 1 : 0,
+                                    transition: "opacity 0.3s ease",
                                 }}
-                            />
-                        </IconButton>
-                    </Box>
+                            >
+                                <Box
+                                    component="img"
+                                    src={playImage}
+                                    borderRadius="50%"
+                                    width="80px"
+                                    height="80px"
+                                    sx={{
+                                        transition: "transform 0.2s ease"
+                                    }}
+                                />
+                            </IconButton>
+                        </Box>
+                        :
+                        <Box
+                            display="flex"
+                            bgcolor="var(--dark-purple)"
+                            justifyContent="center"
+                            alignItems="center"
+                            borderRadius="50%"
+                            border="5px solid #FF990099"
+                            height="400px"
+                            width="400px"
+                            position="absolute"
+                            left={300}
+                            zIndex={1}
+                            sx={{
+                                backgroundImage: profile.avatarUrl ? `url(${profile.avatarUrl})` : ProfileIcon,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                            }}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                        ></Box>}
                 </Box>
 
                 {profile.authorDto && (

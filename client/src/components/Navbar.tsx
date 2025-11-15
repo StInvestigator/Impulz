@@ -11,8 +11,10 @@ import { clearSearchResults, setSearchQuery } from "../store/reducers/SearchSlic
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../store/store.ts";
 import { searchAlbums, searchAuthors, searchPublicPlaylists, searchTracks } from "../store/reducers/action-creators/search.ts";
+import { useAppSelector } from "../hooks/redux.ts";
 
 const Navbar = memo(() => {
+    const { profile } = useAppSelector(state => state.profile)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     // eslint-disable-next-line prefer-const
     let [localSearchQuery, setLocalSearchQuery] = useState("");
@@ -185,7 +187,7 @@ const Navbar = memo(() => {
                                 onDragStart={(e) => e.preventDefault()}
                                 onClick={handleMenu}
                             >
-                                <Box height={35} width={35} component="img" src={ProfileIcon} alt="Profile" />
+                                <Box borderRadius={"50%"} height={35} width={35} component="img" src={profile.avatarUrl ? `${profile.avatarUrl}` : ProfileIcon} alt="Profile" />
                             </IconButton>
                             <Menu
                                 id="menu-appbar"

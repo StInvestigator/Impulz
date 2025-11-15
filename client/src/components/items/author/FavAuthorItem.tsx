@@ -6,6 +6,7 @@ import heartImage from "../../../assets/sidebar/heart.svg";
 import type { AuthorSimpleDto } from "../../../models/DTO/AuthorSimpleDto.ts";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { FavAuthorContextMenu } from "../../contextMenu/FavAuthorContextMenu.tsx";
+import defaultIcon from "../../../assets/profile_icon.svg"
 
 interface AuthorProps {
     author: AuthorSimpleDto;
@@ -65,7 +66,7 @@ const FavAuthorItem: FC<AuthorProps> = ({ author }) => {
                 >
                     <Box
                         component="img"
-                        src={author.imgUrl}
+                        src={author.imgUrl || defaultIcon}
                         alt={author.name}
                         sx={{
                             width: "100%",

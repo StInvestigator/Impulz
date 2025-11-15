@@ -13,7 +13,7 @@ import keycloak from "../keycloak.ts";
 import { useContextMenu } from "../hooks/useContextMenu.ts";
 import additionalIcon from "../assets/AdditionalIcon.svg";
 import { EditAlbumContextMenu } from "../components/contextMenu/EditAlbumContextMenu.tsx";
-
+import profileDefault from "../assets/profile_icon.svg"
 
 const AlbumItemPage = () => {
     const { currentPage } = useAppSelector(state => state.page);
@@ -62,7 +62,7 @@ const AlbumItemPage = () => {
     ) || 0;
 
     const ownerNames = currentAlbum.authors?.map(author => author.name) || [];
-    const ownerImageUrl = currentAlbum.authors?.[0]?.imgUrl || "";
+    const ownerImageUrl = currentAlbum.authors?.[0]?.imgUrl || profileDefault;
     const releaseYear = currentAlbum.releaseDate
         ? new Date(currentAlbum.releaseDate).getFullYear()
         : undefined;

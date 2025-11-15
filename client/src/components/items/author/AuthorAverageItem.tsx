@@ -8,6 +8,7 @@ import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { AuthorContextMenu } from "../../contextMenu/AuthorContextMenu.tsx";
 import { fetchPopularTracksByAuthorForPlayer } from "../../../store/reducers/action-creators/tracks.ts";
 import { useAppDispatch } from "../../../hooks/redux.ts";
+import profileDefault from "../../../assets/profile_icon.svg"
 
 interface AuthorItemProps {
   author: AuthorSimpleDto;
@@ -50,7 +51,7 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
         sx={{
           width: "min(270px, 90%)",
           aspectRatio: "1 / 1",
-          backgroundImage: `url(${author.imgUrl || ""})`,
+          backgroundImage: `url(${author.imgUrl || profileDefault})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           "&:hover": { cursor: "pointer" }

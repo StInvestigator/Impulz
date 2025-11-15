@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { Box, Stack, CircularProgress, Typography, IconButton } from "@mui/material";
+import { Box, Stack, Typography, IconButton } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.ts";
 import { fetchPlaylistDetails } from "../store/reducers/action-creators/playlist.ts";
 import Cover from "../components/Cover.tsx";
@@ -14,6 +14,7 @@ import keycloak from "../keycloak.ts";
 import additionalIcon from "../assets/AdditionalIcon.svg";
 import { useContextMenu } from "../hooks/useContextMenu.ts";
 import { EditPlaylistContextMenu } from "../components/contextMenu/EditPlaylistContextMenu.tsx";
+import profileDefault from "../assets/profile_icon.svg"
 
 const PlaylistItemPage = () => {
     const { playlistId } = useParams<{ playlistId: string }>();
@@ -77,7 +78,7 @@ const PlaylistItemPage = () => {
         currentPlaylist.tracks?.reduce((acc, track) => acc + (track.durationSec || 0), 0) || 0;
 
     const ownerNames = currentPlaylist.owner ? [currentPlaylist.owner.name] : [];
-    const ownerImageUrl = currentPlaylist.owner?.avatarUrl || "";
+    const ownerImageUrl = currentPlaylist.owner?.avatarUrl || profileDefault;
 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();

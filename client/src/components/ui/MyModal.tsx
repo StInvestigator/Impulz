@@ -8,6 +8,8 @@ const modalStyle = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 668,
+  maxHeight: '90vh',
+  overflowY: 'auto', 
   minHeight: 300,
   bgcolor: 'var(--dark-purple)',
   borderRadius: 4,

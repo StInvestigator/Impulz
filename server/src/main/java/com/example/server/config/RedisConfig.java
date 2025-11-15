@@ -22,6 +22,7 @@ import org.springframework.data.redis.serializer.*;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
@@ -31,7 +32,7 @@ public class RedisConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(Environment env) {
-        String host = env.getProperty("REDIS_HOST", env.getProperty("spring.data.redis.host"));
+        String host = env.getProperty("REDIS_HOST", Objects.requireNonNull(env.getProperty("spring.data.redis.host")));
         int port = Integer.parseInt(env.getProperty("REDIS_PORT", env.getProperty("spring.data.redis.port", "6379")));
         RedisStandaloneConfiguration cfg = new RedisStandaloneConfiguration(host, port);
         return new LettuceConnectionFactory(cfg);

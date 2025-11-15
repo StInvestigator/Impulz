@@ -38,7 +38,7 @@ function BestPlaylistByWeekPage() {
           {t("title-hits-week")}
         </Typography>
         <Box display={"grid"} mt={3} sx={{
-            gridTemplateColumns: "repeat(5, 1fr)"
+          gridTemplateColumns: "repeat(5, 1fr)"
         }} gap={3}>
           <PublicPlaylistList playlists={topPlaylists} />
         </Box>

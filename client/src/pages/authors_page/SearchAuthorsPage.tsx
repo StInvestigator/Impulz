@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MyPagination from "../../components/MyPagination.tsx";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
@@ -31,9 +31,14 @@ const SearchAuthorsPage = () => {
 
     return (
         <>
-            <h2>{t("title-authors")}</h2>
-            <Box component={"section"} marginTop={"20px"} >
-                <AuthorList authors={authors} />
+            <Box component={"section"}>
+                <Typography variant="h2">
+                    {t("title-authors")}
+                </Typography>
+
+                <Box mt={3}>
+                    <AuthorList authors={authors} />
+                </Box>
             </Box>
             {shouldShowPagination && (
                 <Box component={"section"} marginTop={"60px"}>

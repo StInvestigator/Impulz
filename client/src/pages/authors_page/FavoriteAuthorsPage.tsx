@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MyPagination from "../../components/MyPagination.tsx";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.ts";
@@ -29,9 +29,14 @@ const FavoriteAuthorsPage = () => {
 
     return (
         <>
-            <h2>{t("title-liked-authors")}</h2>
-            <Box component={"section"} marginTop={"20px"} >
-                <AuthorList authors={authorsByFollower} />
+            <Box component={"section"}>
+                <Typography variant="h2">
+                    {t("title-liked-authors")}
+                </Typography>
+
+                <Box mt={3}>
+                    <AuthorList authors={authorsByFollower} />
+                </Box>
             </Box>
             {shouldShowPagination && (
                 <Box component={"section"} marginTop={"60px"}>

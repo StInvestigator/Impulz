@@ -122,7 +122,7 @@ const MyFavPlaylistsItem: FC<PlaylistProps> = ({ playlist, defaultImage }) => {
                                     color: 'inherit',
                                 }}
                             >
-                                {t("title-playlist")} &middot; {playlist.tracks.length || 0} {t("title-song")}
+                                {t("title-playlist")} &middot; {playlist?.tracks?.length || 0} {t("title-song")}
                             </Typography>
                         </Box>
                     }

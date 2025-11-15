@@ -103,7 +103,7 @@ const AuthorProfilePage = () => {
 
             <Box component={"section"} mt={"60px"}>
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                    <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+                    <Typography variant={"h2"} fontSize={"36px"} color="var(--indigo-dye)">
                         {t("authorPage:title-albums")}
                     </Typography>
                     <Button onClick={() => route(`/author/${id}/albums`)} sx={{
@@ -125,7 +125,7 @@ const AuthorProfilePage = () => {
             {authorCollaborationsAlbums && authorCollaborationsAlbums.length > 0 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+                        <Typography variant={"h2"} fontSize={"36px"} color="var(--indigo-dye)">
                             {t("authorPage:title-collaborations")}
                         </Typography>
                         <Button onClick={() => route(`/author/${id}/collaborations`)} sx={{
@@ -148,7 +148,7 @@ const AuthorProfilePage = () => {
             {similarAuthors.length > 1 && (
                 <Box component={"section"} mt={"60px"}>
                     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
-                        <Typography variant={"h2"} fontSize={"24px"} color="var(--indigo-dye)">
+                        <Typography variant={"h2"} fontSize={"36px"} color="var(--indigo-dye)">
                             {t("authorPage:title-similar-author")}
                         </Typography>
                         <Button onClick={() => route(`/author/${id}/similarAuthors`)} sx={{

@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useTranslation } from 'react-i18next';
 import { fetchTopAuthorsByMonth } from '../../store/reducers/action-creators/author';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import AuthorList from '../../components/lists/AuthorList';
 import MyPagination from '../../components/MyPagination';
 import { setCurrentPage } from '../../store/reducers/PageSlice';
 
 function BestAuthorsMonthPage() {
-    const {currentPage, totalPages} = useAppSelector(state => state.page);
-    const {t} = useTranslation("main");
+    const { currentPage, totalPages } = useAppSelector(state => state.page);
+    const { t } = useTranslation("main");
 
     const dispatch = useAppDispatch();
     const { topAuthors } = useAppSelector(state => state.author);
@@ -20,7 +20,7 @@ function BestAuthorsMonthPage() {
 
     useEffect(() => {
         if (currentPage >= 1) {
-            dispatch(fetchTopAuthorsByMonth({page: currentPage - 1, size: 5 }));
+            dispatch(fetchTopAuthorsByMonth({ page: currentPage - 1, size: 5 }));
         }
     }, [dispatch, currentPage]);
 
@@ -28,13 +28,18 @@ function BestAuthorsMonthPage() {
 
     return (
         <>
-            <h2>{t("title-best-author-month")}</h2>
-            <Box component={"section"} marginTop={"20px"} >
-                <AuthorList authors={topAuthors}/>
+            <Box component={"section"}>
+                <Typography variant="h2">
+                    {t("title-best-author-month")}
+                </Typography>
+
+                <Box mt={3}>
+                    <AuthorList authors={topAuthors} />
+                </Box>
             </Box>
             {shouldShowPagination && (
                 <Box component={"section"} marginTop={"60px"}>
-                    <MyPagination totalPages={totalPages} currentPage={currentPage}/>
+                    <MyPagination totalPages={totalPages} currentPage={currentPage} />
                 </Box>
             )}
         </>

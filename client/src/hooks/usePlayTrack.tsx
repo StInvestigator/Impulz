@@ -11,7 +11,7 @@ import {
     setCurrentTrack,
     updateSourcePage,
     setBufferTracks,
-    appendToPlaylist, playTrack,
+    appendToPlaylist, playTrack, setIsFromLink,
 } from "../store/reducers/PlayerSlice.ts";
 import type { PlayerSource } from "../store/reducers/PlayerSlice.ts";
 import { useEffect, useRef, useCallback } from "react";
@@ -19,7 +19,10 @@ import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
 import { fetchAuthorTracksPaged } from "../store/reducers/action-creators/player.ts";
 import type { AlbumSimpleDto } from "../models/DTO/album/AlbumSimpleDto.ts";
 import type { PlaylistDto } from "../models/PlaylistDto.ts";
-import { fetchTracksByAlbum, fetchTracksByPlaylist } from "../store/reducers/action-creators/tracks.ts";
+import {
+    fetchTracksByAlbum,
+    fetchTracksByPlaylist, fetchTrackSimpleById
+} from "../store/reducers/action-creators/tracks.ts";
 
 let sharedFetchFn: ((page: number, size: number) => Promise<TrackSimpleDto[]>) | null = null;
 let sharedFetchSource: { type: PlayerSource["type"]; id: string | number } | null = null;
@@ -75,6 +78,26 @@ export const usePlayTrack = () => {
         }
     };
 
+    const playTrackById = async (trackId: number) => {
+        if (!requireAuth()) {
+            throw new Error("Not authenticated");
+        }
+
+        try {
+            const result = await dispatch(fetchTrackSimpleById(trackId)).unwrap();
+
+            if (result) {
+                dispatch(setIsFromLink(true));
+                playSingle(result, "replace");
+            } else {
+                throw new Error("Track not found");
+            }
+        } catch (error) {
+            console.error('🎵 Error in playTrackById:', error);
+            throw error;
+        }
+    };
+
     const addTrackToQueue = (track: TrackSimpleDto) => {
         if (!requireAuth()) return;
 
@@ -87,7 +110,7 @@ export const usePlayTrack = () => {
             dispatch(appendToPlaylist([track]));
 
             if (source && (!sharedFetchSource || source.type !== sharedFetchSource.type || source.id !== sharedFetchSource.id)) {
-                const restored = restoreSourceConnection();
+                restoreSourceConnection();
             }
         }
     };
@@ -101,7 +124,6 @@ export const usePlayTrack = () => {
             return;
         }
 
-        //for liked
         dispatch(fetchTracksByAlbum({ albumId: album.id }))
 
         if (!active) {
@@ -123,7 +145,6 @@ export const usePlayTrack = () => {
             return;
         }
 
-        //for liked
         dispatch(fetchTracksByPlaylist({ playlistId: playlist.id }))
 
         if (!active) {
@@ -297,7 +318,7 @@ export const usePlayTrack = () => {
                 source.id === sharedFetchSource.id;
 
             if (source && (!sharedFetchSource || !isSourceMatching)) {
-                const restored = restoreSourceConnection();
+                restoreSourceConnection();
             }
 
             const shouldLoadBuffer =
@@ -418,6 +439,7 @@ export const usePlayTrack = () => {
 
     return {
         playSingle,
+        playTrackById,
         addToQueue,
         playTrackList,
         playWithBuffering,

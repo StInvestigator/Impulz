@@ -25,6 +25,7 @@ interface PlayerState {
     isLoading: boolean;
     isBufferLoading: boolean;
     isFullScreenOpen: boolean;
+    isFromLink: boolean;
 }
 
 const initialState: PlayerState = {
@@ -41,6 +42,7 @@ const initialState: PlayerState = {
     isLoading: false,
     isBufferLoading: false,
     isFullScreenOpen: false,
+    isFromLink: false,
 };
 
 const playerSlice = createSlice({
@@ -57,6 +59,9 @@ const playerSlice = createSlice({
                 state.pause = false;
                 state.currentTime = 0;
             }
+        },
+        setIsFromLink: (state, action: PayloadAction<boolean>) => {
+            state.isFromLink = action.payload;
         },
         openFullScreenPlayer: (state) => {
             state.isFullScreenOpen = true;
@@ -360,6 +365,7 @@ export const {
     toggleFullScreenPlayer,
     setPlaylist,
     setActive,
+    setIsFromLink,
     setPause,
     addToPlaylist,
     removeFromPlaylist,

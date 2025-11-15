@@ -51,6 +51,25 @@ export const fetchTrackSimpleById = createAsyncThunk<TrackSimpleDto, number>(
     }
 );
 
+export const fetchPopularTracksByAuthorForPlayer = createAsyncThunk<
+    TrackSimpleDto[],
+    { authorId: string; page?: number; size?: number }
+>(
+    "tracks/ByAuthor/PopularForPlayer",
+    async ({ authorId, page = 0, size = 1000 }, { dispatch }) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
+
+        const response = await $authApi.get(
+            `/tracks/ByAuthor/Popular/${authorId}?${params}`
+        );
+
+        dispatch(setLiked(response.data.favoriteIds))
+        return response.data.page.content;
+    }
+);
+
 
 export const fetchPopularTracksByAuthor = createAsyncThunk<
     TrackSimpleDto[],
@@ -97,6 +116,25 @@ export const fetchTracksByAlbum = createAsyncThunk<
 >(
     "tracks/fetchTracksByAlbum",
     async ({ albumId, page = 0, size = 20 }, { dispatch }) => {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page.toString());
+        if (size !== undefined) params.append('size', size.toString());
+
+
+        const response = await $authApi.get(
+            `/tracks/ByAlbum/${albumId}?${params}`
+        );
+        dispatch(setLiked(response.data.favoriteIds))
+        return response.data.page.content;
+    }
+)
+
+export const fetchTracksByAlbumForPlayer = createAsyncThunk<
+    TrackSimpleDto[],
+    { albumId: number | string, page?: number, size?: number }
+>(
+    "tracks/fetchTracksByAlbumForPlayer",
+    async ({ albumId, page = 0, size = 1000 }, { dispatch }) => {
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page.toString());
         if (size !== undefined) params.append('size', size.toString());
@@ -213,6 +251,31 @@ export const fetchLikedTracksByUserId = createAsyncThunk<
                 }
             });
             dispatch(setTotalPages(response.data.page.totalPages));
+            dispatch(setLiked(response.data.favoriteIds))
+            return response.data.page.content;
+        } catch (error: unknown) {
+            console.error(`Error fetching liked tracks: ${error}`);
+            return rejectWithValue(
+                `Failed to fetch liked tracks: ${error}`
+            );
+        }
+    }
+);
+
+export const fetchLikedTracksByUserIdForPlayer = createAsyncThunk<
+    TrackSimpleDto[],
+    { userId: string, page?: number; size?: number },
+    { rejectValue: string }
+>(
+    "tracks/fetchLikedTracksByUserIdForPlayer",
+    async ({ userId, page = 0, size = 1000 }, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await $authApi.get(`/tracks/liked/${userId}`, {
+                params: {
+                    page,
+                    size
+                }
+            });
             dispatch(setLiked(response.data.favoriteIds))
             return response.data.page.content;
         } catch (error: unknown) {

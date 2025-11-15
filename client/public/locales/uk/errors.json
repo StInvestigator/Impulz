@@ -6,6 +6,7 @@
   "error-no-release-date": "Будь ласка, введіть дату випуску",
   "error-you-have-not-filled-in-all-the-fields": "Ви не заповнили всі поля",
   "error-no-tracks-in-album": "У цьому альбомі поки немає треків",
+  "error-creating-album": "Під час створення альбому виникла помилка, спробуйте ще раз",
   "error-no-tracks-in-playlist": "У цьому плейлисті поки немає треків",
   "error-playlist-not-found": "Плейлист не знайдено",
   "error-playlist-already-exists-in-playlist": "Цей трек вже є в цьому альбомі",

@@ -1,5 +1,6 @@
 {
     "registration": "Registration",
+    "premium": "Premium",
     "login": "Login",
     "search": "Search for tracks, albums, author",
     "title-logout": "Logout",

@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { Box, Stack, CircularProgress, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import keycloak from "../../keycloak.ts";
-import { fetchLikedTracksByUserId } from "../../store/reducers/action-creators/tracks.ts";
+import { fetchLikedTracksByUserId, fetchLikedTracksByUserIdForPlayer } from "../../store/reducers/action-creators/tracks.ts";
 import Cover from "../../components/Cover.tsx";
 import PlaylistLikedTracks from "../../assets/PlaylistLikedTracks.svg";
+import defaultProfile from "../../assets/profile_icon.svg";
 import TrackList from "../../components/lists/TrackList.tsx";
 import MyPagination from "../../components/MyPagination.tsx";
 import { usePlayTrack } from "../../hooks/usePlayTrack.tsx";
@@ -14,7 +15,8 @@ const LikedPlaylistPage = () => {
     const dispatch = useAppDispatch();
     const { playTrackList } = usePlayTrack()
     const { currentPage, totalPages } = useAppSelector(state => state.page); // Добавьте totalPages
-    const { likedTracks, isLoading, error } = useAppSelector(state => state.track);
+    const { profile } = useAppSelector(state => state.profile); // Добавьте totalPages
+    const { likedTracks, error } = useAppSelector(state => state.track);
 
     const { t } = useTranslation(["other", "errors"]);
     const userId = keycloak.tokenParsed?.sub;
@@ -65,14 +67,14 @@ const LikedPlaylistPage = () => {
 
         if (userId) {
             const result = await dispatch(
-                fetchLikedTracksByUserId({
+                fetchLikedTracksByUserIdForPlayer({
                     userId: userId,
                     page: 0,
                     size: 1000
                 })
             );
 
-            if (fetchLikedTracksByUserId.fulfilled.match(result)) {
+            if (fetchLikedTracksByUserIdForPlayer.fulfilled.match(result)) {
                 playTrackList(result.payload, 0);
             }
         }
@@ -85,7 +87,7 @@ const LikedPlaylistPage = () => {
                     type={"myPlaylist"}
                     title={t("other:title-favorite")}
                     OwnerNames={["You"]}
-                    OwnerImageUrl={PlaylistLikedTracks}
+                    OwnerImageUrl={profile.avatarUrl || defaultProfile}
                     trackCount={likedTracks.length}
                     duration={formatDuration(totalDuration)}
                     imgUrl={PlaylistLikedTracks}

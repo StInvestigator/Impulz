@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import {Box, Button, Typography, IconButton} from '@mui/material';
+import { Box, Button, Typography, IconButton } from '@mui/material';
 import { PlayArrow, Pause } from '@mui/icons-material';
 import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
 import { motion } from 'framer-motion';
 import PlayerTrackItem from './items/track/PlayerTrackItem.tsx';
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch } from '../hooks/redux';
-import { setActive, setPause } from "../store/reducers/PlayerSlice.ts";
+import { clearQueue, setActive, setPause } from "../store/reducers/PlayerSlice.ts";
 
 interface FullScreenPlayerProps {
     active: TrackSimpleDto;
@@ -23,13 +23,13 @@ interface FullScreenPlayerProps {
 const NAVBAR_HEIGHT = 48;
 
 const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
-                                                               active,
-                                                               playlist,
-                                                               currentTrackIndex,
-                                                               pause,
-                                                               onTrackSelect,
-                                                               onCloseFullScreen
-                                                           }) => {
+    active,
+    playlist,
+    currentTrackIndex,
+    pause,
+    onTrackSelect,
+    onCloseFullScreen
+}) => {
     const { t } = useTranslation("other");
     const dispatch = useAppDispatch();
     const [isHovered, setIsHovered] = useState(false);
@@ -60,6 +60,10 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
 
     const handleMouseLeave = () => {
         setIsHovered(false);
+    };
+
+    const handleClearQueue = () => {
+        dispatch(clearQueue())
     };
 
     return (
@@ -122,9 +126,9 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                         onClick={handleCoverClick}
                     >
                         <motion.div
-                            initial={{scale: 0.9, opacity: 0}}
-                            animate={{scale: 1, opacity: 1}}
-                            transition={{duration: 0.4}}
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.4 }}
                         >
                             <Box
                                 component="img"
@@ -268,6 +272,7 @@ const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({
                             </Typography>
 
                             <Button
+                                onClick={handleClearQueue}
                                 sx={{
                                     color: "var(--orange-peel)",
                                     textTransform: "none",

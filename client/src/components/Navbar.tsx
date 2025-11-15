@@ -11,8 +11,10 @@ import { clearSearchResults, setSearchQuery } from "../store/reducers/SearchSlic
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../store/store.ts";
 import { searchAlbums, searchAuthors, searchPublicPlaylists, searchTracks } from "../store/reducers/action-creators/search.ts";
+import { useAppSelector } from "../hooks/redux.ts";
 
 const Navbar = memo(() => {
+    const { profile } = useAppSelector(state => state.profile)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     // eslint-disable-next-line prefer-const
     let [localSearchQuery, setLocalSearchQuery] = useState("");
@@ -44,15 +46,15 @@ const Navbar = memo(() => {
     };
 
     const handleSearchSubmit = (event: React.FormEvent) => {
-            event.preventDefault();
-            localSearchQuery = localSearchQuery.trim();
-            dispatch(setSearchQuery(localSearchQuery));
-            if (localSearchQuery) {
-                dispatch(searchAlbums({ query: localSearchQuery, page: 0, size: 4 }));
-                dispatch(searchPublicPlaylists({ query: localSearchQuery, page: 0, size: 4 }));
-                dispatch(searchTracks({ query: localSearchQuery, page: 0, size: 5 }));
-                dispatch(searchAuthors({ query: localSearchQuery, page: 0, size: 5 }));
-                navigate(`/search?q=${encodeURIComponent(localSearchQuery.trim())}`);
+        event.preventDefault();
+        localSearchQuery = localSearchQuery.trim();
+        dispatch(setSearchQuery(localSearchQuery));
+        if (localSearchQuery) {
+            dispatch(searchAlbums({ query: localSearchQuery, page: 0, size: 4 }));
+            dispatch(searchPublicPlaylists({ query: localSearchQuery, page: 0, size: 4 }));
+            dispatch(searchTracks({ query: localSearchQuery, page: 0, size: 5 }));
+            dispatch(searchAuthors({ query: localSearchQuery, page: 0, size: 5 }));
+            navigate(`/search?q=${encodeURIComponent(localSearchQuery.trim())}`);
         }
     };
 
@@ -79,21 +81,27 @@ const Navbar = memo(() => {
 
     return (
         <AppBar sx={{
-                backgroundColor: "var(--columbia-blue)",
-                zIndex: (theme) => theme.zIndex.drawer + 3,
-                boxShadow: 'none'
-            }}
+            backgroundColor: "var(--columbia-blue)",
+            zIndex: (theme) => theme.zIndex.drawer + 3,
+            boxShadow: 'none'
+        }}
         >
-            <Toolbar variant="dense" sx={{display:"flex", justifyContent: "space-between"}}>
+            <Toolbar variant="dense" sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box sx={{
                     width: "766px",
                     height: "30px",
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                    <IconButton disableRipple={true} onClick={() => navigate("/")} sx={{height: "30px", widows: "30px"}}>
-                        <Box component="img" src={LogoIcon} alt="Impulz" sx={{height: "30px", widows: "30px"}} />
-                    </IconButton>
+                    <Box onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>
+                        <IconButton disableRipple={true} sx={{ height: "30px", widows: "30px" }}>
+                            <Box component="img" src={LogoIcon} alt="Impulz" sx={{ height: "30px", widows: "30px" }} />
+                        </IconButton>
+                        {keycloak.hasRealmRole("PREMIUM") &&
+                            <Typography variant="mainRL" color="black" textTransform={"none"}>
+                                {t("premium")}
+                            </Typography>}
+                    </Box>
                     <Box
                         component="form"
                         sx={{ width: "450px", display: "flex", position: "relative" }}
@@ -179,7 +187,7 @@ const Navbar = memo(() => {
                                 onDragStart={(e) => e.preventDefault()}
                                 onClick={handleMenu}
                             >
-                                <Box height={35} width={35} component="img" src={ProfileIcon} alt="Profile" />
+                                <Box borderRadius={"50%"} height={35} width={35} component="img" src={profile.avatarUrl ? `${profile.avatarUrl}` : ProfileIcon} alt="Profile" />
                             </IconButton>
                             <Menu
                                 id="menu-appbar"

@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { AuthorContextMenu } from "../../contextMenu/AuthorContextMenu.tsx";
+import { fetchPopularTracksByAuthorForPlayer } from "../../../store/reducers/action-creators/tracks.ts";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import profileDefault from "../../../assets/profile_icon.svg"
 
 interface AuthorItemProps {
   author: AuthorSimpleDto;
@@ -13,23 +16,23 @@ interface AuthorItemProps {
 
 const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
-  const { playAuthorPopularTracks } = usePlayTrack();
+  const { playTrackList } = usePlayTrack();
 
   const handlePlayClick = async (event: React.MouseEvent) => {
-    event.stopPropagation();
-
-    try {
-      await playAuthorPopularTracks(
-        author.id,
-        author.name,
-        3
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
+          event.stopPropagation();
+  
+          const result = await dispatch(fetchPopularTracksByAuthorForPlayer({
+              authorId: author.id,
+              size: 1000
+          }));
+  
+          if (fetchPopularTracksByAuthorForPlayer.fulfilled.match(result)) {
+              playTrackList(result.payload, 0);
+          }
+      };
 
   return (
     <Box
@@ -48,7 +51,7 @@ const AuthorAverageItem: FC<AuthorItemProps> = ({ author }) => {
         sx={{
           width: "min(270px, 90%)",
           aspectRatio: "1 / 1",
-          backgroundImage: `url(${author.imgUrl || ""})`,
+          backgroundImage: `url(${author.imgUrl || profileDefault})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           "&:hover": { cursor: "pointer" }

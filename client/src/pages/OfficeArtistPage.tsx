@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Alert, Box, Button, Fade, Snackbar, Typography } from "@mui/material";
 import MyProfile from "../components/profiles/MyProfile";
 import MyModal from "../components/ui/MyModal";
 import { useEffect, useState } from "react";
@@ -33,6 +33,10 @@ function OfficeArtistPage() {
   const [nameAlbum, setNameAlbum] = useState<string>("");
   const [dateRelease, setDateRelease] = useState<string>("");
   const [tracks, setTracks] = useState<TrackCreationFullDto[]>([]);
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -99,6 +103,14 @@ function OfficeArtistPage() {
       setActiveStep(1)
       dispatch(fetchAlbumsByAuthor({ authorId: profile.id, size: 10 }))
       dispatch(fetchUnreleasedAlbumsByAuthor({ authorId: profile.id, size: 10 }))
+    }).then(()=>{
+      setSnackbarMessage(t("officeArtistPage:title-success"))
+      setSnackbarType("success")
+      setSnackbarOpen(true)
+    }).catch(()=>{
+      setSnackbarMessage(t("errors:error-creating-album"))
+      setSnackbarType("error")
+      setSnackbarOpen(true)
     });
   };
 
@@ -159,7 +171,7 @@ function OfficeArtistPage() {
       {/* </>
       )} */}
 
-      
+
       {albums.length > 0 && (
         <Box component={"section"} mt={"60px"}>
           <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} marginBottom={"20px"}>
@@ -264,6 +276,31 @@ function OfficeArtistPage() {
           </Button>
         </Box>
       </MyModal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        TransitionComponent={Fade}
+      >
+        <Alert
+          severity={snackbarType}
+          onClose={() => setSnackbarOpen(false)}
+          sx={{
+            width: "100%",
+            borderRadius: "10px",
+            fontWeight: 600,
+            backgroundColor:
+              snackbarType === "success"
+                ? "rgba(76, 175, 80, 0.9)"
+                : "rgba(244, 67, 54, 0.9)",
+            color: "white",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+          }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

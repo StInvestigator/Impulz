@@ -14,6 +14,7 @@ import HoverPlayerNextIcon from '../assets/player/HoverPlayerNextIcon.svg';
 import HoverPlayerPreviousIcon from '../assets/player/HoverPlayerPreviousIcon.svg';
 import HoverPlayerRandomPlaying from '../assets/player/HoverPlayerRandomPlaying.svg';
 
+
 import HoverPlayerPauseIcon from '../assets/player/HoverPlayerPauseIcon.svg';
 import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
@@ -38,6 +39,7 @@ import { usePlayTrack } from '../hooks/usePlayTrack';
 import { useNavigate } from "react-router-dom";
 import type { TrackSimpleDto } from "../models/DTO/track/TrackSimpleDto.ts";
 import { useTranslation } from "react-i18next";
+import type { AuthorSimpleDto } from '../models/DTO/AuthorSimpleDto.ts';
 
 interface PlaybackStats {
     trackId: number;
@@ -100,6 +102,7 @@ const MusicPlayer = () => {
     const isLastTrack = currentTrackIndex >= playlist.length - 1;
     const isFirstTrack = currentTrackIndex <= 0;
     const lastActiveIdRef = useRef<number | null>(null);
+
 
     const playlistRef = useRef(playlist);
     const currentTrackIndexRef = useRef(currentTrackIndex);
@@ -194,7 +197,7 @@ const MusicPlayer = () => {
                 audioRef.current = null;
             }
             if (objectUrlRef.current) {
-                URL.revokeObjectURL(objectUrlRef.current);
+                // URL.revokeObjectURL(objectUrlRef.current);
                 objectUrlRef.current = null;
             }
         };
@@ -240,7 +243,7 @@ const MusicPlayer = () => {
             audioRef.current = null;
 
             if (objectUrlRef.current) {
-                URL.revokeObjectURL(objectUrlRef.current);
+                // URL.revokeObjectURL(objectUrlRef.current);
                 objectUrlRef.current = null;
             }
         }
@@ -283,7 +286,7 @@ const MusicPlayer = () => {
                     audioRef.current.onerror = null;
                 }
 
-                if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+                // if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
 
                 objectUrlRef.current = url;
                 const audio = new Audio();
@@ -787,7 +790,7 @@ const MusicPlayer = () => {
                                         minWidth: 0
                                     }}
                                 >
-                                    {active.authors?.map(author => author.name).join(', ') || 'Unknown artist'}
+                                    {active.authors?.map((author: AuthorSimpleDto) => author.name).join(', ') || 'Unknown artist'}
                                 </Typography>
 
                                 <Box sx={{

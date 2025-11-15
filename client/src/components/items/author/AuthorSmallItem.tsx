@@ -7,6 +7,9 @@ import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import React, { memo, type FC } from "react";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { AuthorContextMenu } from "../../contextMenu/AuthorContextMenu.tsx";
+import { useAppDispatch } from "../../../hooks/redux.ts";
+import { fetchPopularTracksByAuthorForPlayer } from "../../../store/reducers/action-creators/tracks.ts";
+import profileDefault from "../../../assets/profile_icon.svg"
 
 interface AuthorItemProps {
     author: AuthorSimpleDto;
@@ -17,19 +20,20 @@ interface AuthorItemProps {
 const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = "light" }) => {
     const navigate = useNavigate();
     const { t } = useTranslation('other');
-    const { playAuthorPopularTracks } = usePlayTrack();
+    const { playTrackList } = usePlayTrack();
+    const dispatch = useAppDispatch();
     const { contextMenu, handleContextMenu, handleCloseContextMenu } = useContextMenu();
 
     const handlePlayClick = async (event: React.MouseEvent) => {
         event.stopPropagation();
 
-        try {
-            await playAuthorPopularTracks(
-                author.id,
-                author.name
-            );
-        } catch (error) {
-            console.error(error);
+        const result = await dispatch(fetchPopularTracksByAuthorForPlayer({
+            authorId: author.id,
+            size: 1000
+        }));
+
+        if (fetchPopularTracksByAuthorForPlayer.fulfilled.match(result)) {
+            playTrackList(result.payload, 0);
         }
     };
 
@@ -60,7 +64,7 @@ const AuthorSmallItem: FC<AuthorItemProps> = memo(({ author, itemWidth, color = 
                 height={itemWidth}
                 borderRadius={"50%"}
                 sx={{
-                    backgroundImage: `url(${author.imgUrl})`,
+                    backgroundImage: `url(${author.imgUrl || profileDefault})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundColor: "white",

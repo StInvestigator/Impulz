@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type {TrackSimpleDto} from "../../models/DTO/track/TrackSimpleDto.ts";
+import type { TrackSimpleDto } from "../../models/DTO/track/TrackSimpleDto.ts";
 
 export interface PlayerSource {
     type: "author" | "album" | "playlist";
@@ -252,6 +252,11 @@ const playerSlice = createSlice({
             state.source = null;
         },
 
+        clearQueue: (state) => {
+            state.playlist.splice(1);
+            state.bufferTracks = [];
+        },
+
         setSource: (state, action: PayloadAction<PlayerSource | null>) => {
             state.source = action.payload;
         },
@@ -330,10 +335,11 @@ const playerSlice = createSlice({
             source: PlayerSource;
             initialTracks: TrackSimpleDto[];
             bufferTracks: TrackSimpleDto[];
-            startIndex?: number;
+            startIndex?: number
         }>) => {
             const { source, initialTracks, bufferTracks, startIndex = 0 } = action.payload;
 
+            state.source = source;
             state.source = source;
             state.playlist = initialTracks;
             state.bufferTracks = bufferTracks;
@@ -350,6 +356,7 @@ const playerSlice = createSlice({
 
             state.duration = 0;
             state.currentTime = 0;
+
         },
 
         loadNextPageToBuffer: (state, action: PayloadAction<TrackSimpleDto[]>) => {
@@ -376,6 +383,7 @@ export const {
     pauseTrack,
     nextTrack,
     prevTrack,
+    clearQueue,
     setCurrentTrack,
     setDuration,
     setCurrentTime,

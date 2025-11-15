@@ -121,6 +121,15 @@
         "clientRole": false,
         "containerId": "36575e55-11c4-4fb6-9284-bde0d4ec613f",
         "attributes": {}
+      },
+      {
+        "id": "c85ce2f2-88ea-4bcd-ae4e-08692c0fe56e",
+        "name": "PREMIUM",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "36575e55-11c4-4fb6-9284-bde0d4ec613f",
+        "attributes": {}
       }
     ],
     "client": {

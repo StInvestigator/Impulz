@@ -22,7 +22,7 @@ const SimilarAuthorsPage = () => {
 
     useEffect(() => {
         if (id) {
-            dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: currentPage - 1, size: 20 }));
+            dispatch(fetchSimilarAuthorsByGenre({ authorId: id, page: currentPage - 1, size: 10 }));
         }
     }, [dispatch, currentPage, id]);
 

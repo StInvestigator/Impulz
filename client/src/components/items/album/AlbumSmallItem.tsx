@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { AlbumSimpleDto } from "../../../models/DTO/album/AlbumSimpleDto.ts";
 import { usePlayTrack } from "../../../hooks/usePlayTrack.tsx";
 import { useAppDispatch } from "../../../hooks/redux.ts";
-import { fetchTracksByAlbum } from "../../../store/reducers/action-creators/tracks.ts";
+import { fetchTracksByAlbumForPlayer } from "../../../store/reducers/action-creators/tracks.ts";
 import { useAppNavigate } from "../../../hooks/useAppNavigate.ts";
 import { useContextMenu } from "../../../hooks/useContextMenu.ts";
 import { AlbumContextMenu } from "../../contextMenu/AlbumContextMenu.tsx";
@@ -27,13 +27,13 @@ const AlbumSmallItem: FC<AlbumItemProps> = ({ album, itemWidth, color = "light" 
     const handlePlayPlaylist = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
-        const result = await dispatch(fetchTracksByAlbum({
+        const result = await dispatch(fetchTracksByAlbumForPlayer({
             albumId: album.id,
             page: 0,
             size: 1000
         }));
 
-        if (fetchTracksByAlbum.fulfilled.match(result)) {
+        if (fetchTracksByAlbumForPlayer.fulfilled.match(result)) {
             playTrackList(result.payload, 0);
         }
     }

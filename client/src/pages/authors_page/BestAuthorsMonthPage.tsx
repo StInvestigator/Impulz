@@ -20,7 +20,7 @@ function BestAuthorsMonthPage() {
 
     useEffect(() => {
         if (currentPage >= 1) {
-            dispatch(fetchTopAuthorsByMonth({ page: currentPage - 1, size: 5 }));
+            dispatch(fetchTopAuthorsByMonth({ page: currentPage - 1, size: 10 }));
         }
     }, [dispatch, currentPage]);
 

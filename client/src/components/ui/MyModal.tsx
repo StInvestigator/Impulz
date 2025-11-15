@@ -3,14 +3,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { type FC, type ReactNode } from 'react'
 
 const modalStyle = {
-  position: 'absolute',
+  position: 'absolute' as const,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
+
   width: 668,
-  maxHeight: '90vh',
-  overflowY: 'auto', 
-  minHeight: 300,
+  maxHeight: '90vh',    // ограничиваем высоту модалки
+  display: 'flex',
+  flexDirection: 'column',
+
   bgcolor: 'var(--dark-purple)',
   borderRadius: 4,
   boxSizing: "border-box",
@@ -26,22 +28,35 @@ interface MyModalProps {
 const MyModal: FC<MyModalProps> = ({ open, setOpen, children }) => {
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
-        <Box sx={modalStyle}>
-          <Box display={"flex"} justifyContent={"flex-end"}>
-            <IconButton onClick={() => setOpen(false)} sx={{
-              padding: 0
-            }}>
-              <CloseIcon sx={{
+      <Box sx={modalStyle}>
+        {/* ВЕРХ — фиксированный */}
+        <Box display="flex" justifyContent="flex-end" flexShrink={0}>
+          <IconButton
+            onClick={() => setOpen(false)}
+            sx={{ padding: 0 }}
+          >
+            <CloseIcon
+              sx={{
                 width: "20px",
                 height: "20px",
                 color: "var(--orange-peel)"
-              }}/>
-            </IconButton>
-          </Box>
-          {/* Контент */}
+              }}
+            />
+          </IconButton>
+        </Box>
+
+        {/* НИЗ — скроллируемый */}
+        <Box
+          sx={{
+            mt: 2,
+            overflowY: 'auto',
+            flexGrow: 1,
+          }}
+        >
           {children}
         </Box>
-      </Modal>
+      </Box>
+    </Modal>
   )
 }
 

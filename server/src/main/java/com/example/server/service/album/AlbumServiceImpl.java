@@ -115,7 +115,7 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     @CacheEvict(cacheNames = {"album.byAuthor",
-            "album.collaborationsByAuthor", "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true, beforeInvocation = true)
+            "album.collaborationsByAuthor", "album.byAuthorReleaseDateDesc", "album.byGenreReleaseDateDesc"}, allEntries = true)
     @Transactional
     public Album upload(AlbumCreationDto metadata, MultipartFile cover, List<MultipartFile> trackFiles, List<MultipartFile> trackCovers) {
         Album entity = new Album();

@@ -170,7 +170,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     @CacheEvict(cacheNames = {
             "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors", "track.findPopularTracksByGenre"
-    }, allEntries = true, beforeInvocation = true)
+    }, allEntries = true)
     @Transactional
     public Track uploadTrack(TrackCreationDto creationDto, MultipartFile cover, MultipartFile file, Album album) {
         Track entity = new Track();
@@ -190,7 +190,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     @CacheEvict(cacheNames = {
             "track.findPopularTracksByAuthor", "track.findTracksByAuthorWithMultipleAuthors", "track.findPopularTracksByGenre"
-    }, allEntries = true, beforeInvocation = true)
+    }, allEntries = true)
     @Transactional
     public List<Track> uploadTracks(List<TrackCreationDto> creationDtos, List<MultipartFile> covers, List<MultipartFile> files, Album album) {
         List<Track> tracks = new ArrayList<>();

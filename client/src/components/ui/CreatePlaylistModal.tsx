@@ -363,7 +363,7 @@ const CreatePlaylistModal: FC<ModalProps>= ({ open, setOpen }) =>{
                                     textTransform: "none"
                                 }}
                             >
-                                {isLoading ? "Создание..." : t("title-save")}
+                                {isLoading ? t("title-saving") : t("title-save")}
                             </Typography>
                         </Button>
                     </Box>

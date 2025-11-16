@@ -169,7 +169,7 @@ const EditPlaylistModal: FC<ModalProps> = ({ open, setOpen, playlist }) => {
 
                         <Button onClick={handleSave} disabled={isLoading} sx={{ marginTop: "30px", backgroundColor: isLoading ? "gray" : "var(--orange-peel)", height: "45px", width: "150px", borderRadius: "10px", marginLeft: "auto", display: "block", "&:disabled": { backgroundColor: "gray", color: "white" } }}>
                             <Typography sx={{ color: isLoading ? "white" : "var(--dark-purple)", fontSize: "20px", fontWeight: "700", fontFamily: "Manrope", textTransform: "none" }}>
-                                {isLoading ? "Создание..." : t("title-save")}
+                                {isLoading ? t("title-saving") : t("title-save")}
                             </Typography>
                         </Button>
                     </Box>

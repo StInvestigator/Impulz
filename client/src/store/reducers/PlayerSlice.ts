@@ -104,7 +104,7 @@ const playerSlice = createSlice({
             const trackToRemove = action.payload;
             const trackIndex = state.playlist.findIndex(t => t.id === trackToRemove.id);
 
-            if (trackIndex !== -1) {
+            if (state.playlist.length > 1 && trackIndex !== -1) {
                 state.playlist.splice(trackIndex, 1);
 
                 if (state.currentTrackIndex >= trackIndex) {
